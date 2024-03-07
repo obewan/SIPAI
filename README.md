@@ -8,8 +8,7 @@ SIPAI is a neural network that builds upon my previous [SMLP](https://github.com
 Its initial focus is on image enhancement, with plans for future releases to incorporate additional features such as image anomaly detection and more.
 
 ```
-This project is currently in study phase.
-Development will start soon...
+Development just started...
 ```
 
 ---
