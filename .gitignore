@@ -31,5 +31,24 @@
 *.out
 *.app
 
+# Doxygen output
+doc/html
+doc/latex
+
+# build output
+build
+bin
+monitor*.csv
+
+# CMake
+CMakeFiles
+CMakeCache.txt
+
 # Others
+coverage/
 .vscode
+.cache
+.codeql
+.cppcheck
+.cccc
+.valgrind
