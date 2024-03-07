@@ -63,13 +63,14 @@ public:
         for (size_t j = 0; j < n.weights.size(); ++j) {
           size_t irgba = 0;
           std::for_each(n.weights[j].begin(), n.weights[j].end(),
-                        [this, &j, &n, &irgba, &learningRate]() {
+                        [this, &j, &n, &irgba, &learningRate](float &weight) {
                           // Gradient descent
                           float dE_dw =
                               previousLayer->neurons[j].value.at(irgba) *
                               n.error.at(irgba);
                           // Update weights
-                          n.weights[j].at(irgba) -= learningRate * dE_dw;
+                          weight -= learningRate * dE_dw;
+                          ++irgba;
                         });
         }
       }
@@ -84,7 +85,7 @@ public:
     for (auto &neuron : neurons) {
       size_t irgba = 0;
       std::for_each(neuron.error.begin(), neuron.error.end(),
-                    [this, &irgba, &i, &neuron, &expectedValues](float &error) {
+                    [&irgba, &i, &neuron, &expectedValues](float &error) {
                       error =
                           neuron.value.at(irgba) - expectedValues[i].at(irgba);
                       ++irgba;
