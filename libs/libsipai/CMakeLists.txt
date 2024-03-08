@@ -8,6 +8,10 @@ if(ENABLE_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "-lgcov") 
 endif()
 
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
+
 
 set(PROJECT_NAME libsipai)
 set(LIBRARY_NAME libsipai)
@@ -25,6 +29,8 @@ add_library(${LIBRARY_NAME} STATIC
     ${LIBRARY_HEADERS}
     ${LIBRARY_SOURCE}
 )
+
+target_link_libraries(libsipai ${OpenCV_LIBS})
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -5,7 +5,7 @@ option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" TRUE)
 
 set(PROJECT_NAME sipai)
 set(SOURCE_DIR src)
-set(SOURCE ${SOURCE_DIR}/Main.cpp)
+file(GLOB SOURCE "${SOURCE_DIR}/*.cpp")
 set(LIBRARIES_DIR libs)
 set(LIBRARIES libsipai)
 
