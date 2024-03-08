@@ -10,5 +10,5 @@
 #include <vector>
 
 namespace sipai {
-using RGBA = std::vector<float>;
+using RGBA = std::vector<float>; // TODO: replace it with cv::Vec4f
 }
