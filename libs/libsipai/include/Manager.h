@@ -9,6 +9,11 @@
  */
 #pragma once
 
+#include "AppParameters.h"
+#include "Network.h"
+#include "NetworkParameters.h"
+#include <memory>
+
 namespace sipai {
 
 class Manager {
@@ -19,6 +24,30 @@ public:
   }
   Manager(Manager const &) = delete;
   void operator=(Manager const &) = delete;
+
+  /**
+   * @brief Application parameters.
+   */
+  AppParameters app_params;
+
+  /**
+   * @brief Network parameters.
+   */
+  NetworkParameters network_params;
+
+  /**
+   * @brief The neural network
+   */
+  std::shared_ptr<Network> network = nullptr;
+
+  /**
+   * @brief Get a title line with the version
+   *
+   * @return std::string
+   */
+  std::string getVersionHeader() const {
+    return app_params.title + " v" + app_params.version;
+  }
 
 private:
   Manager() = default;
