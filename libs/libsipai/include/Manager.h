@@ -41,6 +41,13 @@ public:
   std::shared_ptr<Network> network = nullptr;
 
   /**
+   * @brief Load an image and convert it for the input layer
+   *
+   * @param imagePath
+   */
+  std::vector<RGBA> loadImage(const std::string &imagePath);
+
+  /**
    * @brief Get a title line with the version
    *
    * @return std::string

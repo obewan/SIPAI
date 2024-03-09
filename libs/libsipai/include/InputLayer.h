@@ -8,6 +8,7 @@
  *
  */
 #pragma once
+#include "ImageImport.h"
 #include "Layer.h"
 #include <stdexcept>
 
@@ -20,6 +21,7 @@ namespace sipai {
 class InputLayer : public Layer {
 public:
   InputLayer() : Layer(LayerType::InputLayer) {}
+
   void forwardPropagation() override {
     // No need to implement for input layer
   }

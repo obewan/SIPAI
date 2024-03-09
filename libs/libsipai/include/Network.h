@@ -10,6 +10,7 @@
 #pragma once
 #include "HiddenLayer.h"
 #include "InputLayer.h"
+#include "Layer.h"
 #include "NetworkParameters.h"
 #include "OutputLayer.h"
 #include "exception/NetworkException.h"
@@ -26,6 +27,44 @@ public:
 
   std::vector<Layer *> layers;
   NetworkParameters params;
+
+  /**
+   * @brief Performs forward propagation on the network using the given input
+   * values.
+   *
+   * @param inputValues The input values for forward propagation.
+   * @return A vector of output values from the output layer after forward
+   * propagation.
+   */
+  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues) {
+    if (layers.front()->layerType != LayerType::InputLayer) {
+      throw NetworkException("Invalid front layer type");
+    }
+    if (layers.back()->layerType != LayerType::OutputLayer) {
+      throw NetworkException("Invalid back layer type");
+    }
+    ((InputLayer *)layers.front())->setInputValues(inputValues);
+    for (auto &layer : layers) {
+      layer->forwardPropagation();
+    }
+    return ((OutputLayer *)layers.back())->getOutputValues();
+  }
+
+  /**
+   * @brief Performs backward propagation on the network using the given
+   * expected values.
+   *
+   * @param expectedValues The expected values for backward propagation.
+   */
+  void backwardPropagation(const std::vector<RGBA> &expectedValues) {
+    if (layers.back()->layerType != LayerType::OutputLayer) {
+      throw NetworkException("Invalid back layer type");
+    }
+    ((OutputLayer *)layers.back())->computeErrors(expectedValues);
+    for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
+      (*it)->backwardPropagation();
+    }
+  }
 
   void bindLayers() {
     for (size_t i = 0; i < layers.size(); ++i) {
