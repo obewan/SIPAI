@@ -8,7 +8,7 @@
  *
  */
 #pragma once
-#include "Common.h"
+#include "RGBA.h"
 
 namespace sipai {
 class Neuron;

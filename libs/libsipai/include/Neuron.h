@@ -9,8 +9,8 @@
  */
 #pragma once
 #include "ActivationFunctions.h"
-#include "Common.h"
 #include "Connexion.h"
+#include "RGBA.h"
 #include <functional>
 #include <math.h>
 #include <random>
