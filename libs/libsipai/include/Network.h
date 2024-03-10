@@ -16,17 +16,33 @@
 #include "exception/NetworkException.h"
 
 namespace sipai {
+
+/**
+ * @class Network
+ * @brief This class represents a neural network for image processing.
+ */
 class Network {
 public:
+  /**
+   * @brief Default constructor for the Network class.
+   */
   Network() = default;
+
+  /**
+   * @brief Destructor for the Network class. It deletes all layers in the
+   * network.
+   */
   ~Network() {
     for (auto layer : layers) {
       delete layer;
     }
   }
 
+  /**
+   * @brief A vector of pointers to Layer objects, representing the layers in
+   * the network.
+   */
   std::vector<Layer *> layers;
-  NetworkParameters params;
 
   /**
    * @brief Performs forward propagation on the network using the given input
@@ -36,19 +52,7 @@ public:
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues) {
-    if (layers.front()->layerType != LayerType::InputLayer) {
-      throw NetworkException("Invalid front layer type");
-    }
-    if (layers.back()->layerType != LayerType::OutputLayer) {
-      throw NetworkException("Invalid back layer type");
-    }
-    ((InputLayer *)layers.front())->setInputValues(inputValues);
-    for (auto &layer : layers) {
-      layer->forwardPropagation();
-    }
-    return ((OutputLayer *)layers.back())->getOutputValues();
-  }
+  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues);
 
   /**
    * @brief Performs backward propagation on the network using the given
@@ -56,96 +60,41 @@ public:
    *
    * @param expectedValues The expected values for backward propagation.
    */
-  void backwardPropagation(const std::vector<RGBA> &expectedValues) {
-    if (layers.back()->layerType != LayerType::OutputLayer) {
-      throw NetworkException("Invalid back layer type");
-    }
-    ((OutputLayer *)layers.back())->computeErrors(expectedValues);
-    for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-      (*it)->backwardPropagation();
-    }
-  }
+  void backwardPropagation(const std::vector<RGBA> &expectedValues);
 
-  void bindLayers() {
-    for (size_t i = 0; i < layers.size(); ++i) {
-      if (i > 0) {
-        layers.at(i)->previousLayer = layers.at(i - 1);
-      }
-      if (i < layers.size() - 1) {
-        layers.at(i)->nextLayer = layers.at(i + 1);
-      }
-    }
-  }
+  /**
+   * @brief Binds the layers of the network together.
+   */
+  void bindLayers();
 
-  void initializeWeights() const {
-    for (auto layer : layers) {
-      if (layer->previousLayer != nullptr) {
-        for (auto &n : layer->neurons) {
-          n.initWeights(layer->previousLayer->neurons.size());
-        }
-      }
-    }
-  }
+  /**
+   * @brief Initializes the weights of the neurons in the network.
+   */
+  void initializeWeights() const;
 
-  void initializeLayers() {
-    auto inputLayer = new InputLayer();
-    inputLayer->neurons.resize(params.input_size);
-    layers.push_back(inputLayer);
+  /**
+   * @brief Initializes the layers of the network.
+   */
+  void initializeLayers();
 
-    for (size_t i = 0; i < params.hiddens_count; ++i) {
-      auto hiddenLayer = new HiddenLayer();
-      hiddenLayer->neurons.resize(params.hidden_size);
-      SetActivationFunction(hiddenLayer, params.hidden_activation_function,
-                            params.hidden_activation_alpha);
-      layers.push_back(hiddenLayer);
-    }
+  /**
+   * @brief Initializes the neighbors of the neurons in the network.
+   */
+  void initializeNeighbors();
 
-    auto outputLayer = new OutputLayer();
-    outputLayer->neurons.resize(params.output_size);
-    SetActivationFunction(outputLayer, params.output_activation_function,
-                          params.output_activation_alpha);
-    layers.push_back(outputLayer);
-
-    bindLayers();
-    initializeWeights();
-  }
-
+  /**
+   * @brief Sets the activation function for a given layer in the network.
+   *
+   * @param layer A pointer to the Layer object for which the activation
+   * function is to be set.
+   * @param activation_function An enum representing the type of activation
+   * function to be used.
+   * @param activation_alpha A float representing the alpha parameter of the
+   * activation function.
+   */
   void SetActivationFunction(Layer *layer,
                              EActivationFunction activation_function,
-                             float activation_alpha) const {
-    switch (activation_function) {
-    case EActivationFunction::ELU:
-      layer->setActivationFunction(
-          [activation_alpha](auto x) { return elu(x, activation_alpha); },
-          [activation_alpha](auto x) {
-            return eluDerivative(x, activation_alpha);
-          });
-      break;
-    case EActivationFunction::LReLU:
-      layer->setActivationFunction(leakyRelu, leakyReluDerivative);
-      break;
-    case EActivationFunction::PReLU:
-      layer->setActivationFunction(
-          [activation_alpha](auto x) {
-            return parametricRelu(x, activation_alpha);
-          },
-          [activation_alpha](auto x) {
-            return parametricReluDerivative(x, activation_alpha);
-          });
-      break;
-    case EActivationFunction::ReLU:
-      layer->setActivationFunction(relu, reluDerivative);
-      break;
-    case EActivationFunction::Sigmoid:
-      layer->setActivationFunction(sigmoid, sigmoidDerivative);
-      break;
-    case EActivationFunction::Tanh:
-      layer->setActivationFunction(tanhFunc, tanhDerivative);
-      break;
-    default:
-      throw NetworkException("Unimplemented Activation Function");
-    }
-  }
+                             float activation_alpha) const;
 };
 
 } // namespace sipai

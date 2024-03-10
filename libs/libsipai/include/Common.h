@@ -7,8 +7,5 @@
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
  *
  */
-#include <array>
-
-namespace sipai {
-using RGBA = std::array<float, 4>;
-}
+#pragma once
+#include "RGBA.h"

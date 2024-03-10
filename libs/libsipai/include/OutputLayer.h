@@ -34,19 +34,16 @@ public:
     for (auto &n : neurons) {
       n.value = {0.0, 0.0, 0.0, 0.0};
       for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
-        auto const &prev_n = previousLayer->neurons.at(i);
-        size_t irgba = 0;
-        std::for_each(n.value.begin(), n.value.end(),
-                      [&irgba, &n, &i, &prev_n](float &value) {
-                        value +=
-                            prev_n.value.at(irgba) * n.weights.at(i).at(irgba);
-                        ++irgba;
-                      });
+        n.value += previousLayer->neurons.at(i).value * n.weights.at(i);
+      }
+      // Propagate the value to adjacents neurons
+      for (auto &connection : n.neighbors) {
+        connection.neuron->value += n.value * connection.weight;
       }
       // Use activation function
-      std::for_each(n.value.begin(), n.value.end(), [&n](float &value) {
-        value = n.activationFunction(value);
-      });
+      for (size_t j = 0; j < n.value.value.size(); ++j) {
+        n.value.value[j] = n.activationFunction(n.value.value[j]);
+      }
     }
   }
 
@@ -59,20 +56,15 @@ public:
       return;
     }
     for (Neuron &n : neurons) {
+      // Update weights based on neurons in the previous layer
       for (size_t j = 0; j < n.weights.size(); ++j) {
-        for (size_t j = 0; j < n.weights.size(); ++j) {
-          size_t irgba = 0;
-          std::for_each(n.weights[j].begin(), n.weights[j].end(),
-                        [this, &j, &n, &irgba, &learningRate](float &weight) {
-                          // Gradient descent
-                          float dE_dw =
-                              previousLayer->neurons[j].value.at(irgba) *
-                              n.error.at(irgba);
-                          // Update weights
-                          weight -= learningRate * dE_dw;
-                          ++irgba;
-                        });
-        }
+        auto dE_dw = previousLayer->neurons[j].value * n.error;
+        n.weights[j] -= learningRate * dE_dw;
+      }
+      // Update weights based on neighboring neurons
+      for (Connection &connection : n.neighbors) {
+        auto dE_dw = connection.neuron->value * n.error;
+        connection.weight -= learningRate * dE_dw;
       }
     }
   }
@@ -83,13 +75,22 @@ public:
     }
     size_t i = 0;
     for (auto &neuron : neurons) {
-      size_t irgba = 0;
-      std::for_each(neuron.error.begin(), neuron.error.end(),
-                    [&irgba, &i, &neuron, &expectedValues](float &error) {
-                      error =
-                          neuron.value.at(irgba) - expectedValues[i].at(irgba);
-                      ++irgba;
-                    });
+      // Compute the weighted average value of the neighboring neurons
+      RGBA neighborAverage = {0.0, 0.0, 0.0, 0.0};
+      RGBA totalWeight = {0.0, 0.0, 0.0, 0.0};
+      for (auto &connection : neuron.neighbors) {
+        neighborAverage += connection.weight * connection.neuron->value;
+        totalWeight += connection.weight;
+      }
+      for (int j = 0; j < 4; ++j) {
+        if (totalWeight.value[j] != 0) {
+          neighborAverage.value[j] /= totalWeight.value[j];
+        }
+      }
+
+      // Compute the error based on the expected value and the neighbor
+      // average
+      neuron.error = neuron.value - expectedValues[i] - neighborAverage;
       ++i;
     }
   }

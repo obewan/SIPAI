@@ -10,6 +10,7 @@
 #pragma once
 #include "ActivationFunctions.h"
 #include "Common.h"
+#include "Connexion.h"
 #include <functional>
 #include <math.h>
 #include <random>
@@ -43,7 +44,7 @@ public:
   // 4-neighborhood (Von Neumann neighborhood). Could be improve to
   // 8-neighborhood (Moore neighborhood) or Extended neighborhood (radius)
   // later.
-  std::vector<Neuron *> neighbors;
+  std::vector<Connection> neighbors;
 
   /**
    * @brief Initializes the weights of the neuron to a given size. The weights
@@ -59,7 +60,7 @@ public:
     for (auto &w : weights) {
       std::mt19937 gen(rd());
       std::normal_distribution<float> dist(0.1f, 0.01f);
-      std::for_each(w.begin(), w.end(), [&gen, &dist](float &f) {
+      std::for_each(w.value.begin(), w.value.end(), [&gen, &dist](float &f) {
         float distg = dist(gen);
         f = std::max(0.0f, std::min(0.1f, distg));
       });
