@@ -7,9 +7,10 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath) {
   cv::Mat image = imageImport.importImage(imagePath);
 
   // Resize the image to the input neurons
-  const auto &app_params = Manager::getInstance().app_params;
-  cv::resize(image, image,
-             cv::Size(app_params.input_res_x, app_params.input_res_y));
+  const auto &network_params = Manager::getInstance().network_params;
+  cv::resize(
+      image, image,
+      cv::Size(network_params.input_size_x, network_params.input_size_y));
 
   return imageImport.convertToRGBAVector(image);
 }

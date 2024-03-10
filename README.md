@@ -7,6 +7,8 @@ A Simple Image Processing Artificial Intelligence, by [Dams](https://dams-labs.n
 SIPAI is a neural network that builds upon my previous [SMLP](https://github.com/obewan/SMLP) project.
 Its initial focus is on image enhancement, with plans for future releases to incorporate additional features such as image anomaly detection and more.
 
+It uses a Multi-Layer Perceptron (MLP) architecture, with a modification that incorporates elements of a Recurrent Neural Network (RNN) to handle spatial information.
+
 ```
 Development just started...
 ```

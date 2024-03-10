@@ -24,6 +24,9 @@ namespace sipai {
  */
 class Neuron {
 public:
+  // Default constructor
+  Neuron() = default;
+
   // The weights of the neuron
   std::vector<RGBA> weights;
 
@@ -36,8 +39,11 @@ public:
   // The error of the neuron
   RGBA error = {0.0, 0.0, 0.0, 0.0};
 
-  // Default constructor
-  Neuron() = default;
+  // Connections to the adjacents neurons in the same layer, using
+  // 4-neighborhood (Von Neumann neighborhood). Could be improve to
+  // 8-neighborhood (Moore neighborhood) or Extended neighborhood (radius)
+  // later.
+  std::vector<Neuron *> neighbors;
 
   /**
    * @brief Initializes the weights of the neuron to a given size. The weights
