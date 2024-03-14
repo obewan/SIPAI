@@ -11,6 +11,7 @@
 
 #include "RGBA.h"
 #include "exception/ImageImportException.h"
+#include <execution>
 #include <opencv2/opencv.hpp>
 #include <vector>
 
@@ -27,12 +28,26 @@ public:
   }
 
   std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) {
-    std::vector<RGBA> rgbaValues;
-    image.forEach<cv::Vec4b>(
-        [&rgbaValues](const cv::Vec4b &pixel, const int *position) {
-          rgbaValues.push_back({pixel[0] / 255.0f, pixel[1] / 255.0f,
-                                pixel[2] / 255.0f, pixel[3] / 255.0f});
-        });
+    const int channels = image.channels();
+    const int rows = image.rows;
+    const int cols = image.cols;
+    const int totalPixels = rows * cols;
+
+    std::vector<RGBA> rgbaValues(totalPixels);
+
+    /// lambda helper
+    auto convertPixel = [channels](const cv::Vec4b &pixel) {
+      return RGBA{{pixel[0] / 255.0f, pixel[1] / 255.0f, pixel[2] / 255.0f,
+                   channels == 4 ? pixel[3] / 255.0f : 1.0f}};
+    };
+
+    /// std::execution::par_unseq enables parallel execution of the
+    /// transformation while relaxing the requirement for sequential execution
+    /// order
+    auto pixelIterator = image.begin<cv::Vec4b>();
+    std::transform(std::execution::par_unseq, pixelIterator,
+                   pixelIterator + totalPixels, rgbaValues.begin(),
+                   convertPixel);
     return rgbaValues;
   }
 };

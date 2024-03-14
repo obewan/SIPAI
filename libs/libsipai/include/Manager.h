@@ -48,6 +48,12 @@ public:
   std::vector<RGBA> loadImage(const std::string &imagePath);
 
   /**
+   * @brief Run the ai
+   *
+   */
+  void run();
+
+  /**
    * @brief Get a title line with the version
    *
    * @return std::string

@@ -58,7 +58,7 @@ public:
    */
   virtual void updateWeights(float learningRate) = 0;
 
-  std::string layerTypeStr() const {
+  const std::string getLayerTypeStr() const {
     for (const auto &[key, mLayerType] : layer_map) {
       if (mLayerType == layerType) {
         return key;

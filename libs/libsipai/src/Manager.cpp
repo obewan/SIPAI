@@ -14,3 +14,5 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath) {
 
   return imageImport.convertToRGBAVector(image);
 }
+
+void Manager::run() {}

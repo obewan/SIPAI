@@ -23,6 +23,12 @@ public:
    */
   int init(int argc, char **argv);
 
+  /**
+   * @brief run the application
+   *
+   */
+  void run();
+
 private:
   int parseArgs(int argc, char **argv);
 };

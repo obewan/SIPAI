@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
       return init;
     }
 
-    // TODO: sipai->run();
+    sipai->run();
 
     return EXIT_SUCCESS;
   } catch (const std::exception &ex) {

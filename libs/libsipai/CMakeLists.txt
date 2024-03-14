@@ -30,7 +30,8 @@ add_library(${LIBRARY_NAME} STATIC
     ${LIBRARY_SOURCE}
 )
 
-target_link_libraries(libsipai ${OpenCV_LIBS})
+target_link_libraries(libsipai ${OpenCV_LIBS} tbb)
+
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

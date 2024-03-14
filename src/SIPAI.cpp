@@ -42,3 +42,5 @@ int SIPAI::parseArgs(int argc, char **argv) {
 
   return EXIT_SUCCESS;
 }
+
+void SIPAI::run() { Manager::getInstance().run(); }
