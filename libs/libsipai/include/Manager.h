@@ -12,10 +12,10 @@
 #include "AppParameters.h"
 #include "Network.h"
 #include "NetworkParameters.h"
+#include "RGBA.h"
 #include <memory>
 
 namespace sipai {
-
 class Manager {
 public:
   static Manager &getInstance() {
@@ -52,6 +52,61 @@ public:
    *
    */
   void run();
+
+  /**
+   * @brief Runs the training process in monitored mode.
+   *
+   * This method loads the training data, splits it into training and validation
+   * sets, initializes the neural network, and then enters a training loop.
+   * During each epoch, it performs forward propagation, computes the loss,
+   * performs backward propagation, and updates the network weights using the
+   * training data. It also evaluates the model on the validation set and logs
+   * the training progress. Early stopping is implemented to prevent
+   * overfitting.
+   */
+  void runTrainingMonitored();
+
+  /**
+   * @brief Loads the training data from the specified source.
+   *
+   * @return A vector of pairs, where each pair contains the paths to the input
+   * image and the corresponding target image.
+   */
+  trainingData loadTrainingData();
+
+  /**
+   * @brief Splits the training data into training and validation sets.
+   *
+   * @param data The training data to be split.
+   * @param split_offset The ratio of the data to be used for the training set.
+   *                     For example, if split_offset is 0.8, 80% of the data
+   * will be used for the training set, and the remaining 20% will be used for
+   * the validation set.
+   *
+   * @return A pair of vectors, where the first element is the training data,
+   * and the second element is the validation data.
+   */
+  std::pair<trainingData, trainingData> splitData(trainingData data,
+                                                  float split_offset);
+
+  /**
+   * @brief Initializes the neural network architecture.
+   *
+   * This method sets up the input, hidden, and output layers of the neural
+   * network, along with any necessary configurations or parameters.
+   */
+  void initializeNetwork();
+
+  /**
+   * @brief Computes the loss between the output image and the target image.
+   *
+   * @param outputImage The output image produced by the neural network.
+   * @param targetImage The expected target image.
+   *
+   * @return The computed loss value.
+   */
+  float computeLoss(std::vector<RGBA> outputImage,
+                    std::vector<RGBA> targetImage);
 
   /**
    * @brief Get a title line with the version

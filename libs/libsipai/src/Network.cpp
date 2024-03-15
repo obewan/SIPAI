@@ -161,3 +161,9 @@ void Network::SetActivationFunction(Layer *layer,
     throw NetworkException("Unimplemented Activation Function");
   }
 }
+
+void Network::updateWeights(float learning_rate) {
+  for (auto &layer : layers) {
+    layer->updateWeights(learning_rate);
+  }
+}

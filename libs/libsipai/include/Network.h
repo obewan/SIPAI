@@ -83,6 +83,12 @@ public:
   void initializeNeighbors();
 
   /**
+   * @brief Updates the weights of the neurons in the network using the learning
+   * rate.
+   */
+  void updateWeights(float learning_rate);
+
+  /**
    * @brief Sets the activation function for a given layer in the network.
    *
    * @param layer A pointer to the Layer object for which the activation
