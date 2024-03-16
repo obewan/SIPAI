@@ -12,9 +12,9 @@ volatile std::sig_atomic_t stopTraining = false;
 
 void signalHandler(int signal) {
   if (signal == SIGINT) {
-    std::cout << "Received interrupt signal (CTRL+C). Training will stop after "
-                 "the current epoch."
-              << std::endl;
+    SimpleLogger::LOG_INFO(
+        "Received interrupt signal (CTRL+C). Training will stop after "
+        "the current epoch.");
     stopTraining = true;
   }
 }
@@ -60,8 +60,8 @@ void Manager::runTrainingMonitored() {
   initializeNetwork();
 
   // Training loop
-  int epoch = 0;
   float bestValidationLoss = std::numeric_limits<float>::max();
+  int epoch = 0;
   int epochsWithoutImprovement = 0;
 
   while (!stopTraining &&
