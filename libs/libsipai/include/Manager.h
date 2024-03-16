@@ -78,8 +78,8 @@ public:
    * @brief Splits the training data into training and validation sets.
    *
    * @param data The training data to be split.
-   * @param split_offset The ratio of the data to be used for the training set.
-   *                     For example, if split_offset is 0.8, 80% of the data
+   * @param split_ratio The ratio of the data to be used for the training set.
+   *                     For example, if split_ratio is 0.8, 80% of the data
    * will be used for the training set, and the remaining 20% will be used for
    * the validation set.
    *
@@ -87,7 +87,7 @@ public:
    * and the second element is the validation data.
    */
   std::pair<trainingData, trainingData> splitData(trainingData data,
-                                                  float split_offset);
+                                                  float split_ratio);
 
   /**
    * @brief Initializes the neural network architecture.
@@ -98,15 +98,16 @@ public:
   void initializeNetwork();
 
   /**
-   * @brief Computes the loss between the output image and the target image.
+   * @brief Computes the mean squared error (MSE) loss between the output image
+   * and the target image.
    *
    * @param outputImage The output image produced by the neural network.
    * @param targetImage The expected target image.
    *
-   * @return The computed loss value.
+   * @return The computed MSE loss.
    */
-  float computeLoss(std::vector<RGBA> outputImage,
-                    std::vector<RGBA> targetImage);
+  float computeMSELoss(const std::vector<RGBA> &outputImage,
+                       const std::vector<RGBA> &targetImage);
 
   /**
    * @brief Get a title line with the version
