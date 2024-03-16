@@ -10,6 +10,7 @@
 #pragma once
 
 #include "AppParameters.h"
+#include "Common.h"
 #include "Network.h"
 #include "NetworkParameters.h"
 #include "RGBA.h"
@@ -75,16 +76,57 @@ public:
   trainingData loadTrainingData();
 
   /**
+   * @brief Performs one epoch of training on the provided dataset.
+   *
+   * @param dataSet The dataset containing pairs of input and target image
+   * paths.
+   * @return The average loss over the training dataset for the current epoch.
+   */
+  float trainOnEpoch(const trainingData &dataSet);
+
+  /**
+   * @brief Evaluates the network on the validation set.
+   *
+   * @param validationSet The validation set containing pairs of input and
+   * target image paths.
+   * @return The average loss over the validation set.
+   */
+  float evaluateOnValidationSet(const trainingData &validationSet);
+
+  /**
+   * @brief Determines whether the training should continue based on the
+   * provided conditions.
+   *
+   * @param epoch The current epoch number.
+   * @param epochsWithoutImprovement The number of epochs without improvement in
+   * validation loss.
+   * @param appParams The application parameters containing the maximum number
+   * of epochs and maximum epochs without improvement.
+   * @return True if the training should continue, false otherwise.
+   */
+  bool shouldContinueTraining(int epoch, int epochsWithoutImprovement,
+                              const AppParameters &appParams);
+
+  /**
+   * @brief Logs the training progress for the current epoch.
+   *
+   * @param epoch The current epoch number.
+   * @param trainingLoss The average training loss for the current epoch.
+   * @param validationLoss The average validation loss for the current epoch.
+   */
+  void logTrainingProgress(int epoch, float trainingLoss, float validationLoss);
+
+  /**
    * @brief Splits the training data into training and validation sets.
    *
    * @param data The training data to be split.
-   * @param split_ratio The ratio of the data to be used for the training set.
-   *                     For example, if split_ratio is 0.8, 80% of the data
-   * will be used for the training set, and the remaining 20% will be used for
-   * the validation set.
+   * @param split_ratio The ratio of the data to be used for the training
+   * set. For example, if split_ratio is 0.8, 80% of the data will be used
+   * for the training set, and the remaining 20% will be used for the
+   * validation set.
    *
-   * @return A pair of vectors, where the first element is the training data,
-   * and the second element is the validation data.
+   * @return A pair of vectors, where the first element is the training
+   * data, and the second element is the validation data.
    */
   std::pair<trainingData, trainingData> splitData(trainingData data,
                                                   float split_ratio);

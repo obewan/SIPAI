@@ -1,10 +1,23 @@
 #include "Manager.h"
+#include "AppParameters.h"
 #include "Common.h"
 #include "RGBA.h"
 #include "SimpleLogger.h"
+#include <csignal>
 #include <vector>
 
 using namespace sipai;
+
+volatile std::sig_atomic_t stopTraining = false;
+
+void signalHandler(int signal) {
+  if (signal == SIGINT) {
+    std::cout << "Received interrupt signal (CTRL+C). Training will stop after "
+                 "the current epoch."
+              << std::endl;
+    stopTraining = true;
+  }
+}
 
 std::vector<RGBA> Manager::loadImage(const std::string &imagePath) {
   ImageImport imageImport;
@@ -30,66 +43,83 @@ void Manager::run() {
 }
 
 void Manager::runTrainingMonitored() {
+  // Set up signal handler
+  std::signal(SIGINT, signalHandler);
+
   // Load training data
   trainingData trainingData = loadTrainingData();
 
   // Split training data into training and validation sets
-  auto [trainData, valData] = splitData(trainingData, app_params.split_ratio);
+  auto [trainingDataPairs, validationDataPairs] =
+      splitData(trainingData, app_params.split_ratio);
 
   // Initialize network
   initializeNetwork();
 
   // Training loop
   int epoch = 0;
-  float bestValLoss = std::numeric_limits<float>::max();
-  while (true) {
-    float trainLoss = 0.0f;
-    for (const auto &[inputPath, targetPath] : trainData) {
-      // Load input and target images
-      std::vector<RGBA> inputImage = loadImage(inputPath);
-      std::vector<RGBA> targetImage = loadImage(targetPath);
+  float bestValidationLoss = std::numeric_limits<float>::max();
+  int epochsWithoutImprovement = 0;
 
-      // Forward propagation
-      std::vector<RGBA> outputImage = network->forwardPropagation(inputImage);
+  while (!stopTraining &&
+         shouldContinueTraining(epoch, epochsWithoutImprovement, app_params)) {
+    float trainingLoss = trainOnEpoch(trainingDataPairs);
+    float validationLoss = evaluateOnValidationSet(validationDataPairs);
 
-      // Compute loss
-      float loss = computeMSELoss(outputImage, targetImage);
-      trainLoss += loss;
+    logTrainingProgress(epoch, trainingLoss, validationLoss);
 
-      // Backward propagation
-      network->backwardPropagation(targetImage);
-
-      // Update weights
-      network->updateWeights(network_params.learning_rate);
-    }
-    trainLoss /= trainData.size();
-
-    // Evaluate on validation set
-    float valLoss = 0.0f;
-    for (const auto &[inputPath, targetPath] : valData) {
-      std::vector<RGBA> inputImage = loadImage(inputPath);
-      std::vector<RGBA> targetImage = loadImage(targetPath);
-
-      std::vector<RGBA> outputImage = network->forwardPropagation(inputImage);
-      valLoss += computeMSELoss(outputImage, targetImage);
-    }
-    valLoss /= valData.size();
-
-    // Log training progress
-    SimpleLogger::LOG_INFO("Epoch: ", epoch, ", Train Loss: ", trainLoss,
-                           ", Validation Loss: ", valLoss);
-
-    // Early stopping
-    if (valLoss < bestValLoss) {
-      bestValLoss = valLoss;
+    if (validationLoss < bestValidationLoss) {
+      bestValidationLoss = validationLoss;
+      epochsWithoutImprovement = 0;
     } else {
-      // Stop training if validation loss doesn't improve for a certain
-      // number of epochs
-      break;
+      epochsWithoutImprovement++;
     }
 
     epoch++;
   }
+}
+
+float Manager::trainOnEpoch(const trainingData &dataSet) {
+  float epochLoss = 0.0f;
+  for (const auto &[inputPath, targetPath] : dataSet) {
+    std::vector<RGBA> inputImage = loadImage(inputPath);
+    std::vector<RGBA> targetImage = loadImage(targetPath);
+
+    std::vector<RGBA> outputImage = network->forwardPropagation(inputImage);
+    float loss = computeMSELoss(outputImage, targetImage);
+    epochLoss += loss;
+
+    network->backwardPropagation(targetImage);
+    network->updateWeights(network_params.learning_rate);
+  }
+  epochLoss /= dataSet.size();
+  return epochLoss;
+}
+
+float Manager::evaluateOnValidationSet(const trainingData &validationSet) {
+  float validationLoss = 0.0f;
+  for (const auto &[inputPath, targetPath] : validationSet) {
+    std::vector<RGBA> inputImage = loadImage(inputPath);
+    std::vector<RGBA> targetImage = loadImage(targetPath);
+
+    std::vector<RGBA> outputImage = network->forwardPropagation(inputImage);
+    validationLoss += computeMSELoss(outputImage, targetImage);
+  }
+  validationLoss /= validationSet.size();
+  return validationLoss;
+}
+
+bool Manager::shouldContinueTraining(int epoch, int epochsWithoutImprovement,
+                                     const AppParameters &appParams) {
+  return (epochsWithoutImprovement <
+          appParams.max_epochs_without_improvement) ||
+         (epoch < appParams.max_epochs && appParams.max_epochs != NOMAX_EPOCHS);
+}
+
+void Manager::logTrainingProgress(int epoch, float trainingLoss,
+                                  float validationLoss) {
+  SimpleLogger::LOG_INFO("Epoch: ", epoch, ", Train Loss: ", trainingLoss,
+                         ", Validation Loss: ", validationLoss);
 }
 
 trainingData Manager::loadTrainingData() {
