@@ -43,6 +43,9 @@ void Manager::run() {
 }
 
 void Manager::runTrainingMonitored() {
+  // Reset the stopTraining flag
+  stopTraining = false;
+
   // Set up signal handler
   std::signal(SIGINT, signalHandler);
 
