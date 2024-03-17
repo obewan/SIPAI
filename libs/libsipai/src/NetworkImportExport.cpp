@@ -13,7 +13,7 @@ void NeuralNetworkImportExport::importModel() {
   try {
     NeuralNetworkImportExportCSV NIE_CSV;
     NeuralNetworkImportExportJSON NIE_JSON;
-    Manager::getInstance().network = std::move(NIE_JSON.importModel());
+    Manager::getInstance().network = NIE_JSON.importModel();
     NIE_CSV.importNeuronsWeights();
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
