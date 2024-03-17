@@ -54,8 +54,19 @@ TrainingData Manager::loadTrainingData() {
 
 std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
                                                          float split_ratio) {
-  // TODO
-  return {};
+  // Shuffle the data randomly for unbiased training and validation
+  std::random_device rd;
+  std::mt19937 g(rd());
+  std::shuffle(data.begin(), data.end(), g);
+
+  // Calculate the split index based on the split ratio
+  size_t split_index = static_cast<size_t>(data.size() * split_ratio);
+
+  // Split the data into training and validation sets
+  TrainingData training_data(data.begin(), data.begin() + split_index);
+  TrainingData validation_data(data.begin() + split_index, data.end());
+
+  return std::make_pair(training_data, validation_data);
 }
 
 void Manager::initializeNetwork() {
