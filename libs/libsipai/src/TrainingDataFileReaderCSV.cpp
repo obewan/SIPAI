@@ -32,7 +32,7 @@ TrainingData TrainingDataFileReaderCSV::getTrainingData() {
       std::string_view data(line);
       csvParser.parseTo2DVector(data, cell_refs);
       if (cell_refs.empty() || cell_refs.size() != 2) {
-        throw FileReaderException("invalide column numbers");
+        throw FileReaderException("invalid column numbers");
       }
       std::pair<std::string, std::string> columns;
       columns.first = cell_refs[0][0].getCleanString().value();
