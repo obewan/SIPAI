@@ -14,6 +14,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
 
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libjson nlohmann-json)
 
 
 set(PROJECT_NAME libsipai)
@@ -39,5 +40,6 @@ target_link_libraries(libsipai ${OpenCV_LIBS} tbb)
 target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../libjson/include>
     $<INSTALL_INTERFACE:include>
 )
