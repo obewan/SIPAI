@@ -3,6 +3,35 @@
 
 using namespace sipai;
 
+void NeuralNetwork::initialize() {
+  auto inputLayer = new InputLayer();
+  const auto &network_params = Manager::getInstance().network_params;
+  inputLayer->neurons.resize(network_params.input_size_x *
+                             network_params.input_size_y);
+  layers.push_back(inputLayer);
+
+  for (size_t i = 0; i < network_params.hiddens_count; ++i) {
+    auto hiddenLayer = new HiddenLayer();
+    hiddenLayer->neurons.resize(network_params.hidden_size_x *
+                                network_params.hidden_size_y);
+    SetActivationFunction(hiddenLayer,
+                          network_params.hidden_activation_function,
+                          network_params.hidden_activation_alpha);
+    layers.push_back(hiddenLayer);
+  }
+
+  auto outputLayer = new OutputLayer();
+  outputLayer->neurons.resize(network_params.output_size_x *
+                              network_params.output_size_y);
+  SetActivationFunction(outputLayer, network_params.output_activation_function,
+                        network_params.output_activation_alpha);
+  layers.push_back(outputLayer);
+
+  bindLayers();
+  initializeWeights();
+  initializeNeighbors();
+}
+
 std::vector<RGBA>
 NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues) {
   if (layers.front()->layerType != LayerType::InputLayer) {
@@ -48,35 +77,6 @@ void NeuralNetwork::initializeWeights() const {
       }
     }
   }
-}
-
-void NeuralNetwork::initializeLayers() {
-  auto inputLayer = new InputLayer();
-  const auto &network_params = Manager::getInstance().network_params;
-  inputLayer->neurons.resize(network_params.input_size_x *
-                             network_params.input_size_y);
-  layers.push_back(inputLayer);
-
-  for (size_t i = 0; i < network_params.hiddens_count; ++i) {
-    auto hiddenLayer = new HiddenLayer();
-    hiddenLayer->neurons.resize(network_params.hidden_size_x *
-                                network_params.hidden_size_y);
-    SetActivationFunction(hiddenLayer,
-                          network_params.hidden_activation_function,
-                          network_params.hidden_activation_alpha);
-    layers.push_back(hiddenLayer);
-  }
-
-  auto outputLayer = new OutputLayer();
-  outputLayer->neurons.resize(network_params.output_size_x *
-                              network_params.output_size_y);
-  SetActivationFunction(outputLayer, network_params.output_activation_function,
-                        network_params.output_activation_alpha);
-  layers.push_back(outputLayer);
-
-  bindLayers();
-  initializeWeights();
-  initializeNeighbors();
 }
 
 void NeuralNetwork::initializeNeighbors() {

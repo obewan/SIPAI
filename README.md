@@ -10,7 +10,7 @@ Its initial focus is on image enhancement, with plans for future releases to inc
 It uses a Multi-Layer Perceptron (MLP) architecture, with a modification that incorporates elements of a Recurrent Neural Network (RNN) to handle spatial information.
 
 ```
-Development just started...
+Project under construction...
 ```
 
 ---

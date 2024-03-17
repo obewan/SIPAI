@@ -69,9 +69,7 @@ std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
   return std::make_pair(training_data, validation_data);
 }
 
-void Manager::initializeNetwork() {
-  // TODO
-}
+void Manager::initializeNetwork() { network->initialize(); }
 
 /**
  * @brief Computes the mean squared error (MSE) loss between the output image

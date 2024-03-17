@@ -75,7 +75,7 @@ public:
   /**
    * @brief Initializes the layers of the network.
    */
-  void initializeLayers();
+  void initialize();
 
   /**
    * @brief Initializes the neighbors of the neurons in the network.

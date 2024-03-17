@@ -78,7 +78,8 @@ public:
   TrainingData loadTrainingData();
 
   /**
-   * @brief Splits the training data into training and validation sets.
+   * @brief Shuffle and splits the training data into training and validation
+   * sets.
    *
    * @param data The training data to be split.
    * @param split_ratio The ratio of the data to be used for the training
