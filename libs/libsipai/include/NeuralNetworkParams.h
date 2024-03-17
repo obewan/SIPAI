@@ -1,3 +1,12 @@
+/**
+ * @file NeuralNetworkParams.h
+ * @author Damien Balima (www.dams-labs.net)
+ * @brief NeuralNetworkParams
+ * @date 2024-03-17
+ *
+ * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
+ *
+ */
 #pragma once
 #include "ActivationFunctions.h"
 
@@ -5,7 +14,7 @@ namespace sipai {
 /**
  * @brief Parameters for the neural Network.
  */
-struct NetworkParameters {
+struct NeuralNetworkParams {
   /**
    * @brief   X resolution for input neurons. This value should not be too large
    * to avoid performance degradation. Incoming images will be resized to this

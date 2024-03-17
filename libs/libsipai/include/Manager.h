@@ -9,11 +9,11 @@
  */
 #pragma once
 
-#include "AppParameters.h"
+#include "AppParams.h"
 #include "Common.h"
-#include "Network.h"
-#include "NetworkParameters.h"
+#include "NeuralNetwork.h"
 #include "RGBA.h"
+#include "RunnerVisitor.h"
 #include <memory>
 
 namespace sipai {
@@ -29,17 +29,17 @@ public:
   /**
    * @brief Application parameters.
    */
-  AppParameters app_params;
+  AppParams app_params;
 
   /**
    * @brief Network parameters.
    */
-  NetworkParameters network_params;
+  NeuralNetworkParams network_params;
 
   /**
    * @brief The neural network
    */
-  std::shared_ptr<Network> network = nullptr;
+  std::shared_ptr<NeuralNetwork> network = nullptr;
 
   /**
    * @brief Load an image and convert it for the input layer
@@ -55,17 +55,19 @@ public:
   void run();
 
   /**
-   * @brief Runs the training process in monitored mode.
+   * @brief Runs the provided visitor on the training and validation data sets
+   * with the initialized neural network.
    *
-   * This method loads the training data, splits it into training and validation
-   * sets, initializes the neural network, and then enters a training loop.
-   * During each epoch, it performs forward propagation, computes the loss,
-   * performs backward propagation, and updates the network weights using the
-   * training data. It also evaluates the model on the validation set and logs
-   * the training progress. Early stopping is implemented to prevent
-   * overfitting.
+   * This method is the entry point for executing different types of runners
+   * (e.g., training, inference, evaluation) on the loaded data sets and the
+   * initialized neural network. It accepts a visitor object implementing the
+   * `RunnerVisitor` interface and calls its `visit` method, passing the
+   * necessary data and parameters.
+   *
+   * @param visitor The visitor object implementing the `RunnerVisitor`
+   * interface, which encapsulates the runner logic.
    */
-  void runTrainingMonitored();
+  void runWithVisitor(const RunnerVisitor &visitor);
 
   /**
    * @brief Loads the training data from the specified source.
@@ -74,47 +76,6 @@ public:
    * image and the corresponding target image.
    */
   trainingData loadTrainingData();
-
-  /**
-   * @brief Performs one epoch of training on the provided dataset.
-   *
-   * @param dataSet The dataset containing pairs of input and target image
-   * paths.
-   * @return The average loss over the training dataset for the current epoch.
-   */
-  float trainOnEpoch(const trainingData &dataSet);
-
-  /**
-   * @brief Evaluates the network on the validation set.
-   *
-   * @param validationSet The validation set containing pairs of input and
-   * target image paths.
-   * @return The average loss over the validation set.
-   */
-  float evaluateOnValidationSet(const trainingData &validationSet);
-
-  /**
-   * @brief Determines whether the training should continue based on the
-   * provided conditions.
-   *
-   * @param epoch The current epoch number.
-   * @param epochsWithoutImprovement The number of epochs without improvement in
-   * validation loss.
-   * @param appParams The application parameters containing the maximum number
-   * of epochs and maximum epochs without improvement.
-   * @return True if the training should continue, false otherwise.
-   */
-  bool shouldContinueTraining(int epoch, int epochsWithoutImprovement,
-                              const AppParameters &appParams);
-
-  /**
-   * @brief Logs the training progress for the current epoch.
-   *
-   * @param epoch The current epoch number.
-   * @param trainingLoss The average training loss for the current epoch.
-   * @param validationLoss The average validation loss for the current epoch.
-   */
-  void logTrainingProgress(int epoch, float trainingLoss, float validationLoss);
 
   /**
    * @brief Splits the training data into training and validation sets.

@@ -1,10 +1,10 @@
-#include "Network.h"
+#include "NeuralNetwork.h"
 #include "Manager.h"
 
 using namespace sipai;
 
 std::vector<RGBA>
-Network::forwardPropagation(const std::vector<RGBA> &inputValues) {
+NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues) {
   if (layers.front()->layerType != LayerType::InputLayer) {
     throw NetworkException("Invalid front layer type");
   }
@@ -18,7 +18,8 @@ Network::forwardPropagation(const std::vector<RGBA> &inputValues) {
   return ((OutputLayer *)layers.back())->getOutputValues();
 }
 
-void Network::backwardPropagation(const std::vector<RGBA> &expectedValues) {
+void NeuralNetwork::backwardPropagation(
+    const std::vector<RGBA> &expectedValues) {
   if (layers.back()->layerType != LayerType::OutputLayer) {
     throw NetworkException("Invalid back layer type");
   }
@@ -28,7 +29,7 @@ void Network::backwardPropagation(const std::vector<RGBA> &expectedValues) {
   }
 }
 
-void Network::bindLayers() {
+void NeuralNetwork::bindLayers() {
   for (size_t i = 0; i < layers.size(); ++i) {
     if (i > 0) {
       layers.at(i)->previousLayer = layers.at(i - 1);
@@ -39,7 +40,7 @@ void Network::bindLayers() {
   }
 }
 
-void Network::initializeWeights() const {
+void NeuralNetwork::initializeWeights() const {
   for (auto layer : layers) {
     if (layer->previousLayer != nullptr) {
       for (auto &n : layer->neurons) {
@@ -49,7 +50,7 @@ void Network::initializeWeights() const {
   }
 }
 
-void Network::initializeLayers() {
+void NeuralNetwork::initializeLayers() {
   auto inputLayer = new InputLayer();
   const auto &network_params = Manager::getInstance().network_params;
   inputLayer->neurons.resize(network_params.input_size_x *
@@ -78,7 +79,7 @@ void Network::initializeLayers() {
   initializeNeighbors();
 }
 
-void Network::initializeNeighbors() {
+void NeuralNetwork::initializeNeighbors() {
   const auto &network_params = Manager::getInstance().network_params;
   for (auto &layer : layers) {
     int layer_size_x, layer_size_y;
@@ -125,9 +126,9 @@ void Network::initializeNeighbors() {
   }
 }
 
-void Network::SetActivationFunction(Layer *layer,
-                                    EActivationFunction activation_function,
-                                    float activation_alpha) const {
+void NeuralNetwork::SetActivationFunction(
+    Layer *layer, EActivationFunction activation_function,
+    float activation_alpha) const {
   switch (activation_function) {
   case EActivationFunction::ELU:
     layer->setActivationFunction(
@@ -162,7 +163,7 @@ void Network::SetActivationFunction(Layer *layer,
   }
 }
 
-void Network::updateWeights(float learning_rate) {
+void NeuralNetwork::updateWeights(float learning_rate) {
   for (auto &layer : layers) {
     layer->updateWeights(learning_rate);
   }

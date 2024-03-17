@@ -1,7 +1,7 @@
 /**
- * @file Network.h
+ * @file NeuralNetwork.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief Network
+ * @brief NeuralNetwork
  * @date 2024-03-08
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
@@ -11,28 +11,28 @@
 #include "HiddenLayer.h"
 #include "InputLayer.h"
 #include "Layer.h"
-#include "NetworkParameters.h"
+#include "NeuralNetworkParams.h"
 #include "OutputLayer.h"
 #include "exception/NetworkException.h"
 
 namespace sipai {
 
 /**
- * @class Network
+ * @class NeuralNetwork
  * @brief This class represents a neural network for image processing.
  */
-class Network {
+class NeuralNetwork {
 public:
   /**
    * @brief Default constructor for the Network class.
    */
-  Network() = default;
+  NeuralNetwork() = default;
 
   /**
    * @brief Destructor for the Network class. It deletes all layers in the
    * network.
    */
-  ~Network() {
+  ~NeuralNetwork() {
     for (auto layer : layers) {
       delete layer;
     }
