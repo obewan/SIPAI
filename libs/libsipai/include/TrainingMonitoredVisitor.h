@@ -14,8 +14,8 @@
 namespace sipai {
 class TrainingMonitoredVisitor : public RunnerVisitor {
 public:
-  void visit(const trainingData &dataSet,
-             const trainingData &validationSet) const override;
+  void visit(const TrainingData &dataSet,
+             const TrainingData &validationSet) const override;
 
   /**
    * @brief Performs one epoch of training on the provided dataset.
@@ -24,7 +24,7 @@ public:
    * paths.
    * @return The average loss over the training dataset for the current epoch.
    */
-  float trainOnEpoch(const trainingData &dataSet) const;
+  float trainOnEpoch(const TrainingData &dataSet) const;
 
   /**
    * @brief Evaluates the network on the validation set.
@@ -33,7 +33,7 @@ public:
    * target image paths.
    * @return The average loss over the validation set.
    */
-  float evaluateOnValidationSet(const trainingData &validationSet) const;
+  float evaluateOnValidationSet(const TrainingData &validationSet) const;
 
   /**
    * @brief Determines whether the training should continue based on the

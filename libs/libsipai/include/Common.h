@@ -14,7 +14,7 @@
 #include <vector>
 
 namespace sipai {
-using trainingData = std::vector<std::pair<std::string, std::string>>;
+using TrainingData = std::vector<std::pair<std::string, std::string>>;
 
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;

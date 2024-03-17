@@ -13,6 +13,9 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
 
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
+
+
 set(PROJECT_NAME libsipai)
 set(LIBRARY_NAME libsipai)
 set(LIBRARY_HEADERS_DIR include)
@@ -35,5 +38,6 @@ target_link_libraries(libsipai ${OpenCV_LIBS} tbb)
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser/include>
     $<INSTALL_INTERFACE:include>
 )

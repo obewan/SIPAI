@@ -75,7 +75,7 @@ public:
    * @return A vector of pairs, where each pair contains the paths to the input
    * image and the corresponding target image.
    */
-  trainingData loadTrainingData();
+  TrainingData loadTrainingData();
 
   /**
    * @brief Splits the training data into training and validation sets.
@@ -89,7 +89,7 @@ public:
    * @return A pair of vectors, where the first element is the training
    * data, and the second element is the validation data.
    */
-  std::pair<trainingData, trainingData> splitData(trainingData data,
+  std::pair<TrainingData, TrainingData> splitData(TrainingData data,
                                                   float split_ratio);
 
   /**

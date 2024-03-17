@@ -16,8 +16,8 @@ void signalHandler(int signal) {
   }
 }
 
-void TrainingMonitoredVisitor::visit(const trainingData &dataSet,
-                                     const trainingData &validationSet) const {
+void TrainingMonitoredVisitor::visit(const TrainingData &dataSet,
+                                     const TrainingData &validationSet) const {
   // Reset the stopTraining flag
   stopTraining = false;
 
@@ -48,7 +48,7 @@ void TrainingMonitoredVisitor::visit(const trainingData &dataSet,
 }
 
 float TrainingMonitoredVisitor::trainOnEpoch(
-    const trainingData &dataSet) const {
+    const TrainingData &dataSet) const {
   auto &manager = Manager::getInstance();
   float epochLoss = 0.0f;
   for (const auto &[inputPath, targetPath] : dataSet) {
@@ -68,7 +68,7 @@ float TrainingMonitoredVisitor::trainOnEpoch(
 }
 
 float TrainingMonitoredVisitor::evaluateOnValidationSet(
-    const trainingData &validationSet) const {
+    const TrainingData &validationSet) const {
   auto &manager = Manager::getInstance();
   float validationLoss = 0.0f;
   for (const auto &[inputPath, targetPath] : validationSet) {

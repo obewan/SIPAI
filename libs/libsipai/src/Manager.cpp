@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "RGBA.h"
 #include "SimpleLogger.h"
+#include "TrainingDataFileReaderCSV.h"
 #include "TrainingMonitoredVisitor.h"
 #include <vector>
 
@@ -33,7 +34,7 @@ void Manager::run() {
 void Manager::runWithVisitor(const RunnerVisitor &visitor) {
 
   // Load training data
-  trainingData trainingData = loadTrainingData();
+  TrainingData trainingData = loadTrainingData();
 
   // Split training data into training and validation sets
   auto [trainingDataPairs, validationDataPairs] =
@@ -46,12 +47,12 @@ void Manager::runWithVisitor(const RunnerVisitor &visitor) {
   visitor.visit(trainingDataPairs, validationDataPairs);
 }
 
-trainingData Manager::loadTrainingData() {
-  // TODO
-  return {};
+TrainingData Manager::loadTrainingData() {
+  TrainingDataFileReaderCSV fileReader;
+  return fileReader.getTrainingData();
 }
 
-std::pair<trainingData, trainingData> Manager::splitData(trainingData data,
+std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
                                                          float split_ratio) {
   // TODO
   return {};

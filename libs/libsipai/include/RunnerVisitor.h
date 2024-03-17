@@ -27,7 +27,7 @@ public:
    * @param dataSet The training data set containing input-target pairs.
    * @param validationSet The validation data set containing input-target pairs.
    */
-  virtual void visit(const trainingData &dataSet,
-                     const trainingData &validationSet) const = 0;
+  virtual void visit(const TrainingData &dataSet,
+                     const TrainingData &validationSet) const = 0;
 };
 } // namespace sipai
