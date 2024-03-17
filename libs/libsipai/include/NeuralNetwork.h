@@ -27,11 +27,13 @@ public:
    * @brief Default constructor for the Network class.
    */
   NeuralNetwork() = default;
-
-  /**
-   * @brief Destructor for the Network class. It deletes all layers in the
-   * network.
-   */
+  // Rule of Five:
+  NeuralNetwork(const NeuralNetwork &other) = delete; // Copy constructor
+  NeuralNetwork &
+  operator=(const NeuralNetwork &other) = delete; // Copy assignment operator
+  NeuralNetwork(NeuralNetwork &&other) = default; // Move constructor
+  NeuralNetwork &
+  operator=(NeuralNetwork &&other) = default; // Move assignment operator
   ~NeuralNetwork() {
     for (auto layer : layers) {
       delete layer;

@@ -9,9 +9,6 @@
  */
 #pragma once
 
-#include "NeuralNetworkImportExportCSV.h"
-#include "NeuralNetworkImportExportJSON.h"
-
 namespace sipai {
 class NeuralNetworkImportExport {
 public:
@@ -19,23 +16,14 @@ public:
 
   /**
    * @brief Import a network model files (JSON meta data and CSV neurons data)
-   *
-   * @param app_params
-   * @return Network*
    */
-  virtual NeuralNetwork *importModel(const AppParams &app_params);
+  virtual void importModel();
 
   /**
    * @brief Export a network model files (JSON meta data and CSV neurons data)
-   *
-   * @param network
-   * @param app_params
    */
-  virtual void exportModel(const NeuralNetwork *network,
-                           const AppParams &app_params) const;
+  virtual void exportModel() const;
 
 protected:
-  NeuralNetworkImportExportCSV NIE_CSV;
-  NeuralNetworkImportExportJSON NIE_JSON;
 };
 } // namespace sipai

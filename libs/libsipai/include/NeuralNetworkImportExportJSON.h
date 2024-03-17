@@ -10,9 +10,7 @@
  */
 #pragma once
 #include "AppParams.h"
-#include "Common.h"
 #include "NeuralNetwork.h"
-#include "exception/ImportExportException.h"
 
 namespace sipai {
 /**
@@ -24,19 +22,12 @@ class NeuralNetworkImportExportJSON {
 public:
   /**
    * @brief Parse a json file into a network model.
-   *
-   * @param app_params the application parameters, including the file path/
-   * @return Network*
    */
-  NeuralNetwork *importModel(const AppParams &app_params);
+  std::unique_ptr<NeuralNetwork> importModel();
 
   /**
    * @brief export a Network model into a json file.
-   *
-   * @param network the network to export.
-   * @param app_params the application parameters.
    */
-  void exportModel(const NeuralNetwork *network,
-                   const AppParams &app_params) const;
+  void exportModel() const;
 };
 } // namespace sipai

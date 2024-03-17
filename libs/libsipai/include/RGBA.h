@@ -11,10 +11,22 @@
 #include <algorithm>
 #include <array>
 #include <functional>
+#include <sstream>
+#include <string>
 
 namespace sipai {
 struct RGBA {
-  std::array<float, 4> value;
+  std::array<float, 4> value = {0.0, 0.0, 0.0, 0.0};
+
+  std::string toStringCsv() const {
+    std::ostringstream oss;
+    oss << std::fixed; // avoid scientific notation
+    for (float v : value) {
+      oss << v << ",";
+    }
+    oss.seekp(-1, std::ios_base::end); // Remove the trailing comma
+    return oss.str();
+  }
 
   // Define a helper function to apply a lambda to each element
   auto applyToElements(auto func, const RGBA &rhs) const {

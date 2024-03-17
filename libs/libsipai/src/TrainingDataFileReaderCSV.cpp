@@ -10,7 +10,7 @@ using namespace sipai;
 
 TrainingData TrainingDataFileReaderCSV::getTrainingData() {
   const auto &trainingDataFile =
-      Manager::getInstance().app_params.trainingDataFile;
+      Manager::getInstance().app_params.training_data_file;
   if (trainingDataFile.empty()) {
     throw FileReaderException("empty file path");
   }
@@ -40,7 +40,7 @@ TrainingData TrainingDataFileReaderCSV::getTrainingData() {
       trainingData.push_back(columns);
       lineNumber++;
     } catch (Csv::ParseError &ex) {
-      SimpleLogger::LOG_ERROR("CSV parse error at line (", lineNumber,
+      SimpleLogger::LOG_ERROR("CSV parsing error at line (", lineNumber,
                               "): ", ex.what());
     }
   }

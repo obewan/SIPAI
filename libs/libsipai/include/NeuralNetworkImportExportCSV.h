@@ -16,20 +16,12 @@ class NeuralNetworkImportExportCSV {
 public:
   /**
    * @brief Import the network neurons data from a CSV file.
-   *
-   * @param network
-   * @param app_params
    */
-  void importNeuronsWeights(const NeuralNetwork *network,
-                            const AppParams &app_params) const;
+  void importNeuronsWeights() const;
 
   /**
    * @brief Export the network neurons data to a CSV file.
-   *
-   * @param network
-   * @param app_params
    */
-  void exportNeuronsWeights(const NeuralNetwork *network,
-                            const AppParams &app_params) const;
+  void exportNeuronsWeights() const;
 };
 } // namespace sipai

@@ -39,7 +39,7 @@ public:
   /**
    * @brief The neural network
    */
-  std::shared_ptr<NeuralNetwork> network = nullptr;
+  std::unique_ptr<NeuralNetwork> network = nullptr;
 
   /**
    * @brief Load an image and convert it for the input layer
