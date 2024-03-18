@@ -37,19 +37,31 @@ public:
   NeuralNetworkParams network_params;
 
   /**
-   * @brief The neural network
+   * @brief The neural network.
    */
   std::unique_ptr<NeuralNetwork> network = nullptr;
 
   /**
-   * @brief Load an image and convert it for the input layer
+   * @brief Load an image and convert it for the input layer.
    *
    * @param imagePath
    */
   std::vector<RGBA> loadImage(const std::string &imagePath);
 
   /**
-   * @brief Run the ai
+   * @brief Import the neural network json and csv files.
+   *
+   */
+  void importNetwork();
+
+  /**
+   * @brief Export the neural network to its json and csv files.
+   *
+   */
+  void exportNetwork();
+
+  /**
+   * @brief Run the ai (main entrance).
    *
    */
   void run();

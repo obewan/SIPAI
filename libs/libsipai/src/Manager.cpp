@@ -1,6 +1,6 @@
 #include "Manager.h"
 #include "Common.h"
-#include "RGBA.h"
+#include "NeuralNetworkImportExport.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
 #include "TrainingMonitoredVisitor.h"
@@ -19,6 +19,16 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath) {
       cv::Size(network_params.input_size_x, network_params.input_size_y));
 
   return imageImport.convertToRGBAVector(image);
+}
+
+void Manager::importNetwork() {
+  NeuralNetworkImportExport import_export;
+  import_export.importModel();
+}
+
+void Manager::exportNetwork() {
+  NeuralNetworkImportExport import_export;
+  import_export.exportModel();
 }
 
 void Manager::run() {

@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "SimpleLogger.h"
 #include <csignal>
+#include <exception>
 
 using namespace sipai;
 
@@ -44,6 +45,13 @@ void TrainingMonitoredVisitor::visit(const TrainingData &dataSet,
     }
 
     epoch++;
+  }
+
+  SimpleLogger::LOG_INFO("Exiting training, saving the neural network...");
+  try {
+    Manager::getInstance().exportNetwork();
+  } catch (std::exception &ex) {
+    SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
   }
 }
 
