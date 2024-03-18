@@ -69,25 +69,36 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
       // Get the type of the layer.
       std::string layer_type_str = json_layer["type"];
       LayerType layer_type = layer_map.at(layer_type_str);
+      int layer_size_x, layer_size_y;
 
       // Create a new layer object of the appropriate type.
       Layer *layer = nullptr;
       switch (layer_type) {
       case LayerType::InputLayer:
         layer = new InputLayer();
+        layer_size_x = params.input_size_x;
+        layer_size_y = params.input_size_y;
         break;
       case LayerType::HiddenLayer:
         layer = new HiddenLayer();
+        layer_size_x = params.hidden_size_x;
+        layer_size_y = params.hidden_size_y;
         break;
       case LayerType::OutputLayer:
         layer = new OutputLayer();
+        layer_size_x = params.output_size_x;
+        layer_size_y = params.output_size_y;
         break;
       default:
         throw ImportExportException("Layer type not recognized");
       }
 
-      // Add neurons without their weights
+      // Add neurons and their neighbors without their weights
       layer->neurons = std::vector<Neuron>((size_t)json_layer["neurons"]);
+      for (size_t i = 0; i < layer->neurons.size(); ++i) {
+        model->addNeuronNeighbors(layer->neurons[i], layer, i, layer_size_x,
+                                  layer_size_y, false);
+      }
 
       // Set activation functions
       switch (layer->layerType) {

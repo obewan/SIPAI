@@ -96,32 +96,41 @@ void NeuralNetwork::initializeNeighbors() {
     }
 
     for (size_t i = 0; i < layer->neurons.size(); ++i) {
-      Neuron &neuron = layer->neurons[i];
+      addNeuronNeighbors(layer->neurons[i], layer, i, layer_size_x,
+                         layer_size_y);
+    }
+  }
+}
 
-      // Compute the coordinates of the neuron in the 2D grid
-      int x = i % layer_size_x;
-      int y = i / layer_size_x;
+void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
+                                       size_t neuron_index, int layer_size_x,
+                                       int layer_size_y,
+                                       bool randomize_weight) {
+  // Compute the coordinates of the neuron in the 2D grid
+  int x = neuron_index % layer_size_x;
+  int y = neuron_index / layer_size_x;
 
-      // For each possible direction (up, down, left, right), check if there
-      // is a neuron in that direction and, if so, establish a connection
-      std::vector<std::pair<int, int>> directions = {
-          {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-      for (auto [dx, dy] : directions) {
-        int nx = x + dx;
-        int ny = y + dy;
-        if (nx >= 0 && nx < layer_size_x && ny >= 0 && ny < layer_size_y) {
-          int ni = ny * layer_size_x + nx;
-          Neuron &neighbor = layer->neurons[ni];
+  // For each possible direction (up, down, left, right), check if there
+  // is a neuron in that direction and, if so, establish a connection
+  std::vector<std::pair<int, int>> directions = {
+      {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+  for (auto [dx, dy] : directions) {
+    int nx = x + dx;
+    int ny = y + dy;
+    if (nx >= 0 && nx < layer_size_x && ny >= 0 && ny < layer_size_y) {
+      int ni = ny * layer_size_x + nx;
+      Neuron &neighbor = neuron_layer->neurons[ni];
 
-          // Create a connection with a random initial weight
-          std::random_device rd;
-          std::mt19937 gen(rd());
-          std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-          RGBA weight = {dist(gen), dist(gen), dist(gen), dist(gen)};
-
-          neuron.neighbors.push_back(Connection(&neighbor, weight));
-        }
+      RGBA weight;
+      if (randomize_weight) {
+        // Create a connection with a random initial weight
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+        weight = {dist(gen), dist(gen), dist(gen), dist(gen)};
       }
+
+      neuron.neighbors.push_back(Connection(&neighbor, weight));
     }
   }
 }

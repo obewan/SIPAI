@@ -85,6 +85,20 @@ public:
   void initializeNeighbors();
 
   /**
+   * @brief Add and initialize the neighbors of a specific neuron
+   *
+   * @param neuron
+   * @param neuron_layer
+   * @param neuron_index
+   * @param layer_size_x
+   * @param layer_size_y
+   * @param randomize_weight
+   */
+  void addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
+                          size_t neuron_index, int layer_size_x,
+                          int layer_size_y, bool randomize_weight = true);
+
+  /**
    * @brief Updates the weights of the neurons in the network using the learning
    * rate.
    */
