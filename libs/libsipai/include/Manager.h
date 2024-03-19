@@ -50,6 +50,12 @@ public:
   std::vector<RGBA> loadImage(const std::string &imagePath);
 
   /**
+   * @brief Create a new Neuran Network
+   *
+   */
+  void createNetwork();
+
+  /**
    * @brief Import the neural network json and csv files.
    *
    */

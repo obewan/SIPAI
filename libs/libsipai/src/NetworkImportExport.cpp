@@ -9,12 +9,13 @@
 
 using namespace sipai;
 
-void NeuralNetworkImportExport::importModel() {
+std::unique_ptr<NeuralNetwork> NeuralNetworkImportExport::importModel() {
   try {
     NeuralNetworkImportExportCSV NIE_CSV;
     NeuralNetworkImportExportJSON NIE_JSON;
-    Manager::getInstance().network = NIE_JSON.importModel();
-    NIE_CSV.importNeuronsWeights();
+    auto network = NIE_JSON.importModel();
+    NIE_CSV.importNeuronsWeights(network);
+    return network;
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
   }

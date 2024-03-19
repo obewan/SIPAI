@@ -14,7 +14,8 @@
 
 using namespace sipai;
 
-void NeuralNetworkImportExportCSV::importNeuronsWeights() const {
+void NeuralNetworkImportExportCSV::importNeuronsWeights(
+    std::unique_ptr<NeuralNetwork> &network) const {
   // lambda function to convert to float
   auto getIndexValue = [](const std::vector<Csv::CellReference> &cells)
       -> std::optional<size_t> {
@@ -63,7 +64,6 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights() const {
   }
 
   // parsing the csv
-  auto &network = Manager::getInstance().network;
   Csv::Parser csv_parser;
   std::string line;
   int current_line_number = 0;
