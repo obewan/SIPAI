@@ -15,11 +15,19 @@ Project under construction...
 
 ---
 
-To compile the sources, you will need:
+Requirements for compiling the source code:
 
 - A C++20 compiler (like the GNU C++ `g++-12` on Debian)
 - The [OpenCV](https://opencv.org/get-started/) library
 - [CMake](https://cmake.org/)
+
+---
+
+### Changelog
+
+[Click here to see the changelog.](./CHANGELOG.md)
+
+&nbsp;
 
 ---
 
