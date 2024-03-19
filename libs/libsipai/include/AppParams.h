@@ -19,6 +19,8 @@ constexpr int NOMAX_EPOCHS = -1;
 struct AppParams {
   std::string title = "SIPAI - Simple Image Processing Artificial Intelligence";
   std::string version = "1.0.0";
+  std::string input_file = "";
+  std::string output_file = "";
   std::string training_data_file = "";
   std::string network_to_import = "";
   std::string network_to_export = "";

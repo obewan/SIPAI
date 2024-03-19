@@ -9,7 +9,9 @@
  */
 
 #pragma once
+#include <map>
 #include <math.h>
+#include <string>
 
 namespace sipai {
 /**
@@ -17,6 +19,14 @@ namespace sipai {
  *
  */
 enum class EActivationFunction { ELU, LReLU, PReLU, ReLU, Sigmoid, Tanh };
+
+const std::map<std::string, EActivationFunction, std::less<>> activation_map{
+    {"ELU", EActivationFunction::ELU},
+    {"LReLU", EActivationFunction::LReLU},
+    {"PReLU", EActivationFunction::PReLU},
+    {"ReLU", EActivationFunction::ReLU},
+    {"Sigmoid", EActivationFunction::Sigmoid},
+    {"Tanh", EActivationFunction::Tanh}};
 
 /**
  * @brief the sigmoid function is commonly used as the
