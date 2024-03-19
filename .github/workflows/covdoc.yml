@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y doxygen g++-12 lcov libopencv-dev
+          apt-get install -y doxygen g++-12 lcov libopencv-dev cmake
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
