@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-include(copy_directory.cmake)
-copy_directory("${CMAKE_SOURCE_DIR}/data" "${CMAKE_BINARY_DIR}/data")
-
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 add_subdirectory(ctests)
 add_subdirectory(doctests)
