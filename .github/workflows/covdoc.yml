@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen g++-12 lcov libopencv-dev
+          sudo apt-get install -y doxygen g++-12 lcov gcov-12 libopencv-dev
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
@@ -42,7 +42,7 @@ jobs:
           lcov --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
           lcov --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
           '/usr/include/*' '/usr/lib/*' \
-          '${{github.workspace}}/libs/csv-parser/*' \
+          '${{github.workspace}}/libs/libcsvparser/*' \
           '${{github.workspace}}/libs/libjson/*' \
           '${{github.workspace}}/test/*' \          
           '${{github.workspace}}/src/*'
