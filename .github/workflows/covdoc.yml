@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: debian:latest
 
     permissions:
       contents: write
@@ -20,8 +22,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen g++-12 lcov gcov-12 libopencv-dev
+          apt-get update
+          apt-get install -y doxygen g++-12 lcov gcov-12 libopencv-dev
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
