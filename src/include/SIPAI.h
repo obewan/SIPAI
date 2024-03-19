@@ -1,5 +1,5 @@
 /**
- * @file Sipai.h
+ * @file SIPAI.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Sipai
  * @date 2024-03-08

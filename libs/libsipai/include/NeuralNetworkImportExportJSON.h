@@ -1,5 +1,5 @@
 /**
- * @file NetworkImportExportJSON.h
+ * @file NeuralNetworkImportExportJSON.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Json import/export of the network meta data
  * @see https://github.com/nlohmann/json

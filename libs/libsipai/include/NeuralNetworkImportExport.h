@@ -1,5 +1,5 @@
 /**
- * @file NetworkImportExport.h
+ * @file NeuralNetworkImportExport.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Import/export of the neural network
  * @date 2024-02-20
