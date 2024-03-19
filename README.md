@@ -13,9 +13,9 @@ It uses a Multi-Layer Perceptron (MLP) architecture, with a modification that in
 Project under construction...
 ```
 
-## Requirements
+---
 
-### To compile the sources
+To compile the sources, you will need:
 
 - A C++20 compiler (like the GNU C++ `g++-12` on Debian)
 - The [OpenCV](https://opencv.org/get-started/) library

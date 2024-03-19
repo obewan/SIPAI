@@ -9,6 +9,10 @@
  */
 #pragma once
 
+#include "AppParams.h"
+#include "CLI11.hpp"
+#include "NeuralNetworkParams.h"
+
 class SIPAI {
 public:
   static const int EXIT_HELP = 2;
@@ -31,4 +35,6 @@ public:
 
 private:
   int parseArgs(int argc, char **argv);
+  void addOptions(CLI::App &app, sipai::AppParams &app_params,
+                  sipai::NeuralNetworkParams &network_params, bool &version);
 };
