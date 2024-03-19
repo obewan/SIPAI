@@ -89,7 +89,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
   auto valid_path = [](auto filename) {
     if (std::filesystem::path p(filename);
         p.has_parent_path() && !std::filesystem::exists(p.parent_path())) {
-      return std::string("Error: file not found.");
+      return std::string("Error: invalid path.");
     }
     return std::string();
   };
