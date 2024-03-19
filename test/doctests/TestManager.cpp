@@ -11,4 +11,10 @@ TEST_CASE("Testing the Manager class") {
       MESSAGE(manager.app_params.title);
     });
   }
+
+  SUBCASE("Test loadImage") {
+    auto &manager = Manager::getInstance();
+    auto image = manager.loadImage("../data/images/001a.png");
+    CHECK(image.size() > 0);
+  }
 }
