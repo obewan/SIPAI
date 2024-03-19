@@ -39,19 +39,19 @@ jobs:
         run: |
           mkdir -p ${{github.workspace}}/coverage
           mkdir -p ${{github.workspace}}/coverage/html
-          lcov --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
-          lcov --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
+          lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
+          lcov --gcov-tool /usr/bin/gcov-12 --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
           '/usr/include/*' '/usr/lib/*' \
           '${{github.workspace}}/libs/libcsvparser/*' \
           '${{github.workspace}}/libs/libjson/*' \
           '${{github.workspace}}/test/*' \          
           '${{github.workspace}}/src/*'
-          lcov --summary ${{github.workspace}}/coverage/lcov.info
+          lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info
           genhtml ${{github.workspace}}/coverage/lcov.info --output-directory ${{github.workspace}}/coverage/html
 
       - name: Create JSON file for badge
         run: |
-          coverage=$(lcov --summary ${{github.workspace}}/coverage/lcov.info 2>&1 | grep 'lines......:' | awk -F ' ' '{print $2}' | sed 's/%//')
+          coverage=$(lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info 2>&1 | grep 'lines......:' | awk -F ' ' '{print $2}' | sed 's/%//')
           echo -e "{\"coverage\": \"$coverage\"}" > coverage/coverage.json
 
       - name: Generate Documentation
