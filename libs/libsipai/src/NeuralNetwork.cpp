@@ -1,5 +1,9 @@
 #include "NeuralNetwork.h"
+#include "HiddenLayer.h"
+#include "InputLayer.h"
 #include "Manager.h"
+#include "OutputLayer.h"
+#include "exception/NetworkException.h"
 
 using namespace sipai;
 

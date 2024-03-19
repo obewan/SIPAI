@@ -11,6 +11,7 @@
 #pragma once
 #include "AppParams.h"
 #include "NeuralNetwork.h"
+#include <memory>
 
 namespace sipai {
 /**

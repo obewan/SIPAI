@@ -8,12 +8,7 @@
  *
  */
 #pragma once
-#include "HiddenLayer.h"
-#include "InputLayer.h"
 #include "Layer.h"
-#include "NeuralNetworkParams.h"
-#include "OutputLayer.h"
-#include "exception/NetworkException.h"
 
 namespace sipai {
 

@@ -8,7 +8,6 @@
  *
  */
 #pragma once
-#include "ImageImport.h"
 #include "Layer.h"
 #include <stdexcept>
 

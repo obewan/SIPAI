@@ -12,6 +12,7 @@
 #include "AppParams.h"
 #include "Common.h"
 #include "NeuralNetwork.h"
+#include "NeuralNetworkParams.h"
 #include "RGBA.h"
 #include "RunnerVisitor.h"
 #include <memory>

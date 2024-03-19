@@ -1,5 +1,8 @@
+#include "HiddenLayer.h"
+#include "InputLayer.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportJSON.h"
+#include "OutputLayer.h"
 #include "SimpleLogger.h"
 #include "exception/ImportExportException.h"
 #include "json.hpp"

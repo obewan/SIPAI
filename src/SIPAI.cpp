@@ -19,7 +19,7 @@ int SIPAI::parseArgs(int argc, char **argv) {
   bool version = false;
 
   CLI::App app{app_params.title};
-  app.add_flag("-v,--version", version);
+  app.add_flag("-v,--version", version, "Show current version");
 
   // Parsing
   try {

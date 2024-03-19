@@ -1,5 +1,6 @@
 #include "Manager.h"
 #include "Common.h"
+#include "ImageImport.h"
 #include "NeuralNetworkImportExport.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
