@@ -1,10 +1,12 @@
 #include "Manager.h"
 #include "Common.h"
 #include "ImageImport.h"
+#include "NeuralNetwork.h"
 #include "NeuralNetworkImportExport.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
 #include "TrainingMonitoredVisitor.h"
+#include <memory>
 #include <vector>
 
 using namespace sipai;
@@ -22,9 +24,11 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath) {
   return imageImport.convertToRGBAVector(image);
 }
 
+void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }
+
 void Manager::importNetwork() {
   NeuralNetworkImportExport import_export;
-  import_export.importModel();
+  network = import_export.importModel();
 }
 
 void Manager::exportNetwork() {

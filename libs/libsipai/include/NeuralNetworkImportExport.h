@@ -9,6 +9,8 @@
  */
 #pragma once
 
+#include "NeuralNetwork.h"
+#include <memory>
 namespace sipai {
 class NeuralNetworkImportExport {
 public:
@@ -17,7 +19,7 @@ public:
   /**
    * @brief Import a network model files (JSON meta data and CSV neurons data)
    */
-  virtual void importModel();
+  virtual std::unique_ptr<NeuralNetwork> importModel();
 
   /**
    * @brief Export a network model files (JSON meta data and CSV neurons data)
