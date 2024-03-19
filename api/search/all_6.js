@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['getinstance_43',['getInstance',['../classsipai_1_1Manager.html#a4ff7ad31f5666902d6eaaccf13e50293',1,'sipai::Manager::getInstance()'],['../classsipai_1_1SimpleLogger.html#a0505655e9a1bf6b7f2ee828c84c002b9',1,'sipai::SimpleLogger::getInstance()']]],
-  ['getlayertypestr_44',['getLayerTypeStr',['../classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe',1,'sipai::Layer']]],
-  ['getoutputvalues_45',['getOutputValues',['../classsipai_1_1OutputLayer.html#a65ed88889fc745ad415c412be52573f7',1,'sipai::OutputLayer']]],
-  ['gettrainingdata_46',['getTrainingData',['../classsipai_1_1TrainingDataFileReaderCSV.html#aa0459d538232f0b0bbfa8b2bea3b0064',1,'sipai::TrainingDataFileReaderCSV']]],
-  ['getversionheader_47',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]]
+  ['getinstance_44',['getInstance',['../classsipai_1_1Manager.html#a4ff7ad31f5666902d6eaaccf13e50293',1,'sipai::Manager::getInstance()'],['../classsipai_1_1SimpleLogger.html#a0505655e9a1bf6b7f2ee828c84c002b9',1,'sipai::SimpleLogger::getInstance()']]],
+  ['getlayertypestr_45',['getLayerTypeStr',['../classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe',1,'sipai::Layer']]],
+  ['getoutputvalues_46',['getOutputValues',['../classsipai_1_1OutputLayer.html#a65ed88889fc745ad415c412be52573f7',1,'sipai::OutputLayer']]],
+  ['gettrainingdata_47',['getTrainingData',['../classsipai_1_1TrainingDataFileReaderCSV.html#aa0459d538232f0b0bbfa8b2bea3b0064',1,'sipai::TrainingDataFileReaderCSV']]],
+  ['getversionheader_48',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]]
 ];
