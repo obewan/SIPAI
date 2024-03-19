@@ -1,0 +1,72 @@
+name: Coverage and Doxygen
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen g++-12 lcov libopencv-dev cmake gawk
+          echo "CC=gcc-12" >> $GITHUB_ENV
+          echo "CXX=g++-12" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config Debug -- -j 2
+
+      - name: Run unit tests
+        working-directory: ${{github.workspace}}/build/test/doctests
+        run: ./tester
+
+      - name: Run code coverage
+        run: |
+          mkdir -p ${{github.workspace}}/coverage
+          mkdir -p ${{github.workspace}}/coverage/html
+          lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
+          lcov --gcov-tool /usr/bin/gcov-12 --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
+          '/usr/include/*' '/usr/lib/*' \
+          '${{github.workspace}}/libs/libcsvparser/*' \
+          '${{github.workspace}}/libs/libjson/*' \
+          '${{github.workspace}}/test/*'
+          lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info
+          genhtml ${{github.workspace}}/coverage/lcov.info --output-directory ${{github.workspace}}/coverage/html
+
+      - name: Create JSON file for badge
+        run: |
+          coverage=$(lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info 2>&1 | grep 'lines......:' | awk -F ' ' '{print $2}' | sed 's/%//')
+          echo -e "{\"coverage\": \"$coverage\"}" > coverage/coverage.json
+
+      - name: Generate Documentation
+        run: |
+          cd ${{github.workspace}}/doc
+          doxygen Doxyfile
+
+      - name: Prepare files for deployment
+        run: |
+          mkdir deploy
+          cp -r ${{github.workspace}}/coverage ${{github.workspace}}/deploy/coverage
+          cp -r ${{github.workspace}}/doc/html ${{github.workspace}}/deploy/api
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{github.workspace}}/deploy
+          destination_dir: .
