@@ -109,9 +109,12 @@ float TrainingMonitoredVisitor::evaluateOnValidationSet(
 
 bool TrainingMonitoredVisitor::shouldContinueTraining(
     int epoch, int epochsWithoutImprovement, const AppParams &appParams) const {
-  return (epochsWithoutImprovement <
-          appParams.max_epochs_without_improvement) ||
-         (epoch < appParams.max_epochs && appParams.max_epochs != NOMAX_EPOCHS);
+  bool improvementCondition =
+      epochsWithoutImprovement < appParams.max_epochs_without_improvement;
+  bool epochCondition =
+      (appParams.max_epochs == NOMAX_EPOCHS) || (epoch < appParams.max_epochs);
+
+  return improvementCondition && epochCondition;
 }
 
 void TrainingMonitoredVisitor::logTrainingProgress(int epoch,

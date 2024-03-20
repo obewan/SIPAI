@@ -1,3 +1,5 @@
+#include "AppParams.h"
+#include "Common.h"
 #include <cstddef>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
@@ -151,22 +153,20 @@ TEST_CASE("Testing the Manager class") {
 
   SUBCASE("Test loadTrainingData") {
     auto &manager = Manager::getInstance();
-    manager.app_params.training_data_file = "../data/images-test1.csv";
+    manager.app_params.training_data_file = "images-test1.csv";
     const auto &data = manager.loadTrainingData();
     CHECK(data.size() == 10);
     for (auto &[source, target] : data) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
-      CHECK_MESSAGE(std::filesystem::exists("../data/" + source) == true,
-                    source);
-      CHECK_MESSAGE(std::filesystem::exists("../data/" + target) == true,
-                    target);
+      CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
+      CHECK_MESSAGE(std::filesystem::exists(target) == true, target);
     }
   }
 
   SUBCASE("Test splitData") {
     auto &manager = Manager::getInstance();
-    manager.app_params.training_data_file = "../data/images-test1.csv";
+    manager.app_params.training_data_file = "images-test1.csv";
     const auto &data = manager.loadTrainingData();
     const auto &split = manager.splitData(data, 0.8);
     CHECK(split.first.size() == 8);
@@ -174,18 +174,14 @@ TEST_CASE("Testing the Manager class") {
     for (auto &[source, target] : split.first) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
-      CHECK_MESSAGE(std::filesystem::exists("../data/" + source) == true,
-                    source);
-      CHECK_MESSAGE(std::filesystem::exists("../data/" + target) == true,
-                    target);
+      CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
+      CHECK_MESSAGE(std::filesystem::exists(target) == true, target);
     }
     for (auto &[source, target] : split.second) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
-      CHECK_MESSAGE(std::filesystem::exists("../data/" + source) == true,
-                    source);
-      CHECK_MESSAGE(std::filesystem::exists("../data/" + target) == true,
-                    target);
+      CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
+      CHECK_MESSAGE(std::filesystem::exists(target) == true, target);
     }
   }
 
@@ -222,11 +218,43 @@ TEST_CASE("Testing the Manager class") {
 
   SUBCASE("Testing runWithVisitor") {
     auto &manager = Manager::getInstance();
-    manager.app_params.training_data_file = "../data/images-test1.csv";
+    manager.app_params.training_data_file = "images-test1.csv";
     MockRunnerVisitor visitor;
 
     manager.runWithVisitor(visitor);
 
     CHECK(visitor.visitCalled == true);
+  }
+
+  SUBCASE("Testing run") {
+    auto &manager = Manager::getInstance();
+
+    auto &ap = manager.app_params;
+    ap.training_data_file = "images-test1.csv";
+    ap.max_epochs = 2;
+    ap.run_mode = ERunMode::TrainingMonitored;
+    ap.network_to_export = "tempNetwork.json";
+    std::string network_csv = "tempNetwork.csv";
+
+    auto &np = manager.network_params;
+    np.input_size_x = 2;
+    np.input_size_y = 2;
+    np.hidden_size_x = 3;
+    np.hidden_size_y = 2;
+    np.output_size_x = 3;
+    np.output_size_y = 3;
+    np.hiddens_count = 1;
+
+    if (std::filesystem::exists(ap.network_to_export)) {
+      std::filesystem::remove(ap.network_to_export);
+    }
+    if (std::filesystem::exists(network_csv)) {
+      std::filesystem::remove(network_csv);
+    }
+    CHECK_NOTHROW(manager.run());
+    CHECK(std::filesystem::exists(ap.network_to_export) == true);
+    CHECK(std::filesystem::exists(network_csv) == true);
+    std::filesystem::remove(ap.network_to_export);
+    std::filesystem::remove(network_csv);
   }
 }
