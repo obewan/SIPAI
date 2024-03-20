@@ -64,18 +64,16 @@ public:
 
     std::vector<RGBA> rgbaValues(totalPixels);
 
-    /// lambda helper
-    auto convertPixel = [channels](const cv::Vec4b &pixel) {
-      return RGBA{}.fromVec4b(pixel, channels == 4);
-    };
-
     /// std::execution::par_unseq enables parallel execution of the
     /// transformation while relaxing the requirement for sequential execution
     /// order
     auto pixelIterator = image.begin<cv::Vec4b>();
     std::transform(std::execution::par_unseq, pixelIterator,
                    pixelIterator + totalPixels, rgbaValues.begin(),
-                   convertPixel);
+                   [channels](const cv::Vec4b &pixel) {
+                     return RGBA(pixel, channels == 4);
+                   });
+
     return rgbaValues;
   }
 

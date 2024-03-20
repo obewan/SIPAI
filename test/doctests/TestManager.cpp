@@ -184,9 +184,8 @@ TEST_CASE("Testing the Manager class") {
     std::vector<RGBA> outputImage(10);
     std::vector<RGBA> targetImage(10);
 
+    RGBA pixel(0.1f, 0.2f, 0.3f, 0.4f);
     for (int i = 0; i < 10; ++i) {
-      RGBA pixel;
-      pixel.value = {0.1f, 0.2f, 0.3f, 0.4f};
       outputImage[i] = pixel;
       targetImage[i] = pixel;
     }
@@ -200,13 +199,10 @@ TEST_CASE("Testing the Manager class") {
     std::vector<RGBA> outputImage(10);
     std::vector<RGBA> targetImage(10);
 
+    RGBA pixel1(0.1f, 0.2f, 0.3f, 0.4f);
+    RGBA pixel2(0.5f, 0.6f, 0.7f, 0.8f);
     for (int i = 0; i < 10; ++i) {
-      RGBA pixel1;
-      pixel1.value = {0.1f, 0.2f, 0.3f, 0.4f};
       outputImage[i] = pixel1;
-
-      RGBA pixel2;
-      pixel2.value = {0.5f, 0.6f, 0.7f, 0.8f};
       targetImage[i] = pixel2;
     }
 
