@@ -19,6 +19,17 @@ namespace sipai {
 struct RGBA {
   std::array<float, 4> value = {0.0, 0.0, 0.0, 0.0};
 
+  // Default constructor
+  RGBA() : value({0.0f, 0.0f, 0.0f, 0.0f}) {}
+
+  // Parameterized constructor
+  RGBA(float r, float g, float b, float a) : value({r, g, b, a}) {}
+
+  // Rq: OpenCV use BGRA order
+  RGBA(const cv::Vec4b &vec, bool hasAlpha = true)
+      : value({vec[2] / 255.0f, vec[1] / 255.0f, vec[0] / 255.0f,
+               hasAlpha ? vec[3] / 255.0f : 1.0f}) {}
+
   std::string toStringCsv() const {
     std::ostringstream oss;
     oss << std::fixed; // avoid scientific notation
@@ -33,13 +44,6 @@ struct RGBA {
   cv::Vec4b toVec4b() const {
     return cv::Vec4b(value[2] * 255, value[1] * 255, value[0] * 255,
                      value[3] * 255);
-  }
-
-  // Rq: OpenCV use BGRA order
-  RGBA &fromVec4b(const cv::Vec4b &vec, bool hasAlpha = true) {
-    value = {vec[2] / 255.0f, vec[1] / 255.0f, vec[0] / 255.0f,
-             hasAlpha ? vec[3] / 255.0f : 1.0f};
-    return (*this);
   }
 
   // Define a helper function to apply a lambda to each element
