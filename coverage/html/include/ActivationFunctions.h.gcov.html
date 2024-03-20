@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">2</td>
             <td class="headerCovTableEntry">20</td>
-            <td class="headerCovTableEntryLo">10.0 %</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-20 22:44:50</td>
+            <td class="headerValue">2024-03-20 23:01:42</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">2</td>
             <td class="headerCovTableEntry">12</td>
-            <td class="headerCovTableEntryLo">16.7 %</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -99,10 +99,10 @@
 <a name="37"><span class="lineNum">      37 </span>            :  * the sigmoid function itself: if σ(x) is the sigmoid function, then its</a>
 <a name="38"><span class="lineNum">      38 </span>            :  * derivative σ'(x) can be computed as σ(x) * (1 - σ(x)).</a>
 <a name="39"><span class="lineNum">      39 </span>            :  */</a>
-<a name="40"><span class="lineNum">      40 </span><span class="lineNoCov">          0 : inline auto sigmoid = [](auto x) { return 1.0f / (1.0f + exp(-x)); };</span></a>
-<a name="41"><span class="lineNum">      41 </span><span class="lineNoCov">          0 : inline auto sigmoidDerivative = [](auto x) {</span></a>
-<a name="42"><span class="lineNum">      42 </span><span class="lineNoCov">          0 :   float sigmoidValue = sigmoid(x);</span></a>
-<a name="43"><span class="lineNum">      43 </span><span class="lineNoCov">          0 :   return sigmoidValue * (1 - sigmoidValue);</span></a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">          8 : inline auto sigmoid = [](auto x) { return 1.0f / (1.0f + exp(-x)); };</span></a>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">          4 : inline auto sigmoidDerivative = [](auto x) {</span></a>
+<a name="42"><span class="lineNum">      42 </span><span class="lineCov">          4 :   float sigmoidValue = sigmoid(x);</span></a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">          4 :   return sigmoidValue * (1 - sigmoidValue);</span></a>
 <a name="44"><span class="lineNum">      44 </span>            : };</a>
 <a name="45"><span class="lineNum">      45 </span>            : </a>
 <a name="46"><span class="lineNum">      46 </span>            : /**</a>
@@ -110,10 +110,10 @@
 <a name="48"><span class="lineNum">      48 </span>            :  * sigmoid function but maps the input to a range between -1 and 1. It is often</a>
 <a name="49"><span class="lineNum">      49 </span>            :  * used in the hidden layers of a neural network.</a>
 <a name="50"><span class="lineNum">      50 </span>            :  */</a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 : inline auto tanhFunc = [](auto x) { return tanh(x); };</span></a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 : inline auto tanhDerivative = [](auto x) {</span></a>
-<a name="53"><span class="lineNum">      53 </span><span class="lineNoCov">          0 :   float tanhValue = tanh(x);</span></a>
-<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :   return 1 - tanhValue * tanhValue;</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">          6 : inline auto tanhFunc = [](auto x) { return tanh(x); };</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          6 : inline auto tanhDerivative = [](auto x) {</span></a>
+<a name="53"><span class="lineNum">      53 </span><span class="lineCov">          6 :   float tanhValue = tanh(x);</span></a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          6 :   return 1 - tanhValue * tanhValue;</span></a>
 <a name="55"><span class="lineNum">      55 </span>            : };</a>
 <a name="56"><span class="lineNum">      56 </span>            : </a>
 <a name="57"><span class="lineNum">      57 </span>            : /**</a>
@@ -124,16 +124,16 @@
 <a name="62"><span class="lineNum">      62 </span>            :  * @param Unit</a>
 <a name="63"><span class="lineNum">      63 </span>            :  * @return ReLU</a>
 <a name="64"><span class="lineNum">      64 </span>            :  */</a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">       3600 : inline auto relu = [](auto x) { return std::max(0.0f, x); };</span></a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">       1152 : inline auto reluDerivative = [](auto x) { return x &gt; 0 ? 1.0f : 0.0f; };</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">       3604 : inline auto relu = [](auto x) { return std::max(0.0f, x); };</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">       1156 : inline auto reluDerivative = [](auto x) { return x &gt; 0 ? 1.0f : 0.0f; };</span></a>
 <a name="67"><span class="lineNum">      67 </span>            : </a>
 <a name="68"><span class="lineNum">      68 </span>            : /**</a>
 <a name="69"><span class="lineNum">      69 </span>            :  * @brief Leaky ReLU: This is a variant of ReLU that allows small negative</a>
 <a name="70"><span class="lineNum">      70 </span>            :  * values when the input is less than zero. It can help to alleviate the dying</a>
 <a name="71"><span class="lineNum">      71 </span>            :  * ReLU problem where neurons become inactive and only output zero.</a>
 <a name="72"><span class="lineNum">      72 </span>            :  */</a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 : inline auto leakyRelu = [](auto x) { return std::max(0.01f * x, x); };</span></a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 : inline auto leakyReluDerivative = [](auto x) { return x &gt; 0 ? 1.0f : 0.01f; };</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          4 : inline auto leakyRelu = [](auto x) { return std::max(0.01f * x, x); };</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          4 : inline auto leakyReluDerivative = [](auto x) { return x &gt; 0 ? 1.0f : 0.01f; };</span></a>
 <a name="75"><span class="lineNum">      75 </span>            : </a>
 <a name="76"><span class="lineNum">      76 </span>            : /**</a>
 <a name="77"><span class="lineNum">      77 </span>            :  * @brief  Parametric ReLU (PReLU) is a type of leaky ReLU that, instead of</a>
@@ -141,11 +141,11 @@
 <a name="79"><span class="lineNum">      79 </span>            :  * This can give it a bit more flexibility and help it to learn more complex</a>
 <a name="80"><span class="lineNum">      80 </span>            :  * patterns</a>
 <a name="81"><span class="lineNum">      81 </span>            :  */</a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 : inline auto parametricRelu = [](auto x, auto alpha) {</span></a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :   return std::max(alpha * x, x);</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineCov">          4 : inline auto parametricRelu = [](auto x, auto alpha) {</span></a>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">          4 :   return std::max(alpha * x, x);</span></a>
 <a name="84"><span class="lineNum">      84 </span>            : };</a>
-<a name="85"><span class="lineNum">      85 </span><span class="lineNoCov">          0 : inline auto parametricReluDerivative = [](auto x, auto alpha) {</span></a>
-<a name="86"><span class="lineNum">      86 </span><span class="lineNoCov">          0 :   return x &gt; 0 ? 1.0f : alpha;</span></a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">          4 : inline auto parametricReluDerivative = [](auto x, auto alpha) {</span></a>
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">          4 :   return x &gt; 0 ? 1.0f : alpha;</span></a>
 <a name="87"><span class="lineNum">      87 </span>            : };</a>
 <a name="88"><span class="lineNum">      88 </span>            : </a>
 <a name="89"><span class="lineNum">      89 </span>            : /**</a>
@@ -156,11 +156,11 @@
 <a name="94"><span class="lineNum">      94 </span>            :  * “dead neuron” problem.</a>
 <a name="95"><span class="lineNum">      95 </span>            :  *</a>
 <a name="96"><span class="lineNum">      96 </span>            :  */</a>
-<a name="97"><span class="lineNum">      97 </span><span class="lineNoCov">          0 : inline auto elu = [](auto x, auto alpha) {</span></a>
-<a name="98"><span class="lineNum">      98 </span><span class="lineNoCov">          0 :   return x &gt;= 0 ? x : alpha * (exp(x) - 1);</span></a>
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">          6 : inline auto elu = [](auto x, auto alpha) {</span></a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">          6 :   return x &gt;= 0 ? x : alpha * (exp(x) - 1);</span></a>
 <a name="99"><span class="lineNum">      99 </span>            : };</a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineNoCov">          0 : inline auto eluDerivative = [](auto x, auto alpha) {</span></a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineNoCov">          0 :   return x &gt;= 0 ? 1 : alpha * exp(x);</span></a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">          4 : inline auto eluDerivative = [](auto x, auto alpha) {</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">          4 :   return x &gt;= 0 ? 1 : alpha * exp(x);</span></a>
 <a name="102"><span class="lineNum">     102 </span>            : };</a>
 <a name="103"><span class="lineNum">     103 </span>            : } // namespace sipai</a>
 </pre>
