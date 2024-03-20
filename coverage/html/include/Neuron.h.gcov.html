@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-20 19:19:04</td>
+            <td class="headerValue">2024-03-20 19:50:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -88,7 +88,7 @@
 <a name="26"><span class="lineNum">      26 </span>            : class Neuron {</a>
 <a name="27"><span class="lineNum">      27 </span>            : public:</a>
 <a name="28"><span class="lineNum">      28 </span>            :   // Default constructor</a>
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         82 :   Neuron() = default;</span></a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineCov">        101 :   Neuron() = default;</span></a>
 <a name="30"><span class="lineNum">      30 </span>            : </a>
 <a name="31"><span class="lineNum">      31 </span>            :   // The weights of the neuron</a>
 <a name="32"><span class="lineNum">      32 </span>            :   std::vector&lt;RGBA&gt; weights;</a>
@@ -114,20 +114,20 @@
 <a name="52"><span class="lineNum">      52 </span>            :    *</a>
 <a name="53"><span class="lineNum">      53 </span>            :    * @param new_size The new size of the weights vector.</a>
 <a name="54"><span class="lineNum">      54 </span>            :    */</a>
-<a name="55"><span class="lineNum">      55 </span><span class="lineCov">         70 :   void initWeights(size_t new_size) {</span></a>
-<a name="56"><span class="lineNum">      56 </span><span class="lineCov">         70 :     weights.resize(new_size);</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineCov">        123 :   void initWeights(size_t new_size) {</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">        123 :     weights.resize(new_size);</span></a>
 <a name="57"><span class="lineNum">      57 </span>            : </a>
 <a name="58"><span class="lineNum">      58 </span>            :     // randomize weights to break symmetry</a>
-<a name="59"><span class="lineNum">      59 </span><span class="lineCov">         70 :     std::random_device rd;</span></a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineCov">        454 :     for (auto &amp;w : weights) {</span></a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">        384 :       std::mt19937 gen(rd());</span></a>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        384 :       std::normal_distribution&lt;float&gt; dist(0.1f, 0.01f);</span></a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineCov">        384 :       std::for_each(w.value.begin(), w.value.end(), [&amp;gen, &amp;dist](float &amp;f) {</span></a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">       1536 :         float distg = dist(gen);</span></a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">       1536 :         f = std::max(0.0f, std::min(0.1f, distg));</span></a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">       1536 :       });</span></a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">        123 :     std::random_device rd;</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">        813 :     for (auto &amp;w : weights) {</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">        690 :       std::mt19937 gen(rd());</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        690 :       std::normal_distribution&lt;float&gt; dist(0.1f, 0.01f);</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineCov">        690 :       std::for_each(w.value.begin(), w.value.end(), [&amp;gen, &amp;dist](float &amp;f) {</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineCov">       2760 :         float distg = dist(gen);</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">       2760 :         f = std::max(0.0f, std::min(0.1f, distg));</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">       2760 :       });</span></a>
 <a name="67"><span class="lineNum">      67 </span>            :     }</a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">         70 :   }</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">        123 :   }</span></a>
 <a name="69"><span class="lineNum">      69 </span>            : </a>
 <a name="70"><span class="lineNum">      70 </span>            :   std::function&lt;float(float)&gt; activationFunction;</a>
 <a name="71"><span class="lineNum">      71 </span>            :   std::function&lt;float(float)&gt; activationFunctionDerivative;</a>

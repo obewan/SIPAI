@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-20 19:19:04</td>
+            <td class="headerValue">2024-03-20 19:50:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -186,73 +186,73 @@
 <a name="124"><span class="lineNum">     124 </span><span class="lineCov">          1 :   file.close();</span></a>
 <a name="125"><span class="lineNum">     125 </span><span class="lineCov">          1 : }</span></a>
 <a name="126"><span class="lineNum">     126 </span>            : </a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          1 : void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          2 : void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {</span></a>
 <a name="128"><span class="lineNum">     128 </span>            :   // get the csv filename</a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">          1 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">          1 :   std::string filename = appParams.network_to_export;</span></a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">          2 :   filename = std::regex_replace(</span></a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">          3 :       filename, std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineCov">          1 :   std::ofstream file(filename);</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">          2 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">          2 :   std::string filename = appParams.network_to_export;</span></a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">          4 :   filename = std::regex_replace(</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">          6 :       filename, std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">          2 :   std::ofstream file(filename);</span></a>
 <a name="134"><span class="lineNum">     134 </span>            : </a>
 <a name="135"><span class="lineNum">     135 </span>            :   // Determine the maximum number of weights any neuron has</a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          1 :   auto &amp;network = Manager::getInstance().network;</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          1 :   size_t max_weights = 0;</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">          4 :   for (const auto &amp;layer : network-&gt;layers) {</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         22 :     for (const auto &amp;neuron : layer-&gt;neurons) {</span></a>
-<a name="140"><span class="lineNum">     140 </span><span class="lineCov">         19 :       if (neuron.weights.size() &gt; max_weights) {</span></a>
-<a name="141"><span class="lineNum">     141 </span><span class="lineCov">          2 :         max_weights = neuron.weights.size();</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          2 :   auto &amp;network = Manager::getInstance().network;</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 :   size_t max_weights = 0;</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">         14 :   for (const auto &amp;layer : network-&gt;layers) {</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         88 :     for (const auto &amp;neuron : layer-&gt;neurons) {</span></a>
+<a name="140"><span class="lineNum">     140 </span><span class="lineCov">         76 :       if (neuron.weights.size() &gt; max_weights) {</span></a>
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">          5 :         max_weights = neuron.weights.size();</span></a>
 <a name="142"><span class="lineNum">     142 </span>            :       }</a>
 <a name="143"><span class="lineNum">     143 </span>            :     }</a>
 <a name="144"><span class="lineNum">     144 </span>            :   }</a>
 <a name="145"><span class="lineNum">     145 </span>            : </a>
 <a name="146"><span class="lineNum">     146 </span>            :   // Write the header to the CSV file</a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          1 :   file &lt;&lt; &quot;Layer,Neuron,Neighbor&quot;;</span></a>
-<a name="148"><span class="lineNum">     148 </span><span class="lineCov">          7 :   for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
-<a name="149"><span class="lineNum">     149 </span><span class="lineCov">          6 :     file &lt;&lt; &quot;,wR&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wG&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wB&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wA&quot;</span></a>
-<a name="150"><span class="lineNum">     150 </span><span class="lineCov">          6 :          &lt;&lt; (i + 1);</span></a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          2 :   file &lt;&lt; &quot;Layer,Neuron,Neighbor&quot;;</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         17 :   for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">         15 :     file &lt;&lt; &quot;,wR&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wG&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wB&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wA&quot;</span></a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">         15 :          &lt;&lt; (i + 1);</span></a>
 <a name="151"><span class="lineNum">     151 </span>            :   }</a>
-<a name="152"><span class="lineNum">     152 </span><span class="lineCov">          1 :   file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineCov">          2 :   file &lt;&lt; &quot;\n&quot;;</span></a>
 <a name="153"><span class="lineNum">     153 </span>            : </a>
 <a name="154"><span class="lineNum">     154 </span>            :   // Write the data</a>
-<a name="155"><span class="lineNum">     155 </span><span class="lineCov">          4 :   for (size_t layer_index = 0; layer_index &lt; network-&gt;layers.size();</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         14 :   for (size_t layer_index = 0; layer_index &lt; network-&gt;layers.size();</span></a>
 <a name="156"><span class="lineNum">     156 </span>            :        layer_index++) {</a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">          3 :     const auto &amp;layer = network-&gt;layers.at(layer_index);</span></a>
-<a name="158"><span class="lineNum">     158 </span><span class="lineCov">         22 :     for (size_t neuron_index = 0; neuron_index &lt; layer-&gt;neurons.size();</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">         12 :     const auto &amp;layer = network-&gt;layers.at(layer_index);</span></a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">         88 :     for (size_t neuron_index = 0; neuron_index &lt; layer-&gt;neurons.size();</span></a>
 <a name="159"><span class="lineNum">     159 </span>            :          neuron_index++) {</a>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         19 :       const auto &amp;neuron = layer-&gt;neurons.at(neuron_index);</span></a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         76 :       const auto &amp;neuron = layer-&gt;neurons.at(neuron_index);</span></a>
 <a name="161"><span class="lineNum">     161 </span>            : </a>
 <a name="162"><span class="lineNum">     162 </span>            :       // Write the layer index and neuron index to the CSV file, and an empty</a>
 <a name="163"><span class="lineNum">     163 </span>            :       // neighbor index</a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineCov">         19 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,,&quot;;</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">         76 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,,&quot;;</span></a>
 <a name="165"><span class="lineNum">     165 </span>            :       // Write the weights to the CSV file</a>
-<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        133 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineCov">        114 :         if (i &lt; neuron.weights.size()) {</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineCov">         78 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.weights[i].toStringCsv();</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        703 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">        627 :         if (i &lt; neuron.weights.size()) {</span></a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">        384 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.weights[i].toStringCsv();</span></a>
 <a name="169"><span class="lineNum">     169 </span>            :         } else {</a>
 <a name="170"><span class="lineNum">     170 </span>            :           // If the neuron doesn't have a weight for this index, write a blank</a>
 <a name="171"><span class="lineNum">     171 </span>            :           // RGBA column to fill the csv</a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineCov">         36 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">        243 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
 <a name="173"><span class="lineNum">     173 </span>            :         }</a>
 <a name="174"><span class="lineNum">     174 </span>            :       }</a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineCov">         19 :       file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">         76 :       file &lt;&lt; &quot;\n&quot;;</span></a>
 <a name="176"><span class="lineNum">     176 </span>            : </a>
 <a name="177"><span class="lineNum">     177 </span>            :       // Then write the neuron's neighbors weights</a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineCov">         19 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;;</span></a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineCov">        133 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
-<a name="180"><span class="lineNum">     180 </span><span class="lineCov">        114 :         file &lt;&lt; i &lt;&lt; &quot;&quot;;</span></a>
-<a name="181"><span class="lineNum">     181 </span><span class="lineCov">        114 :         if (i &lt; neuron.neighbors.size()) {</span></a>
-<a name="182"><span class="lineNum">     182 </span><span class="lineCov">         46 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.neighbors[i].weight.toStringCsv();</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">         76 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;;</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">        703 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">        627 :         file &lt;&lt; i &lt;&lt; &quot;&quot;;</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineCov">        627 :         if (i &lt; neuron.neighbors.size()) {</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineCov">        319 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.neighbors[i].weight.toStringCsv();</span></a>
 <a name="183"><span class="lineNum">     183 </span>            :         } else {</a>
 <a name="184"><span class="lineNum">     184 </span>            :           // If no neighbor write a blank RGBA column to fill the csv</a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         68 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">        308 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
 <a name="186"><span class="lineNum">     186 </span>            :         }</a>
 <a name="187"><span class="lineNum">     187 </span>            :       }</a>
-<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         19 :       file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         76 :       file &lt;&lt; &quot;\n&quot;;</span></a>
 <a name="189"><span class="lineNum">     189 </span>            :     }</a>
 <a name="190"><span class="lineNum">     190 </span>            :   }</a>
 <a name="191"><span class="lineNum">     191 </span>            : </a>
-<a name="192"><span class="lineNum">     192 </span><span class="lineCov">          1 :   file.close();</span></a>
-<a name="193"><span class="lineNum">     193 </span><span class="lineCov">          1 : }</span></a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">          2 :   file.close();</span></a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineCov">          2 : }</span></a>
 </pre>
       </td>
     </tr>

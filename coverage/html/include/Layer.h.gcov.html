@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-20 19:19:04</td>
+            <td class="headerValue">2024-03-20 19:50:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -88,7 +88,7 @@
 <a name="26"><span class="lineNum">      26 </span>            :  */</a>
 <a name="27"><span class="lineNum">      27 </span>            : class Layer {</a>
 <a name="28"><span class="lineNum">      28 </span>            : public:</a>
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         13 :   explicit Layer(LayerType layerType) : layerType(layerType) {}</span></a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         16 :   explicit Layer(LayerType layerType) : layerType(layerType) {}</span></a>
 <a name="30"><span class="lineNum">      30 </span>            : </a>
 <a name="31"><span class="lineNum">      31 </span>            :   const LayerType layerType;</a>
 <a name="32"><span class="lineNum">      32 </span>            :   std::vector&lt;Neuron&gt; neurons;</a>
@@ -98,7 +98,7 @@
 <a name="36"><span class="lineNum">      36 </span>            :   const std::string UndefinedLayer = &quot;UndefinedLayer&quot;;</a>
 <a name="37"><span class="lineNum">      37 </span>            : </a>
 <a name="38"><span class="lineNum">      38 </span>            :   // Virtual destructor</a>
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">         13 :   virtual ~Layer() = default;</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineCov">         16 :   virtual ~Layer() = default;</span></a>
 <a name="40"><span class="lineNum">      40 </span>            : </a>
 <a name="41"><span class="lineNum">      41 </span>            :   /**</a>
 <a name="42"><span class="lineNum">      42 </span>            :    * @brief Performs forward propagation using the previous layer.</a>
@@ -120,22 +120,22 @@
 <a name="58"><span class="lineNum">      58 </span>            :    */</a>
 <a name="59"><span class="lineNum">      59 </span>            :   virtual void updateWeights(float learningRate) = 0;</a>
 <a name="60"><span class="lineNum">      60 </span>            : </a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          3 :   const std::string getLayerTypeStr() const {</span></a>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">          6 :     for (const auto &amp;[key, mLayerType] : layer_map) {</span></a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineCov">          6 :       if (mLayerType == layerType) {</span></a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">          3 :         return key;</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">         12 :   const std::string getLayerTypeStr() const {</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">         24 :     for (const auto &amp;[key, mLayerType] : layer_map) {</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineCov">         24 :       if (mLayerType == layerType) {</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineCov">         12 :         return key;</span></a>
 <a name="65"><span class="lineNum">      65 </span>            :       }</a>
 <a name="66"><span class="lineNum">      66 </span>            :     }</a>
 <a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :     return UndefinedLayer;</span></a>
 <a name="68"><span class="lineNum">      68 </span>            :   }</a>
 <a name="69"><span class="lineNum">      69 </span>            : </a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">          9 :   void setActivationFunction(const std::function&lt;float(float)&gt; &amp;function,</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">         11 :   void setActivationFunction(const std::function&lt;float(float)&gt; &amp;function,</span></a>
 <a name="71"><span class="lineNum">      71 </span>            :                              const std::function&lt;float(float)&gt; &amp;derivative) {</a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineCov">         75 :     for (auto &amp;n : neurons) {</span></a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         66 :       n.activationFunction = function;</span></a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineCov">         66 :       n.activationFunctionDerivative = derivative;</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">         92 :     for (auto &amp;n : neurons) {</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         81 :       n.activationFunction = function;</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">         81 :       n.activationFunctionDerivative = derivative;</span></a>
 <a name="75"><span class="lineNum">      75 </span>            :     }</a>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          9 :   }</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">         11 :   }</span></a>
 <a name="77"><span class="lineNum">      77 </span>            : };</a>
 <a name="78"><span class="lineNum">      78 </span>            : } // namespace sipai</a>
 </pre>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-20 19:19:04</td>
+            <td class="headerValue">2024-03-20 19:50:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -201,53 +201,53 @@
 <a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :   }</span></a>
 <a name="140"><span class="lineNum">     140 </span><span class="lineCov">          1 : }</span></a>
 <a name="141"><span class="lineNum">     141 </span>            : </a>
-<a name="142"><span class="lineNum">     142 </span><span class="lineCov">          1 : void NeuralNetworkImportExportJSON::exportModel() const {</span></a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">          2 : void NeuralNetworkImportExportJSON::exportModel() const {</span></a>
 <a name="143"><span class="lineNum">     143 </span>            :   using json = nlohmann::json;</a>
-<a name="144"><span class="lineNum">     144 </span><span class="lineCov">          1 :   json json_network;</span></a>
-<a name="145"><span class="lineNum">     145 </span><span class="lineCov">          1 :   auto &amp;network = Manager::getInstance().network;</span></a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">          1 :   auto &amp;networkParams = Manager::getInstance().network_params;</span></a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          1 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">          2 :   json json_network;</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">          2 :   auto &amp;network = Manager::getInstance().network;</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">          2 :   auto &amp;networkParams = Manager::getInstance().network_params;</span></a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          2 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
 <a name="148"><span class="lineNum">     148 </span>            : </a>
 <a name="149"><span class="lineNum">     149 </span>            :   // Serialize the version</a>
-<a name="150"><span class="lineNum">     150 </span><span class="lineCov">          1 :   json_network[&quot;version&quot;] = appParams.version;</span></a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">          2 :   json_network[&quot;version&quot;] = appParams.version;</span></a>
 <a name="151"><span class="lineNum">     151 </span>            : </a>
 <a name="152"><span class="lineNum">     152 </span>            :   // Serialize the layers to JSON.</a>
-<a name="153"><span class="lineNum">     153 </span><span class="lineCov">          4 :   for (auto layer : network-&gt;layers) {</span></a>
-<a name="154"><span class="lineNum">     154 </span><span class="lineCov">          3 :     json json_layer = {{&quot;type&quot;, layer-&gt;getLayerTypeStr()},</span></a>
-<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         21 :                        {&quot;neurons&quot;, layer-&gt;neurons.size()}};</span></a>
-<a name="156"><span class="lineNum">     156 </span><span class="lineCov">          3 :     json_network[&quot;layers&quot;].push_back(json_layer);</span></a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">          3 :   }</span></a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">         14 :   for (auto layer : network-&gt;layers) {</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         12 :     json json_layer = {{&quot;type&quot;, layer-&gt;getLayerTypeStr()},</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         84 :                        {&quot;neurons&quot;, layer-&gt;neurons.size()}};</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">         12 :     json_network[&quot;layers&quot;].push_back(json_layer);</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">         12 :   }</span></a>
 <a name="158"><span class="lineNum">     158 </span>            : </a>
 <a name="159"><span class="lineNum">     159 </span>            :   // Serialize the parameters to JSON.</a>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;input_size_x&quot;] = json(networkParams.input_size_x);</span></a>
-<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;input_size_y&quot;] = json(networkParams.input_size_y);</span></a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;hidden_size_x&quot;] =</span></a>
-<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          2 :       json(networkParams.hidden_size_x);</span></a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;hidden_size_y&quot;] =</span></a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          2 :       json(networkParams.hidden_size_y);</span></a>
-<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;output_size_x&quot;] =</span></a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineCov">          2 :       json(networkParams.output_size_x);</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;output_size_y&quot;] =</span></a>
-<a name="169"><span class="lineNum">     169 </span><span class="lineCov">          2 :       json(networkParams.output_size_y);</span></a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;hiddens_count&quot;] =</span></a>
-<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          2 :       json(networkParams.hiddens_count);</span></a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;learning_rate&quot;] =</span></a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineCov">          2 :       json(networkParams.learning_rate);</span></a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;hidden_activation_alpha&quot;] =</span></a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          2 :       json(networkParams.hidden_activation_alpha);</span></a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;output_activation_alpha&quot;] =</span></a>
-<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          2 :       json(networkParams.output_activation_alpha);</span></a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;hidden_activation_function&quot;] =</span></a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineCov">          2 :       json(networkParams.hidden_activation_function);</span></a>
-<a name="180"><span class="lineNum">     180 </span><span class="lineCov">          1 :   json_network[&quot;parameters&quot;][&quot;output_activation_function&quot;] =</span></a>
-<a name="181"><span class="lineNum">     181 </span><span class="lineCov">          2 :       json(networkParams.output_activation_function);</span></a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;input_size_x&quot;] = json(networkParams.input_size_x);</span></a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;input_size_y&quot;] = json(networkParams.input_size_y);</span></a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;hidden_size_x&quot;] =</span></a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          4 :       json(networkParams.hidden_size_x);</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;hidden_size_y&quot;] =</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          4 :       json(networkParams.hidden_size_y);</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;output_size_x&quot;] =</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">          4 :       json(networkParams.output_size_x);</span></a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;output_size_y&quot;] =</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">          4 :       json(networkParams.output_size_y);</span></a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;hiddens_count&quot;] =</span></a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          4 :       json(networkParams.hiddens_count);</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;learning_rate&quot;] =</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">          4 :       json(networkParams.learning_rate);</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;hidden_activation_alpha&quot;] =</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          4 :       json(networkParams.hidden_activation_alpha);</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;output_activation_alpha&quot;] =</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          4 :       json(networkParams.output_activation_alpha);</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;hidden_activation_function&quot;] =</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">          4 :       json(networkParams.hidden_activation_function);</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;output_activation_function&quot;] =</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineCov">          4 :       json(networkParams.output_activation_function);</span></a>
 <a name="182"><span class="lineNum">     182 </span>            : </a>
 <a name="183"><span class="lineNum">     183 </span>            :   // Write the JSON object to the file.</a>
 <a name="184"><span class="lineNum">     184 </span>            :   // The 4 argument specifies the indentation level of the resulting string.</a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">          1 :   std::ofstream file(appParams.network_to_export);</span></a>
-<a name="186"><span class="lineNum">     186 </span><span class="lineCov">          1 :   file &lt;&lt; json_network.dump(2);</span></a>
-<a name="187"><span class="lineNum">     187 </span><span class="lineCov">          1 :   file.close();</span></a>
-<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         22 : }</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">          2 :   std::ofstream file(appParams.network_to_export);</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">          2 :   file &lt;&lt; json_network.dump(2);</span></a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineCov">          2 :   file.close();</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         86 : }</span></a>
 </pre>
       </td>
     </tr>
