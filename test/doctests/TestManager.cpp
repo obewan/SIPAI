@@ -8,6 +8,16 @@
 
 using namespace sipai;
 
+class MockRunnerVisitor : public RunnerVisitor {
+public:
+  mutable bool visitCalled = false;
+
+  void visit(const TrainingData &trainingDataPairs,
+             const TrainingData &validationDataPairs) const override {
+    visitCalled = true;
+  }
+};
+
 TEST_CASE("Testing the Manager class") {
   SUBCASE("Test constructor") {
     CHECK_NOTHROW({
@@ -208,5 +218,15 @@ TEST_CASE("Testing the Manager class") {
 
     float loss = manager.computeMSELoss(outputImage, targetImage);
     CHECK(loss == doctest::Approx(0.16));
+  }
+
+  SUBCASE("Testing runWithVisitor") {
+    auto &manager = Manager::getInstance();
+    manager.app_params.training_data_file = "../data/images-test1.csv";
+    MockRunnerVisitor visitor;
+
+    manager.runWithVisitor(visitor);
+
+    CHECK(visitor.visitCalled == true);
   }
 }
