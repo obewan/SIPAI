@@ -10,8 +10,9 @@
 #pragma once
 
 #include "RGBA.h"
-#include "exception/ImageImportException.h"
+#include "exception/ImageHelperException.h"
 #include <cstddef>
+#include <exception>
 #include <execution>
 #include <opencv2/opencv.hpp>
 #include <vector>
@@ -23,16 +24,30 @@ public:
    * @brief Reads an image from a specified path and returns it as an OpenCV
    * Mat.
    *
-   * @param imagePath The file path of the image to be imported.
+   * @param imagePath The file path of the image to be loaded.
    * @return cv::Mat The imported image as an OpenCV Mat.
    */
-  cv::Mat importImage(const std::string &imagePath) {
+  cv::Mat loadImage(const std::string &imagePath) {
     cv::Mat image = cv::imread(imagePath, cv::IMREAD_COLOR);
     if (image.empty()) {
-      throw ImageImportException("Could not open or find the image: " +
+      throw ImageHelperException("Could not open or find the image: " +
                                  imagePath);
     }
     return image;
+  }
+
+  /**
+   * @brief Save an OpenCV Matas image.
+   *
+   * @param imagePath The file path of the image to be saved.
+   * @param image The OpenCV Mat to save.
+   */
+  void saveImage(const std::string &imagePath, cv::Mat &image) {
+    try {
+      cv::imwrite(imagePath, image);
+    } catch (std::exception &ex) {
+      throw ImageHelperException(ex.what());
+    }
   }
 
   /**

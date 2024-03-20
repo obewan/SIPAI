@@ -73,9 +73,9 @@ public:
    * @param resize_y The desired height to which the image should be resized
    * before exporting.
    */
-  void exportImage(const std::string &imagePath, const std::vector<RGBA> &image,
-                   size_t size_x, size_t size_y, size_t resize_x,
-                   size_t resize_y);
+  void saveImage(const std::string &imagePath, const std::vector<RGBA> &image,
+                 size_t size_x, size_t size_y, size_t resize_x,
+                 size_t resize_y);
 
   /**
    * @brief Create a new Neuran Network

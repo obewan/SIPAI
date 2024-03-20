@@ -6,11 +6,11 @@
 namespace sipai {
 /**
  * @brief A custom exception class that inherits from std::exception.
- * This class is thrown when there are issues with image import operations.
+ * This class is thrown when there are issues with image operations.
  */
-class ImageImportException : public std::exception {
+class ImageHelperException : public std::exception {
 public:
-  explicit ImageImportException(const std::string &message)
+  explicit ImageHelperException(const std::string &message)
       : message_(message) {}
   const char *what() const noexcept override { return message_.c_str(); }
 

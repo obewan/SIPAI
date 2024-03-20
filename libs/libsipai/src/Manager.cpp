@@ -17,7 +17,7 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
                                      size_t &size_x, size_t &size_y,
                                      size_t resize_x, size_t resize_y) {
   ImageHelper imageHelper;
-  cv::Mat image = imageHelper.importImage(imagePath);
+  cv::Mat image = imageHelper.loadImage(imagePath);
 
   // Save the original size
   cv::Size s = image.size();
@@ -30,15 +30,13 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
   return imageHelper.convertToRGBAVector(image);
 }
 
-void Manager::exportImage(const std::string &imagePath,
-                          const std::vector<RGBA> &image, size_t size_x,
-                          size_t size_y, size_t resize_x, size_t resize_y) {
+void Manager::saveImage(const std::string &imagePath,
+                        const std::vector<RGBA> &image, size_t size_x,
+                        size_t size_y, size_t resize_x, size_t resize_y) {
   ImageHelper imageHelper;
   cv::Mat dest = imageHelper.convertToMat(image, size_x, size_y);
   cv::resize(dest, dest, cv::Size(resize_x, resize_y));
-
-  // Save the image
-  cv::imwrite(imagePath, dest);
+  imageHelper.saveImage(imagePath, dest);
 }
 
 void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }
