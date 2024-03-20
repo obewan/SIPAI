@@ -1,27 +1,44 @@
 #include "Manager.h"
 #include "Common.h"
-#include "ImageImport.h"
+#include "ImageHelper.h"
 #include "NeuralNetwork.h"
 #include "NeuralNetworkImportExport.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
 #include "TrainingMonitoredVisitor.h"
+#include <cstddef>
 #include <memory>
+#include <opencv2/core/types.hpp>
 #include <vector>
 
 using namespace sipai;
 
-std::vector<RGBA> Manager::loadImage(const std::string &imagePath) {
-  ImageImport imageImport;
-  cv::Mat image = imageImport.importImage(imagePath);
+std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
+                                     size_t &size_x, size_t &size_y,
+                                     size_t resize_x, size_t resize_y) {
+  ImageHelper imageHelper;
+  cv::Mat image = imageHelper.importImage(imagePath);
 
-  // Resize the image to the input neurons
-  const auto &network_params = Manager::getInstance().network_params;
-  cv::resize(
-      image, image,
-      cv::Size(network_params.input_size_x, network_params.input_size_y));
+  // Save the original size
+  cv::Size s = image.size();
+  size_x = s.width;
+  size_y = s.height;
 
-  return imageImport.convertToRGBAVector(image);
+  // Resize the image to the neurons layer
+  cv::resize(image, image, cv::Size(resize_x, resize_y));
+
+  return imageHelper.convertToRGBAVector(image);
+}
+
+void Manager::exportImage(const std::string &imagePath,
+                          const std::vector<RGBA> &image, size_t size_x,
+                          size_t size_y, size_t resize_x, size_t resize_y) {
+  ImageHelper imageHelper;
+  cv::Mat dest = imageHelper.convertToMat(image, size_x, size_y);
+  cv::resize(dest, dest, cv::Size(resize_x, resize_y));
+
+  // Save the image
+  cv::imwrite(imagePath, dest);
 }
 
 void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }

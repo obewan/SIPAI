@@ -15,8 +15,14 @@ TEST_CASE("Testing the Manager class") {
 
   SUBCASE("Test loadImage") {
     auto &manager = Manager::getInstance();
-    auto image = manager.loadImage("../data/images/001a.png");
+    size_t orig_x;
+    size_t orig_y;
+    auto image = manager.loadImage("../data/images/001a.png", orig_x, orig_y,
+                                   manager.network_params.input_size_x,
+                                   manager.network_params.input_size_y);
     CHECK(image.size() > 0);
+    CHECK(orig_x > 0);
+    CHECK(orig_y > 0);
     CHECK(image.size() == (manager.network_params.input_size_x *
                            manager.network_params.input_size_y));
   }

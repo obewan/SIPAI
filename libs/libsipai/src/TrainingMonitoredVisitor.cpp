@@ -60,8 +60,16 @@ float TrainingMonitoredVisitor::trainOnEpoch(
   auto &manager = Manager::getInstance();
   float epochLoss = 0.0f;
   for (const auto &[inputPath, targetPath] : dataSet) {
-    std::vector<RGBA> inputImage = manager.loadImage(inputPath);
-    std::vector<RGBA> targetImage = manager.loadImage(targetPath);
+    size_t orig_ix;
+    size_t orig_iy;
+    size_t orig_tx;
+    size_t orig_ty;
+    std::vector<RGBA> inputImage = manager.loadImage(
+        inputPath, orig_ix, orig_iy, manager.network_params.input_size_x,
+        manager.network_params.input_size_y);
+    std::vector<RGBA> targetImage = manager.loadImage(
+        targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
+        manager.network_params.output_size_y);
 
     std::vector<RGBA> outputImage =
         manager.network->forwardPropagation(inputImage);
@@ -80,8 +88,16 @@ float TrainingMonitoredVisitor::evaluateOnValidationSet(
   auto &manager = Manager::getInstance();
   float validationLoss = 0.0f;
   for (const auto &[inputPath, targetPath] : validationSet) {
-    std::vector<RGBA> inputImage = manager.loadImage(inputPath);
-    std::vector<RGBA> targetImage = manager.loadImage(targetPath);
+    size_t orig_ix;
+    size_t orig_iy;
+    size_t orig_tx;
+    size_t orig_ty;
+    std::vector<RGBA> inputImage = manager.loadImage(
+        inputPath, orig_ix, orig_iy, manager.network_params.input_size_x,
+        manager.network_params.input_size_y);
+    std::vector<RGBA> targetImage = manager.loadImage(
+        targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
+        manager.network_params.output_size_y);
 
     std::vector<RGBA> outputImage =
         manager.network->forwardPropagation(inputImage);
