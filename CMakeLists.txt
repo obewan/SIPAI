@@ -27,6 +27,8 @@ if(ENABLE_COVERAGE)
         '/usr/include/*' '/usr/lib/*' 
         '${CMAKE_CURRENT_SOURCE_DIR}/test/*' 
         '${CMAKE_CURRENT_SOURCE_DIR}/src/*'
+        '${CMAKE_CURRENT_SOURCE_DIR}/libs/libcsvparser/*'
+        '${CMAKE_CURRENT_SOURCE_DIR}/libs/libjson/*'
         COMMENT "Generating lcov.info"
     )
     add_custom_target(lcov_summary
