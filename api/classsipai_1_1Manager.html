@@ -86,9 +86,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad9390d642b87aaaa07cf3367e618f76e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#ad9390d642b87aaaa07cf3367e618f76e">loadImage</a> (const std::string &amp;imagePath, size_t &amp;size_x, size_t &amp;size_y, size_t resize_x, size_t resize_y)</td></tr>
 <tr class="memdesc:ad9390d642b87aaaa07cf3367e618f76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a specified path and resizes it for the input layer.  <a href="classsipai_1_1Manager.html#ad9390d642b87aaaa07cf3367e618f76e">More...</a><br /></td></tr>
 <tr class="separator:ad9390d642b87aaaa07cf3367e618f76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a971fa5d4c87e7277dd264ff608ab0ad3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a971fa5d4c87e7277dd264ff608ab0ad3">exportImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y, size_t resize_x, size_t resize_y)</td></tr>
-<tr class="memdesc:a971fa5d4c87e7277dd264ff608ab0ad3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#a971fa5d4c87e7277dd264ff608ab0ad3">More...</a><br /></td></tr>
-<tr class="separator:a971fa5d4c87e7277dd264ff608ab0ad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aada4b8d5c033d6bb002bbf294bccb157"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#aada4b8d5c033d6bb002bbf294bccb157">saveImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y)</td></tr>
+<tr class="memdesc:aada4b8d5c033d6bb002bbf294bccb157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#aada4b8d5c033d6bb002bbf294bccb157">More...</a><br /></td></tr>
+<tr class="separator:aada4b8d5c033d6bb002bbf294bccb157"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#ad578b76f936d353aa07d8feb5a1c2f1b">saveImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y, size_t resize_x, size_t resize_y)</td></tr>
+<tr class="memdesc:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#ad578b76f936d353aa07d8feb5a1c2f1b">More...</a><br /></td></tr>
+<tr class="separator:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69b84cb2e549dff716dced4cbd8c3ce2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a69b84cb2e549dff716dced4cbd8c3ce2">createNetwork</a> ()</td></tr>
 <tr class="memdesc:a69b84cb2e549dff716dced4cbd8c3ce2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new Neuran Network.  <a href="classsipai_1_1Manager.html#a69b84cb2e549dff716dced4cbd8c3ce2">More...</a><br /></td></tr>
 <tr class="separator:a69b84cb2e549dff716dced4cbd8c3ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -219,71 +222,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Create a new Neuran Network. </p>
-
-</div>
-</div>
-<a id="a971fa5d4c87e7277dd264ff608ab0ad3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a971fa5d4c87e7277dd264ff608ab0ad3">&#9670;&nbsp;</a></span>exportImage()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Manager::exportImage </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>imagePath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>image</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size_x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size_y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>resize_x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>resize_y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Exports a resized image to a specified path. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">imagePath</td><td>The file path where the image will be exported. </td></tr>
-    <tr><td class="paramname">image</td><td>A vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values representing the image to be exported. </td></tr>
-    <tr><td class="paramname">size_x</td><td>The original width of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
-    <tr><td class="paramname">size_y</td><td>The original height of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
-    <tr><td class="paramname">resize_x</td><td>The desired width to which the image should be resized before exporting. </td></tr>
-    <tr><td class="paramname">resize_y</td><td>The desired height to which the image should be resized before exporting. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -543,6 +481,122 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">visitor</td><td>The visitor object implementing the <code><a class="el" href="classsipai_1_1RunnerVisitor.html">RunnerVisitor</a></code> interface, which encapsulates the runner logic. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aada4b8d5c033d6bb002bbf294bccb157"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aada4b8d5c033d6bb002bbf294bccb157">&#9670;&nbsp;</a></span>saveImage() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Manager::saveImage </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>imagePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Exports a resized image to a specified path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">imagePath</td><td>The file path where the image will be exported. </td></tr>
+    <tr><td class="paramname">image</td><td>A vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values representing the image to be exported. </td></tr>
+    <tr><td class="paramname">size_x</td><td>The original width of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
+    <tr><td class="paramname">size_y</td><td>The original height of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad578b76f936d353aa07d8feb5a1c2f1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad578b76f936d353aa07d8feb5a1c2f1b">&#9670;&nbsp;</a></span>saveImage() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Manager::saveImage </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>imagePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>resize_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>resize_y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Exports a resized image to a specified path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">imagePath</td><td>The file path where the image will be exported. </td></tr>
+    <tr><td class="paramname">image</td><td>A vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values representing the image to be exported. </td></tr>
+    <tr><td class="paramname">size_x</td><td>The original width of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
+    <tr><td class="paramname">size_y</td><td>The original height of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
+    <tr><td class="paramname">resize_x</td><td>The desired width to which the image should be resized before exporting. </td></tr>
+    <tr><td class="paramname">resize_y</td><td>The desired height to which the image should be resized before exporting. </td></tr>
   </table>
   </dd>
 </dl>

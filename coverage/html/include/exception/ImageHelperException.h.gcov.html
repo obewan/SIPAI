@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - lcov.info - include/exception/ImageImportException.h</title>
+  <title>LCOV - lcov.info - include/exception/ImageHelperException.h</title>
   <link rel="stylesheet" type="text/css" href="../../gcov.css">
 </head>
 
@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">include/exception</a> - ImageImportException.h<span style="font-size: 80%;"> (source / <a href="ImageImportException.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">include/exception</a> - ImageHelperException.h<span style="font-size: 80%;"> (source / <a href="ImageHelperException.h.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-20 09:51:48</td>
+            <td class="headerValue">2024-03-20 13:34:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -68,11 +68,11 @@
 <a name="6"><span class="lineNum">       6 </span>            : namespace sipai {</a>
 <a name="7"><span class="lineNum">       7 </span>            : /**</a>
 <a name="8"><span class="lineNum">       8 </span>            :  * @brief A custom exception class that inherits from std::exception.</a>
-<a name="9"><span class="lineNum">       9 </span>            :  * This class is thrown when there are issues with image import operations.</a>
+<a name="9"><span class="lineNum">       9 </span>            :  * This class is thrown when there are issues with image operations.</a>
 <a name="10"><span class="lineNum">      10 </span>            :  */</a>
-<a name="11"><span class="lineNum">      11 </span>            : class ImageImportException : public std::exception {</a>
+<a name="11"><span class="lineNum">      11 </span>            : class ImageHelperException : public std::exception {</a>
 <a name="12"><span class="lineNum">      12 </span>            : public:</a>
-<a name="13"><span class="lineNum">      13 </span><span class="lineNoCov">          0 :   explicit ImageImportException(const std::string &amp;message)</span></a>
+<a name="13"><span class="lineNum">      13 </span><span class="lineNoCov">          0 :   explicit ImageHelperException(const std::string &amp;message)</span></a>
 <a name="14"><span class="lineNum">      14 </span><span class="lineNoCov">          0 :       : message_(message) {}</span></a>
 <a name="15"><span class="lineNum">      15 </span><span class="lineNoCov">          0 :   const char *what() const noexcept override { return message_.c_str(); }</span></a>
 <a name="16"><span class="lineNum">      16 </span>            : </a>

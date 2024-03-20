@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SIPAI: /home/runner/work/SIPAI/SIPAI/libs/libsipai/include/exception/ImageImportException.h Source File</title>
+<title>SIPAI: /home/runner/work/SIPAI/SIPAI/libs/libsipai/include/exception/ImageHelperException.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,28 +66,28 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">ImageImportException.h</div>  </div>
+<div class="title">ImageHelperException.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="ImageImportException_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<a href="ImageHelperException_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;exception&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesipai.html">sipai</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classsipai_1_1ImageImportException.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsipai_1_1ImageImportException.html">ImageImportException</a> : <span class="keyword">public</span> std::exception {</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classsipai_1_1ImageHelperException.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsipai_1_1ImageHelperException.html">ImageHelperException</a> : <span class="keyword">public</span> std::exception {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classsipai_1_1ImageImportException.html#ae768ded8df073aeb2db04b4ab64b861d">   13</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classsipai_1_1ImageImportException.html#ae768ded8df073aeb2db04b4ab64b861d">ImageImportException</a>(<span class="keyword">const</span> std::string &amp;message)</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classsipai_1_1ImageHelperException.html#af16cdc2539667e95c839c694d17e401b">   13</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classsipai_1_1ImageHelperException.html#af16cdc2539667e95c839c694d17e401b">ImageHelperException</a>(<span class="keyword">const</span> std::string &amp;message)</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;      : message_(message) {}</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classsipai_1_1ImageImportException.html#a2b0bbc3e386a9a2b8ef68675b8dc5012">   15</a></span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classsipai_1_1ImageImportException.html#a2b0bbc3e386a9a2b8ef68675b8dc5012">what</a>() const noexcept<span class="keyword"> override </span>{ <span class="keywordflow">return</span> message_.c_str(); }</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classsipai_1_1ImageHelperException.html#a85505d8ad9582a908db7f6fe986b0c70">   15</a></span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classsipai_1_1ImageHelperException.html#a85505d8ad9582a908db7f6fe986b0c70">what</a>() const noexcept<span class="keyword"> override </span>{ <span class="keywordflow">return</span> message_.c_str(); }</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  std::string message_;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;};</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;} <span class="comment">// namespace sipai</span></div>
-<div class="ttc" id="aclasssipai_1_1ImageImportException_html"><div class="ttname"><a href="classsipai_1_1ImageImportException.html">sipai::ImageImportException</a></div><div class="ttdoc">A custom exception class that inherits from std::exception. This class is thrown when there are issue...</div><div class="ttdef"><b>Definition:</b> ImageImportException.h:11</div></div>
-<div class="ttc" id="aclasssipai_1_1ImageImportException_html_a2b0bbc3e386a9a2b8ef68675b8dc5012"><div class="ttname"><a href="classsipai_1_1ImageImportException.html#a2b0bbc3e386a9a2b8ef68675b8dc5012">sipai::ImageImportException::what</a></div><div class="ttdeci">const char * what() const noexcept override</div><div class="ttdef"><b>Definition:</b> ImageImportException.h:15</div></div>
-<div class="ttc" id="aclasssipai_1_1ImageImportException_html_ae768ded8df073aeb2db04b4ab64b861d"><div class="ttname"><a href="classsipai_1_1ImageImportException.html#ae768ded8df073aeb2db04b4ab64b861d">sipai::ImageImportException::ImageImportException</a></div><div class="ttdeci">ImageImportException(const std::string &amp;message)</div><div class="ttdef"><b>Definition:</b> ImageImportException.h:13</div></div>
+<div class="ttc" id="aclasssipai_1_1ImageHelperException_html"><div class="ttname"><a href="classsipai_1_1ImageHelperException.html">sipai::ImageHelperException</a></div><div class="ttdoc">A custom exception class that inherits from std::exception. This class is thrown when there are issue...</div><div class="ttdef"><b>Definition:</b> ImageHelperException.h:11</div></div>
+<div class="ttc" id="aclasssipai_1_1ImageHelperException_html_a85505d8ad9582a908db7f6fe986b0c70"><div class="ttname"><a href="classsipai_1_1ImageHelperException.html#a85505d8ad9582a908db7f6fe986b0c70">sipai::ImageHelperException::what</a></div><div class="ttdeci">const char * what() const noexcept override</div><div class="ttdef"><b>Definition:</b> ImageHelperException.h:15</div></div>
+<div class="ttc" id="aclasssipai_1_1ImageHelperException_html_af16cdc2539667e95c839c694d17e401b"><div class="ttname"><a href="classsipai_1_1ImageHelperException.html#af16cdc2539667e95c839c694d17e401b">sipai::ImageHelperException::ImageHelperException</a></div><div class="ttdeci">ImageHelperException(const std::string &amp;message)</div><div class="ttdef"><b>Definition:</b> ImageHelperException.h:13</div></div>
 <div class="ttc" id="anamespacesipai_html"><div class="ttname"><a href="namespacesipai.html">sipai</a></div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
