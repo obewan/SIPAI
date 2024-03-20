@@ -1,7 +1,7 @@
 /**
- * @file ImageImport.h
+ * @file ImageHelper.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief Image import
+ * @brief Image helper
  * @date 2024-03-09
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
@@ -11,13 +11,21 @@
 
 #include "RGBA.h"
 #include "exception/ImageImportException.h"
+#include <cstddef>
 #include <execution>
 #include <opencv2/opencv.hpp>
 #include <vector>
 
 namespace sipai {
-class ImageImport {
+class ImageHelper {
 public:
+  /**
+   * @brief Reads an image from a specified path and returns it as an OpenCV
+   * Mat.
+   *
+   * @param imagePath The file path of the image to be imported.
+   * @return cv::Mat The imported image as an OpenCV Mat.
+   */
   cv::Mat importImage(const std::string &imagePath) {
     cv::Mat image = cv::imread(imagePath, cv::IMREAD_COLOR);
     if (image.empty()) {
@@ -27,6 +35,12 @@ public:
     return image;
   }
 
+  /**
+   * @brief Converts an OpenCV Mat image into a vector of RGBA values.
+   *
+   * @param image The OpenCV Mat image to be converted.
+   * @return std::vector<RGBA> The converted image as a vector of RGBA values.
+   */
   std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) {
     const int channels = image.channels();
     const int rows = image.rows;
@@ -37,8 +51,7 @@ public:
 
     /// lambda helper
     auto convertPixel = [channels](const cv::Vec4b &pixel) {
-      return RGBA{{pixel[0] / 255.0f, pixel[1] / 255.0f, pixel[2] / 255.0f,
-                   channels == 4 ? pixel[3] / 255.0f : 1.0f}};
+      return RGBA{}.fromVec4b(pixel, channels == 4);
     };
 
     /// std::execution::par_unseq enables parallel execution of the
@@ -49,6 +62,25 @@ public:
                    pixelIterator + totalPixels, rgbaValues.begin(),
                    convertPixel);
     return rgbaValues;
+  }
+
+  /**
+   * @brief Converts a vector of RGBA values into an OpenCV Mat image.
+   *
+   * @param image The vector of RGBA values to be converted.
+   * @param size_x The width of the image represented by the vector of RGBA
+   * values.
+   * @param size_y The height of the image represented by the vector of RGBA
+   * values.
+   * @return cv::Mat The converted image as an OpenCV Mat.
+   */
+  cv::Mat convertToMat(const std::vector<RGBA> &image, size_t size_x,
+                       size_t size_y) {
+    cv::Mat dest(size_y, size_x, CV_8UC4);
+    auto destPtr = dest.begin<cv::Vec4b>();
+    std::transform(std::execution::par_unseq, image.begin(), image.end(),
+                   destPtr, [](const RGBA &rgba) { return rgba.toVec4b(); });
+    return dest;
   }
 };
 } // namespace sipai
