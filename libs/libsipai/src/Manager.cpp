@@ -32,6 +32,12 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
 
 void Manager::saveImage(const std::string &imagePath,
                         const std::vector<RGBA> &image, size_t size_x,
+                        size_t size_y) {
+  saveImage(imagePath, image, size_x, size_y, size_x, size_y);
+};
+
+void Manager::saveImage(const std::string &imagePath,
+                        const std::vector<RGBA> &image, size_t size_x,
                         size_t size_y, size_t resize_x, size_t resize_y) {
   ImageHelper imageHelper;
   cv::Mat dest = imageHelper.convertToMat(image, size_x, size_y);
