@@ -1,11 +1,11 @@
-#include "AppParams.h"
-#include "Common.h"
-#include <cstddef>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
+#include "AppParams.h"
+#include "Common.h"
 #include "Layer.h"
 #include "Manager.h"
 #include "doctest.h"
+#include <cstddef>
 #include <filesystem>
 
 using namespace sipai;
