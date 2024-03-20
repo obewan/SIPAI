@@ -4,6 +4,7 @@
 #include "csv_parser.h"
 #include "exception/FileReaderException.h"
 #include <fstream>
+#include <string>
 // for csv_parser doc, see https://github.com/ashaduri/csv-parser
 
 using namespace sipai;
@@ -29,10 +30,14 @@ TrainingData TrainingDataFileReaderCSV::getTrainingData() {
   int lineNumber = 1;
   while (std::getline(file, line)) {
     try {
+      if (line.empty()) {
+        continue;
+      }
       std::string_view data(line);
       csvParser.parseTo2DVector(data, cell_refs);
       if (cell_refs.empty() || cell_refs.size() != 2) {
-        throw FileReaderException("invalid column numbers");
+        throw FileReaderException("invalid column numbers, at line " +
+                                  std::to_string(lineNumber));
       }
       std::pair<std::string, std::string> columns;
       columns.first = cell_refs[0][0].getCleanString().value();

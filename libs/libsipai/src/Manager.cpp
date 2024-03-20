@@ -48,14 +48,10 @@ void Manager::saveImage(const std::string &imagePath,
 void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }
 
 void Manager::importNetwork() {
-  NeuralNetworkImportExport import_export;
-  network = import_export.importModel();
+  network = NeuralNetworkImportExport{}.importModel();
 }
 
-void Manager::exportNetwork() {
-  NeuralNetworkImportExport import_export;
-  import_export.exportModel();
-}
+void Manager::exportNetwork() { NeuralNetworkImportExport{}.exportModel(); }
 
 void Manager::run() {
   switch (app_params.run_mode) {
@@ -84,8 +80,7 @@ void Manager::runWithVisitor(const RunnerVisitor &visitor) {
 }
 
 TrainingData Manager::loadTrainingData() {
-  TrainingDataFileReaderCSV fileReader;
-  return fileReader.getTrainingData();
+  return TrainingDataFileReaderCSV{}.getTrainingData();
 }
 
 std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
