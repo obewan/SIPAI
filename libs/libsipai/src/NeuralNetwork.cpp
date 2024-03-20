@@ -86,7 +86,8 @@ void NeuralNetwork::initializeWeights() const {
 void NeuralNetwork::initializeNeighbors() {
   const auto &network_params = Manager::getInstance().network_params;
   for (auto &layer : layers) {
-    int layer_size_x, layer_size_y;
+    int layer_size_x = 0;
+    int layer_size_y = 0;
 
     if (dynamic_cast<InputLayer *>(layer)) {
       layer_size_x = network_params.input_size_x;
@@ -97,6 +98,8 @@ void NeuralNetwork::initializeNeighbors() {
     } else if (dynamic_cast<OutputLayer *>(layer)) {
       layer_size_x = network_params.output_size_x;
       layer_size_y = network_params.output_size_y;
+    } else {
+      throw NetworkException("Invalid layer type");
     }
 
     for (size_t i = 0; i < layer->neurons.size(); ++i) {
