@@ -67,7 +67,7 @@ jobs:
         run: sudo apt-get install -y g++-12 libopencv-dev
 
       - name: Build with C++20 support
-        run: find . -name "*.cpp" -exec g++-12 -I./include -I./libs/libsipai/include -I./libs/libcsvparser/include -I./libs/libjson/include -std=c++20 -c {} \;
+        run: find . -name "*.cpp" -exec g++-12 -I./include -I./libs/libsipai/include -I./libs/libcsvparser/include -I./libs/libjson/include -I/usr/include/opencv4 -std=c++20 -c {} \;
 
       # ℹ️ Command-line programs to run using the OS shell.
       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
