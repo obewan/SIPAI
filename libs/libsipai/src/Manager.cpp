@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ImageHelper.h"
 #include "NeuralNetwork.h"
-#include "NeuralNetworkImportExport.h"
+#include "NeuralNetworkImportExportFacade.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
 #include "TrainingMonitoredVisitor.h"
@@ -48,10 +48,12 @@ void Manager::saveImage(const std::string &imagePath,
 void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }
 
 void Manager::importNetwork() {
-  network = NeuralNetworkImportExport{}.importModel();
+  network = NeuralNetworkImportExportFacade{}.importModel();
 }
 
-void Manager::exportNetwork() { NeuralNetworkImportExport{}.exportModel(); }
+void Manager::exportNetwork() {
+  NeuralNetworkImportExportFacade{}.exportModel();
+}
 
 void Manager::run() {
   switch (app_params.run_mode) {

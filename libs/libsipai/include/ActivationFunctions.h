@@ -9,6 +9,7 @@
  */
 
 #pragma once
+#include <algorithm>
 #include <map>
 #include <math.h>
 #include <string>

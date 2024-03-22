@@ -16,6 +16,7 @@
 namespace sipai {
 class RunnerVisitor {
 public:
+  virtual ~RunnerVisitor() = default;
   /**
    * @brief Performs the runner operation on the provided data sets and network.
    *
