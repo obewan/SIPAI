@@ -38,7 +38,7 @@ const std::map<std::string, EActivationFunction, std::less<>> activation_map{
  * the sigmoid function itself: if σ(x) is the sigmoid function, then its
  * derivative σ'(x) can be computed as σ(x) * (1 - σ(x)).
  */
-inline auto sigmoid = [](auto x) { return 1.0f / (1.0f + exp(-x)); };
+inline auto sigmoid = [](auto x) { return (float)(1.0f / (1.0f + exp(-x))); };
 inline auto sigmoidDerivative = [](auto x) {
   float sigmoidValue = sigmoid(x);
   return sigmoidValue * (1 - sigmoidValue);
@@ -49,9 +49,9 @@ inline auto sigmoidDerivative = [](auto x) {
  * sigmoid function but maps the input to a range between -1 and 1. It is often
  * used in the hidden layers of a neural network.
  */
-inline auto tanhFunc = [](auto x) { return tanh(x); };
+inline auto tanhFunc = [](auto x) { return (float)tanh(x); };
 inline auto tanhDerivative = [](auto x) {
-  float tanhValue = tanh(x);
+  float tanhValue = tanhFunc(x);
   return 1 - tanhValue * tanhValue;
 };
 
@@ -63,16 +63,20 @@ inline auto tanhDerivative = [](auto x) {
  * @param Unit
  * @return ReLU
  */
-inline auto relu = [](auto x) { return std::max(0.0f, x); };
-inline auto reluDerivative = [](auto x) { return x > 0 ? 1.0f : 0.0f; };
+inline auto relu = [](auto x) { return (float)std::max(0.0f, x); };
+inline auto reluDerivative = [](auto x) {
+  return (float)(x > 0 ? 1.0f : 0.0f);
+};
 
 /**
  * @brief Leaky ReLU: This is a variant of ReLU that allows small negative
  * values when the input is less than zero. It can help to alleviate the dying
  * ReLU problem where neurons become inactive and only output zero.
  */
-inline auto leakyRelu = [](auto x) { return std::max(0.01f * x, x); };
-inline auto leakyReluDerivative = [](auto x) { return x > 0 ? 1.0f : 0.01f; };
+inline auto leakyRelu = [](auto x) { return (float)std::max(0.01f * x, x); };
+inline auto leakyReluDerivative = [](auto x) {
+  return (float)(x > 0 ? 1.0f : 0.01f);
+};
 
 /**
  * @brief  Parametric ReLU (PReLU) is a type of leaky ReLU that, instead of
@@ -81,10 +85,10 @@ inline auto leakyReluDerivative = [](auto x) { return x > 0 ? 1.0f : 0.01f; };
  * patterns
  */
 inline auto parametricRelu = [](auto x, auto alpha) {
-  return std::max(alpha * x, x);
+  return (float)std::max(alpha * x, x);
 };
 inline auto parametricReluDerivative = [](auto x, auto alpha) {
-  return x > 0 ? 1.0f : alpha;
+  return (float)(x > 0 ? 1.0f : alpha);
 };
 
 /**
@@ -96,9 +100,9 @@ inline auto parametricReluDerivative = [](auto x, auto alpha) {
  *
  */
 inline auto elu = [](auto x, auto alpha) {
-  return x >= 0 ? x : alpha * (exp(x) - 1);
+  return (float)(x >= 0 ? x : alpha * (exp(x) - 1));
 };
 inline auto eluDerivative = [](auto x, auto alpha) {
-  return x >= 0 ? 1 : alpha * exp(x);
+  return (float)(x >= 0 ? 1.0f : alpha * exp(x));
 };
 } // namespace sipai
