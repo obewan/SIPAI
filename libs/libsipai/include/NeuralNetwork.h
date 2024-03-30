@@ -27,9 +27,9 @@ public:
   NeuralNetwork(const NeuralNetwork &other) = delete; // Copy constructor
   NeuralNetwork &
   operator=(const NeuralNetwork &other) = delete; // Copy assignment operator
-  NeuralNetwork(NeuralNetwork &&other) = default; // Move constructor
+  NeuralNetwork(NeuralNetwork &&other) = delete;  // Move constructor
   NeuralNetwork &
-  operator=(NeuralNetwork &&other) = default; // Move assignment operator
+  operator=(NeuralNetwork &&other) = delete; // Move assignment operator
   ~NeuralNetwork() {
     for (auto layer : layers) {
       delete layer;

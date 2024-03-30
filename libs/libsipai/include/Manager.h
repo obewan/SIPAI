@@ -11,7 +11,6 @@
 
 #include "AppParams.h"
 #include "Common.h"
-#include "NeuralNetwork.h"
 #include "NeuralNetworkBuilder.h"
 #include "NeuralNetworkParams.h"
 #include "RGBA.h"

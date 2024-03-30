@@ -10,7 +10,10 @@
 #pragma once
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <functional>
+#include <math.h>
+#include <numeric>
 #include <opencv2/core/types.hpp>
 #include <sstream>
 #include <string>
@@ -29,6 +32,20 @@ struct RGBA {
   RGBA(const cv::Vec4b &vec, bool hasAlpha = true)
       : value({vec[2] / 255.0f, vec[1] / 255.0f, vec[0] / 255.0f,
                hasAlpha ? vec[3] / 255.0f : 1.0f}) {}
+
+  float sum() const {
+    return std::reduce(value.begin(), value.end(), 0, std::plus<>());
+  }
+
+  RGBA pow(float n) {
+    if (n < 1.0 && std::any_of(value.begin(), value.end(),
+                               [](float v) { return v < 0.0f; })) {
+      throw std::invalid_argument(
+          "Negative value in RGBA for non-integer exponent");
+    }
+    return RGBA(std::pow(value[0], n), std::pow(value[1], n),
+                std::pow(value[2], n), std::pow(value[3], n));
+  }
 
   std::string toStringCsv() const {
     std::ostringstream oss;
@@ -84,5 +101,5 @@ struct RGBA {
                    [&lhs](float val) { return lhs * val; });
     return result;
   }
-};
+}; // namespace sipai
 } // namespace sipai

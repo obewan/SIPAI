@@ -108,13 +108,10 @@ float Manager::computeMSELoss(const std::vector<RGBA> &outputImage,
         "Output and target images must have the same size.");
   }
 
-  float totalLoss = 0.0f;
+  double totalLoss = 0.0;
   for (size_t i = 0; i < outputImage.size(); ++i) {
-    for (size_t j = 0; j < 4; ++j) {
-      float diff = outputImage[i].value[j] - targetImage[i].value[j];
-      totalLoss += diff * diff;
-    }
+    totalLoss += (outputImage[i] - targetImage[i]).pow(2).sum();
   }
 
-  return totalLoss / (outputImage.size() * 4);
+  return (float)(totalLoss / (double)(outputImage.size() * 4));
 }

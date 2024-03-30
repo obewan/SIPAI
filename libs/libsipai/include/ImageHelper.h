@@ -57,7 +57,9 @@ public:
    * @return std::vector<RGBA> The converted image as a vector of RGBA values.
    */
   std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) {
-    const int channels = image.channels();
+    cv::Mat negImage;
+    cv::bitwise_not(image, negImage); // First bitwise_not operation
+    const int channels = negImage.channels();
     const int rows = image.rows;
     const int cols = image.cols;
     const int totalPixels = rows * cols;
@@ -67,7 +69,7 @@ public:
     /// std::execution::par_unseq enables parallel execution of the
     /// transformation while relaxing the requirement for sequential execution
     /// order
-    auto pixelIterator = image.begin<cv::Vec4b>();
+    auto pixelIterator = negImage.begin<cv::Vec4b>();
     std::transform(std::execution::par_unseq, pixelIterator,
                    pixelIterator + totalPixels, rgbaValues.begin(),
                    [channels](const cv::Vec4b &pixel) {

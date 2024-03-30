@@ -74,12 +74,14 @@ public:
 
     if (level == LogLevel::INFO) {
       std::cout.precision(current_precision);
+      std::cout << std::fixed;
       (std::cout << ... << args);
       if (endl) {
         std::cout << std::endl;
       }
     } else {
       std::cerr.precision(current_precision);
+      std::cerr << std::fixed;
       (std::cerr << ... << args);
       if (endl) {
         std::cerr << std::endl;
