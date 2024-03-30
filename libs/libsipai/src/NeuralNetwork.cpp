@@ -131,6 +131,9 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
                                        size_t neuron_index, int layer_size_x,
                                        int layer_size_y,
                                        bool randomize_weight) {
+  if (layer_size_x <= 0) {
+    return;
+  }
   // Compute the coordinates of the neuron in the 2D grid
   int x = neuron_index % layer_size_x;
   int y = neuron_index / layer_size_x;

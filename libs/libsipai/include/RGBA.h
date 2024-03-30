@@ -34,7 +34,7 @@ struct RGBA {
                hasAlpha ? vec[3] / 255.0f : 1.0f}) {}
 
   float sum() const {
-    return std::reduce(value.begin(), value.end(), 0, std::plus<>());
+    return std::reduce(value.begin(), value.end(), 0.0f, std::plus<>());
   }
 
   RGBA pow(float n) {

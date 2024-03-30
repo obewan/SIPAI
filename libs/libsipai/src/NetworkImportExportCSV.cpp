@@ -1,3 +1,4 @@
+#include "Connexion.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportCSV.h"
 #include "csv_parser.h"
@@ -96,23 +97,33 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
     try {
       auto layer_index = getIndexValue(cell_refs.at(0));
       auto neuron_index = getIndexValue(cell_refs.at(1));
-      auto neighboor_index = getIndexValue(cell_refs.at(2));
+      auto neighboors_count = getIndexValue(cell_refs.at(2));
       std::vector<RGBA> weights;
 
       if (layer_index && neuron_index) {
         std::for_each(cell_refs.begin() + 3, cell_refs.end(),
                       std::bind_front(processCell, std::ref(weights)));
-        if (!neighboor_index) {
+        if (!neighboors_count) {
           // add the neuron weights
           network->layers.at(layer_index.value())
               ->neurons.at(neuron_index.value())
               .weights.swap(weights);
         } else if (weights.size() > 0) {
-          // add the neighboor weight
-          network->layers.at(layer_index.value())
-              ->neurons.at(neuron_index.value())
-              .neighbors.at(neighboor_index.value())
-              .weight = weights.at(0);
+          // add the neighboors and their weights
+          auto &neighbors = network->layers.at(layer_index.value())
+                                ->neurons.at(neuron_index.value())
+                                .neighbors;
+          if (neighbors.size() != weights.size()) {
+            throw ImportExportException("CSV parsing error at line (" +
+                                        std::to_string(current_line_number) +
+                                        "): invalid column numbers");
+          }
+          std::transform(neighbors.begin(), neighbors.end(), weights.begin(),
+                         neighbors.begin(),
+                         [](Connection &neighbor, const RGBA &weight) {
+                           neighbor.weight = weight;
+                           return neighbor;
+                         });
         }
       }
     } catch (std::exception &ex) {
@@ -143,7 +154,7 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {
   }
 
   // Write the header to the CSV file
-  file << "Layer,Neuron,Neighbor";
+  file << "Layer,Neuron,Neighbors";
   for (size_t i = 0; i < max_weights; ++i) {
     file << ",wR" << (i + 1) << ",wG" << (i + 1) << ",wB" << (i + 1) << ",wA"
          << (i + 1);
@@ -167,20 +178,21 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {
           file << "," << neuron.weights[i].toStringCsv();
         } else {
           // If the neuron doesn't have a weight for this index, write a blank
-          // RGBA column to fill the csv
+          // RGBA 4 columns to fill the csv
           file << ",,,,";
         }
       }
       file << "\n";
 
-      // Then write the neuron's neighbors weights
-      file << layer_index << "," << neuron_index << ",";
+      // Then write the neuron's neighbors weights on a single line (to reduce
+      // csv file size)
+      file << layer_index << "," << neuron_index << ","
+           << neuron.neighbors.size();
       for (size_t i = 0; i < max_weights; ++i) {
-        file << i << "";
         if (i < neuron.neighbors.size()) {
           file << "," << neuron.neighbors[i].weight.toStringCsv();
         } else {
-          // If no neighbor write a blank RGBA column to fill the csv
+          // If no more neighbor write a blank RGBA 4 columns to fill the csv
           file << ",,,,";
         }
       }
