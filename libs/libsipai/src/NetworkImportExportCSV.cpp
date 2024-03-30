@@ -28,30 +28,29 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
   };
 
   // lambda function to convert to RGBA floats
-  auto getRGBAValue = [](const std::vector<Csv::CellReference> &cells) {
+  auto getRGBAValue =
+      [](const std::vector<Csv::CellReference> &cells) -> std::optional<RGBA> {
     RGBA rgba;
     for (int i = 0; i < 4; ++i) {
       auto val = cells[i].getDouble();
       if (val.has_value()) {
         rgba.value[i] = static_cast<float>(val.value());
       } else {
-        throw EmptyCellException(); // Or handle missing values differently
+        return std::nullopt;
       }
     }
     return rgba;
   };
 
   // lambda function to add cell value to the weights vector
-  auto processCell = [&getRGBAValue](
-                         std::vector<RGBA> &weights,
-                         const std::vector<Csv::CellReference> &cells) {
-    try {
-      weights.push_back({getRGBAValue(cells)}); // Use initializer list for RGBA
-    } catch (EmptyCellException &) {
-      // Ignore the exception caused by an empty cell (or handle differently)
-      return;
-    }
-  };
+  auto processCell =
+      [&getRGBAValue](std::vector<RGBA> &weights,
+                      const std::vector<Csv::CellReference> &cells) {
+        const auto &rgba = getRGBAValue(cells);
+        if (rgba.has_value()) {
+          weights.push_back(rgba.value());
+        }
+      };
 
   // get the csv filename
   const auto &appParams = Manager::getInstance().app_params;

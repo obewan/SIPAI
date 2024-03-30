@@ -14,8 +14,7 @@
 namespace sipai {
 class TrainingMonitoredVisitor : public RunnerVisitor {
 public:
-  void visit(const TrainingData &dataSet,
-             const TrainingData &validationSet) const override;
+  void visit() const override;
 
   /**
    * @brief Performs one epoch of training on the provided dataset.

@@ -2,10 +2,8 @@
 #include "Common.h"
 #include "ImageHelper.h"
 #include "NeuralNetwork.h"
-#include "NeuralNetworkImportExportFacade.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
-#include "TrainingMonitoredVisitor.h"
 #include <cstddef>
 #include <memory>
 #include <opencv2/core/types.hpp>
@@ -45,10 +43,10 @@ void Manager::saveImage(const std::string &imagePath,
   imageHelper.saveImage(imagePath, dest);
 }
 
-void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }
-
-void Manager::importNetwork() {
-  network = NeuralNetworkImportExportFacade{}.importModel();
+void Manager::createOrImportNetwork() {
+  if (!network) {
+    network = neuralNetworkBuilder_.build();
+  }
 }
 
 void Manager::exportNetwork() {
@@ -58,7 +56,7 @@ void Manager::exportNetwork() {
 void Manager::run() {
   switch (app_params.run_mode) {
   case ERunMode::TrainingMonitored:
-    runWithVisitor(TrainingMonitoredVisitor{});
+    runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
     break;
   default:
     break;
@@ -66,19 +64,11 @@ void Manager::run() {
 }
 
 void Manager::runWithVisitor(const RunnerVisitor &visitor) {
-
-  // Load training data
-  TrainingData trainingData = loadTrainingData();
-
-  // Split training data into training and validation sets
-  auto [trainingDataPairs, validationDataPairs] =
-      splitData(trainingData, app_params.split_ratio);
-
   // Initialize network
-  initializeNetwork();
+  createOrImportNetwork();
 
   // Run the visitor
-  visitor.visit(trainingDataPairs, validationDataPairs);
+  visitor.visit();
 }
 
 TrainingData Manager::loadTrainingData() {
@@ -101,8 +91,6 @@ std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
 
   return std::make_pair(training_data, validation_data);
 }
-
-void Manager::initializeNetwork() { network->initialize(); }
 
 /**
  * @brief Computes the mean squared error (MSE) loss between the output image

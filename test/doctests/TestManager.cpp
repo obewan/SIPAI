@@ -14,10 +14,7 @@ class MockRunnerVisitor : public RunnerVisitor {
 public:
   mutable bool visitCalled = false;
 
-  void visit(const TrainingData &trainingDataPairs,
-             const TrainingData &validationDataPairs) const override {
-    visitCalled = true;
-  }
+  void visit() const override { visitCalled = true; }
 };
 
 TEST_CASE("Testing the Manager class") {
@@ -70,7 +67,6 @@ TEST_CASE("Testing the Manager class") {
 
   SUBCASE("Test initializeNetwork") {
     auto &manager = Manager::getInstance();
-    manager.createNetwork();
     auto &np = manager.network_params;
     np.input_size_x = 2;
     np.input_size_y = 2;
@@ -79,7 +75,8 @@ TEST_CASE("Testing the Manager class") {
     np.output_size_x = 3;
     np.output_size_y = 3;
     np.hiddens_count = 2;
-    manager.initializeNetwork();
+    manager.app_params.network_to_import = "";
+    manager.createOrImportNetwork();
 
     const auto &network = manager.network;
     CHECK(network->layers.size() == (np.hiddens_count + 2));
@@ -114,20 +111,19 @@ TEST_CASE("Testing the Manager class") {
     np.output_size_x = 3;
     np.output_size_y = 3;
     np.hiddens_count = 1;
-    ap.network_to_import = "tmpNetwork.json";
-    ap.network_to_export = ap.network_to_import;
+    ap.network_to_import = "";
+    ap.network_to_export = "tmpNetwork.json";
     std::string network_csv = "tmpNetwork.csv";
 
+    // TEST CREATE AND EXPORT
+    ap.network_to_import = "";
     if (std::filesystem::exists(ap.network_to_export)) {
       std::filesystem::remove(ap.network_to_export);
     }
     if (std::filesystem::exists(network_csv)) {
       std::filesystem::remove(network_csv);
     }
-
-    // TEST EXPORT
-    manager.createNetwork();
-    manager.initializeNetwork();
+    manager.createOrImportNetwork();
     CHECK(std::filesystem::exists(ap.network_to_export) == false);
     manager.exportNetwork();
     CHECK(std::filesystem::exists(ap.network_to_export) == true);
@@ -135,7 +131,8 @@ TEST_CASE("Testing the Manager class") {
     manager.network.reset();
 
     // TEST IMPORT
-    manager.importNetwork();
+    ap.network_to_import = "tmpNetwork.json";
+    manager.createOrImportNetwork();
     auto &nn = manager.network;
     CHECK(nn->layers.size() == 3);
     CHECK(nn->layers.front()->layerType == LayerType::InputLayer);
@@ -149,6 +146,7 @@ TEST_CASE("Testing the Manager class") {
 
     std::filesystem::remove(ap.network_to_export);
     std::filesystem::remove(network_csv);
+    manager.network.reset();
   }
 
   SUBCASE("Test loadTrainingData") {
@@ -228,12 +226,14 @@ TEST_CASE("Testing the Manager class") {
 
   SUBCASE("Testing run") {
     auto &manager = Manager::getInstance();
+    manager.network.reset();
 
     auto &ap = manager.app_params;
     ap.training_data_file = "images-test1.csv";
     ap.max_epochs = 2;
     ap.run_mode = ERunMode::TrainingMonitored;
     ap.network_to_export = "tempNetwork.json";
+    ap.network_to_import = "";
     std::string network_csv = "tempNetwork.csv";
 
     auto &np = manager.network_params;
@@ -251,10 +251,12 @@ TEST_CASE("Testing the Manager class") {
     if (std::filesystem::exists(network_csv)) {
       std::filesystem::remove(network_csv);
     }
+    CHECK(std::filesystem::exists(ap.training_data_file) == true);
     CHECK_NOTHROW(manager.run());
     CHECK(std::filesystem::exists(ap.network_to_export) == true);
     CHECK(std::filesystem::exists(network_csv) == true);
     std::filesystem::remove(ap.network_to_export);
     std::filesystem::remove(network_csv);
+    manager.network.reset();
   }
 }

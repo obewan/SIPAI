@@ -9,6 +9,7 @@
  */
 #pragma once
 #include "Layer.h"
+#include <atomic>
 
 namespace sipai {
 
@@ -42,6 +43,11 @@ public:
   std::vector<Layer *> layers;
 
   /**
+   * @brief Initializes the layers of the network.
+   */
+  void initialize();
+
+  /**
    * @brief Performs forward propagation on the network using the given input
    * values.
    *
@@ -60,6 +66,12 @@ public:
   void backwardPropagation(const std::vector<RGBA> &expectedValues);
 
   /**
+   * @brief Add the neurons layers of the network.
+   *
+   */
+  void addLayers();
+
+  /**
    * @brief Binds the layers of the network together.
    */
   void bindLayers();
@@ -68,11 +80,6 @@ public:
    * @brief Initializes the weights of the neurons in the network.
    */
   void initializeWeights() const;
-
-  /**
-   * @brief Initializes the layers of the network.
-   */
-  void initialize();
 
   /**
    * @brief Initializes the neighbors of the neurons in the network.
@@ -112,6 +119,17 @@ public:
   void SetActivationFunction(Layer *layer,
                              EActivationFunction activation_function,
                              float activation_alpha) const;
+
+  /**
+   * @brief Check if the neural network is initialized.
+   *
+   * @return true if initialized.
+   * @return false
+   */
+  bool isInitizalized() const { return isInitialized_.load(); }
+
+private:
+  std::atomic<bool> isInitialized_ = false;
 };
 
 } // namespace sipai
