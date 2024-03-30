@@ -37,6 +37,12 @@ struct RGBA {
     return std::reduce(value.begin(), value.end(), 0.0f, std::plus<>());
   }
 
+  void clip(float lower, float upper) {
+    for (auto &val : value) {
+      val = std::max(lower, std::min(val, upper));
+    }
+  }
+
   RGBA pow(float n) {
     if (n < 1.0 && std::any_of(value.begin(), value.end(),
                                [](float v) { return v < 0.0f; })) {

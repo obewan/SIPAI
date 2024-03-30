@@ -87,8 +87,7 @@ float TrainingMonitoredVisitor::trainOnEpoch(
 
     std::vector<RGBA> outputImage =
         manager.network->forwardPropagation(inputImage);
-    float loss = manager.computeMSELoss(outputImage, targetImage);
-    epochLoss += loss;
+    epochLoss += manager.computeMSELoss(outputImage, targetImage);
 
     manager.network->backwardPropagation(targetImage);
     manager.network->updateWeights(manager.network_params.learning_rate);

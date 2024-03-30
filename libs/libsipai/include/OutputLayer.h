@@ -59,6 +59,7 @@ public:
       // Update weights based on neurons in the previous layer
       for (size_t j = 0; j < n.weights.size(); ++j) {
         auto dE_dw = previousLayer->neurons[j].value * n.error;
+        dE_dw.clip(-1.0f, 1.0f);
         n.weights[j] -= learningRate * dE_dw;
       }
       // Update weights based on neighboring neurons
