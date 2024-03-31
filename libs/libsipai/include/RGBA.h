@@ -37,10 +37,11 @@ struct RGBA {
     return std::reduce(value.begin(), value.end(), 0.0f, std::plus<>());
   }
 
-  void clip(float lower, float upper) {
+  RGBA &clamp() {
     for (auto &val : value) {
-      val = std::max(lower, std::min(val, upper));
+      val = std::clamp(val, 0.f, 1.f);
     }
+    return *this;
   }
 
   RGBA pow(float n) {

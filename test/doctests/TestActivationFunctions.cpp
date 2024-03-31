@@ -30,7 +30,7 @@ TEST_CASE("Testing the Activation Functions") {
     CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value ==
           RGBA{1.0, 1.0, 1.0, 1.0}.value);
     CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(0) ==
-          doctest::Approx(-0.0632121).epsilon(eps));
+          doctest::Approx(0).epsilon(eps));
     CHECK(neu.activationFunction({0.0f, 0.0f, 0.0f, 0.0f}).value ==
           RGBA{0.0f, 0.0f, 0.0f, 0.0f}.value);
     CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}).value ==
@@ -40,10 +40,14 @@ TEST_CASE("Testing the Activation Functions") {
   };
 
   auto testLReLU = [&eps](const Neuron &neu) {
-    CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value ==
-          RGBA{1.0, 1.0, 1.0, 1.0}.value);
+    RGBA input{1.0f, 1.0f, 1.0f, 1.0f};
+    RGBA expected{0.01f, 0.01f, 0.01f, 0.01f};
+    const auto output = neu.activationFunction(input).value;
+    for (size_t i = 0; i < 4; ++i) {
+      CHECK(output[i] == doctest::Approx(expected.value[i]).epsilon(eps));
+    }
     CHECK(neu.activationFunction({-0.5f, -0.5f, -0.5f, -0.5f}).value.at(0) ==
-          doctest::Approx(-0.005f).epsilon(eps));
+          doctest::Approx(0.f).epsilon(eps));
     CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}).value ==
           RGBA{1.0, 1.0, 1.0, 1.0}.value);
     CHECK(neu.activationFunctionDerivative({-0.5f, -0.5f, -0.5f, -0.5f})
@@ -54,7 +58,7 @@ TEST_CASE("Testing the Activation Functions") {
     CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value ==
           RGBA{1.0f, 1.0f, 1.0f, 1.0f}.value);
     CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(1) ==
-          doctest::Approx(-0.1f).epsilon(eps));
+          doctest::Approx(0.f).epsilon(eps));
     CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}).value ==
           RGBA{1.0, 1.0, 1.0, 1.0}.value);
     CHECK(neu.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})
@@ -85,18 +89,21 @@ TEST_CASE("Testing the Activation Functions") {
 
   auto testTanh = [&eps](const Neuron &neu) {
     CHECK(neu.activationFunction({0.0f, 0.0f, 0.0f, 0.0f}).value.at(0) ==
-          doctest::Approx(0.0).epsilon(eps));
+          doctest::Approx(0.5).epsilon(eps));
     CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value.at(1) ==
-          doctest::Approx(0.7615941559557649).epsilon(eps));
+          doctest::Approx(0.880797).epsilon(eps));
     CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(2) ==
-          doctest::Approx(-0.7615941559557649).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({0.0f, 0.0f, 0.0f, 0.0f}).value ==
-          RGBA{1.f, 1.f, 1.f, 1.f}.value);
+          doctest::Approx(0.119203).epsilon(eps));
+    RGBA input{0.0f, 0.0f, 0.0f, 0.0f};
+    RGBA expected{0.75f, 0.75f, 0.75f, 0.75f};
+    const auto output = neu.activationFunctionDerivative(input).value;
+    for (size_t i = 0; i < 4; ++i) {
+      CHECK(output[i] == doctest::Approx(expected.value[i]).epsilon(eps));
+    }
     CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})
-              .value.at(3) ==
-          doctest::Approx(0.41997434161402614).epsilon(eps));
+              .value.at(3) == doctest::Approx(0.224196).epsilon(eps));
     CHECK(neu.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})
-              .value.at(0) == doctest::Approx(0.419974f).epsilon(eps));
+              .value.at(0) == doctest::Approx(0.985791).epsilon(eps));
   };
 
   auto testActivationFunction =

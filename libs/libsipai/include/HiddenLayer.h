@@ -32,10 +32,6 @@ public:
       for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
         n.value += previousLayer->neurons.at(i).value * n.weights.at(i);
       }
-      // Propagate the value to adjacents neurons
-      for (auto &connection : n.neighbors) {
-        connection.neuron->value += n.value * connection.weight;
-      }
       // Use activation function
       n.value = n.activationFunction(n.value);
     }
@@ -71,13 +67,13 @@ public:
     for (Neuron &n : neurons) {
       for (size_t j = 0; j < n.weights.size(); ++j) {
         auto dE_dw = previousLayer->neurons[j].value * n.error;
-        // Apply gradient clipping
-        dE_dw.clip(-1.0f, 1.0f);
+        dE_dw.clamp();
         n.weights[j] -= learningRate * dE_dw;
       }
       // Update weights based on neighboring neurons
       for (Connection &connection : n.neighbors) {
         auto dE_dw = connection.neuron->value * n.error;
+        dE_dw.clamp();
         connection.weight -= learningRate * dE_dw;
       }
     }

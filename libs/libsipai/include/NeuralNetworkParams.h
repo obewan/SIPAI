@@ -37,7 +37,7 @@ struct NeuralNetworkParams {
   float learning_rate = 0.01f;
   float hidden_activation_alpha = 0.1f; // used for ELU and PReLU
   float output_activation_alpha = 0.1f; // used for ELU and PReLU
-  EActivationFunction hidden_activation_function = EActivationFunction::ReLU;
-  EActivationFunction output_activation_function = EActivationFunction::ReLU;
+  EActivationFunction hidden_activation_function = EActivationFunction::LReLU;
+  EActivationFunction output_activation_function = EActivationFunction::LReLU;
 };
 } // namespace sipai

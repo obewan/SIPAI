@@ -11,9 +11,11 @@
 #include "ActivationFunctions.h"
 #include "Connexion.h"
 #include "RGBA.h"
+#include <exception>
 #include <functional>
 #include <math.h>
 #include <random>
+#include <stdexcept>
 #include <vector>
 
 namespace sipai {
@@ -55,14 +57,14 @@ public:
   void initWeights(size_t new_size) {
     weights.resize(new_size);
 
-    // randomize weights to break symmetry
+    // Xavier initialization
+    const float fanIn_fanOut = new_size + 4.0f; // 4 as the 4 values of RGBA
     std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<float> dist(0.0f, std::sqrt(2.0f / fanIn_fanOut));
     for (auto &w : weights) {
-      std::mt19937 gen(rd());
-      std::normal_distribution<float> dist(0.1f, 0.01f);
       std::for_each(w.value.begin(), w.value.end(), [&gen, &dist](float &f) {
-        float distg = dist(gen);
-        f = std::max(0.0f, std::min(0.1f, distg));
+        f = std::clamp(dist(gen), 0.0f, 1.0f); // Clamp to [0, 1] range
       });
     }
   }

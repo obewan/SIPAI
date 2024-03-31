@@ -142,6 +142,9 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
   // is a neuron in that direction and, if so, establish a connection
   std::vector<std::pair<int, int>> directions = {
       {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+  // 4 (the components of the RGBA struct) for both the input and output sides,
+  // resulting in a total of 8 connections
+  const float fanIn_fanOut = 8.0f;
   for (auto [dx, dy] : directions) {
     int nx = x + dx;
     int ny = y + dy;
@@ -151,11 +154,16 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
 
       RGBA weight;
       if (randomize_weight) {
-        // Create a connection with a random initial weight
+        // Create a connection with a random initial weight (Xavier
+        // initialization)
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-        weight = {dist(gen), dist(gen), dist(gen), dist(gen)};
+        std::normal_distribution<float> dist(0.0f,
+                                             std::sqrt(2.0f / fanIn_fanOut));
+        std::for_each(
+            weight.value.begin(), weight.value.end(), [&gen, &dist](float &f) {
+              f = std::clamp(dist(gen), 0.0f, 1.0f); // Clamp to [0, 1] range
+            });
       }
 
       neuron.neighbors.push_back(Connection(&neighbor, weight));
