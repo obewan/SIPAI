@@ -1,8 +1,8 @@
-#include "HiddenLayer.h"
-#include "InputLayer.h"
+#include "LayerHidden.h"
+#include "LayerInput.h"
+#include "LayerOutput.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportJSON.h"
-#include "OutputLayer.h"
 #include "SimpleLogger.h"
 #include "exception/ImportExportException.h"
 #include "json.hpp"
@@ -77,18 +77,18 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
       // Create a new layer object of the appropriate type.
       Layer *layer = nullptr;
       switch (layer_type) {
-      case LayerType::InputLayer:
-        layer = new InputLayer();
+      case LayerType::LayerInput:
+        layer = new LayerInput();
         layer_size_x = params.input_size_x;
         layer_size_y = params.input_size_y;
         break;
-      case LayerType::HiddenLayer:
-        layer = new HiddenLayer();
+      case LayerType::LayerHidden:
+        layer = new LayerHidden();
         layer_size_x = params.hidden_size_x;
         layer_size_y = params.hidden_size_y;
         break;
-      case LayerType::OutputLayer:
-        layer = new OutputLayer();
+      case LayerType::LayerOutput:
+        layer = new LayerOutput();
         layer_size_x = params.output_size_x;
         layer_size_y = params.output_size_y;
         break;
@@ -105,13 +105,13 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
 
       // Set activation functions
       switch (layer->layerType) {
-      case LayerType::InputLayer: // no activation function here
+      case LayerType::LayerInput: // no activation function here
         break;
-      case LayerType::HiddenLayer:
+      case LayerType::LayerHidden:
         model->SetActivationFunction(layer, params.hidden_activation_function,
                                      params.hidden_activation_alpha);
         break;
-      case LayerType::OutputLayer:
+      case LayerType::LayerOutput:
         model->SetActivationFunction(layer, params.output_activation_function,
                                      params.output_activation_alpha);
         break;
@@ -123,11 +123,11 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
       model->layers.push_back(layer);
     }
 
-    if (model->layers.front()->layerType != LayerType::InputLayer) {
+    if (model->layers.front()->layerType != LayerType::LayerInput) {
       throw ImportExportException("Invalid input layer");
     }
 
-    if (model->layers.back()->layerType != LayerType::OutputLayer) {
+    if (model->layers.back()->layerType != LayerType::LayerOutput) {
       throw ImportExportException("Invalid output layer");
     }
 

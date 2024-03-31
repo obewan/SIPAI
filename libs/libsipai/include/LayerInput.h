@@ -1,5 +1,5 @@
 /**
- * @file InputLayer.h
+ * @file LayerInput.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Input layer
  * @date 2023-08-27
@@ -17,9 +17,9 @@ namespace sipai {
  * It inherits from the Layer class and overrides its methods as necessary. This
  * layer is responsible for receiving input from external sources.
  */
-class InputLayer : public Layer {
+class LayerInput : public Layer {
 public:
-  InputLayer() : Layer(LayerType::InputLayer) {}
+  LayerInput() : Layer(LayerType::LayerInput) {}
 
   void forwardPropagation() override {
     // No need to implement for input layer

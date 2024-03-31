@@ -9,7 +9,7 @@
  */
 #pragma once
 #include "ActivationFunctions.h"
-#include "Connexion.h"
+#include "NeuronConnexion.h"
 #include "RGBA.h"
 #include <exception>
 #include <functional>
@@ -46,7 +46,7 @@ public:
   // 4-neighborhood (Von Neumann neighborhood). Could be improve to
   // 8-neighborhood (Moore neighborhood) or Extended neighborhood (radius)
   // later.
-  std::vector<Connection> neighbors;
+  std::vector<NeuronConnection> neighbors;
 
   /**
    * @brief Initializes the weights of the neuron to a given size. The weights

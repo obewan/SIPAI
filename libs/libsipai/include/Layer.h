@@ -12,12 +12,12 @@
 #include <map>
 
 namespace sipai {
-enum class LayerType { InputLayer, HiddenLayer, OutputLayer };
+enum class LayerType { LayerInput, LayerHidden, LayerOutput };
 
 const std::map<std::string, LayerType, std::less<>> layer_map{
-    {"InputLayer", LayerType::InputLayer},
-    {"HiddenLayer", LayerType::HiddenLayer},
-    {"OutputLayer", LayerType::OutputLayer}};
+    {"LayerInput", LayerType::LayerInput},
+    {"LayerHidden", LayerType::LayerHidden},
+    {"LayerOutput", LayerType::LayerOutput}};
 
 /**
  * @brief The Layer class represents a layer in a neural network. It contains a

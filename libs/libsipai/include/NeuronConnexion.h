@@ -1,5 +1,5 @@
 /**
- * @file Connexion.h
+ * @file NeuronConnexion.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Connexion between neurons
  * @date 2024-03-10
@@ -12,11 +12,12 @@
 
 namespace sipai {
 class Neuron;
-class Connection {
+class NeuronConnection {
 public:
   Neuron *neuron;
   RGBA weight;
 
-  Connection(Neuron *neuron, RGBA weight) : neuron(neuron), weight(weight) {}
+  NeuronConnection(Neuron *neuron, RGBA weight)
+      : neuron(neuron), weight(weight) {}
 };
 } // namespace sipai

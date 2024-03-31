@@ -80,10 +80,10 @@ TEST_CASE("Testing the Manager class") {
 
     const auto &network = manager.network;
     CHECK(network->layers.size() == (np.hiddens_count + 2));
-    CHECK(network->layers.front()->layerType == LayerType::InputLayer);
-    CHECK(network->layers.at(1)->layerType == LayerType::HiddenLayer);
-    CHECK(network->layers.at(2)->layerType == LayerType::HiddenLayer);
-    CHECK(network->layers.back()->layerType == LayerType::OutputLayer);
+    CHECK(network->layers.front()->layerType == LayerType::LayerInput);
+    CHECK(network->layers.at(1)->layerType == LayerType::LayerHidden);
+    CHECK(network->layers.at(2)->layerType == LayerType::LayerHidden);
+    CHECK(network->layers.back()->layerType == LayerType::LayerOutput);
 
     const auto &inputLayer = network->layers.front();
     CHECK(inputLayer->neurons.size() == (np.input_size_x * np.input_size_y));
@@ -135,9 +135,9 @@ TEST_CASE("Testing the Manager class") {
     manager.createOrImportNetwork();
     auto &nn = manager.network;
     CHECK(nn->layers.size() == 3);
-    CHECK(nn->layers.front()->layerType == LayerType::InputLayer);
-    CHECK(nn->layers.at(1)->layerType == LayerType::HiddenLayer);
-    CHECK(nn->layers.back()->layerType == LayerType::OutputLayer);
+    CHECK(nn->layers.front()->layerType == LayerType::LayerInput);
+    CHECK(nn->layers.at(1)->layerType == LayerType::LayerHidden);
+    CHECK(nn->layers.back()->layerType == LayerType::LayerOutput);
     CHECK(nn->layers.front()->neurons.size() == 4);
     CHECK(nn->layers.at(1)->neurons.size() == 6);
     CHECK(nn->layers.back()->neurons.size() == 9);

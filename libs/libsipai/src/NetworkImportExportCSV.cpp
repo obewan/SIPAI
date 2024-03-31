@@ -1,6 +1,6 @@
-#include "Connexion.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportCSV.h"
+#include "NeuronConnexion.h"
 #include "csv_parser.h"
 #include "exception/EmptyCellException.h"
 #include "exception/ImportExportException.h"
@@ -110,19 +110,19 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
               .weights.swap(weights);
         } else if (weights.size() > 0) {
           // add the neighboors and their weights
-          auto &neighbors = network->layers.at(layer_index.value())
-                                ->neurons.at(neuron_index.value())
-                                .neighbors;
-          if (neighbors.size() != weights.size()) {
+          auto &connections = network->layers.at(layer_index.value())
+                                  ->neurons.at(neuron_index.value())
+                                  .neighbors;
+          if (connections.size() != weights.size()) {
             throw ImportExportException("CSV parsing error at line (" +
                                         std::to_string(current_line_number) +
                                         "): invalid column numbers");
           }
-          std::transform(neighbors.begin(), neighbors.end(), weights.begin(),
-                         neighbors.begin(),
-                         [](Connection &neighbor, const RGBA &weight) {
-                           neighbor.weight = weight;
-                           return neighbor;
+          std::transform(connections.begin(), connections.end(),
+                         weights.begin(), connections.begin(),
+                         [](NeuronConnection &connection, const RGBA &weight) {
+                           connection.weight = weight;
+                           return connection;
                          });
         }
       }
@@ -184,15 +184,16 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {
       }
       file << "\n";
 
-      // Then write the neuron's neighbors weights on a single line (to reduce
-      // csv file size)
+      // Then write the neuron's neighbors connections weights on a single line
+      // (to reduce csv file size)
       file << layer_index << "," << neuron_index << ","
            << neuron.neighbors.size();
       for (size_t i = 0; i < max_weights; ++i) {
         if (i < neuron.neighbors.size()) {
           file << "," << neuron.neighbors[i].weight.toStringCsv();
         } else {
-          // If no more neighbor write a blank RGBA 4 columns to fill the csv
+          // If no more neighbor connection write a blank RGBA 4 columns to
+          // fill the csv
           file << ",,,,";
         }
       }

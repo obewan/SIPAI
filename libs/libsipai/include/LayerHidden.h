@@ -1,5 +1,5 @@
 /**
- * @file HiddenLayer.h
+ * @file LayerHidden.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Hidden layer
  * @date 2023-08-27
@@ -18,9 +18,9 @@ namespace sipai {
  * Hidden layers are responsible for processing inputs received from the input
  * layer and passing the result to the output layer or the next hidden layer.
  */
-class HiddenLayer : public Layer {
+class LayerHidden : public Layer {
 public:
-  HiddenLayer() : Layer(LayerType::HiddenLayer) {}
+  LayerHidden() : Layer(LayerType::LayerHidden) {}
 
   void forwardPropagation() override {
     if (previousLayer == nullptr) {
@@ -49,7 +49,7 @@ public:
         neurons[i].error += n.weights[i] * n.error;
       }
       // Consider errors of adjacent neurons
-      for (Connection &connection : neurons[i].neighbors) {
+      for (NeuronConnection &connection : neurons[i].neighbors) {
         neurons[i].error += connection.neuron->error * connection.weight;
       }
 
@@ -71,7 +71,7 @@ public:
         n.weights[j] -= learningRate * dE_dw;
       }
       // Update weights based on neighboring neurons
-      for (Connection &connection : n.neighbors) {
+      for (NeuronConnection &connection : n.neighbors) {
         auto dE_dw = connection.neuron->value * n.error;
         dE_dw.clamp();
         connection.weight -= learningRate * dE_dw;

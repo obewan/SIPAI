@@ -1,5 +1,5 @@
 /**
- * @file OutputLayer.h
+ * @file LayerOutput.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Output layer
  * @date 2023-08-27
@@ -22,9 +22,9 @@ namespace sipai {
  * It inherits from the Layer class and overrides its methods as necessary. This
  * layer is responsible for producing the final output of the network.
  */
-class OutputLayer : public Layer {
+class LayerOutput : public Layer {
 public:
-  OutputLayer() : Layer(LayerType::OutputLayer) {}
+  LayerOutput() : Layer(LayerType::LayerOutput) {}
 
   void forwardPropagation() override {
     if (previousLayer == nullptr) {
@@ -58,7 +58,7 @@ public:
         n.weights[j] -= learningRate * dE_dw;
       }
       // Update weights based on neighboring neurons
-      for (Connection &connection : n.neighbors) {
+      for (NeuronConnection &connection : n.neighbors) {
         auto dE_dw = connection.neuron->value * n.error;
         dE_dw.clamp();
         connection.weight -= learningRate * dE_dw;
