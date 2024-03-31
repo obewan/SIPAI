@@ -1,6 +1,6 @@
 #include "Manager.h"
 #include "NeuralNetworkImportExportCSV.h"
-#include "NeuronConnexion.h"
+#include "NeuronConnection.h"
 #include "csv_parser.h"
 #include "exception/EmptyCellException.h"
 #include "exception/ImportExportException.h"

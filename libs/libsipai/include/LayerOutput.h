@@ -36,7 +36,6 @@ public:
       for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
         n.value += previousLayer->neurons.at(i).value * n.weights.at(i);
       }
-
       // Use activation function
       n.value = n.activationFunction(n.value);
     }
@@ -50,17 +49,18 @@ public:
     if (previousLayer == nullptr) {
       return;
     }
-    for (Neuron &n : neurons) {
+    for (Neuron &neuron : neurons) {
       // Update weights based on neurons in the previous layer
-      for (size_t j = 0; j < n.weights.size(); ++j) {
-        auto dE_dw = previousLayer->neurons[j].value * n.error;
-        dE_dw.clamp();
-        n.weights[j] -= learningRate * dE_dw;
+      for (size_t j = 0; j < neuron.weights.size(); ++j) {
+        auto dE_dw = previousLayer->neurons[j].value * neuron.error;
+        dE_dw.clamp(-1.0, 1.0);
+        neuron.weights[j] -= learningRate * dE_dw;
+        neuron.weights[j].clamp();
       }
       // Update weights based on neighboring neurons
-      for (NeuronConnection &connection : n.neighbors) {
-        auto dE_dw = connection.neuron->value * n.error;
-        dE_dw.clamp();
+      for (NeuronConnection &connection : neuron.neighbors) {
+        auto dE_dw = connection.neuron->value * neuron.error;
+        dE_dw.clamp(-1.0, 1.0);
         connection.weight -= learningRate * dE_dw;
       }
     }
@@ -71,16 +71,18 @@ public:
       throw std::invalid_argument("Invalid expected values size");
     }
     size_t i = 0;
+    float error_min = -1.0f;
+    float error_max = 1.0f;
+    float weightFactor = 0.5; // Experiment with weight between 0 and 1
     for (auto &neuron : neurons) {
       // Compute the weighted sum of neighboring neuron values
       RGBA neighborSum = {0.0, 0.0, 0.0, 0.0};
       for (auto &connection : neuron.neighbors) {
         neighborSum += connection.weight * connection.neuron->value;
       }
-
-      float weightFactor = 0.5; // Experiment with weight between 0 and 1
       neuron.error = weightFactor * (neuron.value - expectedValues[i]) +
                      (1.0f - weightFactor) * neighborSum;
+      neuron.error.clamp(error_min, error_max);
       ++i;
     }
   }

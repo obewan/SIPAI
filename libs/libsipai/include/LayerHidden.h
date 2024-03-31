@@ -9,7 +9,9 @@
  */
 #pragma once
 #include "Layer.h"
+#include <cmath>
 #include <cstddef>
+#include <stdexcept>
 
 namespace sipai {
 /**
@@ -41,21 +43,25 @@ public:
     if (nextLayer == nullptr) {
       return;
     }
+    float error_min = -1.0f;
+    float error_max = 1.0f;
 
     // Implement backward propagation for hidden layer
     for (size_t i = 0; i < neurons.size(); ++i) {
       neurons[i].error = {0.0, 0.0, 0.0, 0.0};
       for (Neuron &n : nextLayer->neurons) {
         neurons[i].error += n.weights[i] * n.error;
+        neurons[i].error.clamp(error_min, error_max);
       }
       // Consider errors of adjacent neurons
       for (NeuronConnection &connection : neurons[i].neighbors) {
         neurons[i].error += connection.neuron->error * connection.weight;
+        neurons[i].error.clamp(error_min, error_max);
       }
-
       // Use the derivative of the activation function
       neurons[i].error *=
           neurons[i].activationFunctionDerivative(neurons[i].value);
+      neurons[i].error.clamp(error_min, error_max);
     }
   }
 
@@ -64,16 +70,17 @@ public:
       return;
     }
 
-    for (Neuron &n : neurons) {
-      for (size_t j = 0; j < n.weights.size(); ++j) {
-        auto dE_dw = previousLayer->neurons[j].value * n.error;
-        dE_dw.clamp();
-        n.weights[j] -= learningRate * dE_dw;
+    for (Neuron &neuron : neurons) {
+      for (size_t j = 0; j < neuron.weights.size(); ++j) {
+        auto dE_dw = previousLayer->neurons[j].value * neuron.error;
+        dE_dw.clamp(-1.0, 1.0);
+        neuron.weights[j] -= learningRate * dE_dw;
+        neuron.weights[j].clamp();
       }
       // Update weights based on neighboring neurons
-      for (NeuronConnection &connection : n.neighbors) {
-        auto dE_dw = connection.neuron->value * n.error;
-        dE_dw.clamp();
+      for (NeuronConnection &connection : neuron.neighbors) {
+        auto dE_dw = connection.neuron->value * neuron.error;
+        dE_dw.clamp(-1.0, 1.0);
         connection.weight -= learningRate * dE_dw;
       }
     }

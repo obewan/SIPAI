@@ -9,7 +9,7 @@
  */
 #pragma once
 #include "ActivationFunctions.h"
-#include "NeuronConnexion.h"
+#include "NeuronConnection.h"
 #include "RGBA.h"
 #include <exception>
 #include <functional>
