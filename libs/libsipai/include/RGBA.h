@@ -37,9 +37,28 @@ struct RGBA {
     return std::reduce(value.begin(), value.end(), 0.0f, std::plus<>());
   }
 
+  /**
+   * @brief Clamp the RGBA between 0.0 and 1.0 values.
+   *
+   * @return RGBA&
+   */
   RGBA &clamp() {
     for (auto &val : value) {
       val = std::clamp(val, 0.f, 1.f);
+    }
+    return *this;
+  }
+
+  /**
+   * @brief Clamp the RGBA between min and max values.
+   *
+   * @param min
+   * @param max
+   * @return RGBA&
+   */
+  RGBA &clamp(float min, float max) {
+    for (auto &val : value) {
+      val = std::clamp(val, min, max);
     }
     return *this;
   }
@@ -52,6 +71,11 @@ struct RGBA {
     }
     return RGBA(std::pow(value[0], n), std::pow(value[1], n),
                 std::pow(value[2], n), std::pow(value[3], n));
+  }
+
+  bool isOutOfRange(const float &min = 0.0f, const float &max = 1.0f) {
+    return std::any_of(value.begin(), value.end(),
+                       [&min, &max](float v) { return v < min || v > max; });
   }
 
   std::string toStringCsv() const {

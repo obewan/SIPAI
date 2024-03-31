@@ -1,5 +1,5 @@
 #include "ActivationFunctions.h"
-#include "HiddenLayer.h"
+#include "LayerHidden.h"
 #include "NeuralNetwork.h"
 #include "doctest.h"
 #include "exception/NetworkException.h"
@@ -9,7 +9,7 @@ using namespace sipai;
 TEST_CASE("Testing the Activation Functions") {
 
   auto network = new NeuralNetwork();
-  auto hlayer = new HiddenLayer();
+  auto hlayer = new LayerHidden();
   Neuron n1;
   Neuron n2;
   hlayer->neurons.push_back(n1);

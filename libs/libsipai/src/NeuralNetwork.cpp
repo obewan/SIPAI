@@ -1,8 +1,8 @@
 #include "NeuralNetwork.h"
-#include "HiddenLayer.h"
-#include "InputLayer.h"
+#include "LayerHidden.h"
+#include "LayerInput.h"
+#include "LayerOutput.h"
 #include "Manager.h"
-#include "OutputLayer.h"
 #include "SimpleLogger.h"
 #include "exception/NetworkException.h"
 
@@ -31,39 +31,39 @@ void NeuralNetwork::initialize() {
 
 std::vector<RGBA>
 NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues) {
-  if (layers.front()->layerType != LayerType::InputLayer) {
+  if (layers.front()->layerType != LayerType::LayerInput) {
     throw NetworkException("Invalid front layer type");
   }
-  if (layers.back()->layerType != LayerType::OutputLayer) {
+  if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NetworkException("Invalid back layer type");
   }
-  ((InputLayer *)layers.front())->setInputValues(inputValues);
+  ((LayerInput *)layers.front())->setInputValues(inputValues);
   for (auto &layer : layers) {
     layer->forwardPropagation();
   }
-  return ((OutputLayer *)layers.back())->getOutputValues();
+  return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
 void NeuralNetwork::backwardPropagation(
     const std::vector<RGBA> &expectedValues) {
-  if (layers.back()->layerType != LayerType::OutputLayer) {
+  if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NetworkException("Invalid back layer type");
   }
-  ((OutputLayer *)layers.back())->computeErrors(expectedValues);
+  ((LayerOutput *)layers.back())->computeErrors(expectedValues);
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
     (*it)->backwardPropagation();
   }
 }
 
 void NeuralNetwork::addLayers() {
-  auto inputLayer = new InputLayer();
+  auto inputLayer = new LayerInput();
   const auto &network_params = Manager::getInstance().network_params;
   inputLayer->neurons.resize(network_params.input_size_x *
                              network_params.input_size_y);
   layers.push_back(inputLayer);
 
   for (size_t i = 0; i < network_params.hiddens_count; ++i) {
-    auto hiddenLayer = new HiddenLayer();
+    auto hiddenLayer = new LayerHidden();
     hiddenLayer->neurons.resize(network_params.hidden_size_x *
                                 network_params.hidden_size_y);
     SetActivationFunction(hiddenLayer,
@@ -72,7 +72,7 @@ void NeuralNetwork::addLayers() {
     layers.push_back(hiddenLayer);
   }
 
-  auto outputLayer = new OutputLayer();
+  auto outputLayer = new LayerOutput();
   outputLayer->neurons.resize(network_params.output_size_x *
                               network_params.output_size_y);
   SetActivationFunction(outputLayer, network_params.output_activation_function,
@@ -107,13 +107,13 @@ void NeuralNetwork::initializeNeighbors() {
     int layer_size_x = 0;
     int layer_size_y = 0;
 
-    if (dynamic_cast<InputLayer *>(layer)) {
+    if (dynamic_cast<LayerInput *>(layer)) {
       layer_size_x = network_params.input_size_x;
       layer_size_y = network_params.input_size_y;
-    } else if (dynamic_cast<HiddenLayer *>(layer)) {
+    } else if (dynamic_cast<LayerHidden *>(layer)) {
       layer_size_x = network_params.hidden_size_x;
       layer_size_y = network_params.hidden_size_y;
-    } else if (dynamic_cast<OutputLayer *>(layer)) {
+    } else if (dynamic_cast<LayerOutput *>(layer)) {
       layer_size_x = network_params.output_size_x;
       layer_size_y = network_params.output_size_y;
     } else {
@@ -166,7 +166,7 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
             });
       }
 
-      neuron.neighbors.push_back(Connection(&neighbor, weight));
+      neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
     }
   }
 }
