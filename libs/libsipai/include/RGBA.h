@@ -69,6 +69,23 @@ struct RGBA {
                      value[3] * 255);
   }
 
+  // Helper method to apply a lambda function to each component
+  RGBA apply(const std::function<float(float)> &func) const {
+    RGBA result;
+    std::transform(value.begin(), value.end(), result.value.begin(), func);
+    return result;
+  }
+
+  // Overloaded helper method to apply a lambda function with an additional
+  // parameter
+  RGBA apply(const std::function<float(float, float)> &func,
+             float param) const {
+    RGBA result;
+    std::transform(value.begin(), value.end(), result.value.begin(),
+                   [&func, param](float v) { return func(v, param); });
+    return result;
+  }
+
   // Define a helper function to apply a lambda to each element
   auto applyToElements(auto func, const RGBA &rhs) const {
     RGBA result;
@@ -86,6 +103,12 @@ struct RGBA {
   RGBA &operator-=(const RGBA &rhs) {
     std::transform(this->value.begin(), this->value.end(), rhs.value.begin(),
                    this->value.begin(), std::minus<>());
+    return *this;
+  }
+
+  RGBA &operator*=(const RGBA &rhs) {
+    std::transform(this->value.begin(), this->value.end(), rhs.value.begin(),
+                   this->value.begin(), std::multiplies<>());
     return *this;
   }
 

@@ -67,7 +67,7 @@ public:
     }
   }
 
-  std::function<float(float)> activationFunction;
-  std::function<float(float)> activationFunctionDerivative;
+  std::function<RGBA(RGBA)> activationFunction;
+  std::function<RGBA(RGBA)> activationFunctionDerivative;
 };
 } // namespace sipai

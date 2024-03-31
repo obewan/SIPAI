@@ -41,9 +41,7 @@ public:
         connection.neuron->value += n.value * connection.weight;
       }
       // Use activation function
-      for (size_t j = 0; j < n.value.value.size(); ++j) {
-        n.value.value[j] = n.activationFunction(n.value.value[j]);
-      }
+      n.value = n.activationFunction(n.value);
     }
   }
 

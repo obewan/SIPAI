@@ -37,9 +37,7 @@ public:
         connection.neuron->value += n.value * connection.weight;
       }
       // Use activation function
-      for (size_t j = 0; j < n.value.value.size(); ++j) {
-        n.value.value[j] = n.activationFunction(n.value.value[j]);
-      }
+      n.value = n.activationFunction(n.value);
     }
   }
 
@@ -60,10 +58,8 @@ public:
       }
 
       // Use the derivative of the activation function
-      for (size_t j = 0; j < neurons[i].error.value.size(); ++j) {
-        neurons[i].error.value[j] *=
-            neurons[i].activationFunctionDerivative(neurons[i].value.value[j]);
-      }
+      neurons[i].error *=
+          neurons[i].activationFunctionDerivative(neurons[i].value);
     }
   }
 

@@ -54,6 +54,8 @@ void Manager::exportNetwork() {
 }
 
 void Manager::run() {
+  SimpleLogger::LOG_INFO(getVersionHeader());
+
   switch (app_params.run_mode) {
   case ERunMode::TrainingMonitored:
     runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
