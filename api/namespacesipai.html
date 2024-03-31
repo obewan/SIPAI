@@ -99,8 +99,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1HiddenLayer.html">HiddenLayer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classsipai_1_1HiddenLayer.html" title="The HiddenLayer class represents a hidden layer in a neural network. It inherits from the Layer class...">HiddenLayer</a> class represents a hidden layer in a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. Hidden layers are responsible for processing inputs received from the input layer and passing the result to the output layer or the next hidden layer.  <a href="classsipai_1_1HiddenLayer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageExport.html">ImageExport</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html">ImageHelper</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1InputLayer.html">InputLayer</a></td></tr>
@@ -114,9 +112,11 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class represents a neural network for image processing.  <a href="classsipai_1_1NeuralNetwork.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExport.html">NeuralNetworkImportExport</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkBuilder.html">NeuralNetworkBuilder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportCSV.html">NeuralNetworkImportExportCSV</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html">NeuralNetworkImportExportFacade</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportJSON.html">NeuralNetworkImportExportJSON</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">NetworkImportExportJSON class to export and import network models using the JSON format.  <a href="classsipai_1_1NeuralNetworkImportExportJSON.html#details">More...</a><br /></td></tr>
@@ -133,6 +133,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1RGBA.html">RGBA</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerVisitor.html">RunnerVisitor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerVisitorFactory.html">RunnerVisitorFactory</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html">SimpleLogger</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsipai_1_1SimpleLogger.html" title="SimpleLogger class.">SimpleLogger</a> class.  <a href="classsipai_1_1SimpleLogger.html#details">More...</a><br /></td></tr>
@@ -192,25 +194,25 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:acecdfef9c16fa14e9921e2aaca700fb0"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194">EActivationFunction</a>, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#acecdfef9c16fa14e9921e2aaca700fb0">activation_map</a></td></tr>
 <tr class="separator:acecdfef9c16fa14e9921e2aaca700fb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d64288ca760fc3e1b426c80aa0e7534"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sigmoid</a> = [](auto x) { return 1.0f / (1.0f + exp(-x)); }</td></tr>
+<tr class="memitem:a5d64288ca760fc3e1b426c80aa0e7534"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sigmoid</a></td></tr>
 <tr class="memdesc:a5d64288ca760fc3e1b426c80aa0e7534"><td class="mdescLeft">&#160;</td><td class="mdescRight">the sigmoid function is commonly used as the activation function during the forward propagation step. The reason for this is that the sigmoid function maps any input value into a range between 0 and 1, which can be useful for outputting probabilities, among other things. The sigmoid derivative can be expressed in terms of the output of the sigmoid function itself: if σ(x) is the sigmoid function, then its derivative σ'(x) can be computed as σ(x) * (1 - σ(x)).  <a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">More...</a><br /></td></tr>
 <tr class="separator:a5d64288ca760fc3e1b426c80aa0e7534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5ea4c9552c815ccdfec85f5c297997b"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ac5ea4c9552c815ccdfec85f5c297997b">sigmoidDerivative</a></td></tr>
 <tr class="separator:ac5ea4c9552c815ccdfec85f5c297997b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a703f16daca81e1a86081c4582ef042ba"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">tanhFunc</a> = [](auto x) { return tanh(x); }</td></tr>
+<tr class="memitem:a703f16daca81e1a86081c4582ef042ba"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">tanhFunc</a></td></tr>
 <tr class="memdesc:a703f16daca81e1a86081c4582ef042ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the input to a range between -1 and 1. It is often used in the hidden layers of a neural network.  <a href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">More...</a><br /></td></tr>
 <tr class="separator:a703f16daca81e1a86081c4582ef042ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83037f4cb7a18c26eaed42312d656812"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a83037f4cb7a18c26eaed42312d656812">tanhDerivative</a></td></tr>
 <tr class="separator:a83037f4cb7a18c26eaed42312d656812"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4ca1a408822f4824a7cc57802e3f73a"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ac4ca1a408822f4824a7cc57802e3f73a">relu</a> = [](auto x) { return std::max(0.0f, x); }</td></tr>
-<tr class="memdesc:ac4ca1a408822f4824a7cc57802e3f73a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ReLU Function (Rectified Linear Unit): This function outputs the input directly if it’s positive; otherwise, it outputs zero. It has become very popular in recent years because it helps to alleviate the vanishing gradient problem.  <a href="namespacesipai.html#ac4ca1a408822f4824a7cc57802e3f73a">More...</a><br /></td></tr>
+<tr class="memitem:ac4ca1a408822f4824a7cc57802e3f73a"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ac4ca1a408822f4824a7cc57802e3f73a">relu</a></td></tr>
+<tr class="memdesc:ac4ca1a408822f4824a7cc57802e3f73a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ReLU Function (Rectified Linear Unit): This function outputs the input directly if it’s positive; otherwise, it outputs zero. It has become very popular in recent years because it helps to alleviate the vanishing gradient problem. Combine ReLU with clamping to [0, 1] range.  <a href="namespacesipai.html#ac4ca1a408822f4824a7cc57802e3f73a">More...</a><br /></td></tr>
 <tr class="separator:ac4ca1a408822f4824a7cc57802e3f73a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9f01a2b99895a061124a4d1732708f8"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ac9f01a2b99895a061124a4d1732708f8">reluDerivative</a> = [](auto x) { return x &gt; 0 ? 1.0f : 0.0f; }</td></tr>
+<tr class="memitem:ac9f01a2b99895a061124a4d1732708f8"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ac9f01a2b99895a061124a4d1732708f8">reluDerivative</a></td></tr>
 <tr class="separator:ac9f01a2b99895a061124a4d1732708f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d6ea0e8c02ae320758bf298c6749eac"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a3d6ea0e8c02ae320758bf298c6749eac">leakyRelu</a> = [](auto x) { return std::max(0.01f * x, x); }</td></tr>
-<tr class="memdesc:a3d6ea0e8c02ae320758bf298c6749eac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Leaky ReLU: This is a variant of ReLU that allows small negative values when the input is less than zero. It can help to alleviate the dying ReLU problem where neurons become inactive and only output zero.  <a href="namespacesipai.html#a3d6ea0e8c02ae320758bf298c6749eac">More...</a><br /></td></tr>
+<tr class="memitem:a3d6ea0e8c02ae320758bf298c6749eac"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a3d6ea0e8c02ae320758bf298c6749eac">leakyRelu</a></td></tr>
+<tr class="memdesc:a3d6ea0e8c02ae320758bf298c6749eac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Leaky ReLU: This is a variant of ReLU that allows small negative values when the input is less than zero. It can help to alleviate the dying ReLU problem where neurons become inactive and only output zero. Combine LReLU with clamping to [0, 1] range.  <a href="namespacesipai.html#a3d6ea0e8c02ae320758bf298c6749eac">More...</a><br /></td></tr>
 <tr class="separator:a3d6ea0e8c02ae320758bf298c6749eac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a854697817659f1a4862b24cfc652289e"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a854697817659f1a4862b24cfc652289e">leakyReluDerivative</a> = [](auto x) { return x &gt; 0 ? 1.0f : 0.01f; }</td></tr>
+<tr class="memitem:a854697817659f1a4862b24cfc652289e"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a854697817659f1a4862b24cfc652289e">leakyReluDerivative</a></td></tr>
 <tr class="separator:a854697817659f1a4862b24cfc652289e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1054f011782057a93919baf09a141879"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a1054f011782057a93919baf09a141879">parametricRelu</a></td></tr>
 <tr class="memdesc:a1054f011782057a93919baf09a141879"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parametric ReLU (PReLU) is a type of leaky ReLU that, instead of having a predetermined slope like 0.01, learns the slope during training. This can give it a bit more flexibility and help it to learn more complex patterns.  <a href="namespacesipai.html#a1054f011782057a93919baf09a141879">More...</a><br /></td></tr>
@@ -456,8 +458,13 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">auto</span> x, <span class="keyword">auto</span> alpha) {</div>
-<div class="line">  <span class="keywordflow">return</span> x &gt;= 0 ? x : alpha * (exp(x) - 1);</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba, <span class="keywordtype">float</span> alpha) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply(</div>
+<div class="line">      [](<span class="keywordtype">float</span> v, <span class="keywordtype">float</span> param) {</div>
+<div class="line">        <span class="keyword">auto</span> value = v &gt;= 0 ? v : param * (exp(v) - 1);</div>
+<div class="line">        <span class="keywordflow">return</span> std::clamp(value, 0.f, 1.f);</div>
+<div class="line">      },</div>
+<div class="line">      alpha);</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 <p>the Exponential Linear Units (ELUs) are a great choice as they take on negative values when the input is less than zero, which allows them to push mean unit activations closer to zero like batch normalization. Unlike ReLUs, ELUs have a nonzero gradient for negative input, which avoids the “dead neuron” problem. </p>
@@ -483,8 +490,10 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">auto</span> x, <span class="keyword">auto</span> alpha) {</div>
-<div class="line">  <span class="keywordflow">return</span> x &gt;= 0 ? 1 : alpha * exp(x);</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba, <span class="keywordtype">float</span> alpha) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply(</div>
+<div class="line">      [](<span class="keywordtype">float</span> v, <span class="keywordtype">float</span> param) { <span class="keywordflow">return</span> v &gt;= 0 ? 1.0f : param * exp(v); },</div>
+<div class="line">      alpha);</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 </div>
@@ -517,7 +526,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto sipai::leakyRelu = [](auto x) { return std::max(0.01f * x, x); }</td>
+          <td class="memname">auto sipai::leakyRelu</td>
         </tr>
       </table>
   </td>
@@ -526,8 +535,12 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Leaky ReLU: This is a variant of ReLU that allows small negative values when the input is less than zero. It can help to alleviate the dying ReLU problem where neurons become inactive and only output zero. </p>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply(</div>
+<div class="line">      [](<span class="keywordtype">float</span> v) -&gt; <span class="keywordtype">float</span> { <span class="keywordflow">return</span> std::clamp(0.01f * v, 0.0f, 1.0f); });</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p>Leaky ReLU: This is a variant of ReLU that allows small negative values when the input is less than zero. It can help to alleviate the dying ReLU problem where neurons become inactive and only output zero. Combine LReLU with clamping to [0, 1] range. </p>
 
 </div>
 </div>
@@ -541,7 +554,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto sipai::leakyReluDerivative = [](auto x) { return x &gt; 0 ? 1.0f : 0.01f; }</td>
+          <td class="memname">auto sipai::leakyReluDerivative</td>
         </tr>
       </table>
   </td>
@@ -550,7 +563,10 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> std::max(0.01f, std::min(1.0f, v)); });</div>
+<div class="line">}</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a8c1adef9985b74cdf2ec4d38f18b0a38"></a>
@@ -613,8 +629,14 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">auto</span> x, <span class="keyword">auto</span> alpha) {</div>
-<div class="line">  <span class="keywordflow">return</span> std::max(alpha * x, x);</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba, <span class="keywordtype">float</span> alpha) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply(</div>
+<div class="line">      [](<span class="keywordtype">float</span> v, <span class="keywordtype">float</span> param) {</div>
+<div class="line">        </div>
+<div class="line">        <span class="keyword">auto</span> value = std::max(param * v, v);</div>
+<div class="line">        <span class="keywordflow">return</span> std::clamp(value, 0.f, 1.f);</div>
+<div class="line">      },</div>
+<div class="line">      alpha);</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 <p>Parametric ReLU (PReLU) is a type of leaky ReLU that, instead of having a predetermined slope like 0.01, learns the slope during training. This can give it a bit more flexibility and help it to learn more complex patterns. </p>
@@ -640,8 +662,9 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">auto</span> x, <span class="keyword">auto</span> alpha) {</div>
-<div class="line">  <span class="keywordflow">return</span> x &gt; 0 ? 1.0f : alpha;</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba, <span class="keywordtype">float</span> alpha) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply([](<span class="keywordtype">float</span> v, <span class="keywordtype">float</span> param) { <span class="keywordflow">return</span> v &gt; 0 ? 1.0f : param; },</div>
+<div class="line">                    alpha);</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 </div>
@@ -656,7 +679,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto sipai::relu = [](auto x) { return std::max(0.0f, x); }</td>
+          <td class="memname">auto sipai::relu</td>
         </tr>
       </table>
   </td>
@@ -665,11 +688,14 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>ReLU Function (Rectified Linear Unit): This function outputs the input directly if it’s positive; otherwise, it outputs zero. It has become very popular in recent years because it helps to alleviate the vanishing gradient problem. </p>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> std::clamp(v, 0.0f, 1.0f); });</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p>ReLU Function (Rectified Linear Unit): This function outputs the input directly if it’s positive; otherwise, it outputs zero. It has become very popular in recent years because it helps to alleviate the vanishing gradient problem. Combine ReLU with clamping to [0, 1] range. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">Unit</td><td></td></tr>
+    <tr><td class="paramname">rgba</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -687,7 +713,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto sipai::reluDerivative = [](auto x) { return x &gt; 0 ? 1.0f : 0.0f; }</td>
+          <td class="memname">auto sipai::reluDerivative</td>
         </tr>
       </table>
   </td>
@@ -696,7 +722,10 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> v &gt; 0 ? 1.0f : 0.0f; });</div>
+<div class="line">}</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a5d64288ca760fc3e1b426c80aa0e7534"></a>
@@ -709,7 +738,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto sipai::sigmoid = [](auto x) { return 1.0f / (1.0f + exp(-x)); }</td>
+          <td class="memname">auto sipai::sigmoid</td>
         </tr>
       </table>
   </td>
@@ -718,7 +747,14 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply([](<span class="keywordtype">float</span> v) {</div>
+<div class="line">    </div>
+<div class="line">    <span class="keywordtype">float</span> value = 1.0f / (1.0f + exp(-v));</div>
+<div class="line">    <span class="keywordflow">return</span> std::clamp(value, 0.0f, 1.0f);</div>
+<div class="line">  });</div>
+<div class="line">}</div>
+</div><!-- fragment -->
 <p>the sigmoid function is commonly used as the activation function during the forward propagation step. The reason for this is that the sigmoid function maps any input value into a range between 0 and 1, which can be useful for outputting probabilities, among other things. The sigmoid derivative can be expressed in terms of the output of the sigmoid function itself: if σ(x) is the sigmoid function, then its derivative σ'(x) can be computed as σ(x) * (1 - σ(x)). </p>
 
 </div>
@@ -742,11 +778,11 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">auto</span> x) {</div>
-<div class="line">  <span class="keywordtype">float</span> sigmoidValue = <a class="code" href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sigmoid</a>(x);</div>
-<div class="line">  <span class="keywordflow">return</span> sigmoidValue * (1 - sigmoidValue);</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  RGBA sigmoidValue = <a class="code" href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sigmoid</a>(rgba);</div>
+<div class="line">  <span class="keywordflow">return</span> sigmoidValue.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> v * (1 - v); });</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacesipai_html_a5d64288ca760fc3e1b426c80aa0e7534"><div class="ttname"><a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sipai::sigmoid</a></div><div class="ttdeci">auto sigmoid</div><div class="ttdoc">the sigmoid function is commonly used as the activation function during the forward propagation step....</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:40</div></div>
+<div class="ttc" id="anamespacesipai_html_a5d64288ca760fc3e1b426c80aa0e7534"><div class="ttname"><a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sipai::sigmoid</a></div><div class="ttdeci">auto sigmoid</div><div class="ttdoc">the sigmoid function is commonly used as the activation function during the forward propagation step....</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:42</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -769,10 +805,11 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">auto</span> x) {</div>
-<div class="line">  <span class="keywordtype">float</span> tanhValue = tanh(x);</div>
-<div class="line">  <span class="keywordflow">return</span> 1 - tanhValue * tanhValue;</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  RGBA tanhValue = <a class="code" href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">tanhFunc</a>(rgba);</div>
+<div class="line">  <span class="keywordflow">return</span> tanhValue.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> 1 - v * v; });</div>
 <div class="line">}</div>
+<div class="ttc" id="anamespacesipai_html_a703f16daca81e1a86081c4582ef042ba"><div class="ttname"><a href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">sipai::tanhFunc</a></div><div class="ttdeci">auto tanhFunc</div><div class="ttdoc">Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the inp...</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:59</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -786,7 +823,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto sipai::tanhFunc = [](auto x) { return tanh(x); }</td>
+          <td class="memname">auto sipai::tanhFunc</td>
         </tr>
       </table>
   </td>
@@ -795,7 +832,13 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">= [](<span class="keyword">const</span> RGBA &amp;rgba) {</div>
+<div class="line">  <span class="keywordflow">return</span> rgba.apply([](<span class="keywordtype">float</span> v) {</div>
+<div class="line">    </div>
+<div class="line">    <span class="keywordflow">return</span> (std::tanh(v) / 2.0f) + 0.5f;</div>
+<div class="line">  });</div>
+<div class="line">}</div>
+</div><!-- fragment -->
 <p>Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the input to a range between -1 and 1. It is often used in the hidden layers of a neural network. </p>
 
 </div>

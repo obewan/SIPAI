@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['sigmoid_424',['sigmoid',['../namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534',1,'sipai']]],
-  ['sigmoidderivative_425',['sigmoidDerivative',['../namespacesipai.html#ac5ea4c9552c815ccdfec85f5c297997b',1,'sipai']]],
-  ['split_5fratio_426',['split_ratio',['../structsipai_1_1AppParams.html#aff2df2fd1dfb77ecbab8c870039e5680',1,'sipai::AppParams']]],
-  ['stoptraining_427',['stopTraining',['../TrainingMonitoredVisitor_8cpp.html#a3f429bbb7d17f6561a6e02bedba454b4',1,'TrainingMonitoredVisitor.cpp']]]
+  ['parametricrelu_445',['parametricRelu',['../namespacesipai.html#a1054f011782057a93919baf09a141879',1,'sipai']]],
+  ['parametricreluderivative_446',['parametricReluDerivative',['../namespacesipai.html#a07bcbe09fe9ab29378d50150b61cd3b8',1,'sipai']]],
+  ['previouslayer_447',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]]
 ];

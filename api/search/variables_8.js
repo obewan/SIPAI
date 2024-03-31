@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['output_5factivation_5falpha_413',['output_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#af59652ab9640efbe3e1ee1d24bfdf3eb',1,'sipai::NeuralNetworkParams']]],
-  ['output_5factivation_5ffunction_414',['output_activation_function',['../structsipai_1_1NeuralNetworkParams.html#af53014e1ec358e4d4afab1c8c9b03315',1,'sipai::NeuralNetworkParams']]],
-  ['output_5ffile_415',['output_file',['../structsipai_1_1AppParams.html#aca50bfed2557acec4d1d50c38a9736a7',1,'sipai::AppParams']]],
-  ['output_5fsize_5fx_416',['output_size_x',['../structsipai_1_1NeuralNetworkParams.html#a5892a752119dd90f07f0e4fac4adcd4d',1,'sipai::NeuralNetworkParams']]],
-  ['output_5fsize_5fy_417',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]]
+  ['max_5fepochs_428',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
+  ['max_5fepochs_5fwithout_5fimprovement_429',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#acc2ed6e7c9112fe64f2dd9b882192a0e',1,'sipai::AppParams']]],
+  ['mode_5fmap_430',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]]
 ];

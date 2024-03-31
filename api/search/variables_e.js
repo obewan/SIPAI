@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['value_433',['value',['../classsipai_1_1Neuron.html#ae8520bf3d77d8859eeb90304a7cf7243',1,'sipai::Neuron::value()'],['../structsipai_1_1RGBA.html#a1357c219bce94d836d5e16af5683176a',1,'sipai::RGBA::value()']]],
-  ['version_434',['version',['../structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1',1,'sipai::AppParams']]]
+  ['tanhderivative_455',['tanhDerivative',['../namespacesipai.html#a83037f4cb7a18c26eaed42312d656812',1,'sipai']]],
+  ['tanhfunc_456',['tanhFunc',['../namespacesipai.html#a703f16daca81e1a86081c4582ef042ba',1,'sipai']]],
+  ['title_457',['title',['../structsipai_1_1AppParams.html#a98d78e26b8c627eabc6288ea970dac01',1,'sipai::AppParams']]],
+  ['training_5fdata_5ffile_458',['training_data_file',['../structsipai_1_1AppParams.html#a78e3d56a4a95e3c550ff0ccaf0174fc1',1,'sipai::AppParams']]]
 ];

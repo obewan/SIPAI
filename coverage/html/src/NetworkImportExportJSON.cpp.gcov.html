@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-21 12:06:49</td>
+            <td class="headerValue">2024-03-31 18:14:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -212,11 +212,11 @@
 <a name="150"><span class="lineNum">     150 </span><span class="lineCov">          2 :   json_network[&quot;version&quot;] = appParams.version;</span></a>
 <a name="151"><span class="lineNum">     151 </span>            : </a>
 <a name="152"><span class="lineNum">     152 </span>            :   // Serialize the layers to JSON.</a>
-<a name="153"><span class="lineNum">     153 </span><span class="lineCov">         14 :   for (auto layer : network-&gt;layers) {</span></a>
-<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         12 :     json json_layer = {{&quot;type&quot;, layer-&gt;getLayerTypeStr()},</span></a>
-<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         84 :                        {&quot;neurons&quot;, layer-&gt;neurons.size()}};</span></a>
-<a name="156"><span class="lineNum">     156 </span><span class="lineCov">         12 :     json_network[&quot;layers&quot;].push_back(json_layer);</span></a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">         12 :   }</span></a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">          8 :   for (auto layer : network-&gt;layers) {</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">          6 :     json json_layer = {{&quot;type&quot;, layer-&gt;getLayerTypeStr()},</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         42 :                        {&quot;neurons&quot;, layer-&gt;neurons.size()}};</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">          6 :     json_network[&quot;layers&quot;].push_back(json_layer);</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">          6 :   }</span></a>
 <a name="158"><span class="lineNum">     158 </span>            : </a>
 <a name="159"><span class="lineNum">     159 </span>            :   // Serialize the parameters to JSON.</a>
 <a name="160"><span class="lineNum">     160 </span><span class="lineCov">          2 :   json_network[&quot;parameters&quot;][&quot;input_size_x&quot;] = json(networkParams.input_size_x);</span></a>
@@ -247,7 +247,7 @@
 <a name="185"><span class="lineNum">     185 </span><span class="lineCov">          2 :   std::ofstream file(appParams.network_to_export);</span></a>
 <a name="186"><span class="lineNum">     186 </span><span class="lineCov">          2 :   file &lt;&lt; json_network.dump(2);</span></a>
 <a name="187"><span class="lineNum">     187 </span><span class="lineCov">          2 :   file.close();</span></a>
-<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         86 : }</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         44 : }</span></a>
 </pre>
       </td>
     </tr>

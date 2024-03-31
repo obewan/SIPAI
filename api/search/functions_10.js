@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['updateweights_370',['updateWeights',['../classsipai_1_1HiddenLayer.html#a8761cf34ee79c5205d55b13052f5d829',1,'sipai::HiddenLayer::updateWeights()'],['../classsipai_1_1InputLayer.html#aab3443de623982925c332df8070b2d66',1,'sipai::InputLayer::updateWeights()'],['../classsipai_1_1Layer.html#a3d04c557fb3bae027546816692595fed',1,'sipai::Layer::updateWeights()'],['../classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672',1,'sipai::NeuralNetwork::updateWeights()'],['../classsipai_1_1OutputLayer.html#ac0e2be702c03ab6ed4db5f4bbbe82a84',1,'sipai::OutputLayer::updateWeights()']]]
+  ['tostringcsv_390',['toStringCsv',['../structsipai_1_1RGBA.html#a640ab75626b964f2ed572d75757e179b',1,'sipai::RGBA']]],
+  ['tovec4b_391',['toVec4b',['../structsipai_1_1RGBA.html#a7902cc1d7bfcb652d22a9103370e7e40',1,'sipai::RGBA']]],
+  ['trainonepoch_392',['trainOnEpoch',['../classsipai_1_1TrainingMonitoredVisitor.html#a99c09c6ef2c0af13adf80fbe8c64905a',1,'sipai::TrainingMonitoredVisitor']]]
 ];

@@ -31,17 +31,17 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">4</td>
-            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">6</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-21 12:06:49</td>
+            <td class="headerValue">2024-03-31 18:14:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">2</td>
-            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">3</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
@@ -73,19 +73,19 @@
 <a name="11"><span class="lineNum">      11 </span>            : </a>
 <a name="12"><span class="lineNum">      12 </span>            : #include &quot;AppParams.h&quot;</a>
 <a name="13"><span class="lineNum">      13 </span>            : #include &quot;Common.h&quot;</a>
-<a name="14"><span class="lineNum">      14 </span>            : #include &quot;NeuralNetwork.h&quot;</a>
+<a name="14"><span class="lineNum">      14 </span>            : #include &quot;NeuralNetworkBuilder.h&quot;</a>
 <a name="15"><span class="lineNum">      15 </span>            : #include &quot;NeuralNetworkParams.h&quot;</a>
 <a name="16"><span class="lineNum">      16 </span>            : #include &quot;RGBA.h&quot;</a>
-<a name="17"><span class="lineNum">      17 </span>            : #include &quot;RunnerVisitor.h&quot;</a>
+<a name="17"><span class="lineNum">      17 </span>            : #include &quot;RunnerVisitorFactory.h&quot;</a>
 <a name="18"><span class="lineNum">      18 </span>            : #include &lt;cstddef&gt;</a>
 <a name="19"><span class="lineNum">      19 </span>            : #include &lt;memory&gt;</a>
 <a name="20"><span class="lineNum">      20 </span>            : </a>
 <a name="21"><span class="lineNum">      21 </span>            : namespace sipai {</a>
 <a name="22"><span class="lineNum">      22 </span>            : class Manager {</a>
 <a name="23"><span class="lineNum">      23 </span>            : public:</a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         42 :   static Manager &amp;getInstance() {</span></a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         42 :     static Manager instance;</span></a>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         42 :     return instance;</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         47 :   static Manager &amp;getInstance() {</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         47 :     static Manager instance;</span></a>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         47 :     return instance;</span></a>
 <a name="27"><span class="lineNum">      27 </span>            :   }</a>
 <a name="28"><span class="lineNum">      28 </span>            :   Manager(Manager const &amp;) = delete;</a>
 <a name="29"><span class="lineNum">      29 </span>            :   void operator=(Manager const &amp;) = delete;</a>
@@ -152,101 +152,89 @@
 <a name="90"><span class="lineNum">      90 </span>            :                  size_t resize_y);</a>
 <a name="91"><span class="lineNum">      91 </span>            : </a>
 <a name="92"><span class="lineNum">      92 </span>            :   /**</a>
-<a name="93"><span class="lineNum">      93 </span>            :    * @brief Create a new Neuran Network</a>
-<a name="94"><span class="lineNum">      94 </span>            :    *</a>
-<a name="95"><span class="lineNum">      95 </span>            :    */</a>
-<a name="96"><span class="lineNum">      96 </span>            :   void createNetwork();</a>
-<a name="97"><span class="lineNum">      97 </span>            : </a>
-<a name="98"><span class="lineNum">      98 </span>            :   /**</a>
-<a name="99"><span class="lineNum">      99 </span>            :    * @brief Import the neural network json and csv files.</a>
-<a name="100"><span class="lineNum">     100 </span>            :    *</a>
-<a name="101"><span class="lineNum">     101 </span>            :    */</a>
-<a name="102"><span class="lineNum">     102 </span>            :   void importNetwork();</a>
-<a name="103"><span class="lineNum">     103 </span>            : </a>
-<a name="104"><span class="lineNum">     104 </span>            :   /**</a>
-<a name="105"><span class="lineNum">     105 </span>            :    * @brief Export the neural network to its json and csv files.</a>
-<a name="106"><span class="lineNum">     106 </span>            :    *</a>
-<a name="107"><span class="lineNum">     107 </span>            :    */</a>
-<a name="108"><span class="lineNum">     108 </span>            :   void exportNetwork();</a>
-<a name="109"><span class="lineNum">     109 </span>            : </a>
-<a name="110"><span class="lineNum">     110 </span>            :   /**</a>
-<a name="111"><span class="lineNum">     111 </span>            :    * @brief Run the ai (main entrance).</a>
+<a name="93"><span class="lineNum">      93 </span>            :    * @brief Network builder.</a>
+<a name="94"><span class="lineNum">      94 </span>            :    */</a>
+<a name="95"><span class="lineNum">      95 </span>            :   void createOrImportNetwork();</a>
+<a name="96"><span class="lineNum">      96 </span>            : </a>
+<a name="97"><span class="lineNum">      97 </span>            :   /**</a>
+<a name="98"><span class="lineNum">      98 </span>            :    * @brief Export the neural network to its json and csv files.</a>
+<a name="99"><span class="lineNum">      99 </span>            :    *</a>
+<a name="100"><span class="lineNum">     100 </span>            :    */</a>
+<a name="101"><span class="lineNum">     101 </span>            :   void exportNetwork();</a>
+<a name="102"><span class="lineNum">     102 </span>            : </a>
+<a name="103"><span class="lineNum">     103 </span>            :   /**</a>
+<a name="104"><span class="lineNum">     104 </span>            :    * @brief Run the ai (main entrance).</a>
+<a name="105"><span class="lineNum">     105 </span>            :    *</a>
+<a name="106"><span class="lineNum">     106 </span>            :    */</a>
+<a name="107"><span class="lineNum">     107 </span>            :   void run();</a>
+<a name="108"><span class="lineNum">     108 </span>            : </a>
+<a name="109"><span class="lineNum">     109 </span>            :   /**</a>
+<a name="110"><span class="lineNum">     110 </span>            :    * @brief Runs the provided visitor on the training and validation data sets</a>
+<a name="111"><span class="lineNum">     111 </span>            :    * with the initialized neural network.</a>
 <a name="112"><span class="lineNum">     112 </span>            :    *</a>
-<a name="113"><span class="lineNum">     113 </span>            :    */</a>
-<a name="114"><span class="lineNum">     114 </span>            :   void run();</a>
-<a name="115"><span class="lineNum">     115 </span>            : </a>
-<a name="116"><span class="lineNum">     116 </span>            :   /**</a>
-<a name="117"><span class="lineNum">     117 </span>            :    * @brief Runs the provided visitor on the training and validation data sets</a>
-<a name="118"><span class="lineNum">     118 </span>            :    * with the initialized neural network.</a>
-<a name="119"><span class="lineNum">     119 </span>            :    *</a>
-<a name="120"><span class="lineNum">     120 </span>            :    * This method is the entry point for executing different types of runners</a>
-<a name="121"><span class="lineNum">     121 </span>            :    * (e.g., training, inference, evaluation) on the loaded data sets and the</a>
-<a name="122"><span class="lineNum">     122 </span>            :    * initialized neural network. It accepts a visitor object implementing the</a>
-<a name="123"><span class="lineNum">     123 </span>            :    * `RunnerVisitor` interface and calls its `visit` method, passing the</a>
-<a name="124"><span class="lineNum">     124 </span>            :    * necessary data and parameters.</a>
-<a name="125"><span class="lineNum">     125 </span>            :    *</a>
-<a name="126"><span class="lineNum">     126 </span>            :    * @param visitor The visitor object implementing the `RunnerVisitor`</a>
-<a name="127"><span class="lineNum">     127 </span>            :    * interface, which encapsulates the runner logic.</a>
-<a name="128"><span class="lineNum">     128 </span>            :    */</a>
-<a name="129"><span class="lineNum">     129 </span>            :   void runWithVisitor(const RunnerVisitor &amp;visitor);</a>
-<a name="130"><span class="lineNum">     130 </span>            : </a>
-<a name="131"><span class="lineNum">     131 </span>            :   /**</a>
-<a name="132"><span class="lineNum">     132 </span>            :    * @brief Loads the training data from the specified source.</a>
-<a name="133"><span class="lineNum">     133 </span>            :    *</a>
-<a name="134"><span class="lineNum">     134 </span>            :    * @return A vector of pairs, where each pair contains the paths to the input</a>
-<a name="135"><span class="lineNum">     135 </span>            :    * image and the corresponding target image.</a>
-<a name="136"><span class="lineNum">     136 </span>            :    */</a>
-<a name="137"><span class="lineNum">     137 </span>            :   TrainingData loadTrainingData();</a>
-<a name="138"><span class="lineNum">     138 </span>            : </a>
-<a name="139"><span class="lineNum">     139 </span>            :   /**</a>
-<a name="140"><span class="lineNum">     140 </span>            :    * @brief Shuffle and splits the training data into training and validation</a>
-<a name="141"><span class="lineNum">     141 </span>            :    * sets.</a>
-<a name="142"><span class="lineNum">     142 </span>            :    *</a>
-<a name="143"><span class="lineNum">     143 </span>            :    * @param data The training data to be split.</a>
-<a name="144"><span class="lineNum">     144 </span>            :    * @param split_ratio The ratio of the data to be used for the training</a>
-<a name="145"><span class="lineNum">     145 </span>            :    * set. For example, if split_ratio is 0.8, 80% of the data will be used</a>
-<a name="146"><span class="lineNum">     146 </span>            :    * for the training set, and the remaining 20% will be used for the</a>
-<a name="147"><span class="lineNum">     147 </span>            :    * validation set.</a>
-<a name="148"><span class="lineNum">     148 </span>            :    *</a>
-<a name="149"><span class="lineNum">     149 </span>            :    * @return A pair of vectors, where the first element is the training</a>
-<a name="150"><span class="lineNum">     150 </span>            :    * data, and the second element is the validation data.</a>
-<a name="151"><span class="lineNum">     151 </span>            :    */</a>
-<a name="152"><span class="lineNum">     152 </span>            :   std::pair&lt;TrainingData, TrainingData&gt; splitData(TrainingData data,</a>
-<a name="153"><span class="lineNum">     153 </span>            :                                                   float split_ratio);</a>
-<a name="154"><span class="lineNum">     154 </span>            : </a>
-<a name="155"><span class="lineNum">     155 </span>            :   /**</a>
-<a name="156"><span class="lineNum">     156 </span>            :    * @brief Initializes the neural network architecture.</a>
-<a name="157"><span class="lineNum">     157 </span>            :    *</a>
-<a name="158"><span class="lineNum">     158 </span>            :    * This method sets up the input, hidden, and output layers of the neural</a>
-<a name="159"><span class="lineNum">     159 </span>            :    * network, along with any necessary configurations or parameters.</a>
-<a name="160"><span class="lineNum">     160 </span>            :    */</a>
-<a name="161"><span class="lineNum">     161 </span>            :   void initializeNetwork();</a>
-<a name="162"><span class="lineNum">     162 </span>            : </a>
-<a name="163"><span class="lineNum">     163 </span>            :   /**</a>
-<a name="164"><span class="lineNum">     164 </span>            :    * @brief Computes the mean squared error (MSE) loss between the output image</a>
-<a name="165"><span class="lineNum">     165 </span>            :    * and the target image.</a>
-<a name="166"><span class="lineNum">     166 </span>            :    *</a>
-<a name="167"><span class="lineNum">     167 </span>            :    * @param outputImage The output image produced by the neural network.</a>
-<a name="168"><span class="lineNum">     168 </span>            :    * @param targetImage The expected target image.</a>
-<a name="169"><span class="lineNum">     169 </span>            :    *</a>
-<a name="170"><span class="lineNum">     170 </span>            :    * @return The computed MSE loss.</a>
-<a name="171"><span class="lineNum">     171 </span>            :    */</a>
-<a name="172"><span class="lineNum">     172 </span>            :   float computeMSELoss(const std::vector&lt;RGBA&gt; &amp;outputImage,</a>
-<a name="173"><span class="lineNum">     173 </span>            :                        const std::vector&lt;RGBA&gt; &amp;targetImage);</a>
-<a name="174"><span class="lineNum">     174 </span>            : </a>
-<a name="175"><span class="lineNum">     175 </span>            :   /**</a>
-<a name="176"><span class="lineNum">     176 </span>            :    * @brief Get a title line with the version</a>
-<a name="177"><span class="lineNum">     177 </span>            :    *</a>
-<a name="178"><span class="lineNum">     178 </span>            :    * @return std::string</a>
-<a name="179"><span class="lineNum">     179 </span>            :    */</a>
-<a name="180"><span class="lineNum">     180 </span>            :   std::string getVersionHeader() const {</a>
-<a name="181"><span class="lineNum">     181 </span>            :     return app_params.title + &quot; v&quot; + app_params.version;</a>
-<a name="182"><span class="lineNum">     182 </span>            :   }</a>
-<a name="183"><span class="lineNum">     183 </span>            : </a>
-<a name="184"><span class="lineNum">     184 </span>            : private:</a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">          1 :   Manager() = default;</span></a>
-<a name="186"><span class="lineNum">     186 </span>            : };</a>
-<a name="187"><span class="lineNum">     187 </span>            : } // namespace sipai</a>
+<a name="113"><span class="lineNum">     113 </span>            :    * This method is the entry point for executing different types of runners</a>
+<a name="114"><span class="lineNum">     114 </span>            :    * (e.g., training, inference, evaluation) on the loaded data sets and the</a>
+<a name="115"><span class="lineNum">     115 </span>            :    * initialized neural network. It accepts a visitor object implementing the</a>
+<a name="116"><span class="lineNum">     116 </span>            :    * `RunnerVisitor` interface and calls its `visit` method, passing the</a>
+<a name="117"><span class="lineNum">     117 </span>            :    * necessary data and parameters.</a>
+<a name="118"><span class="lineNum">     118 </span>            :    *</a>
+<a name="119"><span class="lineNum">     119 </span>            :    * @param visitor The visitor object implementing the `RunnerVisitor`</a>
+<a name="120"><span class="lineNum">     120 </span>            :    * interface, which encapsulates the runner logic.</a>
+<a name="121"><span class="lineNum">     121 </span>            :    */</a>
+<a name="122"><span class="lineNum">     122 </span>            :   void runWithVisitor(const RunnerVisitor &amp;visitor);</a>
+<a name="123"><span class="lineNum">     123 </span>            : </a>
+<a name="124"><span class="lineNum">     124 </span>            :   /**</a>
+<a name="125"><span class="lineNum">     125 </span>            :    * @brief Loads the training data from the specified source.</a>
+<a name="126"><span class="lineNum">     126 </span>            :    *</a>
+<a name="127"><span class="lineNum">     127 </span>            :    * @return A vector of pairs, where each pair contains the paths to the input</a>
+<a name="128"><span class="lineNum">     128 </span>            :    * image and the corresponding target image.</a>
+<a name="129"><span class="lineNum">     129 </span>            :    */</a>
+<a name="130"><span class="lineNum">     130 </span>            :   TrainingData loadTrainingData();</a>
+<a name="131"><span class="lineNum">     131 </span>            : </a>
+<a name="132"><span class="lineNum">     132 </span>            :   /**</a>
+<a name="133"><span class="lineNum">     133 </span>            :    * @brief Shuffle and splits the training data into training and validation</a>
+<a name="134"><span class="lineNum">     134 </span>            :    * sets.</a>
+<a name="135"><span class="lineNum">     135 </span>            :    *</a>
+<a name="136"><span class="lineNum">     136 </span>            :    * @param data The training data to be split.</a>
+<a name="137"><span class="lineNum">     137 </span>            :    * @param split_ratio The ratio of the data to be used for the training</a>
+<a name="138"><span class="lineNum">     138 </span>            :    * set. For example, if split_ratio is 0.8, 80% of the data will be used</a>
+<a name="139"><span class="lineNum">     139 </span>            :    * for the training set, and the remaining 20% will be used for the</a>
+<a name="140"><span class="lineNum">     140 </span>            :    * validation set.</a>
+<a name="141"><span class="lineNum">     141 </span>            :    *</a>
+<a name="142"><span class="lineNum">     142 </span>            :    * @return A pair of vectors, where the first element is the training</a>
+<a name="143"><span class="lineNum">     143 </span>            :    * data, and the second element is the validation data.</a>
+<a name="144"><span class="lineNum">     144 </span>            :    */</a>
+<a name="145"><span class="lineNum">     145 </span>            :   std::pair&lt;TrainingData, TrainingData&gt; splitData(TrainingData data,</a>
+<a name="146"><span class="lineNum">     146 </span>            :                                                   float split_ratio);</a>
+<a name="147"><span class="lineNum">     147 </span>            : </a>
+<a name="148"><span class="lineNum">     148 </span>            :   /**</a>
+<a name="149"><span class="lineNum">     149 </span>            :    * @brief Computes the mean squared error (MSE) loss between the output image</a>
+<a name="150"><span class="lineNum">     150 </span>            :    * and the target image.</a>
+<a name="151"><span class="lineNum">     151 </span>            :    *</a>
+<a name="152"><span class="lineNum">     152 </span>            :    * @param outputImage The output image produced by the neural network.</a>
+<a name="153"><span class="lineNum">     153 </span>            :    * @param targetImage The expected target image.</a>
+<a name="154"><span class="lineNum">     154 </span>            :    *</a>
+<a name="155"><span class="lineNum">     155 </span>            :    * @return The computed MSE loss.</a>
+<a name="156"><span class="lineNum">     156 </span>            :    */</a>
+<a name="157"><span class="lineNum">     157 </span>            :   float computeMSELoss(const std::vector&lt;RGBA&gt; &amp;outputImage,</a>
+<a name="158"><span class="lineNum">     158 </span>            :                        const std::vector&lt;RGBA&gt; &amp;targetImage);</a>
+<a name="159"><span class="lineNum">     159 </span>            : </a>
+<a name="160"><span class="lineNum">     160 </span>            :   /**</a>
+<a name="161"><span class="lineNum">     161 </span>            :    * @brief Get a title line with the version</a>
+<a name="162"><span class="lineNum">     162 </span>            :    *</a>
+<a name="163"><span class="lineNum">     163 </span>            :    * @return std::string</a>
+<a name="164"><span class="lineNum">     164 </span>            :    */</a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          1 :   std::string getVersionHeader() const {</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          2 :     return app_params.title + &quot; v&quot; + app_params.version;</span></a>
+<a name="167"><span class="lineNum">     167 </span>            :   }</a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<a name="169"><span class="lineNum">     169 </span>            : private:</a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          1 :   Manager() = default;</span></a>
+<a name="171"><span class="lineNum">     171 </span>            : </a>
+<a name="172"><span class="lineNum">     172 </span>            :   RunnerVisitorFactory runnerVisitorFactory_;</a>
+<a name="173"><span class="lineNum">     173 </span>            :   NeuralNetworkBuilder neuralNetworkBuilder_;</a>
+<a name="174"><span class="lineNum">     174 </span>            : };</a>
+<a name="175"><span class="lineNum">     175 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>

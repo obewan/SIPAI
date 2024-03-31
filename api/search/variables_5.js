@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['layer_5fmap_395',['layer_map',['../namespacesipai.html#ae0d5df6a1588c2cba272a4e4dccd8ab3',1,'sipai']]],
-  ['layers_396',['layers',['../classsipai_1_1NeuralNetwork.html#a86ca08c5bf62b84a54fac262bb7c6206',1,'sipai::NeuralNetwork']]],
-  ['layertype_397',['layerType',['../classsipai_1_1Layer.html#a24320356f3c1ebcef428e476dcc06ddc',1,'sipai::Layer']]],
-  ['leakyrelu_398',['leakyRelu',['../namespacesipai.html#a3d6ea0e8c02ae320758bf298c6749eac',1,'sipai']]],
-  ['leakyreluderivative_399',['leakyReluDerivative',['../namespacesipai.html#a854697817659f1a4862b24cfc652289e',1,'sipai']]],
-  ['learning_5frate_400',['learning_rate',['../structsipai_1_1NeuralNetworkParams.html#a8dc30f3e1293e624ab72c2176c1eb7f0',1,'sipai::NeuralNetworkParams']]]
+  ['input_5ffile_418',['input_file',['../structsipai_1_1AppParams.html#a9b62227d9472ba41b924929d402520e1',1,'sipai::AppParams']]],
+  ['input_5fsize_5fx_419',['input_size_x',['../structsipai_1_1NeuralNetworkParams.html#a0e8c7e49aae5ffa9c53faec705c55d2f',1,'sipai::NeuralNetworkParams']]],
+  ['input_5fsize_5fy_420',['input_size_y',['../structsipai_1_1NeuralNetworkParams.html#ae33caf09674e5dba331172da4570538e',1,'sipai::NeuralNetworkParams']]]
 ];

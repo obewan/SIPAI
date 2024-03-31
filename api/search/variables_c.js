@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['tanhderivative_428',['tanhDerivative',['../namespacesipai.html#a83037f4cb7a18c26eaed42312d656812',1,'sipai']]],
-  ['tanhfunc_429',['tanhFunc',['../namespacesipai.html#a703f16daca81e1a86081c4582ef042ba',1,'sipai']]],
-  ['title_430',['title',['../structsipai_1_1AppParams.html#a98d78e26b8c627eabc6288ea970dac01',1,'sipai::AppParams']]],
-  ['training_5fdata_5ffile_431',['training_data_file',['../structsipai_1_1AppParams.html#a78e3d56a4a95e3c550ff0ccaf0174fc1',1,'sipai::AppParams']]]
+  ['relu_448',['relu',['../namespacesipai.html#ac4ca1a408822f4824a7cc57802e3f73a',1,'sipai']]],
+  ['reluderivative_449',['reluDerivative',['../namespacesipai.html#ac9f01a2b99895a061124a4d1732708f8',1,'sipai']]],
+  ['run_5fmode_450',['run_mode',['../structsipai_1_1AppParams.html#a0d3fe9abf2b2c464b6c31996f110d19e',1,'sipai::AppParams']]]
 ];

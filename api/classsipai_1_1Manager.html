@@ -92,12 +92,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#ad578b76f936d353aa07d8feb5a1c2f1b">saveImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y, size_t resize_x, size_t resize_y)</td></tr>
 <tr class="memdesc:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#ad578b76f936d353aa07d8feb5a1c2f1b">More...</a><br /></td></tr>
 <tr class="separator:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69b84cb2e549dff716dced4cbd8c3ce2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a69b84cb2e549dff716dced4cbd8c3ce2">createNetwork</a> ()</td></tr>
-<tr class="memdesc:a69b84cb2e549dff716dced4cbd8c3ce2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new Neuran Network.  <a href="classsipai_1_1Manager.html#a69b84cb2e549dff716dced4cbd8c3ce2">More...</a><br /></td></tr>
-<tr class="separator:a69b84cb2e549dff716dced4cbd8c3ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7429b1db9e3c3f89c209ea7dd620cc2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a7429b1db9e3c3f89c209ea7dd620cc2d">importNetwork</a> ()</td></tr>
-<tr class="memdesc:a7429b1db9e3c3f89c209ea7dd620cc2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import the neural network json and csv files.  <a href="classsipai_1_1Manager.html#a7429b1db9e3c3f89c209ea7dd620cc2d">More...</a><br /></td></tr>
-<tr class="separator:a7429b1db9e3c3f89c209ea7dd620cc2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6db3c17c6d2a4cd9038cbc5078315b51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a6db3c17c6d2a4cd9038cbc5078315b51">createOrImportNetwork</a> ()</td></tr>
+<tr class="memdesc:a6db3c17c6d2a4cd9038cbc5078315b51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Network builder.  <a href="classsipai_1_1Manager.html#a6db3c17c6d2a4cd9038cbc5078315b51">More...</a><br /></td></tr>
+<tr class="separator:a6db3c17c6d2a4cd9038cbc5078315b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba29378e09dc2e3781b40d38e8d4314e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#aba29378e09dc2e3781b40d38e8d4314e">exportNetwork</a> ()</td></tr>
 <tr class="memdesc:aba29378e09dc2e3781b40d38e8d4314e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Export the neural network to its json and csv files.  <a href="classsipai_1_1Manager.html#aba29378e09dc2e3781b40d38e8d4314e">More...</a><br /></td></tr>
 <tr class="separator:aba29378e09dc2e3781b40d38e8d4314e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,9 +110,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a50b975537081aed87ebc831ac31ef483"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a>, <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a50b975537081aed87ebc831ac31ef483">splitData</a> (<a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> data, float split_ratio)</td></tr>
 <tr class="memdesc:a50b975537081aed87ebc831ac31ef483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuffle and splits the training data into training and validation sets.  <a href="classsipai_1_1Manager.html#a50b975537081aed87ebc831ac31ef483">More...</a><br /></td></tr>
 <tr class="separator:a50b975537081aed87ebc831ac31ef483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22be50cb0a9fcb34e82e1a2842905f90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a22be50cb0a9fcb34e82e1a2842905f90">initializeNetwork</a> ()</td></tr>
-<tr class="memdesc:a22be50cb0a9fcb34e82e1a2842905f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the neural network architecture.  <a href="classsipai_1_1Manager.html#a22be50cb0a9fcb34e82e1a2842905f90">More...</a><br /></td></tr>
-<tr class="separator:a22be50cb0a9fcb34e82e1a2842905f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a448845d4bb8ee7486257247fd5097675"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a448845d4bb8ee7486257247fd5097675">computeMSELoss</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;outputImage, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;targetImage)</td></tr>
 <tr class="memdesc:a448845d4bb8ee7486257247fd5097675"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the mean squared error (MSE) loss between the output image and the target image.  <a href="classsipai_1_1Manager.html#a448845d4bb8ee7486257247fd5097675">More...</a><br /></td></tr>
 <tr class="separator:a448845d4bb8ee7486257247fd5097675"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,14 +200,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a69b84cb2e549dff716dced4cbd8c3ce2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69b84cb2e549dff716dced4cbd8c3ce2">&#9670;&nbsp;</a></span>createNetwork()</h2>
+<a id="a6db3c17c6d2a4cd9038cbc5078315b51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6db3c17c6d2a4cd9038cbc5078315b51">&#9670;&nbsp;</a></span>createOrImportNetwork()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Manager::createNetwork </td>
+          <td class="memname">void Manager::createOrImportNetwork </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -221,7 +215,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a new Neuran Network. </p>
+<p>Network builder. </p>
 
 </div>
 </div>
@@ -294,45 +288,6 @@ Public Attributes</h2></td></tr>
 
 <p>Get a title line with the version. </p>
 <dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
-
-</div>
-</div>
-<a id="a7429b1db9e3c3f89c209ea7dd620cc2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7429b1db9e3c3f89c209ea7dd620cc2d">&#9670;&nbsp;</a></span>importNetwork()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Manager::importNetwork </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Import the neural network json and csv files. </p>
-
-</div>
-</div>
-<a id="a22be50cb0a9fcb34e82e1a2842905f90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22be50cb0a9fcb34e82e1a2842905f90">&#9670;&nbsp;</a></span>initializeNetwork()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Manager::initializeNetwork </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Initializes the neural network architecture. </p>
-<p>This method sets up the input, hidden, and output layers of the neural network, along with any necessary configurations or parameters. </p>
 
 </div>
 </div>

@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['max_5fepochs_401',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
-  ['max_5fepochs_5fwithout_5fimprovement_402',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#acc2ed6e7c9112fe64f2dd9b882192a0e',1,'sipai::AppParams']]],
-  ['mode_5fmap_403',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]]
+  ['jsonie_421',['jsonIE',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a1a803d9d4ba153bd492a48ff66a918c4',1,'sipai::NeuralNetworkImportExportFacade']]]
 ];

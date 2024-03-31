@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['hidden_5factivation_5falpha_387',['hidden_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#a27a4692728c541cebe92313b04b1c733',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5factivation_5ffunction_388',['hidden_activation_function',['../structsipai_1_1NeuralNetworkParams.html#a8d750f6632e7ecc3a989a50aad4c0037',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5fsize_5fx_389',['hidden_size_x',['../structsipai_1_1NeuralNetworkParams.html#a6594d199b1e6bcc9c11a59da89dc960d',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5fsize_5fy_390',['hidden_size_y',['../structsipai_1_1NeuralNetworkParams.html#a771a8a4bfdeb6d836c6ab086fad3b7a4',1,'sipai::NeuralNetworkParams']]],
-  ['hiddens_5fcount_391',['hiddens_count',['../structsipai_1_1NeuralNetworkParams.html#a064bfd04d8e567d5f578524f945ce2c2',1,'sipai::NeuralNetworkParams']]]
+  ['elu_408',['elu',['../namespacesipai.html#a59ab2586c52d0cb588fd3f25766c7c13',1,'sipai']]],
+  ['eluderivative_409',['eluDerivative',['../namespacesipai.html#a52d20ea3c7b78d0f33fb012b2192e7c7',1,'sipai']]],
+  ['error_410',['error',['../classsipai_1_1Neuron.html#abf46b121d9437e750c17da8611155eab',1,'sipai::Neuron']]],
+  ['exit_5fhelp_411',['EXIT_HELP',['../classSIPAI.html#a7b10521718bb6554476359639e2ffe0d',1,'SIPAI']]],
+  ['exit_5fversion_412',['EXIT_VERSION',['../classSIPAI.html#a8240208e9d64cd499cfdc70e3f70a2f2',1,'SIPAI']]]
 ];
