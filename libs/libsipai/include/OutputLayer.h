@@ -36,14 +36,9 @@ public:
       for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
         n.value += previousLayer->neurons.at(i).value * n.weights.at(i);
       }
-      // Propagate the value to adjacents neurons
-      for (auto &connection : n.neighbors) {
-        connection.neuron->value += n.value * connection.weight;
-      }
+
       // Use activation function
-      for (size_t j = 0; j < n.value.value.size(); ++j) {
-        n.value.value[j] = n.activationFunction(n.value.value[j]);
-      }
+      n.value = n.activationFunction(n.value);
     }
   }
 
@@ -59,11 +54,13 @@ public:
       // Update weights based on neurons in the previous layer
       for (size_t j = 0; j < n.weights.size(); ++j) {
         auto dE_dw = previousLayer->neurons[j].value * n.error;
+        dE_dw.clamp();
         n.weights[j] -= learningRate * dE_dw;
       }
       // Update weights based on neighboring neurons
       for (Connection &connection : n.neighbors) {
         auto dE_dw = connection.neuron->value * n.error;
+        dE_dw.clamp();
         connection.weight -= learningRate * dE_dw;
       }
     }
@@ -75,22 +72,15 @@ public:
     }
     size_t i = 0;
     for (auto &neuron : neurons) {
-      // Compute the weighted average value of the neighboring neurons
-      RGBA neighborAverage = {0.0, 0.0, 0.0, 0.0};
-      RGBA totalWeight = {0.0, 0.0, 0.0, 0.0};
+      // Compute the weighted sum of neighboring neuron values
+      RGBA neighborSum = {0.0, 0.0, 0.0, 0.0};
       for (auto &connection : neuron.neighbors) {
-        neighborAverage += connection.weight * connection.neuron->value;
-        totalWeight += connection.weight;
-      }
-      for (int j = 0; j < 4; ++j) {
-        if (totalWeight.value[j] != 0) {
-          neighborAverage.value[j] /= totalWeight.value[j];
-        }
+        neighborSum += connection.weight * connection.neuron->value;
       }
 
-      // Compute the error based on the expected value and the neighbor
-      // average
-      neuron.error = neuron.value - expectedValues[i] - neighborAverage;
+      float weightFactor = 0.5; // Experiment with weight between 0 and 1
+      neuron.error = weightFactor * (neuron.value - expectedValues[i]) +
+                     (1.0f - weightFactor) * neighborSum;
       ++i;
     }
   }
@@ -98,7 +88,9 @@ public:
   std::vector<RGBA> getOutputValues() {
     auto neuronOutput = [](const Neuron &n) { return n.value; };
     auto neuronOutputs = neurons | std::views::transform(neuronOutput);
-    return std::vector<RGBA>{neuronOutputs.begin(), neuronOutputs.end()};
+    const auto &ret =
+        std::vector<RGBA>{neuronOutputs.begin(), neuronOutputs.end()};
+    return ret;
   }
 };
 } // namespace sipai

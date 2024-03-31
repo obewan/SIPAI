@@ -54,37 +54,34 @@ public:
   template <typename... Args>
   const SimpleLogger &log(LogLevel level, bool endl = true,
                           Args &&...args) const {
-    auto now = std::chrono::system_clock::now();
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-    std::stringstream sst;
-    sst << "[" << std::put_time(std::localtime(&now_c), "%F %T") << "] ";
-
     switch (level) {
     case LogLevel::INFO:
-      std::cout << sst.str() << "[INFO] ";
+      std::cout << get_timestamp() << "[INFO] ";
       break;
     case LogLevel::WARN:
-      std::cerr << sst.str() << "[WARN] ";
+      std::cerr << get_timestamp() << "[WARN] ";
       break;
     case LogLevel::ERROR:
-      std::cerr << sst.str() << "[ERROR] ";
+      std::cerr << get_timestamp() << "[ERROR] ";
       break;
     case LogLevel::DEBUG:
-      std::cerr << sst.str() << "[DEBUG] ";
+      std::cerr << get_timestamp() << "[DEBUG] ";
       break;
     default:
-      std::cerr << sst.str() << "[UNKNOWN] ";
+      std::cerr << get_timestamp() << "[UNKNOWN] ";
       break;
     }
 
     if (level == LogLevel::INFO) {
       std::cout.precision(current_precision);
+      std::cout << std::fixed;
       (std::cout << ... << args);
       if (endl) {
         std::cout << std::endl;
       }
     } else {
       std::cerr.precision(current_precision);
+      std::cerr << std::fixed;
       (std::cerr << ... << args);
       if (endl) {
         std::cerr << std::endl;
@@ -340,5 +337,20 @@ private:
   std::streamsize default_precision = std::cout.precision();
   mutable std::streamsize current_precision = std::cout.precision();
   mutable std::mutex threadMutex_;
+
+  std::string get_timestamp() const {
+    auto now = std::chrono::system_clock::now();
+    auto now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm now_tm{};
+    std::stringstream sst;
+#if defined(WIN32) || defined(_WIN32) ||                                       \
+    defined(__WIN32) && !defined(__CYGWIN__)
+    localtime_s(&now_tm, &now_c);
+#else
+    localtime_r(&now_c, &now_tm);
+#endif
+    sst << "[" << std::put_time(&now_tm, "%F %T") << "] ";
+    return sst.str();
+  }
 };
 } // namespace sipai

@@ -10,7 +10,10 @@
 #pragma once
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <functional>
+#include <math.h>
+#include <numeric>
 #include <opencv2/core/types.hpp>
 #include <sstream>
 #include <string>
@@ -30,6 +33,27 @@ struct RGBA {
       : value({vec[2] / 255.0f, vec[1] / 255.0f, vec[0] / 255.0f,
                hasAlpha ? vec[3] / 255.0f : 1.0f}) {}
 
+  float sum() const {
+    return std::reduce(value.begin(), value.end(), 0.0f, std::plus<>());
+  }
+
+  RGBA &clamp() {
+    for (auto &val : value) {
+      val = std::clamp(val, 0.f, 1.f);
+    }
+    return *this;
+  }
+
+  RGBA pow(float n) {
+    if (n < 1.0 && std::any_of(value.begin(), value.end(),
+                               [](float v) { return v < 0.0f; })) {
+      throw std::invalid_argument(
+          "Negative value in RGBA for non-integer exponent");
+    }
+    return RGBA(std::pow(value[0], n), std::pow(value[1], n),
+                std::pow(value[2], n), std::pow(value[3], n));
+  }
+
   std::string toStringCsv() const {
     std::ostringstream oss;
     oss << std::fixed; // avoid scientific notation
@@ -44,6 +68,23 @@ struct RGBA {
   cv::Vec4b toVec4b() const {
     return cv::Vec4b(value[2] * 255, value[1] * 255, value[0] * 255,
                      value[3] * 255);
+  }
+
+  // Helper method to apply a lambda function to each component
+  RGBA apply(const std::function<float(float)> &func) const {
+    RGBA result;
+    std::transform(value.begin(), value.end(), result.value.begin(), func);
+    return result;
+  }
+
+  // Overloaded helper method to apply a lambda function with an additional
+  // parameter
+  RGBA apply(const std::function<float(float, float)> &func,
+             float param) const {
+    RGBA result;
+    std::transform(value.begin(), value.end(), result.value.begin(),
+                   [&func, param](float v) { return func(v, param); });
+    return result;
   }
 
   // Define a helper function to apply a lambda to each element
@@ -66,6 +107,12 @@ struct RGBA {
     return *this;
   }
 
+  RGBA &operator*=(const RGBA &rhs) {
+    std::transform(this->value.begin(), this->value.end(), rhs.value.begin(),
+                   this->value.begin(), std::multiplies<>());
+    return *this;
+  }
+
   RGBA operator*(const RGBA &rhs) const {
     return applyToElements(std::multiplies<>(), rhs);
   }
@@ -84,5 +131,5 @@ struct RGBA {
                    [&lhs](float val) { return lhs * val; });
     return result;
   }
-};
+}; // namespace sipai
 } // namespace sipai

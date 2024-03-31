@@ -16,18 +16,11 @@
 namespace sipai {
 class RunnerVisitor {
 public:
+  virtual ~RunnerVisitor() = default;
   /**
-   * @brief Performs the runner operation on the provided data sets and network.
+   * @brief Performs the runner operation on the network.
    *
-   * This method is the entry point for the visitor pattern implementation. It
-   * accepts the training and validation data sets, the neural network object,
-   * and the application parameters, and performs the runner operation (e.g.,
-   * training, inference, evaluation) accordingly.
-   *
-   * @param dataSet The training data set containing input-target pairs.
-   * @param validationSet The validation data set containing input-target pairs.
    */
-  virtual void visit(const TrainingData &dataSet,
-                     const TrainingData &validationSet) const = 0;
+  virtual void visit() const = 0;
 };
 } // namespace sipai

@@ -3,37 +3,30 @@
 #include "InputLayer.h"
 #include "Manager.h"
 #include "OutputLayer.h"
+#include "SimpleLogger.h"
 #include "exception/NetworkException.h"
 
 using namespace sipai;
 
 void NeuralNetwork::initialize() {
-  auto inputLayer = new InputLayer();
-  const auto &network_params = Manager::getInstance().network_params;
-  inputLayer->neurons.resize(network_params.input_size_x *
-                             network_params.input_size_y);
-  layers.push_back(inputLayer);
-
-  for (size_t i = 0; i < network_params.hiddens_count; ++i) {
-    auto hiddenLayer = new HiddenLayer();
-    hiddenLayer->neurons.resize(network_params.hidden_size_x *
-                                network_params.hidden_size_y);
-    SetActivationFunction(hiddenLayer,
-                          network_params.hidden_activation_function,
-                          network_params.hidden_activation_alpha);
-    layers.push_back(hiddenLayer);
+  if (isInitialized_) {
+    return;
   }
+  SimpleLogger::LOG_INFO("Initializing the neural network...");
+  SimpleLogger::LOG_INFO("Adding layers...");
+  addLayers();
 
-  auto outputLayer = new OutputLayer();
-  outputLayer->neurons.resize(network_params.output_size_x *
-                              network_params.output_size_y);
-  SetActivationFunction(outputLayer, network_params.output_activation_function,
-                        network_params.output_activation_alpha);
-  layers.push_back(outputLayer);
-
+  SimpleLogger::LOG_INFO("Binding layers...");
   bindLayers();
+
+  SimpleLogger::LOG_INFO("Initializing layers neurons weights...");
   initializeWeights();
+
+  SimpleLogger::LOG_INFO("Initializing layers neurons neighbors...");
   initializeNeighbors();
+
+  SimpleLogger::LOG_INFO("Initializing layers done.");
+  isInitialized_ = true;
 }
 
 std::vector<RGBA>
@@ -60,6 +53,31 @@ void NeuralNetwork::backwardPropagation(
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
     (*it)->backwardPropagation();
   }
+}
+
+void NeuralNetwork::addLayers() {
+  auto inputLayer = new InputLayer();
+  const auto &network_params = Manager::getInstance().network_params;
+  inputLayer->neurons.resize(network_params.input_size_x *
+                             network_params.input_size_y);
+  layers.push_back(inputLayer);
+
+  for (size_t i = 0; i < network_params.hiddens_count; ++i) {
+    auto hiddenLayer = new HiddenLayer();
+    hiddenLayer->neurons.resize(network_params.hidden_size_x *
+                                network_params.hidden_size_y);
+    SetActivationFunction(hiddenLayer,
+                          network_params.hidden_activation_function,
+                          network_params.hidden_activation_alpha);
+    layers.push_back(hiddenLayer);
+  }
+
+  auto outputLayer = new OutputLayer();
+  outputLayer->neurons.resize(network_params.output_size_x *
+                              network_params.output_size_y);
+  SetActivationFunction(outputLayer, network_params.output_activation_function,
+                        network_params.output_activation_alpha);
+  layers.push_back(outputLayer);
 }
 
 void NeuralNetwork::bindLayers() {
@@ -113,6 +131,9 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
                                        size_t neuron_index, int layer_size_x,
                                        int layer_size_y,
                                        bool randomize_weight) {
+  if (layer_size_x <= 0) {
+    return;
+  }
   // Compute the coordinates of the neuron in the 2D grid
   int x = neuron_index % layer_size_x;
   int y = neuron_index / layer_size_x;
@@ -121,6 +142,9 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
   // is a neuron in that direction and, if so, establish a connection
   std::vector<std::pair<int, int>> directions = {
       {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+  // 4 (the components of the RGBA struct) for both the input and output sides,
+  // resulting in a total of 8 connections
+  const float fanIn_fanOut = 8.0f;
   for (auto [dx, dy] : directions) {
     int nx = x + dx;
     int ny = y + dy;
@@ -130,11 +154,16 @@ void NeuralNetwork::addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
 
       RGBA weight;
       if (randomize_weight) {
-        // Create a connection with a random initial weight
+        // Create a connection with a random initial weight (Xavier
+        // initialization)
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-        weight = {dist(gen), dist(gen), dist(gen), dist(gen)};
+        std::normal_distribution<float> dist(0.0f,
+                                             std::sqrt(2.0f / fanIn_fanOut));
+        std::for_each(
+            weight.value.begin(), weight.value.end(), [&gen, &dist](float &f) {
+              f = std::clamp(dist(gen), 0.0f, 1.0f); // Clamp to [0, 1] range
+            });
       }
 
       neuron.neighbors.push_back(Connection(&neighbor, weight));

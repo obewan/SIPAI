@@ -17,8 +17,23 @@ void signalHandler(int signal) {
   }
 }
 
-void TrainingMonitoredVisitor::visit(const TrainingData &dataSet,
-                                     const TrainingData &validationSet) const {
+void TrainingMonitoredVisitor::visit() const {
+  SimpleLogger::LOG_INFO(
+      "Starting training monitored, press (CTRL+C) to stop at anytime...");
+  auto &manager = Manager::getInstance();
+  const auto &appParams = Manager::getInstance().app_params;
+
+  // Load training data
+  const auto &trainingData = manager.loadTrainingData();
+  if (trainingData.empty()) {
+    SimpleLogger::LOG_ERROR("No training data found. Aborting.");
+    return;
+  }
+
+  // Split training data into training and validation sets
+  const auto &[trainingDataPairs, validationDataPairs] =
+      manager.splitData(trainingData, manager.app_params.split_ratio);
+
   // Reset the stopTraining flag
   stopTraining = false;
 
@@ -28,12 +43,11 @@ void TrainingMonitoredVisitor::visit(const TrainingData &dataSet,
   float bestValidationLoss = std::numeric_limits<float>::max();
   int epoch = 0;
   int epochsWithoutImprovement = 0;
-  const auto &appParams = Manager::getInstance().app_params;
 
   while (!stopTraining &&
          shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
-    float trainingLoss = trainOnEpoch(dataSet);
-    float validationLoss = evaluateOnValidationSet(validationSet);
+    float trainingLoss = trainOnEpoch(trainingDataPairs);
+    float validationLoss = evaluateOnValidationSet(validationDataPairs);
 
     logTrainingProgress(epoch, trainingLoss, validationLoss);
 
@@ -73,8 +87,7 @@ float TrainingMonitoredVisitor::trainOnEpoch(
 
     std::vector<RGBA> outputImage =
         manager.network->forwardPropagation(inputImage);
-    float loss = manager.computeMSELoss(outputImage, targetImage);
-    epochLoss += loss;
+    epochLoss += manager.computeMSELoss(outputImage, targetImage);
 
     manager.network->backwardPropagation(targetImage);
     manager.network->updateWeights(manager.network_params.learning_rate);

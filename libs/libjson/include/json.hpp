@@ -17,7 +17,9 @@
 
 #ifndef INCLUDE_NLOHMANN_JSON_HPP_
 #define INCLUDE_NLOHMANN_JSON_HPP_
-
+#if defined(_MSC_VER)
+#pragma warning( disable : 4083 4365 4623 4625 4626 4514 4820 5027 5045 )
+#endif
 #include <algorithm> // all_of, find, for_each
 #include <cstddef> // nullptr_t, ptrdiff_t, size_t
 #include <functional> // hash, less

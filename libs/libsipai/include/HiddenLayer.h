@@ -32,14 +32,8 @@ public:
       for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
         n.value += previousLayer->neurons.at(i).value * n.weights.at(i);
       }
-      // Propagate the value to adjacents neurons
-      for (auto &connection : n.neighbors) {
-        connection.neuron->value += n.value * connection.weight;
-      }
       // Use activation function
-      for (size_t j = 0; j < n.value.value.size(); ++j) {
-        n.value.value[j] = n.activationFunction(n.value.value[j]);
-      }
+      n.value = n.activationFunction(n.value);
     }
   }
 
@@ -60,10 +54,8 @@ public:
       }
 
       // Use the derivative of the activation function
-      for (size_t j = 0; j < neurons[i].error.value.size(); ++j) {
-        neurons[i].error.value[j] *=
-            neurons[i].activationFunctionDerivative(neurons[i].value.value[j]);
-      }
+      neurons[i].error *=
+          neurons[i].activationFunctionDerivative(neurons[i].value);
     }
   }
 
@@ -71,14 +63,17 @@ public:
     if (previousLayer == nullptr) {
       return;
     }
+
     for (Neuron &n : neurons) {
       for (size_t j = 0; j < n.weights.size(); ++j) {
         auto dE_dw = previousLayer->neurons[j].value * n.error;
+        dE_dw.clamp();
         n.weights[j] -= learningRate * dE_dw;
       }
       // Update weights based on neighboring neurons
       for (Connection &connection : n.neighbors) {
         auto dE_dw = connection.neuron->value * n.error;
+        dE_dw.clamp();
         connection.weight -= learningRate * dE_dw;
       }
     }

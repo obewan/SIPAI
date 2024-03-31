@@ -11,10 +11,10 @@
 
 #include "AppParams.h"
 #include "Common.h"
-#include "NeuralNetwork.h"
+#include "NeuralNetworkBuilder.h"
 #include "NeuralNetworkParams.h"
 #include "RGBA.h"
-#include "RunnerVisitor.h"
+#include "RunnerVisitorFactory.h"
 #include <cstddef>
 #include <memory>
 
@@ -90,16 +90,9 @@ public:
                  size_t resize_y);
 
   /**
-   * @brief Create a new Neuran Network
-   *
+   * @brief Network builder.
    */
-  void createNetwork();
-
-  /**
-   * @brief Import the neural network json and csv files.
-   *
-   */
-  void importNetwork();
+  void createOrImportNetwork();
 
   /**
    * @brief Export the neural network to its json and csv files.
@@ -153,14 +146,6 @@ public:
                                                   float split_ratio);
 
   /**
-   * @brief Initializes the neural network architecture.
-   *
-   * This method sets up the input, hidden, and output layers of the neural
-   * network, along with any necessary configurations or parameters.
-   */
-  void initializeNetwork();
-
-  /**
    * @brief Computes the mean squared error (MSE) loss between the output image
    * and the target image.
    *
@@ -183,5 +168,8 @@ public:
 
 private:
   Manager() = default;
+
+  RunnerVisitorFactory runnerVisitorFactory_;
+  NeuralNetworkBuilder neuralNetworkBuilder_;
 };
 } // namespace sipai

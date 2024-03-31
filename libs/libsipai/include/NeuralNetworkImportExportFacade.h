@@ -1,5 +1,5 @@
 /**
- * @file NeuralNetworkImportExport.h
+ * @file NeuralNetworkImportExportFacade.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Import/export of the neural network
  * @date 2024-02-20
@@ -10,11 +10,13 @@
 #pragma once
 
 #include "NeuralNetwork.h"
+#include "NeuralNetworkImportExportCSV.h"
+#include "NeuralNetworkImportExportJSON.h"
 #include <memory>
 namespace sipai {
-class NeuralNetworkImportExport {
+class NeuralNetworkImportExportFacade {
 public:
-  virtual ~NeuralNetworkImportExport() = default;
+  virtual ~NeuralNetworkImportExportFacade() = default;
 
   /**
    * @brief Import a network model files (JSON meta data and CSV neurons data)
@@ -27,5 +29,7 @@ public:
   virtual void exportModel() const;
 
 protected:
+  NeuralNetworkImportExportCSV csvIE;
+  NeuralNetworkImportExportJSON jsonIE;
 };
 } // namespace sipai

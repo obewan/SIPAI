@@ -2,10 +2,8 @@
 #include "Common.h"
 #include "ImageHelper.h"
 #include "NeuralNetwork.h"
-#include "NeuralNetworkImportExport.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
-#include "TrainingMonitoredVisitor.h"
 #include <cstddef>
 #include <memory>
 #include <opencv2/core/types.hpp>
@@ -45,18 +43,22 @@ void Manager::saveImage(const std::string &imagePath,
   imageHelper.saveImage(imagePath, dest);
 }
 
-void Manager::createNetwork() { network = std::make_unique<NeuralNetwork>(); }
-
-void Manager::importNetwork() {
-  network = NeuralNetworkImportExport{}.importModel();
+void Manager::createOrImportNetwork() {
+  if (!network) {
+    network = neuralNetworkBuilder_.build();
+  }
 }
 
-void Manager::exportNetwork() { NeuralNetworkImportExport{}.exportModel(); }
+void Manager::exportNetwork() {
+  NeuralNetworkImportExportFacade{}.exportModel();
+}
 
 void Manager::run() {
+  SimpleLogger::LOG_INFO(getVersionHeader());
+
   switch (app_params.run_mode) {
   case ERunMode::TrainingMonitored:
-    runWithVisitor(TrainingMonitoredVisitor{});
+    runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
     break;
   default:
     break;
@@ -64,19 +66,11 @@ void Manager::run() {
 }
 
 void Manager::runWithVisitor(const RunnerVisitor &visitor) {
-
-  // Load training data
-  TrainingData trainingData = loadTrainingData();
-
-  // Split training data into training and validation sets
-  auto [trainingDataPairs, validationDataPairs] =
-      splitData(trainingData, app_params.split_ratio);
-
   // Initialize network
-  initializeNetwork();
+  createOrImportNetwork();
 
   // Run the visitor
-  visitor.visit(trainingDataPairs, validationDataPairs);
+  visitor.visit();
 }
 
 TrainingData Manager::loadTrainingData() {
@@ -100,8 +94,6 @@ std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
   return std::make_pair(training_data, validation_data);
 }
 
-void Manager::initializeNetwork() { network->initialize(); }
-
 /**
  * @brief Computes the mean squared error (MSE) loss between the output image
  * and the target image.
@@ -118,13 +110,10 @@ float Manager::computeMSELoss(const std::vector<RGBA> &outputImage,
         "Output and target images must have the same size.");
   }
 
-  float totalLoss = 0.0f;
+  float totalLoss = 0.0;
   for (size_t i = 0; i < outputImage.size(); ++i) {
-    for (size_t j = 0; j < 4; ++j) {
-      float diff = outputImage[i].value[j] - targetImage[i].value[j];
-      totalLoss += diff * diff;
-    }
+    totalLoss += (outputImage[i] - targetImage[i]).pow(2).sum();
   }
 
-  return totalLoss / (outputImage.size() * 4);
+  return totalLoss / (float)(outputImage.size() * 4);
 }
