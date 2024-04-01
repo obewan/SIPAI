@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-31 18:14:55</td>
+            <td class="headerValue">2024-04-01 00:00:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -60,9 +60,9 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : #include &quot;Connexion.h&quot;</a>
-<a name="2"><span class="lineNum">       2 </span>            : #include &quot;Manager.h&quot;</a>
-<a name="3"><span class="lineNum">       3 </span>            : #include &quot;NeuralNetworkImportExportCSV.h&quot;</a>
+<a name="1"><span class="lineNum">       1 </span>            : #include &quot;Manager.h&quot;</a>
+<a name="2"><span class="lineNum">       2 </span>            : #include &quot;NeuralNetworkImportExportCSV.h&quot;</a>
+<a name="3"><span class="lineNum">       3 </span>            : #include &quot;NeuronConnection.h&quot;</a>
 <a name="4"><span class="lineNum">       4 </span>            : #include &quot;csv_parser.h&quot;</a>
 <a name="5"><span class="lineNum">       5 </span>            : #include &quot;exception/EmptyCellException.h&quot;</a>
 <a name="6"><span class="lineNum">       6 </span>            : #include &quot;exception/ImportExportException.h&quot;</a>
@@ -172,19 +172,19 @@
 <a name="110"><span class="lineNum">     110 </span><span class="lineCov">         19 :               .weights.swap(weights);</span></a>
 <a name="111"><span class="lineNum">     111 </span><span class="lineCov">         19 :         } else if (weights.size() &gt; 0) {</span></a>
 <a name="112"><span class="lineNum">     112 </span>            :           // add the neighboors and their weights</a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineNoCov">          0 :           auto &amp;neighbors = network-&gt;layers.at(layer_index.value())</span></a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :                                 -&gt;neurons.at(neuron_index.value())</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :                                 .neighbors;</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :           if (neighbors.size() != weights.size()) {</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineNoCov">          0 :           auto &amp;connections = network-&gt;layers.at(layer_index.value())</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :                                   -&gt;neurons.at(neuron_index.value())</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :                                   .neighbors;</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :           if (connections.size() != weights.size()) {</span></a>
 <a name="117"><span class="lineNum">     117 </span><span class="lineNoCov">          0 :             throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
 <a name="118"><span class="lineNum">     118 </span><span class="lineNoCov">          0 :                                         std::to_string(current_line_number) +</span></a>
 <a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :                                         &quot;): invalid column numbers&quot;);</span></a>
 <a name="120"><span class="lineNum">     120 </span>            :           }</a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :           std::transform(neighbors.begin(), neighbors.end(), weights.begin(),</span></a>
-<a name="122"><span class="lineNum">     122 </span>            :                          neighbors.begin(),</a>
-<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :                          [](Connection &amp;neighbor, const RGBA &amp;weight) {</span></a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :                            neighbor.weight = weight;</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 :                            return neighbor;</span></a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :           std::transform(connections.begin(), connections.end(),</span></a>
+<a name="122"><span class="lineNum">     122 </span>            :                          weights.begin(), connections.begin(),</a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :                          [](NeuronConnection &amp;connection, const RGBA &amp;weight) {</span></a>
+<a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :                            connection.weight = weight;</span></a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 :                            return connection;</span></a>
 <a name="126"><span class="lineNum">     126 </span>            :                          });</a>
 <a name="127"><span class="lineNum">     127 </span>            :         }</a>
 <a name="128"><span class="lineNum">     128 </span>            :       }</a>
@@ -246,24 +246,25 @@
 <a name="184"><span class="lineNum">     184 </span>            :       }</a>
 <a name="185"><span class="lineNum">     185 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
 <a name="186"><span class="lineNum">     186 </span>            : </a>
-<a name="187"><span class="lineNum">     187 </span>            :       // Then write the neuron's neighbors weights on a single line (to reduce</a>
-<a name="188"><span class="lineNum">     188 </span>            :       // csv file size)</a>
+<a name="187"><span class="lineNum">     187 </span>            :       // Then write the neuron's neighbors connections weights on a single line</a>
+<a name="188"><span class="lineNum">     188 </span>            :       // (to reduce csv file size)</a>
 <a name="189"><span class="lineNum">     189 </span><span class="lineCov">         38 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;</span></a>
 <a name="190"><span class="lineNum">     190 </span><span class="lineCov">         38 :            &lt;&lt; neuron.neighbors.size();</span></a>
 <a name="191"><span class="lineNum">     191 </span><span class="lineCov">        266 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
 <a name="192"><span class="lineNum">     192 </span><span class="lineCov">        228 :         if (i &lt; neuron.neighbors.size()) {</span></a>
 <a name="193"><span class="lineNum">     193 </span><span class="lineCov">         92 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.neighbors[i].weight.toStringCsv();</span></a>
 <a name="194"><span class="lineNum">     194 </span>            :         } else {</a>
-<a name="195"><span class="lineNum">     195 </span>            :           // If no more neighbor write a blank RGBA 4 columns to fill the csv</a>
-<a name="196"><span class="lineNum">     196 </span><span class="lineCov">        136 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
-<a name="197"><span class="lineNum">     197 </span>            :         }</a>
-<a name="198"><span class="lineNum">     198 </span>            :       }</a>
-<a name="199"><span class="lineNum">     199 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
-<a name="200"><span class="lineNum">     200 </span>            :     }</a>
-<a name="201"><span class="lineNum">     201 </span>            :   }</a>
-<a name="202"><span class="lineNum">     202 </span>            : </a>
-<a name="203"><span class="lineNum">     203 </span><span class="lineCov">          2 :   file.close();</span></a>
-<a name="204"><span class="lineNum">     204 </span><span class="lineCov">          2 : }</span></a>
+<a name="195"><span class="lineNum">     195 </span>            :           // If no more neighbor connection write a blank RGBA 4 columns to</a>
+<a name="196"><span class="lineNum">     196 </span>            :           // fill the csv</a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">        136 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
+<a name="198"><span class="lineNum">     198 </span>            :         }</a>
+<a name="199"><span class="lineNum">     199 </span>            :       }</a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="201"><span class="lineNum">     201 </span>            :     }</a>
+<a name="202"><span class="lineNum">     202 </span>            :   }</a>
+<a name="203"><span class="lineNum">     203 </span>            : </a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineCov">          2 :   file.close();</span></a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineCov">          2 : }</span></a>
 </pre>
       </td>
     </tr>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['outputlayer_477',['OutputLayer',['../namespacesipai.html#a49db076f4fbba89b129c17e422f06824a500cef5499f984f348ea5eabd57ee667',1,'sipai']]]
+  ['relu_481',['ReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194add10d919fa85cf27fc78c0e06fe0b378',1,'sipai']]]
 ];

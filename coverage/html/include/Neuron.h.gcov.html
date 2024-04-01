@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-31 18:14:55</td>
+            <td class="headerValue">2024-04-01 00:00:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -71,7 +71,7 @@
 <a name="9"><span class="lineNum">       9 </span>            :  */</a>
 <a name="10"><span class="lineNum">      10 </span>            : #pragma once</a>
 <a name="11"><span class="lineNum">      11 </span>            : #include &quot;ActivationFunctions.h&quot;</a>
-<a name="12"><span class="lineNum">      12 </span>            : #include &quot;Connexion.h&quot;</a>
+<a name="12"><span class="lineNum">      12 </span>            : #include &quot;NeuronConnection.h&quot;</a>
 <a name="13"><span class="lineNum">      13 </span>            : #include &quot;RGBA.h&quot;</a>
 <a name="14"><span class="lineNum">      14 </span>            : #include &lt;exception&gt;</a>
 <a name="15"><span class="lineNum">      15 </span>            : #include &lt;functional&gt;</a>
@@ -108,7 +108,7 @@
 <a name="46"><span class="lineNum">      46 </span>            :   // 4-neighborhood (Von Neumann neighborhood). Could be improve to</a>
 <a name="47"><span class="lineNum">      47 </span>            :   // 8-neighborhood (Moore neighborhood) or Extended neighborhood (radius)</a>
 <a name="48"><span class="lineNum">      48 </span>            :   // later.</a>
-<a name="49"><span class="lineNum">      49 </span>            :   std::vector&lt;Connection&gt; neighbors;</a>
+<a name="49"><span class="lineNum">      49 </span>            :   std::vector&lt;NeuronConnection&gt; neighbors;</a>
 <a name="50"><span class="lineNum">      50 </span>            : </a>
 <a name="51"><span class="lineNum">      51 </span>            :   /**</a>
 <a name="52"><span class="lineNum">      52 </span>            :    * @brief Initializes the weights of the neuron to a given size. The weights</a>

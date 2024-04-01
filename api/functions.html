@@ -96,11 +96,11 @@ $(function() {
 
 <h3><a id="index_b"></a>- b -</h3><ul>
 <li>backwardPropagation()
-: <a class="el" href="classsipai_1_1HiddenLayer.html#a88248c77cc1ad3859a4b41ec5a31d62c">sipai::HiddenLayer</a>
-, <a class="el" href="classsipai_1_1InputLayer.html#a516fb1b65d1b08f4661ae25d613d02a0">sipai::InputLayer</a>
-, <a class="el" href="classsipai_1_1Layer.html#ab447f25fecd24f7cf6659b331dc05516">sipai::Layer</a>
+: <a class="el" href="classsipai_1_1Layer.html#ab447f25fecd24f7cf6659b331dc05516">sipai::Layer</a>
+, <a class="el" href="classsipai_1_1LayerHidden.html#a3b12aafdbc3ed8016fd5dd5b21c73b03">sipai::LayerHidden</a>
+, <a class="el" href="classsipai_1_1LayerInput.html#a7fb22682e10436503ab138ae1061a54b">sipai::LayerInput</a>
+, <a class="el" href="classsipai_1_1LayerOutput.html#ad4e0ea627af792ddd4af63cd72bd70ae">sipai::LayerOutput</a>
 , <a class="el" href="classsipai_1_1NeuralNetwork.html#a6d11c5810d63aa1662d5603528c5a560">sipai::NeuralNetwork</a>
-, <a class="el" href="classsipai_1_1OutputLayer.html#ae155ee7d20910cb87269ba5b376b0145">sipai::OutputLayer</a>
 </li>
 <li>bias
 : <a class="el" href="classsipai_1_1Neuron.html#a2d8e7653f2cecc22924b3b99aeb1c8dd">sipai::Neuron</a>
@@ -119,13 +119,10 @@ $(function() {
 : <a class="el" href="structsipai_1_1RGBA.html#a7fd9867fd1acf8dd236f4322e52daa2a">sipai::RGBA</a>
 </li>
 <li>computeErrors()
-: <a class="el" href="classsipai_1_1OutputLayer.html#a7a6d310555b44d03ac407ce7770640bf">sipai::OutputLayer</a>
+: <a class="el" href="classsipai_1_1LayerOutput.html#a3fc84e1a433a237a6288d9d32636ee63">sipai::LayerOutput</a>
 </li>
 <li>computeMSELoss()
 : <a class="el" href="classsipai_1_1Manager.html#a448845d4bb8ee7486257247fd5097675">sipai::Manager</a>
-</li>
-<li>Connection()
-: <a class="el" href="classsipai_1_1Connection.html#ab46f5a2c7d258b9cd5ac42b77dfd2c68">sipai::Connection</a>
 </li>
 <li>convertToMat()
 : <a class="el" href="classsipai_1_1ImageHelper.html#ad89cba70888849bc97be0be74eca9711">sipai::ImageHelper</a>
@@ -187,11 +184,11 @@ $(function() {
 : <a class="el" href="classsipai_1_1FileReaderException.html#afc0f5d68ba724cb5c9c52faf403c9f83">sipai::FileReaderException</a>
 </li>
 <li>forwardPropagation()
-: <a class="el" href="classsipai_1_1HiddenLayer.html#a5d6b83db541f22c66f3371afe8f20fd1">sipai::HiddenLayer</a>
-, <a class="el" href="classsipai_1_1InputLayer.html#a731043c3be3df756abd253fdd52064a6">sipai::InputLayer</a>
-, <a class="el" href="classsipai_1_1Layer.html#a0cafb537cf66f34767f6a29a891bb7f7">sipai::Layer</a>
+: <a class="el" href="classsipai_1_1Layer.html#a0cafb537cf66f34767f6a29a891bb7f7">sipai::Layer</a>
+, <a class="el" href="classsipai_1_1LayerHidden.html#af29449c95230ef85372d0f4918909c90">sipai::LayerHidden</a>
+, <a class="el" href="classsipai_1_1LayerInput.html#ae2e760229508b0065f37688e36af3642">sipai::LayerInput</a>
+, <a class="el" href="classsipai_1_1LayerOutput.html#afd11819a01d109590394556dd9177d9f">sipai::LayerOutput</a>
 , <a class="el" href="classsipai_1_1NeuralNetwork.html#a66c2b794ad23221df8bdc9e1b5d32d9c">sipai::NeuralNetwork</a>
-, <a class="el" href="classsipai_1_1OutputLayer.html#a33957b4e46f59fcff44472a7edf1e299">sipai::OutputLayer</a>
 </li>
 </ul>
 
@@ -205,7 +202,7 @@ $(function() {
 : <a class="el" href="classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe">sipai::Layer</a>
 </li>
 <li>getOutputValues()
-: <a class="el" href="classsipai_1_1OutputLayer.html#a65ed88889fc745ad415c412be52573f7">sipai::OutputLayer</a>
+: <a class="el" href="classsipai_1_1LayerOutput.html#acfef1f5ddf58a599fea72690ccd1bb73">sipai::LayerOutput</a>
 </li>
 <li>getTrainingData()
 : <a class="el" href="classsipai_1_1TrainingDataFileReaderCSV.html#aa0459d538232f0b0bbfa8b2bea3b0064">sipai::TrainingDataFileReaderCSV</a>
@@ -231,9 +228,6 @@ $(function() {
 </li>
 <li>hidden_size_y
 : <a class="el" href="structsipai_1_1NeuralNetworkParams.html#a771a8a4bfdeb6d836c6ab086fad3b7a4">sipai::NeuralNetworkParams</a>
-</li>
-<li>HiddenLayer()
-: <a class="el" href="classsipai_1_1HiddenLayer.html#ab30396cd2c82ff6a530805dd578b5519">sipai::HiddenLayer</a>
 </li>
 <li>hiddens_count
 : <a class="el" href="structsipai_1_1NeuralNetworkParams.html#a064bfd04d8e567d5f578524f945ce2c2">sipai::NeuralNetworkParams</a>
@@ -283,11 +277,11 @@ $(function() {
 <li>input_size_y
 : <a class="el" href="structsipai_1_1NeuralNetworkParams.html#ae33caf09674e5dba331172da4570538e">sipai::NeuralNetworkParams</a>
 </li>
-<li>InputLayer()
-: <a class="el" href="classsipai_1_1InputLayer.html#a1523f01e0e8a7ba40b727b170393d8ce">sipai::InputLayer</a>
-</li>
 <li>isInitizalized()
 : <a class="el" href="classsipai_1_1NeuralNetwork.html#a211ea00298dd8a87bf2c8420b5885bb5">sipai::NeuralNetwork</a>
+</li>
+<li>isOutOfRange()
+: <a class="el" href="structsipai_1_1RGBA.html#abc2ab8cf560d006aea5ad51292e3aadb">sipai::RGBA</a>
 </li>
 </ul>
 
@@ -302,6 +296,15 @@ $(function() {
 <h3><a id="index_l"></a>- l -</h3><ul>
 <li>Layer()
 : <a class="el" href="classsipai_1_1Layer.html#a9d4b11c21fb4180e8e72261a348ec41e">sipai::Layer</a>
+</li>
+<li>LayerHidden()
+: <a class="el" href="classsipai_1_1LayerHidden.html#ad4dd4cc7e8a97fb25f522120c9c94818">sipai::LayerHidden</a>
+</li>
+<li>LayerInput()
+: <a class="el" href="classsipai_1_1LayerInput.html#a72378481824cdc3f09c886ed8cde7198">sipai::LayerInput</a>
+</li>
+<li>LayerOutput()
+: <a class="el" href="classsipai_1_1LayerOutput.html#a7d0902c02d12161de26cae769f4f8b79">sipai::LayerOutput</a>
 </li>
 <li>layers
 : <a class="el" href="classsipai_1_1NeuralNetwork.html#a86ca08c5bf62b84a54fac262bb7c6206">sipai::NeuralNetwork</a>
@@ -358,7 +361,7 @@ $(function() {
 
 <h3><a id="index_n"></a>- n -</h3><ul>
 <li>neighbors
-: <a class="el" href="classsipai_1_1Neuron.html#a742be8964f1388fb8e11bfb49a33aa30">sipai::Neuron</a>
+: <a class="el" href="classsipai_1_1Neuron.html#a2563fc6f15a4ea0fcc7eab9ddf5f0046">sipai::Neuron</a>
 </li>
 <li>network
 : <a class="el" href="classsipai_1_1Manager.html#a63c0ccc0b6c996b0fd10a2414c9a7ff2">sipai::Manager</a>
@@ -378,11 +381,14 @@ $(function() {
 <li>NeuralNetwork()
 : <a class="el" href="classsipai_1_1NeuralNetwork.html#aeda647a2109867fa2571630d4ac37309">sipai::NeuralNetwork</a>
 </li>
-<li>neuron
-: <a class="el" href="classsipai_1_1Connection.html#a4c620bc7f01b8a1fcae946a5a3e680da">sipai::Connection</a>
-</li>
 <li>Neuron()
 : <a class="el" href="classsipai_1_1Neuron.html#aac8499a824b98f50f44c3a7692a7a167">sipai::Neuron</a>
+</li>
+<li>neuron
+: <a class="el" href="classsipai_1_1NeuronConnection.html#af33cf7a1913fc73e6e728c45d8d192be">sipai::NeuronConnection</a>
+</li>
+<li>NeuronConnection()
+: <a class="el" href="classsipai_1_1NeuronConnection.html#aca3642ae4b49aca7993741ddc872a7e0">sipai::NeuronConnection</a>
 </li>
 <li>neurons
 : <a class="el" href="classsipai_1_1Layer.html#a74ba2e8d1949eebc1f829af9a158e9c9">sipai::Layer</a>
@@ -414,7 +420,7 @@ $(function() {
 </li>
 <li>operator=()
 : <a class="el" href="classsipai_1_1Manager.html#a4acef49c9190e2ad8186e5326a6e6483">sipai::Manager</a>
-, <a class="el" href="classsipai_1_1NeuralNetwork.html#ae7df84b0bdd30bd20ce9573611f7618a">sipai::NeuralNetwork</a>
+, <a class="el" href="classsipai_1_1NeuralNetwork.html#a5b82cd013818722d8d29a8885d01d96a">sipai::NeuralNetwork</a>
 , <a class="el" href="classsipai_1_1SimpleLogger.html#a4314331e528338aa778ba1b53c86feb8">sipai::SimpleLogger</a>
 </li>
 <li>out()
@@ -434,9 +440,6 @@ $(function() {
 </li>
 <li>output_size_y
 : <a class="el" href="structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc">sipai::NeuralNetworkParams</a>
-</li>
-<li>OutputLayer()
-: <a class="el" href="classsipai_1_1OutputLayer.html#aa2fa6485dfdfe938344de1d71c692efc">sipai::OutputLayer</a>
 </li>
 </ul>
 
@@ -483,7 +486,7 @@ $(function() {
 : <a class="el" href="classsipai_1_1NeuralNetwork.html#ad0287a43952325deaad1e97c0bae8035">sipai::NeuralNetwork</a>
 </li>
 <li>setInputValues()
-: <a class="el" href="classsipai_1_1InputLayer.html#ad46367339bd9cc4f28c172b97d25498b">sipai::InputLayer</a>
+: <a class="el" href="classsipai_1_1LayerInput.html#ac7cded76fc3b8c8226f77c59ddfd0cee">sipai::LayerInput</a>
 </li>
 <li>setPrecision()
 : <a class="el" href="classsipai_1_1SimpleLogger.html#a38ac5d2f4773489fef4fedf5d389633e">sipai::SimpleLogger</a>
@@ -530,11 +533,11 @@ $(function() {
 : <a class="el" href="classsipai_1_1Layer.html#addc59dc2248ffa72cfcb6bc37c8dbd72">sipai::Layer</a>
 </li>
 <li>updateWeights()
-: <a class="el" href="classsipai_1_1HiddenLayer.html#a8761cf34ee79c5205d55b13052f5d829">sipai::HiddenLayer</a>
-, <a class="el" href="classsipai_1_1InputLayer.html#aab3443de623982925c332df8070b2d66">sipai::InputLayer</a>
-, <a class="el" href="classsipai_1_1Layer.html#a3d04c557fb3bae027546816692595fed">sipai::Layer</a>
+: <a class="el" href="classsipai_1_1Layer.html#a3d04c557fb3bae027546816692595fed">sipai::Layer</a>
+, <a class="el" href="classsipai_1_1LayerHidden.html#a63da3d71d0c7ef21f602a63d7c365bb0">sipai::LayerHidden</a>
+, <a class="el" href="classsipai_1_1LayerInput.html#a4d699cc3f66c172349dc58075f51eff8">sipai::LayerInput</a>
+, <a class="el" href="classsipai_1_1LayerOutput.html#aca011807a7b86689772104c7bbd89be6">sipai::LayerOutput</a>
 , <a class="el" href="classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672">sipai::NeuralNetwork</a>
-, <a class="el" href="classsipai_1_1OutputLayer.html#ac0e2be702c03ab6ed4db5f4bbbe82a84">sipai::OutputLayer</a>
 </li>
 </ul>
 
@@ -559,7 +562,7 @@ $(function() {
 : <a class="el" href="classsipai_1_1SimpleLogger.html#ad7579e9bfdeaa8057674b8808545f5dc">sipai::SimpleLogger</a>
 </li>
 <li>weight
-: <a class="el" href="classsipai_1_1Connection.html#a80eac22730acb4d4a587ab9eaa5686c4">sipai::Connection</a>
+: <a class="el" href="classsipai_1_1NeuronConnection.html#a5c3fe08491ac1a0b912d553e22475cc0">sipai::NeuronConnection</a>
 </li>
 <li>weights
 : <a class="el" href="classsipai_1_1Neuron.html#a1ef50b08701aa813b15bb961201a8f8c">sipai::Neuron</a>

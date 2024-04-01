@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-31 18:14:55</td>
+            <td class="headerValue">2024-04-01 00:00:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -74,12 +74,12 @@
 <a name="12"><span class="lineNum">      12 </span>            : #include &lt;map&gt;</a>
 <a name="13"><span class="lineNum">      13 </span>            : </a>
 <a name="14"><span class="lineNum">      14 </span>            : namespace sipai {</a>
-<a name="15"><span class="lineNum">      15 </span>            : enum class LayerType { InputLayer, HiddenLayer, OutputLayer };</a>
+<a name="15"><span class="lineNum">      15 </span>            : enum class LayerType { LayerInput, LayerHidden, LayerOutput };</a>
 <a name="16"><span class="lineNum">      16 </span>            : </a>
 <a name="17"><span class="lineNum">      17 </span>            : const std::map&lt;std::string, LayerType, std::less&lt;&gt;&gt; layer_map{</a>
-<a name="18"><span class="lineNum">      18 </span>            :     {&quot;InputLayer&quot;, LayerType::InputLayer},</a>
-<a name="19"><span class="lineNum">      19 </span>            :     {&quot;HiddenLayer&quot;, LayerType::HiddenLayer},</a>
-<a name="20"><span class="lineNum">      20 </span>            :     {&quot;OutputLayer&quot;, LayerType::OutputLayer}};</a>
+<a name="18"><span class="lineNum">      18 </span>            :     {&quot;LayerInput&quot;, LayerType::LayerInput},</a>
+<a name="19"><span class="lineNum">      19 </span>            :     {&quot;LayerHidden&quot;, LayerType::LayerHidden},</a>
+<a name="20"><span class="lineNum">      20 </span>            :     {&quot;LayerOutput&quot;, LayerType::LayerOutput}};</a>
 <a name="21"><span class="lineNum">      21 </span>            : </a>
 <a name="22"><span class="lineNum">      22 </span>            : /**</a>
 <a name="23"><span class="lineNum">      23 </span>            :  * @brief The Layer class represents a layer in a neural network. It contains a</a>

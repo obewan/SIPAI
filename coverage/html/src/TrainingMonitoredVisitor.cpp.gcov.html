@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">59</td>
+            <td class="headerCovTableEntry">58</td>
             <td class="headerCovTableEntry">69</td>
-            <td class="headerCovTableEntryMed">85.5 %</td>
+            <td class="headerCovTableEntryMed">84.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-03-31 18:14:55</td>
+            <td class="headerValue">2024-04-01 00:00:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -114,10 +114,10 @@
 <a name="52"><span class="lineNum">      52 </span><span class="lineCov">          2 :     logTrainingProgress(epoch, trainingLoss, validationLoss);</span></a>
 <a name="53"><span class="lineNum">      53 </span>            : </a>
 <a name="54"><span class="lineNum">      54 </span><span class="lineCov">          2 :     if (validationLoss &lt; bestValidationLoss) {</span></a>
-<a name="55"><span class="lineNum">      55 </span><span class="lineCov">          1 :       bestValidationLoss = validationLoss;</span></a>
-<a name="56"><span class="lineNum">      56 </span><span class="lineCov">          1 :       epochsWithoutImprovement = 0;</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineCov">          2 :       bestValidationLoss = validationLoss;</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">          2 :       epochsWithoutImprovement = 0;</span></a>
 <a name="57"><span class="lineNum">      57 </span>            :     } else {</a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          1 :       epochsWithoutImprovement++;</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineNoCov">          0 :       epochsWithoutImprovement++;</span></a>
 <a name="59"><span class="lineNum">      59 </span>            :     }</a>
 <a name="60"><span class="lineNum">      60 </span>            : </a>
 <a name="61"><span class="lineNum">      61 </span><span class="lineCov">          2 :     epoch++;</span></a>

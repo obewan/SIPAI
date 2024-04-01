@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['connection_235',['Connection',['../classsipai_1_1Connection.html',1,'sipai']]]
+  ['emptycellexception_236',['EmptyCellException',['../classsipai_1_1EmptyCellException.html',1,'sipai']]]
 ];

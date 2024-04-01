@@ -1,6 +1,14 @@
 var searchData=
 [
-  ['networkexception_360',['NetworkException',['../classsipai_1_1NetworkException.html#a0a83a4ea3cda05775ff2830bb3f09682',1,'sipai::NetworkException']]],
-  ['neuralnetwork_361',['NeuralNetwork',['../classsipai_1_1NeuralNetwork.html#aeda647a2109867fa2571630d4ac37309',1,'sipai::NeuralNetwork::NeuralNetwork()=default'],['../classsipai_1_1NeuralNetwork.html#a872f97ba46cf153405908edb329f0e8a',1,'sipai::NeuralNetwork::NeuralNetwork(const NeuralNetwork &amp;other)=delete'],['../classsipai_1_1NeuralNetwork.html#a8ab36afb92397ae42afc54b3de0d76cf',1,'sipai::NeuralNetwork::NeuralNetwork(NeuralNetwork &amp;&amp;other)=delete']]],
-  ['neuron_362',['Neuron',['../classsipai_1_1Neuron.html#aac8499a824b98f50f44c3a7692a7a167',1,'sipai::Neuron']]]
+  ['operator_22_22_5fg_366',['operator&quot;&quot;_G',['../namespacesipai.html#ae718ee7f1d5973fe0c098517fef3d66f',1,'sipai']]],
+  ['operator_22_22_5fk_367',['operator&quot;&quot;_K',['../namespacesipai.html#a7acc8cad3ad16468ff3ad375bd0e7408',1,'sipai']]],
+  ['operator_22_22_5fm_368',['operator&quot;&quot;_M',['../namespacesipai.html#a530b8bee6048178fc409bf40934c4505',1,'sipai']]],
+  ['operator_2a_369',['operator*',['../structsipai_1_1RGBA.html#a4e6ed6cb9e83854b66a7cc9416383293',1,'sipai::RGBA']]],
+  ['operator_2a_3d_370',['operator*=',['../structsipai_1_1RGBA.html#a7a5cdd65b94b0c95bd4cb02ee05e1906',1,'sipai::RGBA']]],
+  ['operator_2b_371',['operator+',['../structsipai_1_1RGBA.html#acdaab782f081d86de7f897e1fcd10798',1,'sipai::RGBA']]],
+  ['operator_2b_3d_372',['operator+=',['../structsipai_1_1RGBA.html#ad5dc7c6f2ef97331e97a0551997b9245',1,'sipai::RGBA']]],
+  ['operator_2d_373',['operator-',['../structsipai_1_1RGBA.html#a2e9d623432882ed59d38be32ce22a695',1,'sipai::RGBA']]],
+  ['operator_2d_3d_374',['operator-=',['../structsipai_1_1RGBA.html#a1205abb08c59b2c3c1429ed6c3b87ead',1,'sipai::RGBA']]],
+  ['operator_3d_375',['operator=',['../classsipai_1_1Manager.html#a4acef49c9190e2ad8186e5326a6e6483',1,'sipai::Manager::operator=()'],['../classsipai_1_1NeuralNetwork.html#a5b82cd013818722d8d29a8885d01d96a',1,'sipai::NeuralNetwork::operator=(const NeuralNetwork &amp;other)=delete'],['../classsipai_1_1NeuralNetwork.html#ae7df84b0bdd30bd20ce9573611f7618a',1,'sipai::NeuralNetwork::operator=(NeuralNetwork &amp;&amp;other)=delete'],['../classsipai_1_1SimpleLogger.html#a4314331e528338aa778ba1b53c86feb8',1,'sipai::SimpleLogger::operator=(SimpleLogger const &amp;)=delete']]],
+  ['out_376',['out',['../classsipai_1_1SimpleLogger.html#ac53ee08c2adfe7f63448a913fd588d6c',1,'sipai::SimpleLogger']]]
 ];

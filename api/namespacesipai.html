@@ -76,8 +76,6 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html">AppParams</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Connection.html">Connection</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1EmptyCellException.html">EmptyCellException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsipai_1_1EmptyCellException.html" title="EmptyCellException.">EmptyCellException</a>.  <a href="classsipai_1_1EmptyCellException.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -96,16 +94,19 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NetworkException.html">NetworkException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A custom exception class that inherits from std::exception. This class is thrown when there are issues with neural Network operations.  <a href="classsipai_1_1NetworkException.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1HiddenLayer.html">HiddenLayer</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classsipai_1_1HiddenLayer.html" title="The HiddenLayer class represents a hidden layer in a neural network. It inherits from the Layer class...">HiddenLayer</a> class represents a hidden layer in a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. Hidden layers are responsible for processing inputs received from the input layer and passing the result to the output layer or the next hidden layer.  <a href="classsipai_1_1HiddenLayer.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html">ImageHelper</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1InputLayer.html">InputLayer</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classsipai_1_1InputLayer.html" title="The InputLayer class represents the input layer of a neural network. It inherits from the Layer class...">InputLayer</a> class represents the input layer of a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. This layer is responsible for receiving input from external sources.  <a href="classsipai_1_1InputLayer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html">Layer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class represents a layer in a neural network. It contains a vector of Neurons and has methods for forward propagation, backward propagation, and updating weights.  <a href="classsipai_1_1Layer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerHidden.html">LayerHidden</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The HiddenLayer class represents a hidden layer in a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. Hidden layers are responsible for processing inputs received from the input layer and passing the result to the output layer or the next hidden layer.  <a href="classsipai_1_1LayerHidden.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html">LayerInput</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The InputLayer class represents the input layer of a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. This layer is responsible for receiving input from external sources.  <a href="classsipai_1_1LayerInput.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerOutput.html">LayerOutput</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The OutputLayer class represents the output layer of a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. This layer is responsible for producing the final output of the network.  <a href="classsipai_1_1LayerOutput.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html">Manager</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,8 +128,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Neuron.html">Neuron</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classsipai_1_1Neuron.html" title="The Neuron class represents a neuron in a neural network. It contains a value, bias,...">Neuron</a> class represents a neuron in a neural network. It contains a value, bias, error, and a vector of weights. It also has methods for initializing weights.  <a href="classsipai_1_1Neuron.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1OutputLayer.html">OutputLayer</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classsipai_1_1OutputLayer.html" title="The OutputLayer class represents the output layer of a neural network. It inherits from the Layer cla...">OutputLayer</a> class represents the output layer of a neural network. It inherits from the <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class and overrides its methods as necessary. This layer is responsible for producing the final output of the network.  <a href="classsipai_1_1OutputLayer.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuronConnection.html">NeuronConnection</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1RGBA.html">RGBA</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,9 +169,9 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032ad8bd04dc25b6c9e78730ad78cbd8d074">TrainingMonitored</a>
  }</td></tr>
 <tr class="separator:a86f53af3a527e290419e10fd371cd032"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49db076f4fbba89b129c17e422f06824"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a> { <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824ae19b8d69e381495ab2dcfad0f947c5de">InputLayer</a>
-, <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824a1462c81ba3769d8f4a5a20fcf19af10d">HiddenLayer</a>
-, <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824a500cef5499f984f348ea5eabd57ee667">OutputLayer</a>
+<tr class="memitem:a49db076f4fbba89b129c17e422f06824"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a> { <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824a25e4adc172745274f4b517b5dab0ed0a">LayerInput</a>
+, <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824a1da285ba3707efdd301e2400f78b68ff">LayerHidden</a>
+, <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824a450a4fcd54a4ccf3de2199639fe20671">LayerOutput</a>
  }</td></tr>
 <tr class="separator:a49db076f4fbba89b129c17e422f06824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ef9a32a9573d0356a88a9325b5551a0"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0">LogLevel</a> { <a class="el" href="namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0a551b723eafd6a31d444fcb2f5920fbd3">INFO</a>
@@ -327,9 +327,9 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a49db076f4fbba89b129c17e422f06824ae19b8d69e381495ab2dcfad0f947c5de"></a>InputLayer&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a49db076f4fbba89b129c17e422f06824a1462c81ba3769d8f4a5a20fcf19af10d"></a>HiddenLayer&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a49db076f4fbba89b129c17e422f06824a500cef5499f984f348ea5eabd57ee667"></a>OutputLayer&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a49db076f4fbba89b129c17e422f06824a25e4adc172745274f4b517b5dab0ed0a"></a>LayerInput&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a49db076f4fbba89b129c17e422f06824a1da285ba3707efdd301e2400f78b68ff"></a>LayerHidden&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a49db076f4fbba89b129c17e422f06824a450a4fcd54a4ccf3de2199639fe20671"></a>LayerOutput&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -510,9 +510,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">{</div>
-<div class="line">    {<span class="stringliteral">&quot;InputLayer&quot;</span>, LayerType::InputLayer},</div>
-<div class="line">    {<span class="stringliteral">&quot;HiddenLayer&quot;</span>, LayerType::HiddenLayer},</div>
-<div class="line">    {<span class="stringliteral">&quot;OutputLayer&quot;</span>, LayerType::OutputLayer}}</div>
+<div class="line">    {<span class="stringliteral">&quot;LayerInput&quot;</span>, LayerType::LayerInput},</div>
+<div class="line">    {<span class="stringliteral">&quot;LayerHidden&quot;</span>, LayerType::LayerHidden},</div>
+<div class="line">    {<span class="stringliteral">&quot;LayerOutput&quot;</span>, LayerType::LayerOutput}}</div>
 </div><!-- fragment -->
 </div>
 </div>
