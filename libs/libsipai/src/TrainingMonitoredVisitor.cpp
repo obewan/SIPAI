@@ -22,6 +22,8 @@ void TrainingMonitoredVisitor::visit() const {
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
   auto &manager = Manager::getInstance();
   const auto &appParams = Manager::getInstance().app_params;
+  const auto start{std::chrono::steady_clock::now()}; // starting timer
+  SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
   const auto &trainingData = manager.loadTrainingData();
@@ -67,6 +69,9 @@ void TrainingMonitoredVisitor::visit() const {
   } catch (std::exception &ex) {
     SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
   }
+  const auto end{std::chrono::steady_clock::now()};
+  const std::chrono::duration<double> elapsed_seconds{end - start};
+  SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
 }
 
 float TrainingMonitoredVisitor::trainOnEpoch(
@@ -133,6 +138,7 @@ bool TrainingMonitoredVisitor::shouldContinueTraining(
 void TrainingMonitoredVisitor::logTrainingProgress(int epoch,
                                                    float trainingLoss,
                                                    float validationLoss) const {
-  SimpleLogger::LOG_INFO("Epoch: ", epoch, ", Train Loss: ", trainingLoss,
-                         ", Validation Loss: ", validationLoss);
+  SimpleLogger::LOG_INFO("Epoch: ", epoch,
+                         ", Train Loss: ", trainingLoss * 100.0f,
+                         "%, Validation Loss: ", validationLoss * 100.0f, "%");
 }

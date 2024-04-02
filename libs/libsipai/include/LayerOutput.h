@@ -12,6 +12,7 @@
 #include "Neuron.h"
 #include <algorithm>
 #include <cstddef>
+#include <execution>
 #include <ranges>
 #include <stdexcept>
 #include <vector>
@@ -52,15 +53,14 @@ public:
     for (Neuron &neuron : neurons) {
       // Update weights based on neurons in the previous layer
       for (size_t j = 0; j < neuron.weights.size(); ++j) {
-        auto dE_dw = previousLayer->neurons[j].value * neuron.error;
-        dE_dw.clamp(-1.0, 1.0);
+        auto dE_dw =
+            (previousLayer->neurons[j].value * neuron.error).clamp(-1.0, 1.0);
         neuron.weights[j] -= learningRate * dE_dw;
-        neuron.weights[j].clamp();
+        neuron.weights[j] = neuron.weights[j].clamp();
       }
       // Update weights based on neighboring neurons
       for (NeuronConnection &connection : neuron.neighbors) {
-        auto dE_dw = connection.neuron->value * neuron.error;
-        dE_dw.clamp(-1.0, 1.0);
+        auto dE_dw = (connection.neuron->value * neuron.error).clamp(-1.0, 1.0);
         connection.weight -= learningRate * dE_dw;
       }
     }
@@ -80,9 +80,9 @@ public:
       for (auto &connection : neuron.neighbors) {
         neighborSum += connection.weight * connection.neuron->value;
       }
-      neuron.error = weightFactor * (neuron.value - expectedValues[i]) +
-                     (1.0f - weightFactor) * neighborSum;
-      neuron.error.clamp(error_min, error_max);
+      neuron.error = (weightFactor * (neuron.value - expectedValues[i]) +
+                      (1.0f - weightFactor) * neighborSum)
+                         .clamp(error_min, error_max);
       ++i;
     }
   }

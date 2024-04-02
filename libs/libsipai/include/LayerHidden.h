@@ -51,17 +51,17 @@ public:
       neurons[i].error = {0.0, 0.0, 0.0, 0.0};
       for (Neuron &n : nextLayer->neurons) {
         neurons[i].error += n.weights[i] * n.error;
-        neurons[i].error.clamp(error_min, error_max);
+        neurons[i].error = neurons[i].error.clamp(error_min, error_max);
       }
       // Consider errors of adjacent neurons
       for (NeuronConnection &connection : neurons[i].neighbors) {
         neurons[i].error += connection.neuron->error * connection.weight;
-        neurons[i].error.clamp(error_min, error_max);
+        neurons[i].error = neurons[i].error.clamp(error_min, error_max);
       }
       // Use the derivative of the activation function
       neurons[i].error *=
           neurons[i].activationFunctionDerivative(neurons[i].value);
-      neurons[i].error.clamp(error_min, error_max);
+      neurons[i].error = neurons[i].error.clamp(error_min, error_max);
     }
   }
 
@@ -72,15 +72,14 @@ public:
 
     for (Neuron &neuron : neurons) {
       for (size_t j = 0; j < neuron.weights.size(); ++j) {
-        auto dE_dw = previousLayer->neurons[j].value * neuron.error;
-        dE_dw.clamp(-1.0, 1.0);
+        auto dE_dw =
+            (previousLayer->neurons[j].value * neuron.error).clamp(-1.0, 1.0);
         neuron.weights[j] -= learningRate * dE_dw;
-        neuron.weights[j].clamp();
+        neuron.weights[j] = neuron.weights[j].clamp();
       }
       // Update weights based on neighboring neurons
       for (NeuronConnection &connection : neuron.neighbors) {
-        auto dE_dw = connection.neuron->value * neuron.error;
-        dE_dw.clamp(-1.0, 1.0);
+        auto dE_dw = (connection.neuron->value * neuron.error).clamp(-1.0, 1.0);
         connection.weight -= learningRate * dE_dw;
       }
     }
