@@ -28,5 +28,6 @@ struct AppParams {
   float split_ratio = 0.8;
   int max_epochs = NOMAX_EPOCHS;
   int max_epochs_without_improvement = 10;
+  int epoch_autosave = 10;
 };
 } // namespace sipai

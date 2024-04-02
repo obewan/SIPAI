@@ -32,6 +32,7 @@ measures that legally restrict others from doing anything the license permits.
 #include "include/SIPAI.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
+#include "include/CLI11.hpp"
 #include <cstdlib>
 #include <string>
 // for CLI11 doc, see https://github.com/CLIUtils/CLI11
@@ -236,15 +237,24 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       ->default_val(network_params.output_activation_alpha)
       ->check(CLI::Range(-100.0f, 100.0f));
   app.add_option(
+         "--eas, --epoch_auto_save", app_params.epoch_autosave,
+         "The frequency (in number of epochs) at which the neural "
+         "network will be saved and exported to the file path specified "
+         "by the export_network option.")
+      ->default_val(app_params.epoch_autosave)
+      ->check(CLI::PositiveNumber);
+  app.add_option(
          "-m, --mode", app_params.run_mode,
          "Select the running mode:\n  - Enhancer:This mode uses an "
          "input image to generate its enhanced image (default).\n    The "
          "enhancer mode requires a neural network that has been imported and "
          "trained for enhancement (be sure that the model has good testing "
          "results).\n  - Testing: Test an imported neural network without "
-         "training.\n  - Training: Train the neural network without testing.\n "
+         "training.\n  - Training: Train the neural network without "
+         "testing.\n "
          " - TrainingMonitored: Train and test at each epoch while monitoring "
-         "the progress. Be aware that this is slower and will use more memory.")
+         "the progress. Be aware that this is slower and will use more "
+         "memory.")
       ->default_val(app_params.run_mode)
       ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
   app.add_flag("-v,--version", version, "Show current version.");

@@ -45,7 +45,7 @@ void TrainingMonitoredVisitor::visit() const {
   float bestValidationLoss = std::numeric_limits<float>::max();
   int epoch = 0;
   int epochsWithoutImprovement = 0;
-
+  bool hasLastEpochBeenSaved = false;
   while (!stopTraining &&
          shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
     float trainingLoss = trainOnEpoch(trainingDataPairs);
@@ -61,14 +61,14 @@ void TrainingMonitoredVisitor::visit() const {
     }
 
     epoch++;
+    hasLastEpochBeenSaved = false;
+    if (epoch % appParams.epoch_autosave == 0) {
+      saveNetwork(hasLastEpochBeenSaved);
+    }
   }
 
-  SimpleLogger::LOG_INFO("Exiting training, saving the neural network...");
-  try {
-    Manager::getInstance().exportNetwork();
-  } catch (std::exception &ex) {
-    SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
-  }
+  SimpleLogger::LOG_INFO("Exiting training...");
+  saveNetwork(hasLastEpochBeenSaved);
   const auto end{std::chrono::steady_clock::now()};
   const std::chrono::duration<double> elapsed_seconds{end - start};
   SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
@@ -141,4 +141,15 @@ void TrainingMonitoredVisitor::logTrainingProgress(int epoch,
   SimpleLogger::LOG_INFO("Epoch: ", epoch,
                          ", Train Loss: ", trainingLoss * 100.0f,
                          "%, Validation Loss: ", validationLoss * 100.0f, "%");
+}
+
+void TrainingMonitoredVisitor::saveNetwork(bool &hasLastEpochBeenSaved) const {
+  try {
+    if (!hasLastEpochBeenSaved) {
+      Manager::getInstance().exportNetwork();
+      hasLastEpochBeenSaved = true;
+    }
+  } catch (std::exception &ex) {
+    SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
+  }
 }

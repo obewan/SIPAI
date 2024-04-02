@@ -57,5 +57,12 @@ public:
    */
   void logTrainingProgress(int epoch, float trainingLoss,
                            float validationLoss) const;
+
+  /**
+   * @brief Save and export the neural network
+   *
+   * @param hasLastEpochBeenSaved
+   */
+  void saveNetwork(bool &hasLastEpochBeenSaved) const;
 };
 } // namespace sipai

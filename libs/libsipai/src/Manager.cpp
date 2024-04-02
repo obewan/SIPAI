@@ -50,7 +50,11 @@ void Manager::createOrImportNetwork() {
 }
 
 void Manager::exportNetwork() {
-  NeuralNetworkImportExportFacade{}.exportModel();
+  if (!app_params.network_to_export.empty()) {
+    SimpleLogger::LOG_INFO("Saving the neural network, to ",
+                           app_params.network_to_export, "...");
+    NeuralNetworkImportExportFacade{}.exportModel();
+  }
 }
 
 void Manager::run() {
