@@ -90,12 +90,14 @@ float TrainingMonitoredVisitor::trainOnEpoch(
         targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
         manager.network_params.output_size_y);
 
-    std::vector<RGBA> outputImage =
-        manager.network->forwardPropagation(inputImage);
+    std::vector<RGBA> outputImage = manager.network->forwardPropagation(
+        inputImage, manager.app_params.enable_parallax);
     epochLoss += manager.computeMSELoss(outputImage, targetImage);
 
-    manager.network->backwardPropagation(targetImage);
-    manager.network->updateWeights(manager.network_params.learning_rate);
+    manager.network->backwardPropagation(targetImage,
+                                         manager.app_params.enable_parallax);
+    manager.network->updateWeights(manager.network_params.learning_rate,
+                                   manager.app_params.enable_parallax);
   }
   epochLoss /= dataSet.size();
   return epochLoss;
@@ -117,8 +119,8 @@ float TrainingMonitoredVisitor::evaluateOnValidationSet(
         targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
         manager.network_params.output_size_y);
 
-    std::vector<RGBA> outputImage =
-        manager.network->forwardPropagation(inputImage);
+    std::vector<RGBA> outputImage = manager.network->forwardPropagation(
+        inputImage, manager.app_params.enable_parallax);
     validationLoss += manager.computeMSELoss(outputImage, targetImage);
   }
   validationLoss /= validationSet.size();

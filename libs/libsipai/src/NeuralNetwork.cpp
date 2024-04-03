@@ -30,7 +30,8 @@ void NeuralNetwork::initialize() {
 }
 
 std::vector<RGBA>
-NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues) {
+NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues,
+                                  bool enableParallax) {
   if (layers.front()->layerType != LayerType::LayerInput) {
     throw NetworkException("Invalid front layer type");
   }
@@ -39,19 +40,25 @@ NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues) {
   }
   ((LayerInput *)layers.front())->setInputValues(inputValues);
   for (auto &layer : layers) {
-    layer->forwardPropagation();
+    layer->forwardPropagation(enableParallax);
   }
   return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
-void NeuralNetwork::backwardPropagation(
-    const std::vector<RGBA> &expectedValues) {
+void NeuralNetwork::backwardPropagation(const std::vector<RGBA> &expectedValues,
+                                        bool enableParallax) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NetworkException("Invalid back layer type");
   }
   ((LayerOutput *)layers.back())->computeErrors(expectedValues);
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-    (*it)->backwardPropagation();
+    (*it)->backwardPropagation(enableParallax);
+  }
+}
+
+void NeuralNetwork::updateWeights(float learning_rate, bool enableParallax) {
+  for (auto &layer : layers) {
+    layer->updateWeights(learning_rate, enableParallax);
   }
 }
 
@@ -205,11 +212,5 @@ void NeuralNetwork::SetActivationFunction(
     break;
   default:
     throw NetworkException("Unimplemented Activation Function");
-  }
-}
-
-void NeuralNetwork::updateWeights(float learning_rate) {
-  for (auto &layer : layers) {
-    layer->updateWeights(learning_rate);
   }
 }
