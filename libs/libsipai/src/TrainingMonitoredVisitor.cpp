@@ -22,6 +22,8 @@ void TrainingMonitoredVisitor::visit() const {
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
   auto &manager = Manager::getInstance();
   const auto &appParams = Manager::getInstance().app_params;
+  const auto start{std::chrono::steady_clock::now()}; // starting timer
+  SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
   const auto &trainingData = manager.loadTrainingData();
@@ -43,7 +45,7 @@ void TrainingMonitoredVisitor::visit() const {
   float bestValidationLoss = std::numeric_limits<float>::max();
   int epoch = 0;
   int epochsWithoutImprovement = 0;
-
+  bool hasLastEpochBeenSaved = false;
   while (!stopTraining &&
          shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
     float trainingLoss = trainOnEpoch(trainingDataPairs);
@@ -59,14 +61,17 @@ void TrainingMonitoredVisitor::visit() const {
     }
 
     epoch++;
+    hasLastEpochBeenSaved = false;
+    if (epoch % appParams.epoch_autosave == 0) {
+      saveNetwork(hasLastEpochBeenSaved);
+    }
   }
 
-  SimpleLogger::LOG_INFO("Exiting training, saving the neural network...");
-  try {
-    Manager::getInstance().exportNetwork();
-  } catch (std::exception &ex) {
-    SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
-  }
+  SimpleLogger::LOG_INFO("Exiting training...");
+  saveNetwork(hasLastEpochBeenSaved);
+  const auto end{std::chrono::steady_clock::now()};
+  const std::chrono::duration<double> elapsed_seconds{end - start};
+  SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
 }
 
 float TrainingMonitoredVisitor::trainOnEpoch(
@@ -85,12 +90,14 @@ float TrainingMonitoredVisitor::trainOnEpoch(
         targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
         manager.network_params.output_size_y);
 
-    std::vector<RGBA> outputImage =
-        manager.network->forwardPropagation(inputImage);
+    std::vector<RGBA> outputImage = manager.network->forwardPropagation(
+        inputImage, manager.app_params.enable_parallax);
     epochLoss += manager.computeMSELoss(outputImage, targetImage);
 
-    manager.network->backwardPropagation(targetImage);
-    manager.network->updateWeights(manager.network_params.learning_rate);
+    manager.network->backwardPropagation(targetImage,
+                                         manager.app_params.enable_parallax);
+    manager.network->updateWeights(manager.network_params.learning_rate,
+                                   manager.app_params.enable_parallax);
   }
   epochLoss /= dataSet.size();
   return epochLoss;
@@ -112,8 +119,8 @@ float TrainingMonitoredVisitor::evaluateOnValidationSet(
         targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
         manager.network_params.output_size_y);
 
-    std::vector<RGBA> outputImage =
-        manager.network->forwardPropagation(inputImage);
+    std::vector<RGBA> outputImage = manager.network->forwardPropagation(
+        inputImage, manager.app_params.enable_parallax);
     validationLoss += manager.computeMSELoss(outputImage, targetImage);
   }
   validationLoss /= validationSet.size();
@@ -133,6 +140,18 @@ bool TrainingMonitoredVisitor::shouldContinueTraining(
 void TrainingMonitoredVisitor::logTrainingProgress(int epoch,
                                                    float trainingLoss,
                                                    float validationLoss) const {
-  SimpleLogger::LOG_INFO("Epoch: ", epoch, ", Train Loss: ", trainingLoss,
-                         ", Validation Loss: ", validationLoss);
+  SimpleLogger::LOG_INFO("Epoch: ", epoch,
+                         ", Train Loss: ", trainingLoss * 100.0f,
+                         "%, Validation Loss: ", validationLoss * 100.0f, "%");
+}
+
+void TrainingMonitoredVisitor::saveNetwork(bool &hasLastEpochBeenSaved) const {
+  try {
+    if (!hasLastEpochBeenSaved) {
+      Manager::getInstance().exportNetwork();
+      hasLastEpochBeenSaved = true;
+    }
+  } catch (std::exception &ex) {
+    SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
+  }
 }

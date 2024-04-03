@@ -8,6 +8,7 @@
  *
  */
 #pragma once
+#include "RandomFactory.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -33,36 +34,35 @@ struct RGBA {
       : value({vec[2] / 255.0f, vec[1] / 255.0f, vec[0] / 255.0f,
                hasAlpha ? vec[3] / 255.0f : 1.0f}) {}
 
+  /**
+   * @brief Get the sum of the RGBA values
+   *
+   * @return float
+   */
   float sum() const {
     return std::reduce(value.begin(), value.end(), 0.0f, std::plus<>());
   }
 
   /**
-   * @brief Clamp the RGBA between 0.0 and 1.0 values.
-   *
-   * @return RGBA&
-   */
-  RGBA &clamp() {
-    for (auto &val : value) {
-      val = std::clamp(val, 0.f, 1.f);
-    }
-    return *this;
-  }
-
-  /**
-   * @brief Clamp the RGBA between min and max values.
+   * @brief Get the clamped RGBA between min and max values.
    *
    * @param min
    * @param max
-   * @return RGBA&
+   * @return A new RGBA with clamped values.
    */
-  RGBA &clamp(float min, float max) {
-    for (auto &val : value) {
-      val = std::clamp(val, min, max);
-    }
-    return *this;
+  RGBA clamp(const float &min = 0.0f, const float &max = 1.0f) const {
+    RGBA result;
+    std::transform(value.begin(), value.end(), result.value.begin(),
+                   [min, max](float val) { return std::clamp(val, min, max); });
+    return result;
   }
 
+  /**
+   * @brief Get the power of RGBA values
+   *
+   * @param n
+   * @return A new RGBA with power values
+   */
   RGBA pow(float n) {
     if (n < 1.0 && std::any_of(value.begin(), value.end(),
                                [](float v) { return v < 0.0f; })) {
@@ -73,11 +73,43 @@ struct RGBA {
                 std::pow(value[2], n), std::pow(value[3], n));
   }
 
+  /**
+   * @brief Get a new randomized RGBA
+   * Using Xavier Initialization
+   *
+   * @param fanIn_fanOut the Xavier sides parameter
+   * @return RGBA
+   */
+  RGBA random(const float &fanIn_fanOut) {
+    RGBA result;
+    float mean = 0.0f;
+    float stddev = std::sqrt(2.0f / fanIn_fanOut);
+    std::for_each(
+        result.value.begin(), result.value.end(), [&mean, &stddev](float &f) {
+          f = std::clamp(RandomFactory::Rand(mean, stddev), 0.0f, 1.0f);
+        });
+
+    return result;
+  }
+
+  /**
+   * @brief Check if values are out of range.
+   *
+   * @param min
+   * @param max
+   * @return true if not in range.
+   * @return false
+   */
   bool isOutOfRange(const float &min = 0.0f, const float &max = 1.0f) {
     return std::any_of(value.begin(), value.end(),
                        [&min, &max](float v) { return v < min || v > max; });
   }
 
+  /**
+   * @brief Get the CSV string representation of the RGBA values.
+   *
+   * @return std::string
+   */
   std::string toStringCsv() const {
     std::ostringstream oss;
     oss << std::fixed; // avoid scientific notation
@@ -88,7 +120,11 @@ struct RGBA {
     return oss.str();
   }
 
-  // Rq: OpenCV use BGRA order
+  /**
+   * @brief Gets the RGBA values converted to an OpenCV vector
+   * Rq: OpenCV use BGRA order
+   * @return cv::Vec4b
+   */
   cv::Vec4b toVec4b() const {
     return cv::Vec4b(value[2] * 255, value[1] * 255, value[0] * 255,
                      value[3] * 255);

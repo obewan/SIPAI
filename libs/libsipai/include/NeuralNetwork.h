@@ -55,7 +55,8 @@ public:
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues);
+  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues,
+                                       bool enableParallax = false);
 
   /**
    * @brief Performs backward propagation on the network using the given
@@ -63,7 +64,14 @@ public:
    *
    * @param expectedValues The expected values for backward propagation.
    */
-  void backwardPropagation(const std::vector<RGBA> &expectedValues);
+  void backwardPropagation(const std::vector<RGBA> &expectedValues,
+                           bool enableParallax = false);
+
+  /**
+   * @brief Updates the weights of the neurons in the network using the learning
+   * rate.
+   */
+  void updateWeights(float learning_rate, bool enableParallax = false);
 
   /**
    * @brief Add the neurons layers of the network.
@@ -99,12 +107,6 @@ public:
   void addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
                           size_t neuron_index, int layer_size_x,
                           int layer_size_y, bool randomize_weight = true);
-
-  /**
-   * @brief Updates the weights of the neurons in the network using the learning
-   * rate.
-   */
-  void updateWeights(float learning_rate);
 
   /**
    * @brief Sets the activation function for a given layer in the network.

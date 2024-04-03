@@ -21,15 +21,15 @@ class LayerInput : public Layer {
 public:
   LayerInput() : Layer(LayerType::LayerInput) {}
 
-  void forwardPropagation() override {
+  void forwardPropagation(bool enableParallax = false) override {
     // No need to implement for input layer
   }
 
-  void backwardPropagation() override {
+  void backwardPropagation(bool enableParallax = false) override {
     // No need to implement for input layer (no weights of input layer)
   }
 
-  void updateWeights(float learningRate) override {
+  void updateWeights(float learningRate, bool enableParallax = false) override {
     // No need to implement for input layer (no weights of input layer)
   }
 

@@ -27,14 +27,7 @@ public:
    * @param imagePath The file path of the image to be loaded.
    * @return cv::Mat The imported image as an OpenCV Mat.
    */
-  cv::Mat loadImage(const std::string &imagePath) {
-    cv::Mat image = cv::imread(imagePath, cv::IMREAD_COLOR);
-    if (image.empty()) {
-      throw ImageHelperException("Could not open or find the image: " +
-                                 imagePath);
-    }
-    return image;
-  }
+  cv::Mat loadImage(const std::string &imagePath);
 
   /**
    * @brief Save an OpenCV Matas image.
@@ -42,13 +35,7 @@ public:
    * @param imagePath The file path of the image to be saved.
    * @param image The OpenCV Mat to save.
    */
-  void saveImage(const std::string &imagePath, cv::Mat &image) {
-    try {
-      cv::imwrite(imagePath, image);
-    } catch (std::exception &ex) {
-      throw ImageHelperException(ex.what());
-    }
-  }
+  void saveImage(const std::string &imagePath, cv::Mat &image);
 
   /**
    * @brief Converts an OpenCV Mat image into a vector of RGBA values.
@@ -56,26 +43,7 @@ public:
    * @param image The OpenCV Mat image to be converted.
    * @return std::vector<RGBA> The converted image as a vector of RGBA values.
    */
-  std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) {
-    const int channels = image.channels();
-    const int rows = image.rows;
-    const int cols = image.cols;
-    const int totalPixels = rows * cols;
-
-    std::vector<RGBA> rgbaValues(totalPixels);
-
-    /// std::execution::par_unseq enables parallel execution of the
-    /// transformation while relaxing the requirement for sequential execution
-    /// order
-    auto pixelIterator = image.begin<cv::Vec4b>();
-    std::transform(std::execution::par_unseq, pixelIterator,
-                   pixelIterator + totalPixels, rgbaValues.begin(),
-                   [channels](const cv::Vec4b &pixel) {
-                     return RGBA(pixel, channels == 4);
-                   });
-
-    return rgbaValues;
-  }
+  std::vector<RGBA> convertToRGBAVector(const cv::Mat &image);
 
   /**
    * @brief Converts a vector of RGBA values into an OpenCV Mat image.
@@ -88,12 +56,6 @@ public:
    * @return cv::Mat The converted image as an OpenCV Mat.
    */
   cv::Mat convertToMat(const std::vector<RGBA> &image, size_t size_x,
-                       size_t size_y) {
-    cv::Mat dest(size_y, size_x, CV_8UC4);
-    auto destPtr = dest.begin<cv::Vec4b>();
-    std::transform(std::execution::par_unseq, image.begin(), image.end(),
-                   destPtr, [](const RGBA &rgba) { return rgba.toVec4b(); });
-    return dest;
-  }
+                       size_t size_y);
 };
 } // namespace sipai
