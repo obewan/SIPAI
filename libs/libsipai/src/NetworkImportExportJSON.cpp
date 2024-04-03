@@ -40,6 +40,7 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
 
   try {
     json_model = json::parse(file);
+    auto network = std::make_unique<NeuralNetwork>();
 
     if (std::string jversion = json_model["version"];
         jversion != appParams.version) {
@@ -49,7 +50,6 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
     }
 
     // Create a new Network object and deserialize the JSON data into it.
-    auto model = std::make_unique<NeuralNetwork>();
     auto params = Manager::getInstance().network_params;
     params.input_size_x = json_model["parameters"]["input_size_x"];
     params.input_size_y = json_model["parameters"]["input_size_y"];
@@ -99,8 +99,8 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
       // Add neurons and their neighbors without their weights
       layer->neurons = std::vector<Neuron>((size_t)json_layer["neurons"]);
       for (size_t i = 0; i < layer->neurons.size(); ++i) {
-        model->addNeuronNeighbors(layer->neurons[i], layer, i, layer_size_x,
-                                  layer_size_y, false);
+        network->addNeuronNeighbors(layer->neurons[i], layer, i, layer_size_x,
+                                    layer_size_y, false);
       }
 
       // Set activation functions
@@ -108,31 +108,31 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
       case LayerType::LayerInput: // no activation function here
         break;
       case LayerType::LayerHidden:
-        model->SetActivationFunction(layer, params.hidden_activation_function,
-                                     params.hidden_activation_alpha);
+        network->SetActivationFunction(layer, params.hidden_activation_function,
+                                       params.hidden_activation_alpha);
         break;
       case LayerType::LayerOutput:
-        model->SetActivationFunction(layer, params.output_activation_function,
-                                     params.output_activation_alpha);
+        network->SetActivationFunction(layer, params.output_activation_function,
+                                       params.output_activation_alpha);
         break;
       default:
         throw ImportExportException("Layer type not recognized");
       }
 
       // Add the layer to the network.
-      model->layers.push_back(layer);
+      network->layers.push_back(layer);
     }
 
-    if (model->layers.front()->layerType != LayerType::LayerInput) {
+    if (network->layers.front()->layerType != LayerType::LayerInput) {
       throw ImportExportException("Invalid input layer");
     }
 
-    if (model->layers.back()->layerType != LayerType::LayerOutput) {
+    if (network->layers.back()->layerType != LayerType::LayerOutput) {
       throw ImportExportException("Invalid output layer");
     }
 
-    model->bindLayers();
-    return model;
+    network->bindLayers();
+    return network;
 
   } catch (const nlohmann::json::parse_error &e) {
     throw ImportExportException("Json parsing error: " + std::string(e.what()));
