@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['addlayers_304',['addLayers',['../classsipai_1_1NeuralNetwork.html#ae36607a20c7b067212744124ddf61010',1,'sipai::NeuralNetwork']]],
-  ['addneuronneighbors_305',['addNeuronNeighbors',['../classsipai_1_1NeuralNetwork.html#ade7b06dc8740d1e298aac229e688a2e7',1,'sipai::NeuralNetwork']]],
-  ['append_306',['append',['../classsipai_1_1SimpleLogger.html#a0ae83f8a9835e9c7d3f3581dadd91eb0',1,'sipai::SimpleLogger']]],
-  ['appenderror_307',['appendError',['../classsipai_1_1SimpleLogger.html#ab9912fa2472cf76c90be0012512ae922',1,'sipai::SimpleLogger']]],
-  ['apply_308',['apply',['../structsipai_1_1RGBA.html#a35bb3ad1e967b81b6bae5125e4cb1ccd',1,'sipai::RGBA::apply(const std::function&lt; float(float)&gt; &amp;func) const'],['../structsipai_1_1RGBA.html#a65b0e38fe7ad830aafa8c0530771249d',1,'sipai::RGBA::apply(const std::function&lt; float(float, float)&gt; &amp;func, float param) const']]],
-  ['applytoelements_309',['applyToElements',['../structsipai_1_1RGBA.html#a1a81ad2f001fb432a7c1efd92e967962',1,'sipai::RGBA']]]
+  ['_5fbackward_320',['_backward',['../classsipai_1_1Layer.html#a6ccb14679293fc3d2cd2375f14625d18',1,'sipai::Layer']]],
+  ['_5fforward_321',['_forward',['../classsipai_1_1Layer.html#a3744991387f8e5bf149980cf1c1406b9',1,'sipai::Layer']]],
+  ['_5fupdate_322',['_update',['../classsipai_1_1Layer.html#add915f96087c74e515510ebeaca05918',1,'sipai::Layer']]]
 ];

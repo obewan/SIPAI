@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['hidden_5factivation_5falpha_54',['hidden_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#a27a4692728c541cebe92313b04b1c733',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5factivation_5ffunction_55',['hidden_activation_function',['../structsipai_1_1NeuralNetworkParams.html#a8d750f6632e7ecc3a989a50aad4c0037',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5fsize_5fx_56',['hidden_size_x',['../structsipai_1_1NeuralNetworkParams.html#a6594d199b1e6bcc9c11a59da89dc960d',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5fsize_5fy_57',['hidden_size_y',['../structsipai_1_1NeuralNetworkParams.html#a771a8a4bfdeb6d836c6ab086fad3b7a4',1,'sipai::NeuralNetworkParams']]],
-  ['hiddens_5fcount_58',['hiddens_count',['../structsipai_1_1NeuralNetworkParams.html#a064bfd04d8e567d5f578524f945ce2c2',1,'sipai::NeuralNetworkParams']]]
+  ['getinstance_53',['getInstance',['../classsipai_1_1Manager.html#a4ff7ad31f5666902d6eaaccf13e50293',1,'sipai::Manager::getInstance()'],['../classsipai_1_1RandomFactory.html#ac1e399ff29dcb96d65b4cf3e5084b55d',1,'sipai::RandomFactory::getInstance()'],['../classsipai_1_1SimpleLogger.html#a0505655e9a1bf6b7f2ee828c84c002b9',1,'sipai::SimpleLogger::getInstance()']]],
+  ['getlayertypestr_54',['getLayerTypeStr',['../classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe',1,'sipai::Layer']]],
+  ['getoutputvalues_55',['getOutputValues',['../classsipai_1_1LayerOutput.html#acfef1f5ddf58a599fea72690ccd1bb73',1,'sipai::LayerOutput']]],
+  ['getrandom_56',['getRandom',['../classsipai_1_1RandomFactory.html#a5c32ddafb5ee3580fe07e419e20d48a8',1,'sipai::RandomFactory']]],
+  ['gettrainingdata_57',['getTrainingData',['../classsipai_1_1TrainingDataFileReaderCSV.html#aa0459d538232f0b0bbfa8b2bea3b0064',1,'sipai::TrainingDataFileReaderCSV']]],
+  ['gettrainingmonitoredvisitor_58',['getTrainingMonitoredVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717',1,'sipai::RunnerVisitorFactory']]],
+  ['getversionheader_59',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]]
 ];

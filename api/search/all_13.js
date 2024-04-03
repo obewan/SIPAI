@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['value_222',['value',['../classsipai_1_1Neuron.html#ae8520bf3d77d8859eeb90304a7cf7243',1,'sipai::Neuron::value()'],['../structsipai_1_1RGBA.html#a1357c219bce94d836d5e16af5683176a',1,'sipai::RGBA::value()']]],
-  ['version_223',['version',['../structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1',1,'sipai::AppParams']]],
-  ['visit_224',['visit',['../classsipai_1_1RunnerVisitor.html#a6300f208cce52718005492f57aab919c',1,'sipai::RunnerVisitor::visit()'],['../classsipai_1_1TrainingMonitoredVisitor.html#a62b0453a1cd26a59913898a4c3ac00b6',1,'sipai::TrainingMonitoredVisitor::visit()']]]
+  ['undefinedlayer_233',['UndefinedLayer',['../classsipai_1_1Layer.html#addc59dc2248ffa72cfcb6bc37c8dbd72',1,'sipai::Layer']]],
+  ['updateweights_234',['updateWeights',['../classsipai_1_1Layer.html#aebd11bf68d2eb50317c56bd7965c2aef',1,'sipai::Layer::updateWeights()'],['../classsipai_1_1LayerInput.html#adcb433a7c4575ca42e0fce9fd3fbe2e9',1,'sipai::LayerInput::updateWeights()'],['../classsipai_1_1NeuralNetwork.html#a7eef29933478bdf425d95b5bf52f3cf4',1,'sipai::NeuralNetwork::updateWeights()']]]
 ];

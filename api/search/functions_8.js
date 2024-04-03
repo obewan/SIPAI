@@ -1,15 +1,15 @@
 var searchData=
 [
-  ['layer_347',['Layer',['../classsipai_1_1Layer.html#a9d4b11c21fb4180e8e72261a348ec41e',1,'sipai::Layer']]],
-  ['layerhidden_348',['LayerHidden',['../classsipai_1_1LayerHidden.html#ad4dd4cc7e8a97fb25f522120c9c94818',1,'sipai::LayerHidden']]],
-  ['layerinput_349',['LayerInput',['../classsipai_1_1LayerInput.html#a72378481824cdc3f09c886ed8cde7198',1,'sipai::LayerInput']]],
-  ['layeroutput_350',['LayerOutput',['../classsipai_1_1LayerOutput.html#a7d0902c02d12161de26cae769f4f8b79',1,'sipai::LayerOutput']]],
-  ['loadimage_351',['loadImage',['../classsipai_1_1ImageHelper.html#aa3f2347532159ab72e4da56608abd3a2',1,'sipai::ImageHelper::loadImage()'],['../classsipai_1_1Manager.html#ad9390d642b87aaaa07cf3367e618f76e',1,'sipai::Manager::loadImage(const std::string &amp;imagePath, size_t &amp;size_x, size_t &amp;size_y, size_t resize_x, size_t resize_y)']]],
-  ['loadtrainingdata_352',['loadTrainingData',['../classsipai_1_1Manager.html#af7da452d4b0ad62052724bbf29786608',1,'sipai::Manager']]],
-  ['log_353',['log',['../classsipai_1_1SimpleLogger.html#a517710527766fd613c3bce9a5d9f18c2',1,'sipai::SimpleLogger']]],
-  ['log_5fdebug_354',['LOG_DEBUG',['../classsipai_1_1SimpleLogger.html#aaca7185e4eaf18a984162d8cfa369b37',1,'sipai::SimpleLogger']]],
-  ['log_5ferror_355',['LOG_ERROR',['../classsipai_1_1SimpleLogger.html#aed70718f656203e9bfc9c330f53a1c1f',1,'sipai::SimpleLogger']]],
-  ['log_5finfo_356',['LOG_INFO',['../classsipai_1_1SimpleLogger.html#ad0da14229f339b609cbba23d0c8417d1',1,'sipai::SimpleLogger']]],
-  ['log_5fwarn_357',['LOG_WARN',['../classsipai_1_1SimpleLogger.html#a7cdd07bfaf7c3b713a4ddea663619cc3',1,'sipai::SimpleLogger']]],
-  ['logtrainingprogress_358',['logTrainingProgress',['../classsipai_1_1TrainingMonitoredVisitor.html#a6718a707fbfbd0afcdfcd2077ce312fe',1,'sipai::TrainingMonitoredVisitor']]]
+  ['imagehelperexception_355',['ImageHelperException',['../classsipai_1_1ImageHelperException.html#af16cdc2539667e95c839c694d17e401b',1,'sipai::ImageHelperException']]],
+  ['importexportexception_356',['ImportExportException',['../classsipai_1_1ImportExportException.html#a2c93dbba1c2fd15acd3875946f99cad5',1,'sipai::ImportExportException::ImportExportException()=default'],['../classsipai_1_1ImportExportException.html#a27b88b00a8d1ea50253b321d3e101b0e',1,'sipai::ImportExportException::ImportExportException(const std::string &amp;message)'],['../classsipai_1_1EmptyCellException.html#a2c93dbba1c2fd15acd3875946f99cad5',1,'sipai::EmptyCellException::ImportExportException()=default'],['../classsipai_1_1EmptyCellException.html#a27b88b00a8d1ea50253b321d3e101b0e',1,'sipai::EmptyCellException::ImportExportException(const std::string &amp;message)']]],
+  ['importmodel_357',['importModel',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a3b3f8569d134fb2fe5be13d4b659af9c',1,'sipai::NeuralNetworkImportExportFacade::importModel()'],['../classsipai_1_1NeuralNetworkImportExportJSON.html#a3c1620a04802abc497d930c5a9306451',1,'sipai::NeuralNetworkImportExportJSON::importModel()']]],
+  ['importneuronsweights_358',['importNeuronsWeights',['../classsipai_1_1NeuralNetworkImportExportCSV.html#ab2124aafda5202d7286804685c0a1ccd',1,'sipai::NeuralNetworkImportExportCSV']]],
+  ['info_359',['info',['../classsipai_1_1SimpleLogger.html#a3c625fe2a38985047d3e505bb97f9318',1,'sipai::SimpleLogger']]],
+  ['init_360',['init',['../classSIPAI.html#ade2dd822915fd47e80cc91089d836f60',1,'SIPAI']]],
+  ['initialize_361',['initialize',['../classsipai_1_1NeuralNetwork.html#a315b92138611dd3738b69c0258c3b06d',1,'sipai::NeuralNetwork']]],
+  ['initializeneighbors_362',['initializeNeighbors',['../classsipai_1_1NeuralNetwork.html#a22ba6f8a11f8146eb7c212c13eedf39c',1,'sipai::NeuralNetwork']]],
+  ['initializeweights_363',['initializeWeights',['../classsipai_1_1NeuralNetwork.html#a860372114c93a14f0f79c02ec364e012',1,'sipai::NeuralNetwork']]],
+  ['initweights_364',['initWeights',['../classsipai_1_1Neuron.html#a302dfb3d5012888562a860a4b9927ce5',1,'sipai::Neuron']]],
+  ['isinitizalized_365',['isInitizalized',['../classsipai_1_1NeuralNetwork.html#a211ea00298dd8a87bf2c8420b5885bb5',1,'sipai::NeuralNetwork']]],
+  ['isoutofrange_366',['isOutOfRange',['../structsipai_1_1RGBA.html#abc2ab8cf560d006aea5ad51292e3aadb',1,'sipai::RGBA']]]
 ];

@@ -1,9 +1,5 @@
 var searchData=
 [
-  ['getinstance_329',['getInstance',['../classsipai_1_1Manager.html#a4ff7ad31f5666902d6eaaccf13e50293',1,'sipai::Manager::getInstance()'],['../classsipai_1_1SimpleLogger.html#a0505655e9a1bf6b7f2ee828c84c002b9',1,'sipai::SimpleLogger::getInstance()']]],
-  ['getlayertypestr_330',['getLayerTypeStr',['../classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe',1,'sipai::Layer']]],
-  ['getoutputvalues_331',['getOutputValues',['../classsipai_1_1LayerOutput.html#acfef1f5ddf58a599fea72690ccd1bb73',1,'sipai::LayerOutput']]],
-  ['gettrainingdata_332',['getTrainingData',['../classsipai_1_1TrainingDataFileReaderCSV.html#aa0459d538232f0b0bbfa8b2bea3b0064',1,'sipai::TrainingDataFileReaderCSV']]],
-  ['gettrainingmonitoredvisitor_333',['getTrainingMonitoredVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717',1,'sipai::RunnerVisitorFactory']]],
-  ['getversionheader_334',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]]
+  ['filereaderexception_346',['FileReaderException',['../classsipai_1_1FileReaderException.html#afc0f5d68ba724cb5c9c52faf403c9f83',1,'sipai::FileReaderException']]],
+  ['forwardpropagation_347',['forwardPropagation',['../classsipai_1_1Layer.html#a8dd83413887cee065c3e554155c7e4fb',1,'sipai::Layer::forwardPropagation()'],['../classsipai_1_1LayerInput.html#a97b9d4eb5b09cc57b2b9828a86d6cf65',1,'sipai::LayerInput::forwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#a7b9c43dab58f568912681d175bba4bc5',1,'sipai::NeuralNetwork::forwardPropagation()']]]
 ];

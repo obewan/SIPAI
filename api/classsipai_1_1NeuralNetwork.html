@@ -97,12 +97,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a315b92138611dd3738b69c0258c3b06d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a315b92138611dd3738b69c0258c3b06d">initialize</a> ()</td></tr>
 <tr class="memdesc:a315b92138611dd3738b69c0258c3b06d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the layers of the network.  <a href="classsipai_1_1NeuralNetwork.html#a315b92138611dd3738b69c0258c3b06d">More...</a><br /></td></tr>
 <tr class="separator:a315b92138611dd3738b69c0258c3b06d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66c2b794ad23221df8bdc9e1b5d32d9c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a66c2b794ad23221df8bdc9e1b5d32d9c">forwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;inputValues)</td></tr>
-<tr class="memdesc:a66c2b794ad23221df8bdc9e1b5d32d9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation on the network using the given input values.  <a href="classsipai_1_1NeuralNetwork.html#a66c2b794ad23221df8bdc9e1b5d32d9c">More...</a><br /></td></tr>
-<tr class="separator:a66c2b794ad23221df8bdc9e1b5d32d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d11c5810d63aa1662d5603528c5a560"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a6d11c5810d63aa1662d5603528c5a560">backwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;expectedValues)</td></tr>
-<tr class="memdesc:a6d11c5810d63aa1662d5603528c5a560"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation on the network using the given expected values.  <a href="classsipai_1_1NeuralNetwork.html#a6d11c5810d63aa1662d5603528c5a560">More...</a><br /></td></tr>
-<tr class="separator:a6d11c5810d63aa1662d5603528c5a560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b9c43dab58f568912681d175bba4bc5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a7b9c43dab58f568912681d175bba4bc5">forwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;inputValues, bool enableParallax=false)</td></tr>
+<tr class="memdesc:a7b9c43dab58f568912681d175bba4bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation on the network using the given input values.  <a href="classsipai_1_1NeuralNetwork.html#a7b9c43dab58f568912681d175bba4bc5">More...</a><br /></td></tr>
+<tr class="separator:a7b9c43dab58f568912681d175bba4bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa376874432ab9b228e9f0bfdf324077"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#afa376874432ab9b228e9f0bfdf324077">backwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;expectedValues, bool enableParallax=false)</td></tr>
+<tr class="memdesc:afa376874432ab9b228e9f0bfdf324077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation on the network using the given expected values.  <a href="classsipai_1_1NeuralNetwork.html#afa376874432ab9b228e9f0bfdf324077">More...</a><br /></td></tr>
+<tr class="separator:afa376874432ab9b228e9f0bfdf324077"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eef29933478bdf425d95b5bf52f3cf4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a7eef29933478bdf425d95b5bf52f3cf4">updateWeights</a> (float learning_rate, bool enableParallax=false)</td></tr>
+<tr class="memdesc:a7eef29933478bdf425d95b5bf52f3cf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in the network using the learning rate.  <a href="classsipai_1_1NeuralNetwork.html#a7eef29933478bdf425d95b5bf52f3cf4">More...</a><br /></td></tr>
+<tr class="separator:a7eef29933478bdf425d95b5bf52f3cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae36607a20c7b067212744124ddf61010"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#ae36607a20c7b067212744124ddf61010">addLayers</a> ()</td></tr>
 <tr class="memdesc:ae36607a20c7b067212744124ddf61010"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the neurons layers of the network.  <a href="classsipai_1_1NeuralNetwork.html#ae36607a20c7b067212744124ddf61010">More...</a><br /></td></tr>
 <tr class="separator:ae36607a20c7b067212744124ddf61010"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,9 +121,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ade7b06dc8740d1e298aac229e688a2e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#ade7b06dc8740d1e298aac229e688a2e7">addNeuronNeighbors</a> (<a class="el" href="classsipai_1_1Neuron.html">Neuron</a> &amp;neuron, <a class="el" href="classsipai_1_1Layer.html">Layer</a> *neuron_layer, size_t neuron_index, int layer_size_x, int layer_size_y, bool randomize_weight=true)</td></tr>
 <tr class="memdesc:ade7b06dc8740d1e298aac229e688a2e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add and initialize the neighbors of a specific neuron.  <a href="classsipai_1_1NeuralNetwork.html#ade7b06dc8740d1e298aac229e688a2e7">More...</a><br /></td></tr>
 <tr class="separator:ade7b06dc8740d1e298aac229e688a2e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a985433dc857ad5905f1e060806a3a672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672">updateWeights</a> (float learning_rate)</td></tr>
-<tr class="memdesc:a985433dc857ad5905f1e060806a3a672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in the network using the learning rate.  <a href="classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672">More...</a><br /></td></tr>
-<tr class="separator:a985433dc857ad5905f1e060806a3a672"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0287a43952325deaad1e97c0bae8035"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#ad0287a43952325deaad1e97c0bae8035">SetActivationFunction</a> (<a class="el" href="classsipai_1_1Layer.html">Layer</a> *layer, <a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194">EActivationFunction</a> activation_function, float activation_alpha) const</td></tr>
 <tr class="memdesc:ad0287a43952325deaad1e97c0bae8035"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the activation function for a given layer in the network.  <a href="classsipai_1_1NeuralNetwork.html#ad0287a43952325deaad1e97c0bae8035">More...</a><br /></td></tr>
 <tr class="separator:ad0287a43952325deaad1e97c0bae8035"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -326,8 +326,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6d11c5810d63aa1662d5603528c5a560"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d11c5810d63aa1662d5603528c5a560">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
+<a id="afa376874432ab9b228e9f0bfdf324077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa376874432ab9b228e9f0bfdf324077">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -336,8 +336,18 @@ Public Attributes</h2></td></tr>
           <td class="memname">void NeuralNetwork::backwardPropagation </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>expectedValues</em></td><td>)</td>
+          <td class="paramname"><em>expectedValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enableParallax</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -371,8 +381,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a66c2b794ad23221df8bdc9e1b5d32d9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66c2b794ad23221df8bdc9e1b5d32d9c">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
+<a id="a7b9c43dab58f568912681d175bba4bc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b9c43dab58f568912681d175bba4bc5">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -381,8 +391,18 @@ Public Attributes</h2></td></tr>
           <td class="memname">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; NeuralNetwork::forwardPropagation </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>inputValues</em></td><td>)</td>
+          <td class="paramname"><em>inputValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enableParallax</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -581,8 +601,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a985433dc857ad5905f1e060806a3a672"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a985433dc857ad5905f1e060806a3a672">&#9670;&nbsp;</a></span>updateWeights()</h2>
+<a id="a7eef29933478bdf425d95b5bf52f3cf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7eef29933478bdf425d95b5bf52f3cf4">&#9670;&nbsp;</a></span>updateWeights()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -591,8 +611,18 @@ false </dd></dl>
           <td class="memname">void NeuralNetwork::updateWeights </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>learning_rate</em></td><td>)</td>
+          <td class="paramname"><em>learning_rate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enableParallax</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

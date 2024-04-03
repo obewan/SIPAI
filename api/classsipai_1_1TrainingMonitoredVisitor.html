@@ -101,6 +101,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6718a707fbfbd0afcdfcd2077ce312fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingMonitoredVisitor.html#a6718a707fbfbd0afcdfcd2077ce312fe">logTrainingProgress</a> (int epoch, float trainingLoss, float validationLoss) const</td></tr>
 <tr class="memdesc:a6718a707fbfbd0afcdfcd2077ce312fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs the training progress for the current epoch.  <a href="classsipai_1_1TrainingMonitoredVisitor.html#a6718a707fbfbd0afcdfcd2077ce312fe">More...</a><br /></td></tr>
 <tr class="separator:a6718a707fbfbd0afcdfcd2077ce312fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9cab3d7bb1acf9aca360a8a163b793a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingMonitoredVisitor.html#ae9cab3d7bb1acf9aca360a8a163b793a">saveNetwork</a> (bool &amp;hasLastEpochBeenSaved) const</td></tr>
+<tr class="memdesc:ae9cab3d7bb1acf9aca360a8a163b793a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save and export the neural network.  <a href="classsipai_1_1TrainingMonitoredVisitor.html#ae9cab3d7bb1acf9aca360a8a163b793a">More...</a><br /></td></tr>
+<tr class="separator:ae9cab3d7bb1acf9aca360a8a163b793a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsipai_1_1RunnerVisitor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsipai_1_1RunnerVisitor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsipai_1_1RunnerVisitor.html">sipai::RunnerVisitor</a></td></tr>
 <tr class="memitem:a9eff828476354487d390af23b47516f0 inherit pub_methods_classsipai_1_1RunnerVisitor"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerVisitor.html#a9eff828476354487d390af23b47516f0">~RunnerVisitor</a> ()=default</td></tr>
 <tr class="separator:a9eff828476354487d390af23b47516f0 inherit pub_methods_classsipai_1_1RunnerVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,6 +174,32 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">epoch</td><td>The current epoch number. </td></tr>
     <tr><td class="paramname">trainingLoss</td><td>The average training loss for the current epoch. </td></tr>
     <tr><td class="paramname">validationLoss</td><td>The average validation loss for the current epoch. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae9cab3d7bb1acf9aca360a8a163b793a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9cab3d7bb1acf9aca360a8a163b793a">&#9670;&nbsp;</a></span>saveNetwork()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TrainingMonitoredVisitor::saveNetwork </td>
+          <td>(</td>
+          <td class="paramtype">bool &amp;&#160;</td>
+          <td class="paramname"><em>hasLastEpochBeenSaved</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Save and export the neural network. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hasLastEpochBeenSaved</td><td></td></tr>
   </table>
   </dd>
 </dl>

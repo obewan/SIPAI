@@ -68,9 +68,10 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classsipai_1_1Layer-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">sipai::Layer Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">sipai::Layer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -96,15 +97,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9d4b11c21fb4180e8e72261a348ec41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38c8c0374443ce22ea762150078f0add"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a38c8c0374443ce22ea762150078f0add">~Layer</a> ()=default</td></tr>
 <tr class="separator:a38c8c0374443ce22ea762150078f0add"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cafb537cf66f34767f6a29a891bb7f7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a0cafb537cf66f34767f6a29a891bb7f7">forwardPropagation</a> ()=0</td></tr>
-<tr class="memdesc:a0cafb537cf66f34767f6a29a891bb7f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1Layer.html#a0cafb537cf66f34767f6a29a891bb7f7">More...</a><br /></td></tr>
-<tr class="separator:a0cafb537cf66f34767f6a29a891bb7f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab447f25fecd24f7cf6659b331dc05516"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#ab447f25fecd24f7cf6659b331dc05516">backwardPropagation</a> ()=0</td></tr>
-<tr class="memdesc:ab447f25fecd24f7cf6659b331dc05516"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1Layer.html#ab447f25fecd24f7cf6659b331dc05516">More...</a><br /></td></tr>
-<tr class="separator:ab447f25fecd24f7cf6659b331dc05516"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d04c557fb3bae027546816692595fed"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a3d04c557fb3bae027546816692595fed">updateWeights</a> (float learningRate)=0</td></tr>
-<tr class="memdesc:a3d04c557fb3bae027546816692595fed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in this layer using the previous layer and a learning rate.  <a href="classsipai_1_1Layer.html#a3d04c557fb3bae027546816692595fed">More...</a><br /></td></tr>
-<tr class="separator:a3d04c557fb3bae027546816692595fed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dd83413887cee065c3e554155c7e4fb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a8dd83413887cee065c3e554155c7e4fb">forwardPropagation</a> (bool enableParallax=false)</td></tr>
+<tr class="memdesc:a8dd83413887cee065c3e554155c7e4fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1Layer.html#a8dd83413887cee065c3e554155c7e4fb">More...</a><br /></td></tr>
+<tr class="separator:a8dd83413887cee065c3e554155c7e4fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a636fdbb45ed7fd7546feeb6a152bef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a9a636fdbb45ed7fd7546feeb6a152bef">backwardPropagation</a> (bool enableParallax=false)</td></tr>
+<tr class="memdesc:a9a636fdbb45ed7fd7546feeb6a152bef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1Layer.html#a9a636fdbb45ed7fd7546feeb6a152bef">More...</a><br /></td></tr>
+<tr class="separator:a9a636fdbb45ed7fd7546feeb6a152bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebd11bf68d2eb50317c56bd7965c2aef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#aebd11bf68d2eb50317c56bd7965c2aef">updateWeights</a> (float learningRate, bool enableParallax=false)</td></tr>
+<tr class="memdesc:aebd11bf68d2eb50317c56bd7965c2aef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in this layer using the previous layer and a learning rate.  <a href="classsipai_1_1Layer.html#aebd11bf68d2eb50317c56bd7965c2aef">More...</a><br /></td></tr>
+<tr class="separator:aebd11bf68d2eb50317c56bd7965c2aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53ea394f3982019473bc918f4a999bbe"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe">getLayerTypeStr</a> () const</td></tr>
 <tr class="separator:a53ea394f3982019473bc918f4a999bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdaa34d3b5aafbe4b7ed81add4eb1348"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#abdaa34d3b5aafbe4b7ed81add4eb1348">setActivationFunction</a> (const std::function&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a>(<a class="el" href="structsipai_1_1RGBA.html">RGBA</a>)&gt; &amp;function, const std::function&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a>(<a class="el" href="structsipai_1_1RGBA.html">RGBA</a>)&gt; &amp;derivative)</td></tr>
@@ -122,6 +123,20 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a4942c6d92e0c07a5558ef46ad704d201"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addc59dc2248ffa72cfcb6bc37c8dbd72"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#addc59dc2248ffa72cfcb6bc37c8dbd72">UndefinedLayer</a> = &quot;UndefinedLayer&quot;</td></tr>
 <tr class="separator:addc59dc2248ffa72cfcb6bc37c8dbd72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a3744991387f8e5bf149980cf1c1406b9"><td class="memTemplParams" colspan="2">template&lt;typename ExecutionPolicy &gt; </td></tr>
+<tr class="memitem:a3744991387f8e5bf149980cf1c1406b9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a3744991387f8e5bf149980cf1c1406b9">_forward</a> (ExecutionPolicy executionPolicy)</td></tr>
+<tr class="memdesc:a3744991387f8e5bf149980cf1c1406b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward propagation core methode.  <a href="classsipai_1_1Layer.html#a3744991387f8e5bf149980cf1c1406b9">More...</a><br /></td></tr>
+<tr class="separator:a3744991387f8e5bf149980cf1c1406b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ccb14679293fc3d2cd2375f14625d18"><td class="memTemplParams" colspan="2">template&lt;typename ExecutionPolicy &gt; </td></tr>
+<tr class="memitem:a6ccb14679293fc3d2cd2375f14625d18"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a6ccb14679293fc3d2cd2375f14625d18">_backward</a> (ExecutionPolicy executionPolicy)</td></tr>
+<tr class="separator:a6ccb14679293fc3d2cd2375f14625d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add915f96087c74e515510ebeaca05918"><td class="memTemplParams" colspan="2">template&lt;typename ExecutionPolicy &gt; </td></tr>
+<tr class="memitem:add915f96087c74e515510ebeaca05918"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#add915f96087c74e515510ebeaca05918">_update</a> (ExecutionPolicy executionPolicy, float learningRate)</td></tr>
+<tr class="memdesc:add915f96087c74e515510ebeaca05918"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update weights core methode.  <a href="classsipai_1_1Layer.html#add915f96087c74e515510ebeaca05918">More...</a><br /></td></tr>
+<tr class="separator:add915f96087c74e515510ebeaca05918"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class represents a layer in a neural network. It contains a vector of Neurons and has methods for forward propagation, backward propagation, and updating weights. </p>
@@ -178,8 +193,135 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab447f25fecd24f7cf6659b331dc05516"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab447f25fecd24f7cf6659b331dc05516">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
+<a id="a6ccb14679293fc3d2cd2375f14625d18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ccb14679293fc3d2cd2375f14625d18">&#9670;&nbsp;</a></span>_backward()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ExecutionPolicy &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sipai::Layer::_backward </td>
+          <td>(</td>
+          <td class="paramtype">ExecutionPolicy&#160;</td>
+          <td class="paramname"><em>executionPolicy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3744991387f8e5bf149980cf1c1406b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3744991387f8e5bf149980cf1c1406b9">&#9670;&nbsp;</a></span>_forward()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ExecutionPolicy &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sipai::Layer::_forward </td>
+          <td>(</td>
+          <td class="paramtype">ExecutionPolicy&#160;</td>
+          <td class="paramname"><em>executionPolicy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Forward propagation core methode. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ExecutionPolicy</td><td>the sequential or parallel execution policy type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">executionPolicy</td><td></td></tr>
+    <tr><td class="paramname">neurons</td><td></td></tr>
+    <tr><td class="paramname">previousLayer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="add915f96087c74e515510ebeaca05918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add915f96087c74e515510ebeaca05918">&#9670;&nbsp;</a></span>_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ExecutionPolicy &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sipai::Layer::_update </td>
+          <td>(</td>
+          <td class="paramtype">ExecutionPolicy&#160;</td>
+          <td class="paramname"><em>executionPolicy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>learningRate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Update weights core methode. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ExecutionPolicy</td><td>the sequential or parallel execution policy type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">executionPolicy</td><td></td></tr>
+    <tr><td class="paramname">neurons</td><td></td></tr>
+    <tr><td class="paramname">learningRate</td><td></td></tr>
+    <tr><td class="paramname">previousLayer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9a636fdbb45ed7fd7546feeb6a152bef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a636fdbb45ed7fd7546feeb6a152bef">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,25 +332,26 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void sipai::Layer::backwardPropagation </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enableParallax</em> = <code>false</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Performs backward propagation using the next layer. </p>
 
-<p>Implemented in <a class="el" href="classsipai_1_1LayerOutput.html#ad4e0ea627af792ddd4af63cd72bd70ae">sipai::LayerOutput</a>, <a class="el" href="classsipai_1_1LayerInput.html#a7fb22682e10436503ab138ae1061a54b">sipai::LayerInput</a>, and <a class="el" href="classsipai_1_1LayerHidden.html#a3b12aafdbc3ed8016fd5dd5b21c73b03">sipai::LayerHidden</a>.</p>
+<p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#a57410df835961235a234d99e6c7f4656">sipai::LayerInput</a>.</p>
 
 </div>
 </div>
-<a id="a0cafb537cf66f34767f6a29a891bb7f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0cafb537cf66f34767f6a29a891bb7f7">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
+<a id="a8dd83413887cee065c3e554155c7e4fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dd83413887cee065c3e554155c7e4fb">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -219,20 +362,21 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void sipai::Layer::forwardPropagation </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enableParallax</em> = <code>false</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Performs forward propagation using the previous layer. </p>
 
-<p>Implemented in <a class="el" href="classsipai_1_1LayerOutput.html#afd11819a01d109590394556dd9177d9f">sipai::LayerOutput</a>, <a class="el" href="classsipai_1_1LayerInput.html#ae2e760229508b0065f37688e36af3642">sipai::LayerInput</a>, and <a class="el" href="classsipai_1_1LayerHidden.html#af29449c95230ef85372d0f4918909c90">sipai::LayerHidden</a>.</p>
+<p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#a97b9d4eb5b09cc57b2b9828a86d6cf65">sipai::LayerInput</a>.</p>
 
 </div>
 </div>
@@ -297,8 +441,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3d04c557fb3bae027546816692595fed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d04c557fb3bae027546816692595fed">&#9670;&nbsp;</a></span>updateWeights()</h2>
+<a id="aebd11bf68d2eb50317c56bd7965c2aef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebd11bf68d2eb50317c56bd7965c2aef">&#9670;&nbsp;</a></span>updateWeights()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -310,13 +454,23 @@ Public Attributes</h2></td></tr>
           <td class="memname">virtual void sipai::Layer::updateWeights </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>learningRate</em></td><td>)</td>
+          <td class="paramname"><em>learningRate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enableParallax</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -329,7 +483,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classsipai_1_1LayerOutput.html#aca011807a7b86689772104c7bbd89be6">sipai::LayerOutput</a>, <a class="el" href="classsipai_1_1LayerInput.html#a4d699cc3f66c172349dc58075f51eff8">sipai::LayerInput</a>, and <a class="el" href="classsipai_1_1LayerHidden.html#a63da3d71d0c7ef21f602a63d7c365bb0">sipai::LayerHidden</a>.</p>
+<p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#adcb433a7c4575ca42e0fce9fd3fbe2e9">sipai::LayerInput</a>.</p>
 
 </div>
 </div>
