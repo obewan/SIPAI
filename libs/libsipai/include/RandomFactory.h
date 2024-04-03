@@ -48,5 +48,5 @@ private:
   RandomFactory() : gen(rd()) {}
   std::random_device rd;
   std::mt19937 gen;
-};
+}; // namespace sipai
 } // namespace sipai
