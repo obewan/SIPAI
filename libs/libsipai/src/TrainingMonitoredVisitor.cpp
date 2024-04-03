@@ -1,4 +1,5 @@
 #include "TrainingMonitoredVisitor.h"
+#include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
 #include <csignal>
@@ -77,6 +78,7 @@ void TrainingMonitoredVisitor::visit() const {
 float TrainingMonitoredVisitor::trainOnEpoch(
     const TrainingData &dataSet) const {
   auto &manager = Manager::getInstance();
+  ImageHelper imageHelper;
   float epochLoss = 0.0f;
   for (const auto &[inputPath, targetPath] : dataSet) {
     size_t orig_ix;
@@ -92,7 +94,7 @@ float TrainingMonitoredVisitor::trainOnEpoch(
 
     std::vector<RGBA> outputImage = manager.network->forwardPropagation(
         inputImage, manager.app_params.enable_parallax);
-    epochLoss += manager.computeMSELoss(outputImage, targetImage);
+    epochLoss += imageHelper.computeLoss(outputImage, targetImage);
 
     manager.network->backwardPropagation(targetImage,
                                          manager.app_params.enable_parallax);
@@ -106,6 +108,7 @@ float TrainingMonitoredVisitor::trainOnEpoch(
 float TrainingMonitoredVisitor::evaluateOnValidationSet(
     const TrainingData &validationSet) const {
   auto &manager = Manager::getInstance();
+  ImageHelper imageHelper;
   float validationLoss = 0.0f;
   for (const auto &[inputPath, targetPath] : validationSet) {
     size_t orig_ix;
@@ -121,7 +124,7 @@ float TrainingMonitoredVisitor::evaluateOnValidationSet(
 
     std::vector<RGBA> outputImage = manager.network->forwardPropagation(
         inputImage, manager.app_params.enable_parallax);
-    validationLoss += manager.computeMSELoss(outputImage, targetImage);
+    validationLoss += imageHelper.computeLoss(outputImage, targetImage);
   }
   validationLoss /= validationSet.size();
   return validationLoss;

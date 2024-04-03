@@ -63,7 +63,7 @@ struct RGBA {
    * @param n
    * @return A new RGBA with power values
    */
-  RGBA pow(float n) {
+  RGBA pow(float n) const {
     if (n < 1.0 && std::any_of(value.begin(), value.end(),
                                [](float v) { return v < 0.0f; })) {
       throw std::invalid_argument(
@@ -80,7 +80,7 @@ struct RGBA {
    * @param fanIn_fanOut the Xavier sides parameter
    * @return RGBA
    */
-  RGBA random(const float &fanIn_fanOut) {
+  RGBA random(const float &fanIn_fanOut) const {
     RGBA result;
     float mean = 0.0f;
     float stddev = std::sqrt(2.0f / fanIn_fanOut);
@@ -100,7 +100,7 @@ struct RGBA {
    * @return true if not in range.
    * @return false
    */
-  bool isOutOfRange(const float &min = 0.0f, const float &max = 1.0f) {
+  bool isOutOfRange(const float &min = 0.0f, const float &max = 1.0f) const {
     return std::any_of(value.begin(), value.end(),
                        [&min, &max](float v) { return v < min || v > max; });
   }

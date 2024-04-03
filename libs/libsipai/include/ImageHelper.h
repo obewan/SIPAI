@@ -57,5 +57,17 @@ public:
    */
   cv::Mat convertToMat(const std::vector<RGBA> &image, size_t size_x,
                        size_t size_y);
+
+  /**
+   * @brief Computes the loss between the output image
+   * and the target image. The smaller loss, the better.
+   *
+   * @param outputImage The output image produced by the neural network.
+   * @param targetImage The expected target image.
+   *
+   * @return The computed loss.
+   */
+  float computeLoss(const std::vector<RGBA> &outputImage,
+                    const std::vector<RGBA> &targetImage);
 };
 } // namespace sipai

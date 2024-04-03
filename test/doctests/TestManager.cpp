@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-
 #include "AppParams.h"
 #include "Common.h"
+#include "ImageHelper.h"
 #include "Layer.h"
 #include "Manager.h"
 #include "doctest.h"
@@ -23,46 +23,6 @@ TEST_CASE("Testing the Manager class") {
       auto &manager = Manager::getInstance();
       MESSAGE(manager.app_params.title);
     });
-  }
-
-  SUBCASE("Test loadImage") {
-    auto &manager = Manager::getInstance();
-    auto &np = manager.network_params;
-    np.input_size_x = 30;
-    np.input_size_y = 30;
-    size_t orig_x;
-    size_t orig_y;
-    auto image = manager.loadImage("../data/images/001a.png", orig_x, orig_y,
-                                   np.input_size_x, np.input_size_y);
-    CHECK(image.size() > 0);
-    CHECK(orig_x > 0);
-    CHECK(orig_y > 0);
-    CHECK(image.size() == (np.input_size_x * np.input_size_y));
-  }
-
-  SUBCASE("Test saveImage") {
-    auto &manager = Manager::getInstance();
-    auto &np = manager.network_params;
-    np.input_size_x = 30;
-    np.input_size_y = 30;
-    size_t orig_x;
-    size_t orig_y;
-    auto image = manager.loadImage("../data/images/001a.png", orig_x, orig_y,
-                                   np.input_size_x, np.input_size_y);
-    std::string tmpImage = "tmpImage.png";
-    if (std::filesystem::exists(tmpImage)) {
-      std::filesystem::remove(tmpImage);
-    }
-    CHECK(std::filesystem::exists(tmpImage) == false);
-    manager.saveImage(tmpImage, image, np.input_size_x, np.input_size_y);
-    CHECK(std::filesystem::exists(tmpImage) == true);
-    auto image2 = manager.loadImage(tmpImage, orig_x, orig_y, np.input_size_x,
-                                    np.input_size_y);
-    CHECK(image2.size() == image.size());
-    for (size_t i = 0; i < image2.size(); i++) {
-      CHECK(image2.at(i).value == image.at(i).value);
-    }
-    std::filesystem::remove(tmpImage);
   }
 
   SUBCASE("Test initializeNetwork") {
@@ -162,6 +122,46 @@ TEST_CASE("Testing the Manager class") {
     }
   }
 
+  SUBCASE("Test loadImage") {
+    auto &manager = Manager::getInstance();
+    auto &np = manager.network_params;
+    np.input_size_x = 30;
+    np.input_size_y = 30;
+    size_t orig_x;
+    size_t orig_y;
+    auto image = manager.loadImage("../data/images/001a.png", orig_x, orig_y,
+                                   np.input_size_x, np.input_size_y);
+    CHECK(image.size() > 0);
+    CHECK(orig_x > 0);
+    CHECK(orig_y > 0);
+    CHECK(image.size() == (np.input_size_x * np.input_size_y));
+  }
+
+  SUBCASE("Test saveImage") {
+    auto &manager = Manager::getInstance();
+    auto &np = manager.network_params;
+    np.input_size_x = 30;
+    np.input_size_y = 30;
+    size_t orig_x;
+    size_t orig_y;
+    auto image = manager.loadImage("../data/images/001a.png", orig_x, orig_y,
+                                   np.input_size_x, np.input_size_y);
+    std::string tmpImage = "tmpImage.png";
+    if (std::filesystem::exists(tmpImage)) {
+      std::filesystem::remove(tmpImage);
+    }
+    CHECK(std::filesystem::exists(tmpImage) == false);
+    manager.saveImage(tmpImage, image, np.input_size_x, np.input_size_y);
+    CHECK(std::filesystem::exists(tmpImage) == true);
+    auto image2 = manager.loadImage(tmpImage, orig_x, orig_y, np.input_size_x,
+                                    np.input_size_y);
+    CHECK(image2.size() == image.size());
+    for (size_t i = 0; i < image2.size(); i++) {
+      CHECK(image2.at(i).value == image.at(i).value);
+    }
+    std::filesystem::remove(tmpImage);
+  }
+
   SUBCASE("Test splitData") {
     auto &manager = Manager::getInstance();
     manager.app_params.training_data_file = "images-test1.csv";
@@ -181,37 +181,6 @@ TEST_CASE("Testing the Manager class") {
       CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
       CHECK_MESSAGE(std::filesystem::exists(target) == true, target);
     }
-  }
-
-  SUBCASE("Testing computeMSELoss method") {
-    auto &manager = Manager::getInstance();
-    std::vector<RGBA> outputImage(10);
-    std::vector<RGBA> targetImage(10);
-
-    RGBA pixel(0.1f, 0.2f, 0.3f, 0.4f);
-    for (int i = 0; i < 10; ++i) {
-      outputImage[i] = pixel;
-      targetImage[i] = pixel;
-    }
-
-    float loss = manager.computeMSELoss(outputImage, targetImage);
-    CHECK(loss == doctest::Approx(0.0));
-  }
-
-  SUBCASE("Testing computeMSELoss method with different images") {
-    auto &manager = Manager::getInstance();
-    std::vector<RGBA> outputImage(10);
-    std::vector<RGBA> targetImage(10);
-
-    RGBA pixel1(0.1f, 0.2f, 0.3f, 0.4f);
-    RGBA pixel2(0.5f, 0.6f, 0.7f, 0.8f);
-    for (int i = 0; i < 10; ++i) {
-      outputImage[i] = pixel1;
-      targetImage[i] = pixel2;
-    }
-
-    float loss = manager.computeMSELoss(outputImage, targetImage);
-    CHECK(loss == doctest::Approx(0.16));
   }
 
   SUBCASE("Testing runWithVisitor") {
