@@ -47,9 +47,9 @@ public:
       return;
     }
     if (enableParallax) {
-      forward(std::execution::par_unseq);
+      _forward(std::execution::par_unseq);
     } else {
-      forward(std::execution::seq);
+      _forward(std::execution::seq);
     }
   };
 
@@ -62,9 +62,9 @@ public:
       return;
     }
     if (enableParallax) {
-      backward(std::execution::par_unseq);
+      _backward(std::execution::par_unseq);
     } else {
-      backward(std::execution::seq);
+      _backward(std::execution::seq);
     }
   }
 
@@ -79,9 +79,9 @@ public:
       return;
     }
     if (enableParallax) {
-      update(std::execution::par_unseq, learningRate);
+      _update(std::execution::par_unseq, learningRate);
     } else {
-      update(std::execution::seq, learningRate);
+      _update(std::execution::seq, learningRate);
     }
   }
 
@@ -112,7 +112,7 @@ protected:
    * @param previousLayer
    */
   template <typename ExecutionPolicy>
-  void forward(ExecutionPolicy executionPolicy) {
+  void _forward(ExecutionPolicy executionPolicy) {
     if (previousLayer == nullptr) {
       return;
     }
@@ -129,7 +129,7 @@ protected:
   };
 
   template <typename ExecutionPolicy>
-  void backward(ExecutionPolicy executionPolicy) {
+  void _backward(ExecutionPolicy executionPolicy) {
     if (nextLayer == nullptr) {
       return;
     }
@@ -163,7 +163,7 @@ protected:
    * @param previousLayer
    */
   template <typename ExecutionPolicy>
-  void update(ExecutionPolicy executionPolicy, float learningRate) {
+  void _update(ExecutionPolicy executionPolicy, float learningRate) {
     if (previousLayer == nullptr) {
       return;
     }
