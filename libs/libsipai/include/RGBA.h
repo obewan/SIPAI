@@ -8,6 +8,7 @@
  *
  */
 #pragma once
+#include "RandomFactory.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -70,6 +71,25 @@ struct RGBA {
     }
     return RGBA(std::pow(value[0], n), std::pow(value[1], n),
                 std::pow(value[2], n), std::pow(value[3], n));
+  }
+
+  /**
+   * @brief Get a new randomized RGBA
+   * Using Xavier Initialization
+   *
+   * @param fanIn_fanOut the Xavier sides parameter
+   * @return RGBA
+   */
+  RGBA random(const float &fanIn_fanOut) {
+    RGBA result;
+    float mean = 0.0f;
+    float stddev = std::sqrt(2.0f / fanIn_fanOut);
+    std::for_each(
+        result.value.begin(), result.value.end(), [&mean, &stddev](float &f) {
+          f = std::clamp(RandomFactory::Rand(mean, stddev), 0.0f, 1.0f);
+        });
+
+    return result;
   }
 
   /**
