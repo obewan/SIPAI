@@ -24,13 +24,12 @@ var searchData=
   ['neuralnetworkimportexportjson_2eh_143',['NeuralNetworkImportExportJSON.h',['../NeuralNetworkImportExportJSON_8h.html',1,'']]],
   ['neuralnetworkparams_144',['NeuralNetworkParams',['../structsipai_1_1NeuralNetworkParams.html',1,'sipai']]],
   ['neuralnetworkparams_2eh_145',['NeuralNetworkParams.h',['../NeuralNetworkParams_8h.html',1,'']]],
-  ['neuron_146',['Neuron',['../classsipai_1_1Neuron.html#aac8499a824b98f50f44c3a7692a7a167',1,'sipai::Neuron']]],
-  ['neuron_147',['neuron',['../classsipai_1_1NeuronConnection.html#af33cf7a1913fc73e6e728c45d8d192be',1,'sipai::NeuronConnection']]],
-  ['neuron_148',['Neuron',['../classsipai_1_1Neuron.html',1,'sipai']]],
-  ['neuron_2eh_149',['Neuron.h',['../Neuron_8h.html',1,'']]],
-  ['neuronconnection_150',['NeuronConnection',['../classsipai_1_1NeuronConnection.html#aca3642ae4b49aca7993741ddc872a7e0',1,'sipai::NeuronConnection::NeuronConnection()'],['../classsipai_1_1NeuronConnection.html',1,'sipai::NeuronConnection']]],
-  ['neuronconnection_2eh_151',['NeuronConnection.h',['../NeuronConnection_8h.html',1,'']]],
-  ['neurons_152',['neurons',['../classsipai_1_1Layer.html#a74ba2e8d1949eebc1f829af9a158e9c9',1,'sipai::Layer']]],
-  ['nextlayer_153',['nextLayer',['../classsipai_1_1Layer.html#a4942c6d92e0c07a5558ef46ad704d201',1,'sipai::Layer']]],
-  ['nomax_5fepochs_154',['NOMAX_EPOCHS',['../namespacesipai.html#a56e9fa2be87cd2f76b7c37721c94cb44',1,'sipai']]]
+  ['neuron_146',['neuron',['../classsipai_1_1NeuronConnection.html#af33cf7a1913fc73e6e728c45d8d192be',1,'sipai::NeuronConnection']]],
+  ['neuron_147',['Neuron',['../classsipai_1_1Neuron.html#aac8499a824b98f50f44c3a7692a7a167',1,'sipai::Neuron::Neuron()'],['../classsipai_1_1Neuron.html',1,'sipai::Neuron']]],
+  ['neuron_2eh_148',['Neuron.h',['../Neuron_8h.html',1,'']]],
+  ['neuronconnection_149',['NeuronConnection',['../classsipai_1_1NeuronConnection.html#aca3642ae4b49aca7993741ddc872a7e0',1,'sipai::NeuronConnection::NeuronConnection()'],['../classsipai_1_1NeuronConnection.html',1,'sipai::NeuronConnection']]],
+  ['neuronconnection_2eh_150',['NeuronConnection.h',['../NeuronConnection_8h.html',1,'']]],
+  ['neurons_151',['neurons',['../classsipai_1_1Layer.html#a74ba2e8d1949eebc1f829af9a158e9c9',1,'sipai::Layer']]],
+  ['nextlayer_152',['nextLayer',['../classsipai_1_1Layer.html#a4942c6d92e0c07a5558ef46ad704d201',1,'sipai::Layer']]],
+  ['nomax_5fepochs_153',['NOMAX_EPOCHS',['../namespacesipai.html#a56e9fa2be87cd2f76b7c37721c94cb44',1,'sipai']]]
 ];

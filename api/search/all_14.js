@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['value_235',['value',['../classsipai_1_1Neuron.html#ae8520bf3d77d8859eeb90304a7cf7243',1,'sipai::Neuron::value()'],['../structsipai_1_1RGBA.html#a1357c219bce94d836d5e16af5683176a',1,'sipai::RGBA::value()']]],
-  ['version_236',['version',['../structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1',1,'sipai::AppParams']]],
-  ['visit_237',['visit',['../classsipai_1_1RunnerVisitor.html#a6300f208cce52718005492f57aab919c',1,'sipai::RunnerVisitor::visit()'],['../classsipai_1_1TrainingMonitoredVisitor.html#a62b0453a1cd26a59913898a4c3ac00b6',1,'sipai::TrainingMonitoredVisitor::visit()']]]
+  ['value_234',['value',['../classsipai_1_1Neuron.html#ae8520bf3d77d8859eeb90304a7cf7243',1,'sipai::Neuron::value()'],['../structsipai_1_1RGBA.html#a1357c219bce94d836d5e16af5683176a',1,'sipai::RGBA::value()']]],
+  ['version_235',['version',['../structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1',1,'sipai::AppParams']]],
+  ['visit_236',['visit',['../classsipai_1_1RunnerVisitor.html#a6300f208cce52718005492f57aab919c',1,'sipai::RunnerVisitor::visit()'],['../classsipai_1_1TrainingMonitoredVisitor.html#a62b0453a1cd26a59913898a4c3ac00b6',1,'sipai::TrainingMonitoredVisitor::visit()']]]
 ];

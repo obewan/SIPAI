@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pow_397',['pow',['../structsipai_1_1RGBA.html#a594ef3ad6ce89eb02a19b1c44a9bee61',1,'sipai::RGBA']]]
+  ['pow_396',['pow',['../structsipai_1_1RGBA.html#a54fc81428aabc41dcf1e02b3607acf15',1,'sipai::RGBA']]]
 ];

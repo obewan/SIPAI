@@ -89,8 +89,49 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac052f6598d4f21a5d44b41ccf4cdb472"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#ac052f6598d4f21a5d44b41ccf4cdb472">convertToMat</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y)</td></tr>
 <tr class="memdesc:ac052f6598d4f21a5d44b41ccf4cdb472"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values into an OpenCV Mat image.  <a href="classsipai_1_1ImageHelper.html#ac052f6598d4f21a5d44b41ccf4cdb472">More...</a><br /></td></tr>
 <tr class="separator:ac052f6598d4f21a5d44b41ccf4cdb472"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00db85ac898c4274bc5eff4c9430614a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#a00db85ac898c4274bc5eff4c9430614a">computeLoss</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;outputImage, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;targetImage)</td></tr>
+<tr class="memdesc:a00db85ac898c4274bc5eff4c9430614a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the loss between the output image and the target image. The smaller loss, the better.  <a href="classsipai_1_1ImageHelper.html#a00db85ac898c4274bc5eff4c9430614a">More...</a><br /></td></tr>
+<tr class="separator:a00db85ac898c4274bc5eff4c9430614a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a00db85ac898c4274bc5eff4c9430614a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00db85ac898c4274bc5eff4c9430614a">&#9670;&nbsp;</a></span>computeLoss()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ImageHelper::computeLoss </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>outputImage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>targetImage</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the loss between the output image and the target image. The smaller loss, the better. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">outputImage</td><td>The output image produced by the neural network. </td></tr>
+    <tr><td class="paramname">targetImage</td><td>The expected target image.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The computed loss. </dd></dl>
+
+</div>
+</div>
 <a id="ac052f6598d4f21a5d44b41ccf4cdb472"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac052f6598d4f21a5d44b41ccf4cdb472">&#9670;&nbsp;</a></span>convertToMat()</h2>
 

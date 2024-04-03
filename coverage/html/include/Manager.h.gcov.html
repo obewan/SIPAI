@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-03 13:20:39</td>
+            <td class="headerValue">2024-04-03 14:57:51</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -83,9 +83,9 @@
 <a name="21"><span class="lineNum">      21 </span>            : namespace sipai {</a>
 <a name="22"><span class="lineNum">      22 </span>            : class Manager {</a>
 <a name="23"><span class="lineNum">      23 </span>            : public:</a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         91 :   static Manager &amp;getInstance() {</span></a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         91 :     static Manager instance;</span></a>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         91 :     return instance;</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         90 :   static Manager &amp;getInstance() {</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         90 :     static Manager instance;</span></a>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         90 :     return instance;</span></a>
 <a name="27"><span class="lineNum">      27 </span>            :   }</a>
 <a name="28"><span class="lineNum">      28 </span>            :   Manager(Manager const &amp;) = delete;</a>
 <a name="29"><span class="lineNum">      29 </span>            :   void operator=(Manager const &amp;) = delete;</a>
@@ -208,33 +208,21 @@
 <a name="146"><span class="lineNum">     146 </span>            :                                                   float split_ratio);</a>
 <a name="147"><span class="lineNum">     147 </span>            : </a>
 <a name="148"><span class="lineNum">     148 </span>            :   /**</a>
-<a name="149"><span class="lineNum">     149 </span>            :    * @brief Computes the mean squared error (MSE) loss between the output image</a>
-<a name="150"><span class="lineNum">     150 </span>            :    * and the target image.</a>
-<a name="151"><span class="lineNum">     151 </span>            :    *</a>
-<a name="152"><span class="lineNum">     152 </span>            :    * @param outputImage The output image produced by the neural network.</a>
-<a name="153"><span class="lineNum">     153 </span>            :    * @param targetImage The expected target image.</a>
-<a name="154"><span class="lineNum">     154 </span>            :    *</a>
-<a name="155"><span class="lineNum">     155 </span>            :    * @return The computed MSE loss.</a>
-<a name="156"><span class="lineNum">     156 </span>            :    */</a>
-<a name="157"><span class="lineNum">     157 </span>            :   float computeMSELoss(const std::vector&lt;RGBA&gt; &amp;outputImage,</a>
-<a name="158"><span class="lineNum">     158 </span>            :                        const std::vector&lt;RGBA&gt; &amp;targetImage);</a>
+<a name="149"><span class="lineNum">     149 </span>            :    * @brief Get a title line with the version</a>
+<a name="150"><span class="lineNum">     150 </span>            :    *</a>
+<a name="151"><span class="lineNum">     151 </span>            :    * @return std::string</a>
+<a name="152"><span class="lineNum">     152 </span>            :    */</a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">          1 :   std::string getVersionHeader() const {</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">          2 :     return app_params.title + &quot; v&quot; + app_params.version;</span></a>
+<a name="155"><span class="lineNum">     155 </span>            :   }</a>
+<a name="156"><span class="lineNum">     156 </span>            : </a>
+<a name="157"><span class="lineNum">     157 </span>            : private:</a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">          1 :   Manager() = default;</span></a>
 <a name="159"><span class="lineNum">     159 </span>            : </a>
-<a name="160"><span class="lineNum">     160 </span>            :   /**</a>
-<a name="161"><span class="lineNum">     161 </span>            :    * @brief Get a title line with the version</a>
-<a name="162"><span class="lineNum">     162 </span>            :    *</a>
-<a name="163"><span class="lineNum">     163 </span>            :    * @return std::string</a>
-<a name="164"><span class="lineNum">     164 </span>            :    */</a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          1 :   std::string getVersionHeader() const {</span></a>
-<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          2 :     return app_params.title + &quot; v&quot; + app_params.version;</span></a>
-<a name="167"><span class="lineNum">     167 </span>            :   }</a>
-<a name="168"><span class="lineNum">     168 </span>            : </a>
-<a name="169"><span class="lineNum">     169 </span>            : private:</a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          1 :   Manager() = default;</span></a>
-<a name="171"><span class="lineNum">     171 </span>            : </a>
-<a name="172"><span class="lineNum">     172 </span>            :   RunnerVisitorFactory runnerVisitorFactory_;</a>
-<a name="173"><span class="lineNum">     173 </span>            :   NeuralNetworkBuilder neuralNetworkBuilder_;</a>
-<a name="174"><span class="lineNum">     174 </span>            : };</a>
-<a name="175"><span class="lineNum">     175 </span>            : } // namespace sipai</a>
+<a name="160"><span class="lineNum">     160 </span>            :   RunnerVisitorFactory runnerVisitorFactory_;</a>
+<a name="161"><span class="lineNum">     161 </span>            :   NeuralNetworkBuilder neuralNetworkBuilder_;</a>
+<a name="162"><span class="lineNum">     162 </span>            : };</a>
+<a name="163"><span class="lineNum">     163 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>
