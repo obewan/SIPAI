@@ -72,3 +72,21 @@ cv::Mat ImageHelper::convertToMat(const std::vector<RGBA> &image, size_t size_x,
   }
   return dest;
 }
+
+float ImageHelper::computeLoss(const std::vector<RGBA> &outputImage,
+                               const std::vector<RGBA> &targetImage) {
+  if (outputImage.size() != targetImage.size()) {
+    throw std::invalid_argument(
+        "Output and target images must have the same size.");
+  }
+  // Using the mean squared error (MSE) loss algorithm
+  const auto squaredDifferences = [](const RGBA &a, const RGBA &b) {
+    return (a - b).pow(2).sum();
+  };
+
+  const float totalLoss = std::inner_product(
+      outputImage.begin(), outputImage.end(), targetImage.begin(), 0.0f,
+      std::plus<>(), squaredDifferences);
+
+  return totalLoss / (outputImage.size() * 4);
+}

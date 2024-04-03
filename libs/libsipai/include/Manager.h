@@ -146,18 +146,6 @@ public:
                                                   float split_ratio);
 
   /**
-   * @brief Computes the mean squared error (MSE) loss between the output image
-   * and the target image.
-   *
-   * @param outputImage The output image produced by the neural network.
-   * @param targetImage The expected target image.
-   *
-   * @return The computed MSE loss.
-   */
-  float computeMSELoss(const std::vector<RGBA> &outputImage,
-                       const std::vector<RGBA> &targetImage);
-
-  /**
    * @brief Get a title line with the version
    *
    * @return std::string

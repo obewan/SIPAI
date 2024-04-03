@@ -4,8 +4,10 @@
 #include "NeuralNetwork.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
+#include <algorithm>
 #include <cstddef>
 #include <memory>
+#include <numeric>
 #include <opencv2/core/types.hpp>
 #include <vector>
 
@@ -96,28 +98,4 @@ std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
   TrainingData validation_data(data.begin() + split_index, data.end());
 
   return std::make_pair(training_data, validation_data);
-}
-
-/**
- * @brief Computes the mean squared error (MSE) loss between the output image
- * and the target image.
- *
- * @param outputImage The output image produced by the neural network.
- * @param targetImage The expected target image.
- *
- * @return The computed MSE loss.
- */
-float Manager::computeMSELoss(const std::vector<RGBA> &outputImage,
-                              const std::vector<RGBA> &targetImage) {
-  if (outputImage.size() != targetImage.size()) {
-    throw std::invalid_argument(
-        "Output and target images must have the same size.");
-  }
-
-  float totalLoss = 0.0;
-  for (size_t i = 0; i < outputImage.size(); ++i) {
-    totalLoss += (outputImage[i] - targetImage[i]).pow(2).sum();
-  }
-
-  return totalLoss / (float)(outputImage.size() * 4);
 }
