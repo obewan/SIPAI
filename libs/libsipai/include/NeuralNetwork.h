@@ -53,7 +53,7 @@ public:
    * propagation.
    */
   std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues,
-                                       bool enableParallax = false);
+                                       bool enable_parallel = false);
 
   /**
    * @brief Performs backward propagation on the network using the given
@@ -62,13 +62,13 @@ public:
    * @param expectedValues The expected values for backward propagation.
    */
   void backwardPropagation(const std::vector<RGBA> &expectedValues,
-                           bool enableParallax = false);
+                           bool enable_parallel = false);
 
   /**
    * @brief Updates the weights of the neurons in the network using the learning
    * rate.
    */
-  void updateWeights(float learning_rate, bool enableParallax = false);
+  void updateWeights(float learning_rate, bool enable_parallel = false);
 };
 
 } // namespace sipai

@@ -9,7 +9,7 @@ using namespace sipai;
 
 std::vector<RGBA>
 NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues,
-                                  bool enableParallax) {
+                                  bool enable_parallel) {
   if (layers.front()->layerType != LayerType::LayerInput) {
     throw NeuralNetworkException("Invalid front layer type");
   }
@@ -18,24 +18,24 @@ NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues,
   }
   ((LayerInput *)layers.front())->setInputValues(inputValues);
   for (auto &layer : layers) {
-    layer->forwardPropagation(enableParallax);
+    layer->forwardPropagation(enable_parallel);
   }
   return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
 void NeuralNetwork::backwardPropagation(const std::vector<RGBA> &expectedValues,
-                                        bool enableParallax) {
+                                        bool enable_parallel) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NeuralNetworkException("Invalid back layer type");
   }
   ((LayerOutput *)layers.back())->computeErrors(expectedValues);
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-    (*it)->backwardPropagation(enableParallax);
+    (*it)->backwardPropagation(enable_parallel);
   }
 }
 
-void NeuralNetwork::updateWeights(float learning_rate, bool enableParallax) {
+void NeuralNetwork::updateWeights(float learning_rate, bool enable_parallel) {
   for (auto &layer : layers) {
-    layer->updateWeights(learning_rate, enableParallax);
+    layer->updateWeights(learning_rate, enable_parallel);
   }
 }
