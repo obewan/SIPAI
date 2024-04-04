@@ -10,8 +10,16 @@ using namespace sipai;
 std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportFacade::importModel() {
   try {
     auto network = jsonIE.importModel();
-    csvIE.importNeuronsWeights(network);
     return network;
+  } catch (std::exception &ex) {
+    throw ImportExportException(ex.what());
+  }
+}
+
+void NeuralNetworkImportExportFacade::importWeights(
+    std::unique_ptr<NeuralNetwork> &network) {
+  try {
+    csvIE.importNeuronsWeights(network);
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
   }

@@ -24,5 +24,7 @@ namespace sipai {
 class LayerHidden : public Layer {
 public:
   LayerHidden() : Layer(LayerType::LayerHidden) {}
+  LayerHidden(size_t size_x, size_t size_y)
+      : Layer(LayerType::LayerHidden, size_x, size_y) {}
 };
 } // namespace sipai

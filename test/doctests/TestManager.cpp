@@ -36,6 +36,7 @@ TEST_CASE("Testing the Manager class") {
     np.output_size_y = 3;
     np.hiddens_count = 2;
     manager.app_params.network_to_import = "";
+    manager.network.reset();
     manager.createOrImportNetwork();
 
     const auto &network = manager.network;

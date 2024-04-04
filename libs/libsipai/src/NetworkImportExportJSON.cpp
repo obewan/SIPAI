@@ -50,7 +50,7 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
     }
 
     // Create a new Network object and deserialize the JSON data into it.
-    auto params = Manager::getInstance().network_params;
+    auto &params = Manager::getInstance().network_params;
     params.input_size_x = json_model["parameters"]["input_size_x"];
     params.input_size_y = json_model["parameters"]["input_size_y"];
     params.hidden_size_x = json_model["parameters"]["hidden_size_x"];
@@ -72,52 +72,27 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
       // Get the type of the layer.
       std::string layer_type_str = json_layer["type"];
       LayerType layer_type = layer_map.at(layer_type_str);
-      int layer_size_x, layer_size_y;
 
-      // Create a new layer object of the appropriate type.
+      // // Create a new layer object of the appropriate type.
       Layer *layer = nullptr;
       switch (layer_type) {
       case LayerType::LayerInput:
         layer = new LayerInput();
-        layer_size_x = params.input_size_x;
-        layer_size_y = params.input_size_y;
         break;
       case LayerType::LayerHidden:
         layer = new LayerHidden();
-        layer_size_x = params.hidden_size_x;
-        layer_size_y = params.hidden_size_y;
         break;
       case LayerType::LayerOutput:
         layer = new LayerOutput();
-        layer_size_x = params.output_size_x;
-        layer_size_y = params.output_size_y;
         break;
       default:
         throw ImportExportException("Layer type not recognized");
       }
+      layer->size_x = (size_t)json_layer["size_x"];
+      layer->size_y = (size_t)json_layer["size_y"];
 
       // Add neurons and their neighbors without their weights
       layer->neurons = std::vector<Neuron>((size_t)json_layer["neurons"]);
-      for (size_t i = 0; i < layer->neurons.size(); ++i) {
-        network->addNeuronNeighbors(layer->neurons[i], layer, i, layer_size_x,
-                                    layer_size_y, false);
-      }
-
-      // Set activation functions
-      switch (layer->layerType) {
-      case LayerType::LayerInput: // no activation function here
-        break;
-      case LayerType::LayerHidden:
-        network->SetActivationFunction(layer, params.hidden_activation_function,
-                                       params.hidden_activation_alpha);
-        break;
-      case LayerType::LayerOutput:
-        network->SetActivationFunction(layer, params.output_activation_function,
-                                       params.output_activation_alpha);
-        break;
-      default:
-        throw ImportExportException("Layer type not recognized");
-      }
 
       // Add the layer to the network.
       network->layers.push_back(layer);
@@ -130,10 +105,7 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
     if (network->layers.back()->layerType != LayerType::LayerOutput) {
       throw ImportExportException("Invalid output layer");
     }
-
-    network->bindLayers();
     return network;
-
   } catch (const nlohmann::json::parse_error &e) {
     throw ImportExportException("Json parsing error: " + std::string(e.what()));
   }
@@ -152,6 +124,8 @@ void NeuralNetworkImportExportJSON::exportModel() const {
   // Serialize the layers to JSON.
   for (auto layer : network->layers) {
     json json_layer = {{"type", layer->getLayerTypeStr()},
+                       {"size_x", layer->size_x},
+                       {"size_y", layer->size_y},
                        {"neurons", layer->neurons.size()}};
     json_network["layers"].push_back(json_layer);
   }

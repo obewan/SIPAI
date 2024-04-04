@@ -4,7 +4,7 @@
 #include "exception/ImageHelperException.h"
 #include "exception/ImportExportException.h"
 #include "exception/ManagerException.h"
-#include "exception/NetworkException.h"
+#include "exception/NeuralNetworkException.h"
 
 using namespace sipai;
 
@@ -20,7 +20,7 @@ TEST_CASE("Testing exceptions") {
                             ImportExportException, "test");
     CHECK_THROWS_AS_MESSAGE({ throw ManagerException("test"); },
                             ManagerException, "test");
-    CHECK_THROWS_AS_MESSAGE({ throw NetworkException("test"); },
-                            NetworkException, "test");
+    CHECK_THROWS_AS_MESSAGE({ throw NeuralNetworkException("test"); },
+                            NeuralNetworkException, "test");
   }
 }
