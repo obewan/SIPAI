@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">90</td>
-            <td class="headerCovTableEntry">115</td>
-            <td class="headerCovTableEntryMed">78.3 %</td>
+            <td class="headerCovTableEntry">86</td>
+            <td class="headerCovTableEntry">111</td>
+            <td class="headerCovTableEntryMed">77.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-03 14:57:51</td>
+            <td class="headerValue">2024-04-04 20:34:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -60,19 +60,19 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : #include &quot;Manager.h&quot;</a>
-<a name="2"><span class="lineNum">       2 </span>            : #include &quot;NeuralNetworkImportExportCSV.h&quot;</a>
-<a name="3"><span class="lineNum">       3 </span>            : #include &quot;NeuronConnection.h&quot;</a>
-<a name="4"><span class="lineNum">       4 </span>            : #include &quot;csv_parser.h&quot;</a>
-<a name="5"><span class="lineNum">       5 </span>            : #include &quot;exception/EmptyCellException.h&quot;</a>
-<a name="6"><span class="lineNum">       6 </span>            : #include &quot;exception/ImportExportException.h&quot;</a>
-<a name="7"><span class="lineNum">       7 </span>            : #include &lt;algorithm&gt; // for std::transform</a>
-<a name="8"><span class="lineNum">       8 </span>            : #include &lt;cctype&gt;    // for std::tolower</a>
-<a name="9"><span class="lineNum">       9 </span>            : #include &lt;cstddef&gt;</a>
-<a name="10"><span class="lineNum">      10 </span>            : #include &lt;exception&gt;</a>
-<a name="11"><span class="lineNum">      11 </span>            : #include &lt;fstream&gt;</a>
-<a name="12"><span class="lineNum">      12 </span>            : #include &lt;optional&gt;</a>
-<a name="13"><span class="lineNum">      13 </span>            : #include &lt;regex&gt; // for std::regex and std::regex_replace</a>
+<a name="1"><span class="lineNum">       1 </span>            : #include &quot;Common.h&quot;</a>
+<a name="2"><span class="lineNum">       2 </span>            : #include &quot;Manager.h&quot;</a>
+<a name="3"><span class="lineNum">       3 </span>            : #include &quot;NeuralNetworkImportExportCSV.h&quot;</a>
+<a name="4"><span class="lineNum">       4 </span>            : #include &quot;NeuronConnection.h&quot;</a>
+<a name="5"><span class="lineNum">       5 </span>            : #include &quot;csv_parser.h&quot;</a>
+<a name="6"><span class="lineNum">       6 </span>            : #include &quot;exception/EmptyCellException.h&quot;</a>
+<a name="7"><span class="lineNum">       7 </span>            : #include &quot;exception/ImportExportException.h&quot;</a>
+<a name="8"><span class="lineNum">       8 </span>            : #include &lt;algorithm&gt; // for std::transform</a>
+<a name="9"><span class="lineNum">       9 </span>            : #include &lt;cctype&gt;    // for std::tolower</a>
+<a name="10"><span class="lineNum">      10 </span>            : #include &lt;cstddef&gt;</a>
+<a name="11"><span class="lineNum">      11 </span>            : #include &lt;exception&gt;</a>
+<a name="12"><span class="lineNum">      12 </span>            : #include &lt;fstream&gt;</a>
+<a name="13"><span class="lineNum">      13 </span>            : #include &lt;optional&gt;</a>
 <a name="14"><span class="lineNum">      14 </span>            : #include &lt;string&gt;</a>
 <a name="15"><span class="lineNum">      15 </span>            : </a>
 <a name="16"><span class="lineNum">      16 </span>            : using namespace sipai;</a>
@@ -94,10 +94,10 @@
 <a name="32"><span class="lineNum">      32 </span>            :   auto getRGBAValue =</a>
 <a name="33"><span class="lineNum">      33 </span><span class="lineCov">       1055 :       [](const std::vector&lt;Csv::CellReference&gt; &amp;cells) -&gt; std::optional&lt;RGBA&gt; {</span></a>
 <a name="34"><span class="lineNum">      34 </span><span class="lineCov">       1055 :     RGBA rgba;</span></a>
-<a name="35"><span class="lineNum">      35 </span><span class="lineCov">       1571 :     for (int i = 0; i &lt; 4; ++i) {</span></a>
-<a name="36"><span class="lineNum">      36 </span><span class="lineCov">       1571 :       auto val = cells[i].getDouble();</span></a>
-<a name="37"><span class="lineNum">      37 </span><span class="lineCov">       1571 :       if (val.has_value()) {</span></a>
-<a name="38"><span class="lineNum">      38 </span><span class="lineCov">        516 :         rgba.value[i] = static_cast&lt;float&gt;(val.value());</span></a>
+<a name="35"><span class="lineNum">      35 </span><span class="lineCov">       1566 :     for (int i = 0; i &lt; 4; ++i) {</span></a>
+<a name="36"><span class="lineNum">      36 </span><span class="lineCov">       1566 :       auto val = cells[i].getDouble();</span></a>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">       1566 :       if (val.has_value()) {</span></a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineCov">        511 :         rgba.value[i] = static_cast&lt;float&gt;(val.value());</span></a>
 <a name="39"><span class="lineNum">      39 </span>            :       } else {</a>
 <a name="40"><span class="lineNum">      40 </span><span class="lineCov">       1055 :         return std::nullopt;</span></a>
 <a name="41"><span class="lineNum">      41 </span>            :       }</a>
@@ -117,154 +117,150 @@
 <a name="55"><span class="lineNum">      55 </span>            : </a>
 <a name="56"><span class="lineNum">      56 </span>            :   // get the csv filename</a>
 <a name="57"><span class="lineNum">      57 </span><span class="lineCov">          1 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          1 :   std::string filename = appParams.network_to_import;</span></a>
-<a name="59"><span class="lineNum">      59 </span><span class="lineCov">          2 :   filename = std::regex_replace(</span></a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineCov">          3 :       filename, std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          1 :   std::ifstream file(filename);</span></a>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">          1 :   if (!file.is_open()) {</span></a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :     throw ImportExportException(&quot;Failed to open file: &quot; + filename);</span></a>
-<a name="64"><span class="lineNum">      64 </span>            :   }</a>
-<a name="65"><span class="lineNum">      65 </span>            : </a>
-<a name="66"><span class="lineNum">      66 </span>            :   // parsing the csv</a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          1 :   Csv::Parser csv_parser;</span></a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">          1 :   std::string line;</span></a>
-<a name="69"><span class="lineNum">      69 </span><span class="lineCov">          1 :   int current_line_number = 0;</span></a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">          1 :   bool header_skipped = false;</span></a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         40 :   while (std::getline(file, line)) {</span></a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineCov">         39 :     current_line_number++;</span></a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         39 :     if (!header_skipped) {</span></a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          1 :       header_skipped = true;</span></a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          1 :       continue;</span></a>
-<a name="76"><span class="lineNum">      76 </span>            :     }</a>
-<a name="77"><span class="lineNum">      77 </span><span class="lineCov">         38 :     std::vector&lt;std::vector&lt;Csv::CellReference&gt;&gt; cell_refs;</span></a>
-<a name="78"><span class="lineNum">      78 </span>            : </a>
-<a name="79"><span class="lineNum">      79 </span>            :     try {</a>
-<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         38 :       std::string_view data(line);</span></a>
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">         38 :       csv_parser.parseTo2DVector(data, cell_refs);</span></a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :     } catch (Csv::ParseError &amp;ex) {</span></a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :       throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
-<a name="84"><span class="lineNum">      84 </span><span class="lineNoCov">          0 :                                   std::to_string(current_line_number) +</span></a>
-<a name="85"><span class="lineNum">      85 </span><span class="lineNoCov">          0 :                                   &quot;): &quot; + ex.what());</span></a>
-<a name="86"><span class="lineNum">      86 </span><span class="lineNoCov">          0 :     }</span></a>
-<a name="87"><span class="lineNum">      87 </span>            : </a>
-<a name="88"><span class="lineNum">      88 </span><span class="lineCov">         38 :     if (cell_refs.empty() || cell_refs.size() &lt; 3) {</span></a>
-<a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :       throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineNoCov">          0 :                                   std::to_string(current_line_number) +</span></a>
-<a name="91"><span class="lineNum">      91 </span><span class="lineNoCov">          0 :                                   &quot;): invalid column numbers&quot;);</span></a>
-<a name="92"><span class="lineNum">      92 </span>            :     }</a>
-<a name="93"><span class="lineNum">      93 </span><span class="lineCov">         38 :     if (cell_refs.size() == 3) {</span></a>
-<a name="94"><span class="lineNum">      94 </span><span class="lineNoCov">          0 :       continue;</span></a>
-<a name="95"><span class="lineNum">      95 </span>            :     }</a>
-<a name="96"><span class="lineNum">      96 </span>            : </a>
-<a name="97"><span class="lineNum">      97 </span>            :     try {</a>
-<a name="98"><span class="lineNum">      98 </span><span class="lineCov">         38 :       auto layer_index = getIndexValue(cell_refs.at(0));</span></a>
-<a name="99"><span class="lineNum">      99 </span><span class="lineCov">         38 :       auto neuron_index = getIndexValue(cell_refs.at(1));</span></a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         38 :       auto neighboors_count = getIndexValue(cell_refs.at(2));</span></a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         38 :       std::vector&lt;RGBA&gt; weights;</span></a>
-<a name="102"><span class="lineNum">     102 </span>            : </a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">         38 :       if (layer_index &amp;&amp; neuron_index) {</span></a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         38 :         std::for_each(cell_refs.begin() + 3, cell_refs.end(),</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         38 :                       std::bind_front(processCell, std::ref(weights)));</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         38 :         if (!neighboors_count) {</span></a>
-<a name="107"><span class="lineNum">     107 </span>            :           // add the neuron weights</a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         19 :           network-&gt;layers.at(layer_index.value())</span></a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         19 :               -&gt;neurons.at(neuron_index.value())</span></a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         19 :               .weights.swap(weights);</span></a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         19 :         } else if (weights.size() &gt; 0) {</span></a>
-<a name="112"><span class="lineNum">     112 </span>            :           // add the neighboors and their weights</a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineNoCov">          0 :           auto &amp;connections = network-&gt;layers.at(layer_index.value())</span></a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :                                   -&gt;neurons.at(neuron_index.value())</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :                                   .neighbors;</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :           if (connections.size() != weights.size()) {</span></a>
-<a name="117"><span class="lineNum">     117 </span><span class="lineNoCov">          0 :             throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
-<a name="118"><span class="lineNum">     118 </span><span class="lineNoCov">          0 :                                         std::to_string(current_line_number) +</span></a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :                                         &quot;): invalid column numbers&quot;);</span></a>
-<a name="120"><span class="lineNum">     120 </span>            :           }</a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :           std::transform(connections.begin(), connections.end(),</span></a>
-<a name="122"><span class="lineNum">     122 </span>            :                          weights.begin(), connections.begin(),</a>
-<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :                          [](NeuronConnection &amp;connection, const RGBA &amp;weight) {</span></a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :                            connection.weight = weight;</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 :                            return connection;</span></a>
-<a name="126"><span class="lineNum">     126 </span>            :                          });</a>
-<a name="127"><span class="lineNum">     127 </span>            :         }</a>
-<a name="128"><span class="lineNum">     128 </span>            :       }</a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         38 :     } catch (std::exception &amp;ex) {</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineNoCov">          0 :       throw ImportExportException(ex.what());</span></a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineNoCov">          0 :     }</span></a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         38 :   }</span></a>
-<a name="133"><span class="lineNum">     133 </span>            : </a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">          1 :   file.close();</span></a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">          1 : }</span></a>
-<a name="136"><span class="lineNum">     136 </span>            : </a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 : void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {</span></a>
-<a name="138"><span class="lineNum">     138 </span>            :   // get the csv filename</a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineCov">          2 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
-<a name="140"><span class="lineNum">     140 </span><span class="lineCov">          2 :   std::string filename = appParams.network_to_export;</span></a>
-<a name="141"><span class="lineNum">     141 </span><span class="lineCov">          4 :   filename = std::regex_replace(</span></a>
-<a name="142"><span class="lineNum">     142 </span><span class="lineCov">          6 :       filename, std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
-<a name="143"><span class="lineNum">     143 </span><span class="lineCov">          2 :   std::ofstream file(filename);</span></a>
-<a name="144"><span class="lineNum">     144 </span>            : </a>
-<a name="145"><span class="lineNum">     145 </span>            :   // Determine the maximum number of weights any neuron has</a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">          2 :   auto &amp;network = Manager::getInstance().network;</span></a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          2 :   size_t max_weights = 0;</span></a>
-<a name="148"><span class="lineNum">     148 </span><span class="lineCov">          8 :   for (const auto &amp;layer : network-&gt;layers) {</span></a>
-<a name="149"><span class="lineNum">     149 </span><span class="lineCov">         44 :     for (const auto &amp;neuron : layer-&gt;neurons) {</span></a>
-<a name="150"><span class="lineNum">     150 </span><span class="lineCov">         38 :       if (neuron.weights.size() &gt; max_weights) {</span></a>
-<a name="151"><span class="lineNum">     151 </span><span class="lineCov">          4 :         max_weights = neuron.weights.size();</span></a>
-<a name="152"><span class="lineNum">     152 </span>            :       }</a>
-<a name="153"><span class="lineNum">     153 </span>            :     }</a>
-<a name="154"><span class="lineNum">     154 </span>            :   }</a>
-<a name="155"><span class="lineNum">     155 </span>            : </a>
-<a name="156"><span class="lineNum">     156 </span>            :   // Write the header to the CSV file</a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">          2 :   file &lt;&lt; &quot;Layer,Neuron,Neighbors&quot;;</span></a>
-<a name="158"><span class="lineNum">     158 </span><span class="lineCov">         14 :   for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
-<a name="159"><span class="lineNum">     159 </span><span class="lineCov">         12 :     file &lt;&lt; &quot;,wR&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wG&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wB&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wA&quot;</span></a>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         12 :          &lt;&lt; (i + 1);</span></a>
-<a name="161"><span class="lineNum">     161 </span>            :   }</a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          2 :   file &lt;&lt; &quot;\n&quot;;</span></a>
-<a name="163"><span class="lineNum">     163 </span>            : </a>
-<a name="164"><span class="lineNum">     164 </span>            :   // Write the data</a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          8 :   for (size_t layer_index = 0; layer_index &lt; network-&gt;layers.size();</span></a>
-<a name="166"><span class="lineNum">     166 </span>            :        layer_index++) {</a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineCov">          6 :     const auto &amp;layer = network-&gt;layers.at(layer_index);</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineCov">         44 :     for (size_t neuron_index = 0; neuron_index &lt; layer-&gt;neurons.size();</span></a>
-<a name="169"><span class="lineNum">     169 </span>            :          neuron_index++) {</a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineCov">         38 :       const auto &amp;neuron = layer-&gt;neurons.at(neuron_index);</span></a>
-<a name="171"><span class="lineNum">     171 </span>            : </a>
-<a name="172"><span class="lineNum">     172 </span>            :       // Write the layer index and neuron index to the CSV file, and an empty</a>
-<a name="173"><span class="lineNum">     173 </span>            :       // neighbor index</a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         38 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,,&quot;;</span></a>
-<a name="175"><span class="lineNum">     175 </span>            :       // Write the weights to the CSV file</a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineCov">        266 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
-<a name="177"><span class="lineNum">     177 </span><span class="lineCov">        228 :         if (i &lt; neuron.weights.size()) {</span></a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineCov">        156 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.weights[i].toStringCsv();</span></a>
-<a name="179"><span class="lineNum">     179 </span>            :         } else {</a>
-<a name="180"><span class="lineNum">     180 </span>            :           // If the neuron doesn't have a weight for this index, write a blank</a>
-<a name="181"><span class="lineNum">     181 </span>            :           // RGBA 4 columns to fill the csv</a>
-<a name="182"><span class="lineNum">     182 </span><span class="lineCov">         72 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
-<a name="183"><span class="lineNum">     183 </span>            :         }</a>
-<a name="184"><span class="lineNum">     184 </span>            :       }</a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
-<a name="186"><span class="lineNum">     186 </span>            : </a>
-<a name="187"><span class="lineNum">     187 </span>            :       // Then write the neuron's neighbors connections weights on a single line</a>
-<a name="188"><span class="lineNum">     188 </span>            :       // (to reduce csv file size)</a>
-<a name="189"><span class="lineNum">     189 </span><span class="lineCov">         38 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;</span></a>
-<a name="190"><span class="lineNum">     190 </span><span class="lineCov">         38 :            &lt;&lt; neuron.neighbors.size();</span></a>
-<a name="191"><span class="lineNum">     191 </span><span class="lineCov">        266 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
-<a name="192"><span class="lineNum">     192 </span><span class="lineCov">        228 :         if (i &lt; neuron.neighbors.size()) {</span></a>
-<a name="193"><span class="lineNum">     193 </span><span class="lineCov">         92 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.neighbors[i].weight.toStringCsv();</span></a>
-<a name="194"><span class="lineNum">     194 </span>            :         } else {</a>
-<a name="195"><span class="lineNum">     195 </span>            :           // If no more neighbor connection write a blank RGBA 4 columns to</a>
-<a name="196"><span class="lineNum">     196 </span>            :           // fill the csv</a>
-<a name="197"><span class="lineNum">     197 </span><span class="lineCov">        136 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
-<a name="198"><span class="lineNum">     198 </span>            :         }</a>
-<a name="199"><span class="lineNum">     199 </span>            :       }</a>
-<a name="200"><span class="lineNum">     200 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
-<a name="201"><span class="lineNum">     201 </span>            :     }</a>
-<a name="202"><span class="lineNum">     202 </span>            :   }</a>
-<a name="203"><span class="lineNum">     203 </span>            : </a>
-<a name="204"><span class="lineNum">     204 </span><span class="lineCov">          2 :   file.close();</span></a>
-<a name="205"><span class="lineNum">     205 </span><span class="lineCov">          2 : }</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          1 :   std::string filename = getFilenameCsv(appParams.network_to_import);</span></a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">          1 :   std::ifstream file(filename);</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">          1 :   if (!file.is_open()) {</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 :     throw ImportExportException(&quot;Failed to open file: &quot; + filename);</span></a>
+<a name="62"><span class="lineNum">      62 </span>            :   }</a>
+<a name="63"><span class="lineNum">      63 </span>            : </a>
+<a name="64"><span class="lineNum">      64 </span>            :   // parsing the csv</a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          1 :   Csv::Parser csv_parser;</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          1 :   std::string line;</span></a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          1 :   int current_line_number = 0;</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">          1 :   bool header_skipped = false;</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">         40 :   while (std::getline(file, line)) {</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">         39 :     current_line_number++;</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         39 :     if (!header_skipped) {</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          1 :       header_skipped = true;</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          1 :       continue;</span></a>
+<a name="74"><span class="lineNum">      74 </span>            :     }</a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         38 :     std::vector&lt;std::vector&lt;Csv::CellReference&gt;&gt; cell_refs;</span></a>
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<a name="77"><span class="lineNum">      77 </span>            :     try {</a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov">         38 :       std::string_view data(line);</span></a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">         38 :       csv_parser.parseTo2DVector(data, cell_refs);</span></a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineNoCov">          0 :     } catch (Csv::ParseError &amp;ex) {</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :       throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :                                   std::to_string(current_line_number) +</span></a>
+<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :                                   &quot;): &quot; + ex.what());</span></a>
+<a name="84"><span class="lineNum">      84 </span><span class="lineNoCov">          0 :     }</span></a>
+<a name="85"><span class="lineNum">      85 </span>            : </a>
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">         38 :     if (cell_refs.empty() || cell_refs.size() &lt; 3) {</span></a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineNoCov">          0 :       throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineNoCov">          0 :                                   std::to_string(current_line_number) +</span></a>
+<a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :                                   &quot;): invalid column numbers&quot;);</span></a>
+<a name="90"><span class="lineNum">      90 </span>            :     }</a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">         38 :     if (cell_refs.size() == 3) {</span></a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineNoCov">          0 :       continue;</span></a>
+<a name="93"><span class="lineNum">      93 </span>            :     }</a>
+<a name="94"><span class="lineNum">      94 </span>            : </a>
+<a name="95"><span class="lineNum">      95 </span>            :     try {</a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         38 :       auto layer_index = getIndexValue(cell_refs.at(0));</span></a>
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">         38 :       auto neuron_index = getIndexValue(cell_refs.at(1));</span></a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">         38 :       auto neighboors_count = getIndexValue(cell_refs.at(2));</span></a>
+<a name="99"><span class="lineNum">      99 </span><span class="lineCov">         38 :       std::vector&lt;RGBA&gt; weights;</span></a>
+<a name="100"><span class="lineNum">     100 </span>            : </a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         38 :       if (layer_index &amp;&amp; neuron_index) {</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         38 :         std::for_each(cell_refs.begin() + 3, cell_refs.end(),</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">         38 :                       std::bind_front(processCell, std::ref(weights)));</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         38 :         if (!neighboors_count) {</span></a>
+<a name="105"><span class="lineNum">     105 </span>            :           // add the neuron weights</a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         19 :           network-&gt;layers.at(layer_index.value())</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         19 :               -&gt;neurons.at(neuron_index.value())</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         19 :               .weights.swap(weights);</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         19 :         } else if (weights.size() &gt; 0) {</span></a>
+<a name="110"><span class="lineNum">     110 </span>            :           // add the neighboors and their weights</a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineNoCov">          0 :           auto &amp;connections = network-&gt;layers.at(layer_index.value())</span></a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineNoCov">          0 :                                   -&gt;neurons.at(neuron_index.value())</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineNoCov">          0 :                                   .neighbors;</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :           if (connections.size() != weights.size()) {</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :             throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :                                         std::to_string(current_line_number) +</span></a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineNoCov">          0 :                                         &quot;): invalid column numbers&quot;);</span></a>
+<a name="118"><span class="lineNum">     118 </span>            :           }</a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :           std::transform(connections.begin(), connections.end(),</span></a>
+<a name="120"><span class="lineNum">     120 </span>            :                          weights.begin(), connections.begin(),</a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :                          [](NeuronConnection &amp;connection, const RGBA &amp;weight) {</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineNoCov">          0 :                            connection.weight = weight;</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :                            return connection;</span></a>
+<a name="124"><span class="lineNum">     124 </span>            :                          });</a>
+<a name="125"><span class="lineNum">     125 </span>            :         }</a>
+<a name="126"><span class="lineNum">     126 </span>            :       }</a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         38 :     } catch (std::exception &amp;ex) {</span></a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineNoCov">          0 :       throw ImportExportException(ex.what());</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineNoCov">          0 :     }</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         38 :   }</span></a>
+<a name="131"><span class="lineNum">     131 </span>            : </a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">          1 :   file.close();</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">          1 : }</span></a>
+<a name="134"><span class="lineNum">     134 </span>            : </a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">          2 : void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {</span></a>
+<a name="136"><span class="lineNum">     136 </span>            :   // get the csv filename</a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 :   const auto &amp;appParams = Manager::getInstance().app_params;</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">          2 :   std::string filename = getFilenameCsv(appParams.network_to_export);</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">          2 :   std::ofstream file(filename);</span></a>
+<a name="140"><span class="lineNum">     140 </span>            : </a>
+<a name="141"><span class="lineNum">     141 </span>            :   // Determine the maximum number of weights any neuron has</a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">          2 :   auto &amp;network = Manager::getInstance().network;</span></a>
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">          2 :   size_t max_weights = 0;</span></a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">          8 :   for (const auto &amp;layer : network-&gt;layers) {</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         44 :     for (const auto &amp;neuron : layer-&gt;neurons) {</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">         38 :       if (neuron.weights.size() &gt; max_weights) {</span></a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          4 :         max_weights = neuron.weights.size();</span></a>
+<a name="148"><span class="lineNum">     148 </span>            :       }</a>
+<a name="149"><span class="lineNum">     149 </span>            :     }</a>
+<a name="150"><span class="lineNum">     150 </span>            :   }</a>
+<a name="151"><span class="lineNum">     151 </span>            : </a>
+<a name="152"><span class="lineNum">     152 </span>            :   // Write the header to the CSV file</a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">          2 :   file &lt;&lt; &quot;Layer,Neuron,Neighbors&quot;;</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         14 :   for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         12 :     file &lt;&lt; &quot;,wR&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wG&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wB&quot; &lt;&lt; (i + 1) &lt;&lt; &quot;,wA&quot;</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">         12 :          &lt;&lt; (i + 1);</span></a>
+<a name="157"><span class="lineNum">     157 </span>            :   }</a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">          2 :   file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="159"><span class="lineNum">     159 </span>            : </a>
+<a name="160"><span class="lineNum">     160 </span>            :   // Write the data</a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          8 :   for (size_t layer_index = 0; layer_index &lt; network-&gt;layers.size();</span></a>
+<a name="162"><span class="lineNum">     162 </span>            :        layer_index++) {</a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          6 :     const auto &amp;layer = network-&gt;layers.at(layer_index);</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">         44 :     for (size_t neuron_index = 0; neuron_index &lt; layer-&gt;neurons.size();</span></a>
+<a name="165"><span class="lineNum">     165 </span>            :          neuron_index++) {</a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">         38 :       const auto &amp;neuron = layer-&gt;neurons.at(neuron_index);</span></a>
+<a name="167"><span class="lineNum">     167 </span>            : </a>
+<a name="168"><span class="lineNum">     168 </span>            :       // Write the layer index and neuron index to the CSV file, and an empty</a>
+<a name="169"><span class="lineNum">     169 </span>            :       // neighbor index</a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">         38 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,,&quot;;</span></a>
+<a name="171"><span class="lineNum">     171 </span>            :       // Write the weights to the CSV file</a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">        266 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">        228 :         if (i &lt; neuron.weights.size()) {</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">        156 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.weights[i].toStringCsv();</span></a>
+<a name="175"><span class="lineNum">     175 </span>            :         } else {</a>
+<a name="176"><span class="lineNum">     176 </span>            :           // If the neuron doesn't have a weight for this index, write a blank</a>
+<a name="177"><span class="lineNum">     177 </span>            :           // RGBA 4 columns to fill the csv</a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">         72 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
+<a name="179"><span class="lineNum">     179 </span>            :         }</a>
+<a name="180"><span class="lineNum">     180 </span>            :       }</a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="182"><span class="lineNum">     182 </span>            : </a>
+<a name="183"><span class="lineNum">     183 </span>            :       // Then write the neuron's neighbors connections weights on a single line</a>
+<a name="184"><span class="lineNum">     184 </span>            :       // (to reduce csv file size)</a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         38 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">         38 :            &lt;&lt; neuron.neighbors.size();</span></a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineCov">        266 :       for (size_t i = 0; i &lt; max_weights; ++i) {</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">        228 :         if (i &lt; neuron.neighbors.size()) {</span></a>
+<a name="189"><span class="lineNum">     189 </span><span class="lineCov">         92 :           file &lt;&lt; &quot;,&quot; &lt;&lt; neuron.neighbors[i].weight.toStringCsv();</span></a>
+<a name="190"><span class="lineNum">     190 </span>            :         } else {</a>
+<a name="191"><span class="lineNum">     191 </span>            :           // If no more neighbor connection write a blank RGBA 4 columns to</a>
+<a name="192"><span class="lineNum">     192 </span>            :           // fill the csv</a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineCov">        136 :           file &lt;&lt; &quot;,,,,&quot;;</span></a>
+<a name="194"><span class="lineNum">     194 </span>            :         }</a>
+<a name="195"><span class="lineNum">     195 </span>            :       }</a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineCov">         38 :       file &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="197"><span class="lineNum">     197 </span>            :     }</a>
+<a name="198"><span class="lineNum">     198 </span>            :   }</a>
+<a name="199"><span class="lineNum">     199 </span>            : </a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">          2 :   file.close();</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">          2 : }</span></a>
 </pre>
       </td>
     </tr>

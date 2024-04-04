@@ -93,8 +93,8 @@ Inheritance diagram for sipai::Layer:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9d4b11c21fb4180e8e72261a348ec41e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a9d4b11c21fb4180e8e72261a348ec41e">Layer</a> (<a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a> <a class="el" href="classsipai_1_1Layer.html#a24320356f3c1ebcef428e476dcc06ddc">layerType</a>)</td></tr>
-<tr class="separator:a9d4b11c21fb4180e8e72261a348ec41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5f043a068023905a383f3662f9f1a04"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#af5f043a068023905a383f3662f9f1a04">Layer</a> (<a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a> <a class="el" href="classsipai_1_1Layer.html#a24320356f3c1ebcef428e476dcc06ddc">layerType</a>, size_t <a class="el" href="classsipai_1_1Layer.html#aff064c69559cb4c04fef86d1fc60d57c">size_x</a>=0, size_t <a class="el" href="classsipai_1_1Layer.html#a6e45b06849bef6e4247a335de9169e03">size_y</a>=0)</td></tr>
+<tr class="separator:af5f043a068023905a383f3662f9f1a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38c8c0374443ce22ea762150078f0add"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a38c8c0374443ce22ea762150078f0add">~Layer</a> ()=default</td></tr>
 <tr class="separator:a38c8c0374443ce22ea762150078f0add"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dd83413887cee065c3e554155c7e4fb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a8dd83413887cee065c3e554155c7e4fb">forwardPropagation</a> (bool enableParallax=false)</td></tr>
@@ -121,6 +121,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af85fa02ee0c66f262fa89f3ebbdeab07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4942c6d92e0c07a5558ef46ad704d201"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1Layer.html">Layer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a4942c6d92e0c07a5558ef46ad704d201">nextLayer</a> = nullptr</td></tr>
 <tr class="separator:a4942c6d92e0c07a5558ef46ad704d201"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff064c69559cb4c04fef86d1fc60d57c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#aff064c69559cb4c04fef86d1fc60d57c">size_x</a> = 0</td></tr>
+<tr class="separator:aff064c69559cb4c04fef86d1fc60d57c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e45b06849bef6e4247a335de9169e03"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a6e45b06849bef6e4247a335de9169e03">size_y</a> = 0</td></tr>
+<tr class="separator:a6e45b06849bef6e4247a335de9169e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addc59dc2248ffa72cfcb6bc37c8dbd72"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#addc59dc2248ffa72cfcb6bc37c8dbd72">UndefinedLayer</a> = &quot;UndefinedLayer&quot;</td></tr>
 <tr class="separator:addc59dc2248ffa72cfcb6bc37c8dbd72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -141,8 +145,8 @@ Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classsipai_1_1Layer.html" title="The Layer class represents a layer in a neural network. It contains a vector of Neurons and has metho...">Layer</a> class represents a layer in a neural network. It contains a vector of Neurons and has methods for forward propagation, backward propagation, and updating weights. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a9d4b11c21fb4180e8e72261a348ec41e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d4b11c21fb4180e8e72261a348ec41e">&#9670;&nbsp;</a></span>Layer()</h2>
+<a id="af5f043a068023905a383f3662f9f1a04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5f043a068023905a383f3662f9f1a04">&#9670;&nbsp;</a></span>Layer()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -154,8 +158,24 @@ Protected Member Functions</h2></td></tr>
           <td class="memname">sipai::Layer::Layer </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a>&#160;</td>
-          <td class="paramname"><em>layerType</em></td><td>)</td>
+          <td class="paramname"><em>layerType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_x</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_y</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -538,6 +558,34 @@ template&lt;typename ExecutionPolicy &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsipai_1_1Layer.html">Layer</a>* sipai::Layer::previousLayer = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aff064c69559cb4c04fef86d1fc60d57c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff064c69559cb4c04fef86d1fc60d57c">&#9670;&nbsp;</a></span>size_x</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sipai::Layer::size_x = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6e45b06849bef6e4247a335de9169e03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e45b06849bef6e4247a335de9169e03">&#9670;&nbsp;</a></span>size_y</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sipai::Layer::size_y = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">

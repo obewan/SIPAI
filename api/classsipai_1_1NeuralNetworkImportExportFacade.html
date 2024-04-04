@@ -81,8 +81,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af4c5a426028b688e548b06bfa4e9c8bd"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd">~NeuralNetworkImportExportFacade</a> ()=default</td></tr>
 <tr class="separator:af4c5a426028b688e548b06bfa4e9c8bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a3b3f8569d134fb2fe5be13d4b659af9c">importModel</a> ()</td></tr>
-<tr class="memdesc:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import a network model files (JSON meta data and CSV neurons data)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a3b3f8569d134fb2fe5be13d4b659af9c">More...</a><br /></td></tr>
+<tr class="memdesc:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import a network model from JSON model file (without weights)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a3b3f8569d134fb2fe5be13d4b659af9c">More...</a><br /></td></tr>
 <tr class="separator:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11a9d41442123436577204d7a85c1060"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a11a9d41442123436577204d7a85c1060">importWeights</a> (std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; &amp;network)</td></tr>
+<tr class="memdesc:a11a9d41442123436577204d7a85c1060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import the network weights from a CSV weights file (network model should be imported first)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a11a9d41442123436577204d7a85c1060">More...</a><br /></td></tr>
+<tr class="separator:a11a9d41442123436577204d7a85c1060"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97ca5fdbf8af65855dc293fcfa1502c0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a97ca5fdbf8af65855dc293fcfa1502c0">exportModel</a> () const</td></tr>
 <tr class="memdesc:a97ca5fdbf8af65855dc293fcfa1502c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Export a network model files (JSON meta data and CSV neurons data)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a97ca5fdbf8af65855dc293fcfa1502c0">More...</a><br /></td></tr>
 <tr class="separator:a97ca5fdbf8af65855dc293fcfa1502c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,7 +174,33 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Import a network model files (JSON meta data and CSV neurons data) </p>
+<p>Import a network model from JSON model file (without weights) </p>
+
+</div>
+</div>
+<a id="a11a9d41442123436577204d7a85c1060"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11a9d41442123436577204d7a85c1060">&#9670;&nbsp;</a></span>importWeights()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NeuralNetworkImportExportFacade::importWeights </td>
+          <td>(</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>network</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Import the network weights from a CSV weights file (network model should be imported first) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">network</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SIPAI: /home/runner/work/SIPAI/SIPAI/libs/libsipai/include/exception/NetworkException.h Source File</title>
+<title>SIPAI: /home/runner/work/SIPAI/SIPAI/libs/libsipai/include/exception/NeuralNetworkException.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,27 +66,28 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">NetworkException.h</div>  </div>
+<div class="title">NeuralNetworkException.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="NetworkException_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<a href="NeuralNetworkException_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;exception&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesipai.html">sipai</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classsipai_1_1NetworkException.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsipai_1_1NetworkException.html">NetworkException</a> : <span class="keyword">public</span> std::exception {</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classsipai_1_1NeuralNetworkException.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsipai_1_1NeuralNetworkException.html">NeuralNetworkException</a> : <span class="keyword">public</span> std::exception {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classsipai_1_1NetworkException.html#a0a83a4ea3cda05775ff2830bb3f09682">   13</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classsipai_1_1NetworkException.html#a0a83a4ea3cda05775ff2830bb3f09682">NetworkException</a>(<span class="keyword">const</span> std::string &amp;message) : message_(message) {}</div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classsipai_1_1NetworkException.html#ac5cfc6e11941311e1651b2be3a5eb1b4">   14</a></span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classsipai_1_1NetworkException.html#ac5cfc6e11941311e1651b2be3a5eb1b4">what</a>() const noexcept<span class="keyword"> override </span>{ <span class="keywordflow">return</span> message_.c_str(); }</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  std::string message_;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;};</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;} <span class="comment">// namespace sipai</span></div>
-<div class="ttc" id="aclasssipai_1_1NetworkException_html"><div class="ttname"><a href="classsipai_1_1NetworkException.html">sipai::NetworkException</a></div><div class="ttdoc">A custom exception class that inherits from std::exception. This class is thrown when there are issue...</div><div class="ttdef"><b>Definition:</b> NetworkException.h:11</div></div>
-<div class="ttc" id="aclasssipai_1_1NetworkException_html_a0a83a4ea3cda05775ff2830bb3f09682"><div class="ttname"><a href="classsipai_1_1NetworkException.html#a0a83a4ea3cda05775ff2830bb3f09682">sipai::NetworkException::NetworkException</a></div><div class="ttdeci">NetworkException(const std::string &amp;message)</div><div class="ttdef"><b>Definition:</b> NetworkException.h:13</div></div>
-<div class="ttc" id="aclasssipai_1_1NetworkException_html_ac5cfc6e11941311e1651b2be3a5eb1b4"><div class="ttname"><a href="classsipai_1_1NetworkException.html#ac5cfc6e11941311e1651b2be3a5eb1b4">sipai::NetworkException::what</a></div><div class="ttdeci">const char * what() const noexcept override</div><div class="ttdef"><b>Definition:</b> NetworkException.h:14</div></div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classsipai_1_1NeuralNetworkException.html#ab73475eddd6010709f7bc213a98e3ef4">   13</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classsipai_1_1NeuralNetworkException.html#ab73475eddd6010709f7bc213a98e3ef4">NeuralNetworkException</a>(<span class="keyword">const</span> std::string &amp;message)</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;      : message_(message) {}</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classsipai_1_1NeuralNetworkException.html#a937270df8f282f4f6a40ff6a10c4cf26">   15</a></span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classsipai_1_1NeuralNetworkException.html#a937270df8f282f4f6a40ff6a10c4cf26">what</a>() const noexcept<span class="keyword"> override </span>{ <span class="keywordflow">return</span> message_.c_str(); }</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  std::string message_;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;};</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;} <span class="comment">// namespace sipai</span></div>
+<div class="ttc" id="aclasssipai_1_1NeuralNetworkException_html"><div class="ttname"><a href="classsipai_1_1NeuralNetworkException.html">sipai::NeuralNetworkException</a></div><div class="ttdoc">A custom exception class that inherits from std::exception. This class is thrown when there are issue...</div><div class="ttdef"><b>Definition:</b> NeuralNetworkException.h:11</div></div>
+<div class="ttc" id="aclasssipai_1_1NeuralNetworkException_html_a937270df8f282f4f6a40ff6a10c4cf26"><div class="ttname"><a href="classsipai_1_1NeuralNetworkException.html#a937270df8f282f4f6a40ff6a10c4cf26">sipai::NeuralNetworkException::what</a></div><div class="ttdeci">const char * what() const noexcept override</div><div class="ttdef"><b>Definition:</b> NeuralNetworkException.h:15</div></div>
+<div class="ttc" id="aclasssipai_1_1NeuralNetworkException_html_ab73475eddd6010709f7bc213a98e3ef4"><div class="ttname"><a href="classsipai_1_1NeuralNetworkException.html#ab73475eddd6010709f7bc213a98e3ef4">sipai::NeuralNetworkException::NeuralNetworkException</a></div><div class="ttdeci">NeuralNetworkException(const std::string &amp;message)</div><div class="ttdef"><b>Definition:</b> NeuralNetworkException.h:13</div></div>
 <div class="ttc" id="anamespacesipai_html"><div class="ttname"><a href="namespacesipai.html">sipai</a></div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:18</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
