@@ -9,6 +9,7 @@
  */
 #pragma once
 #include "Layer.h"
+#include <cstddef>
 #include <stdexcept>
 
 namespace sipai {
@@ -20,6 +21,8 @@ namespace sipai {
 class LayerInput : public Layer {
 public:
   LayerInput() : Layer(LayerType::LayerInput) {}
+  LayerInput(size_t size_x, size_t size_y)
+      : Layer(LayerType::LayerInput, size_x, size_y) {}
 
   void forwardPropagation(bool enableParallax = false) override {
     // No need to implement for input layer

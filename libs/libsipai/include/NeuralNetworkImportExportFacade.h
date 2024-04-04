@@ -19,9 +19,17 @@ public:
   virtual ~NeuralNetworkImportExportFacade() = default;
 
   /**
-   * @brief Import a network model files (JSON meta data and CSV neurons data)
+   * @brief Import a network model from JSON model file (without weights)
    */
   virtual std::unique_ptr<NeuralNetwork> importModel();
+
+  /**
+   * @brief Import the network weights from a CSV weights file (network model
+   * should be imported first)
+   *
+   * @param network
+   */
+  void importWeights(std::unique_ptr<NeuralNetwork> &network);
 
   /**
    * @brief Export a network model files (JSON meta data and CSV neurons data)

@@ -36,6 +36,7 @@ TEST_CASE("Testing the Manager class") {
     np.output_size_y = 3;
     np.hiddens_count = 2;
     manager.app_params.network_to_import = "";
+    manager.network.reset();
     manager.createOrImportNetwork();
 
     const auto &network = manager.network;
@@ -84,10 +85,10 @@ TEST_CASE("Testing the Manager class") {
       std::filesystem::remove(network_csv);
     }
     manager.createOrImportNetwork();
-    CHECK(std::filesystem::exists(ap.network_to_export) == false);
+    CHECK_FALSE(std::filesystem::exists(ap.network_to_export));
     manager.exportNetwork();
-    CHECK(std::filesystem::exists(ap.network_to_export) == true);
-    CHECK(std::filesystem::exists(network_csv) == true);
+    CHECK(std::filesystem::exists(ap.network_to_export));
+    CHECK(std::filesystem::exists(network_csv));
     manager.network.reset();
 
     // TEST IMPORT
@@ -150,9 +151,9 @@ TEST_CASE("Testing the Manager class") {
     if (std::filesystem::exists(tmpImage)) {
       std::filesystem::remove(tmpImage);
     }
-    CHECK(std::filesystem::exists(tmpImage) == false);
+    CHECK_FALSE(std::filesystem::exists(tmpImage));
     manager.saveImage(tmpImage, image, np.input_size_x, np.input_size_y);
-    CHECK(std::filesystem::exists(tmpImage) == true);
+    CHECK(std::filesystem::exists(tmpImage));
     auto image2 = manager.loadImage(tmpImage, orig_x, orig_y, np.input_size_x,
                                     np.input_size_y);
     CHECK(image2.size() == image.size());
@@ -172,14 +173,14 @@ TEST_CASE("Testing the Manager class") {
     for (auto &[source, target] : split.first) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
-      CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
-      CHECK_MESSAGE(std::filesystem::exists(target) == true, target);
+      CHECK_MESSAGE(std::filesystem::exists(source), source);
+      CHECK_MESSAGE(std::filesystem::exists(target), target);
     }
     for (auto &[source, target] : split.second) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
-      CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
-      CHECK_MESSAGE(std::filesystem::exists(target) == true, target);
+      CHECK_MESSAGE(std::filesystem::exists(source), source);
+      CHECK_MESSAGE(std::filesystem::exists(target), target);
     }
   }
 
@@ -220,10 +221,10 @@ TEST_CASE("Testing the Manager class") {
     if (std::filesystem::exists(network_csv)) {
       std::filesystem::remove(network_csv);
     }
-    CHECK(std::filesystem::exists(ap.training_data_file) == true);
+    CHECK(std::filesystem::exists(ap.training_data_file));
     CHECK_NOTHROW(manager.run());
-    CHECK(std::filesystem::exists(ap.network_to_export) == true);
-    CHECK(std::filesystem::exists(network_csv) == true);
+    CHECK(std::filesystem::exists(ap.network_to_export));
+    CHECK(std::filesystem::exists(network_csv));
     std::filesystem::remove(ap.network_to_export);
     std::filesystem::remove(network_csv);
     manager.network.reset();

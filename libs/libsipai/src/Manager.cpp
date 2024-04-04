@@ -47,7 +47,15 @@ void Manager::saveImage(const std::string &imagePath,
 
 void Manager::createOrImportNetwork() {
   if (!network) {
-    network = neuralNetworkBuilder_.build();
+    network = neuralNetworkBuilder_.with(app_params)
+                  .with(network_params)
+                  .createOrImport()
+                  .addLayers()
+                  .bindLayers()
+                  .addNeighbors()
+                  .initializeWeights()
+                  .setActivationFunction()
+                  .build();
   }
 }
 

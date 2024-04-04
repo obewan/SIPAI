@@ -81,15 +81,13 @@ struct RGBA {
    * @return RGBA
    */
   RGBA random(const float &fanIn_fanOut) const {
-    RGBA result;
     float mean = 0.0f;
     float stddev = std::sqrt(2.0f / fanIn_fanOut);
+    RGBA result;
     std::for_each(
-        result.value.begin(), result.value.end(), [&mean, &stddev](float &f) {
-          f = std::clamp(RandomFactory::Rand(mean, stddev), 0.0f, 1.0f);
-        });
-
-    return result;
+        result.value.begin(), result.value.end(),
+        [&mean, &stddev](float &v) { v = RandomFactory::Rand(mean, stddev); });
+    return result.clamp();
   }
 
   /**

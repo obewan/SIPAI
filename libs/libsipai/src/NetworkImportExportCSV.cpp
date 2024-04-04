@@ -1,3 +1,4 @@
+#include "Common.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportCSV.h"
 #include "NeuronConnection.h"
@@ -10,7 +11,6 @@
 #include <exception>
 #include <fstream>
 #include <optional>
-#include <regex> // for std::regex and std::regex_replace
 #include <string>
 
 using namespace sipai;
@@ -55,9 +55,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
 
   // get the csv filename
   const auto &appParams = Manager::getInstance().app_params;
-  std::string filename = appParams.network_to_import;
-  filename = std::regex_replace(
-      filename, std::regex(".json$", std::regex::icase), ".csv");
+  std::string filename = getFilenameCsv(appParams.network_to_import);
   std::ifstream file(filename);
   if (!file.is_open()) {
     throw ImportExportException("Failed to open file: " + filename);
@@ -137,9 +135,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
 void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {
   // get the csv filename
   const auto &appParams = Manager::getInstance().app_params;
-  std::string filename = appParams.network_to_export;
-  filename = std::regex_replace(
-      filename, std::regex(".json$", std::regex::icase), ".csv");
+  std::string filename = getFilenameCsv(appParams.network_to_export);
   std::ofstream file(filename);
 
   // Determine the maximum number of weights any neuron has

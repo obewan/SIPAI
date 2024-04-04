@@ -1,19 +1,24 @@
 #include "ActivationFunctions.h"
 #include "LayerHidden.h"
 #include "NeuralNetwork.h"
+#include "NeuralNetworkBuilder.h"
+#include "NeuralNetworkParams.h"
 #include "doctest.h"
-#include "exception/NetworkException.h"
+#include "exception/NeuralNetworkException.h"
+#include <cstddef>
+#include <memory>
 
 using namespace sipai;
 
 TEST_CASE("Testing the Activation Functions") {
 
-  auto network = new NeuralNetwork();
+  auto network = std::make_unique<NeuralNetwork>();
   auto hlayer = new LayerHidden();
   Neuron n1;
   Neuron n2;
   hlayer->neurons.push_back(n1);
   hlayer->neurons.push_back(n2);
+  network->layers.push_back(hlayer);
   const float eps = 1e-6f; // epsilon for float testing
   float alpha = 0.1f;
   struct hasActivationFunctions {
@@ -139,10 +144,17 @@ TEST_CASE("Testing the Activation Functions") {
         }
       };
 
+  NeuralNetworkBuilder builder;
+  builder.with(network);
+
   for (auto activ : {EActivationFunction::ELU, EActivationFunction::LReLU,
                      EActivationFunction::PReLU, EActivationFunction::ReLU,
                      EActivationFunction::Sigmoid, EActivationFunction::Tanh}) {
-    CHECK_NOTHROW(network->SetActivationFunction(hlayer, activ, alpha));
+    builder.with((NeuralNetworkParams){
+        .hidden_activation_alpha = alpha,
+        .hidden_activation_function = activ,
+    });
+    CHECK_NOTHROW(builder.setActivationFunction());
     for (const auto &neu : hlayer->neurons) {
       testActivationFunction(neu, activ);
     }
@@ -151,9 +163,7 @@ TEST_CASE("Testing the Activation Functions") {
          hasAF.hasSigm && hasAF.hasTanh) == true);
 
   auto invalidEnum = static_cast<EActivationFunction>(900);
-  CHECK_THROWS_AS(network->SetActivationFunction(hlayer, invalidEnum, 0.1f),
-                  NetworkException);
-
-  CHECK_NOTHROW(delete hlayer);
-  CHECK_NOTHROW(delete network);
+  builder.with(
+      (NeuralNetworkParams){.hidden_activation_function = invalidEnum});
+  CHECK_THROWS_AS(builder.setActivationFunction(), NeuralNetworkException);
 }

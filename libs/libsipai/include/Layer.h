@@ -9,6 +9,7 @@
  */
 #pragma once
 #include "Neuron.h"
+#include <cstddef>
 #include <execution>
 #include <functional>
 #include <map>
@@ -28,13 +29,16 @@ const std::map<std::string, LayerType, std::less<>> layer_map{
  */
 class Layer {
 public:
-  explicit Layer(LayerType layerType) : layerType(layerType) {}
+  explicit Layer(LayerType layerType, size_t size_x = 0, size_t size_y = 0)
+      : layerType(layerType), size_x(size_x), size_y(size_y) {}
   virtual ~Layer() = default;
 
   const LayerType layerType;
   std::vector<Neuron> neurons;
   Layer *previousLayer = nullptr;
   Layer *nextLayer = nullptr;
+  size_t size_x = 0;
+  size_t size_y = 0;
 
   const std::string UndefinedLayer = "UndefinedLayer";
 

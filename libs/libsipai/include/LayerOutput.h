@@ -27,6 +27,8 @@ namespace sipai {
 class LayerOutput : public Layer {
 public:
   LayerOutput() : Layer(LayerType::LayerOutput) {}
+  LayerOutput(size_t size_x, size_t size_y)
+      : Layer(LayerType::LayerOutput, size_x, size_y) {}
 
   void computeErrors(std::vector<RGBA> const &expectedValues) {
     if (expectedValues.size() != neurons.size()) {

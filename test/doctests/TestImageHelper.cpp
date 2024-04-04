@@ -35,7 +35,7 @@ TEST_CASE("Testing ImageHelper") {
     CHECK(imageRgba.size() > 0);
     CHECK(imageRgba.size() == image.size().area());
     for (const auto &rgba : imageRgba) {
-      CHECK(rgba.isOutOfRange() == false);
+      CHECK_FALSE(rgba.isOutOfRange());
     }
   }
 

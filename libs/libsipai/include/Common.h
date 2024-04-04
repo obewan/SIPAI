@@ -10,6 +10,7 @@
 
 #pragma once
 #include <map>
+#include <regex> // for std::regex and std::regex_replace
 #include <string>
 #include <vector>
 
@@ -35,5 +36,16 @@ const std::map<std::string, ERunMode, std::less<>> mode_map{
     {"Testing", ERunMode::Testing},
     {"Training", ERunMode::Training},
     {"TrainingMonitored", ERunMode::TrainingMonitored}};
+
+/**
+ * @brief Get the Filename .csv from a Filename .json
+ *
+ * @param filenameJson
+ * @return std::string
+ */
+inline std::string getFilenameCsv(const std::string &filenameJson) {
+  return std::regex_replace(filenameJson,
+                            std::regex(".json$", std::regex::icase), ".csv");
+}
 
 } // namespace sipai

@@ -32,7 +32,9 @@ public:
   operator=(NeuralNetwork &&other) = delete; // Move assignment operator
   ~NeuralNetwork() {
     for (auto layer : layers) {
-      delete layer;
+      if (layer != nullptr) {
+        delete layer;
+      }
     }
   }
 
@@ -41,11 +43,6 @@ public:
    * the network.
    */
   std::vector<Layer *> layers;
-
-  /**
-   * @brief Initializes the layers of the network.
-   */
-  void initialize();
 
   /**
    * @brief Performs forward propagation on the network using the given input
@@ -72,66 +69,6 @@ public:
    * rate.
    */
   void updateWeights(float learning_rate, bool enableParallax = false);
-
-  /**
-   * @brief Add the neurons layers of the network.
-   *
-   */
-  void addLayers();
-
-  /**
-   * @brief Binds the layers of the network together.
-   */
-  void bindLayers();
-
-  /**
-   * @brief Initializes the weights of the neurons in the network.
-   */
-  void initializeWeights() const;
-
-  /**
-   * @brief Initializes the neighbors of the neurons in the network.
-   */
-  void initializeNeighbors();
-
-  /**
-   * @brief Add and initialize the neighbors of a specific neuron
-   *
-   * @param neuron
-   * @param neuron_layer
-   * @param neuron_index
-   * @param layer_size_x
-   * @param layer_size_y
-   * @param randomize_weight
-   */
-  void addNeuronNeighbors(Neuron &neuron, Layer *neuron_layer,
-                          size_t neuron_index, int layer_size_x,
-                          int layer_size_y, bool randomize_weight = true);
-
-  /**
-   * @brief Sets the activation function for a given layer in the network.
-   *
-   * @param layer A pointer to the Layer object for which the activation
-   * function is to be set.
-   * @param activation_function An enum representing the type of activation
-   * function to be used.
-   * @param activation_alpha A float representing the alpha parameter of the
-   * activation function.
-   */
-  void SetActivationFunction(Layer *layer,
-                             EActivationFunction activation_function,
-                             float activation_alpha) const;
-
-  /**
-   * @brief Check if the neural network is initialized.
-   *
-   * @return true if initialized.
-   * @return false
-   */
-  bool isInitizalized() const { return isInitialized_.load(); }
-
-private:
-  std::atomic<bool> isInitialized_ = false;
 };
 
 } // namespace sipai
