@@ -6,7 +6,7 @@ var searchData=
   ['eluderivative_34',['eluDerivative',['../namespacesipai.html#a52d20ea3c7b78d0f33fb012b2192e7c7',1,'sipai']]],
   ['emptycellexception_35',['EmptyCellException',['../classsipai_1_1EmptyCellException.html',1,'sipai']]],
   ['emptycellexception_2eh_36',['EmptyCellException.h',['../EmptyCellException_8h.html',1,'']]],
-  ['enable_5fparallax_37',['enable_parallax',['../structsipai_1_1AppParams.html#a38516961dbf9c3ab0ee4e03ec9bb62bc',1,'sipai::AppParams']]],
+  ['enable_5fparallel_37',['enable_parallel',['../structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251',1,'sipai::AppParams']]],
   ['endl_38',['endl',['../classsipai_1_1SimpleLogger.html#aa642aeeccec9ac5a09a0e1b9e17c13f9',1,'sipai::SimpleLogger']]],
   ['enhancer_39',['Enhancer',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b',1,'sipai']]],
   ['epoch_5fautosave_40',['epoch_autosave',['../structsipai_1_1AppParams.html#ae61a7a760ba975865154ecae35ea7535',1,'sipai::AppParams']]],

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-04 20:34:23</td>
+            <td class="headerValue">2024-04-04 20:54:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -115,7 +115,7 @@
 <a name="53"><span class="lineNum">      53 </span>            :    * propagation.</a>
 <a name="54"><span class="lineNum">      54 </span>            :    */</a>
 <a name="55"><span class="lineNum">      55 </span>            :   std::vector&lt;RGBA&gt; forwardPropagation(const std::vector&lt;RGBA&gt; &amp;inputValues,</a>
-<a name="56"><span class="lineNum">      56 </span>            :                                        bool enableParallax = false);</a>
+<a name="56"><span class="lineNum">      56 </span>            :                                        bool enable_parallel = false);</a>
 <a name="57"><span class="lineNum">      57 </span>            : </a>
 <a name="58"><span class="lineNum">      58 </span>            :   /**</a>
 <a name="59"><span class="lineNum">      59 </span>            :    * @brief Performs backward propagation on the network using the given</a>
@@ -124,13 +124,13 @@
 <a name="62"><span class="lineNum">      62 </span>            :    * @param expectedValues The expected values for backward propagation.</a>
 <a name="63"><span class="lineNum">      63 </span>            :    */</a>
 <a name="64"><span class="lineNum">      64 </span>            :   void backwardPropagation(const std::vector&lt;RGBA&gt; &amp;expectedValues,</a>
-<a name="65"><span class="lineNum">      65 </span>            :                            bool enableParallax = false);</a>
+<a name="65"><span class="lineNum">      65 </span>            :                            bool enable_parallel = false);</a>
 <a name="66"><span class="lineNum">      66 </span>            : </a>
 <a name="67"><span class="lineNum">      67 </span>            :   /**</a>
 <a name="68"><span class="lineNum">      68 </span>            :    * @brief Updates the weights of the neurons in the network using the learning</a>
 <a name="69"><span class="lineNum">      69 </span>            :    * rate.</a>
 <a name="70"><span class="lineNum">      70 </span>            :    */</a>
-<a name="71"><span class="lineNum">      71 </span>            :   void updateWeights(float learning_rate, bool enableParallax = false);</a>
+<a name="71"><span class="lineNum">      71 </span>            :   void updateWeights(float learning_rate, bool enable_parallel = false);</a>
 <a name="72"><span class="lineNum">      72 </span>            : };</a>
 <a name="73"><span class="lineNum">      73 </span>            : </a>
 <a name="74"><span class="lineNum">      74 </span>            : } // namespace sipai</a>

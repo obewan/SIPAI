@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-04 20:34:23</td>
+            <td class="headerValue">2024-04-04 20:54:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -155,13 +155,13 @@
 <a name="93"><span class="lineNum">      93 </span><span class="lineCov">         16 :         manager.network_params.output_size_y);</span></a>
 <a name="94"><span class="lineNum">      94 </span>            : </a>
 <a name="95"><span class="lineNum">      95 </span>            :     std::vector&lt;RGBA&gt; outputImage = manager.network-&gt;forwardPropagation(</a>
-<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         16 :         inputImage, manager.app_params.enable_parallax);</span></a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         16 :         inputImage, manager.app_params.enable_parallel);</span></a>
 <a name="97"><span class="lineNum">      97 </span><span class="lineCov">         16 :     epochLoss += imageHelper.computeLoss(outputImage, targetImage);</span></a>
 <a name="98"><span class="lineNum">      98 </span>            : </a>
 <a name="99"><span class="lineNum">      99 </span><span class="lineCov">         16 :     manager.network-&gt;backwardPropagation(targetImage,</span></a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         16 :                                          manager.app_params.enable_parallax);</span></a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         16 :                                          manager.app_params.enable_parallel);</span></a>
 <a name="101"><span class="lineNum">     101 </span><span class="lineCov">         16 :     manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         16 :                                    manager.app_params.enable_parallax);</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         16 :                                    manager.app_params.enable_parallel);</span></a>
 <a name="103"><span class="lineNum">     103 </span><span class="lineCov">         16 :   }</span></a>
 <a name="104"><span class="lineNum">     104 </span><span class="lineCov">          2 :   epochLoss /= dataSet.size();</span></a>
 <a name="105"><span class="lineNum">     105 </span><span class="lineCov">          2 :   return epochLoss;</span></a>
@@ -185,7 +185,7 @@
 <a name="123"><span class="lineNum">     123 </span><span class="lineCov">          4 :         manager.network_params.output_size_y);</span></a>
 <a name="124"><span class="lineNum">     124 </span>            : </a>
 <a name="125"><span class="lineNum">     125 </span>            :     std::vector&lt;RGBA&gt; outputImage = manager.network-&gt;forwardPropagation(</a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          4 :         inputImage, manager.app_params.enable_parallax);</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          4 :         inputImage, manager.app_params.enable_parallel);</span></a>
 <a name="127"><span class="lineNum">     127 </span><span class="lineCov">          4 :     validationLoss += imageHelper.computeLoss(outputImage, targetImage);</span></a>
 <a name="128"><span class="lineNum">     128 </span><span class="lineCov">          4 :   }</span></a>
 <a name="129"><span class="lineNum">     129 </span><span class="lineCov">          2 :   validationLoss /= validationSet.size();</span></a>

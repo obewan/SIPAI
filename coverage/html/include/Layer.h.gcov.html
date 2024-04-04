@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-04 20:34:23</td>
+            <td class="headerValue">2024-04-04 20:54:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -108,11 +108,11 @@
 <a name="46"><span class="lineNum">      46 </span>            :    * @brief Performs forward propagation using the previous layer.</a>
 <a name="47"><span class="lineNum">      47 </span>            :    *</a>
 <a name="48"><span class="lineNum">      48 </span>            :    */</a>
-<a name="49"><span class="lineNum">      49 </span><span class="lineCov">         40 :   virtual void forwardPropagation(bool enableParallax = false) {</span></a>
+<a name="49"><span class="lineNum">      49 </span><span class="lineCov">         40 :   virtual void forwardPropagation(bool enable_parallel = false) {</span></a>
 <a name="50"><span class="lineNum">      50 </span><span class="lineCov">         40 :     if (previousLayer == nullptr) {</span></a>
 <a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :       return;</span></a>
 <a name="52"><span class="lineNum">      52 </span>            :     }</a>
-<a name="53"><span class="lineNum">      53 </span><span class="lineCov">         40 :     if (enableParallax) {</span></a>
+<a name="53"><span class="lineNum">      53 </span><span class="lineCov">         40 :     if (enable_parallel) {</span></a>
 <a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :       _forward(std::execution::par_unseq);</span></a>
 <a name="55"><span class="lineNum">      55 </span>            :     } else {</a>
 <a name="56"><span class="lineNum">      56 </span><span class="lineCov">         40 :       _forward(std::execution::seq);</span></a>
@@ -123,11 +123,11 @@
 <a name="61"><span class="lineNum">      61 </span>            :    * @brief Performs backward propagation using the next layer.</a>
 <a name="62"><span class="lineNum">      62 </span>            :    *</a>
 <a name="63"><span class="lineNum">      63 </span>            :    */</a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">         32 :   virtual void backwardPropagation(bool enableParallax = false) {</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineCov">         32 :   virtual void backwardPropagation(bool enable_parallel = false) {</span></a>
 <a name="65"><span class="lineNum">      65 </span><span class="lineCov">         32 :     if (nextLayer == nullptr) {</span></a>
 <a name="66"><span class="lineNum">      66 </span><span class="lineCov">         16 :       return;</span></a>
 <a name="67"><span class="lineNum">      67 </span>            :     }</a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">         16 :     if (enableParallax) {</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">         16 :     if (enable_parallel) {</span></a>
 <a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :       _backward(std::execution::par_unseq);</span></a>
 <a name="70"><span class="lineNum">      70 </span>            :     } else {</a>
 <a name="71"><span class="lineNum">      71 </span><span class="lineCov">         16 :       _backward(std::execution::seq);</span></a>
@@ -140,11 +140,11 @@
 <a name="78"><span class="lineNum">      78 </span>            :    *</a>
 <a name="79"><span class="lineNum">      79 </span>            :    * @param learningRate The learning rate to use when updating weights.</a>
 <a name="80"><span class="lineNum">      80 </span>            :    */</a>
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">         32 :   virtual void updateWeights(float learningRate, bool enableParallax = false) {</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">         32 :   virtual void updateWeights(float learningRate, bool enable_parallel = false) {</span></a>
 <a name="82"><span class="lineNum">      82 </span><span class="lineCov">         32 :     if (previousLayer == nullptr) {</span></a>
 <a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :       return;</span></a>
 <a name="84"><span class="lineNum">      84 </span>            :     }</a>
-<a name="85"><span class="lineNum">      85 </span><span class="lineCov">         32 :     if (enableParallax) {</span></a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">         32 :     if (enable_parallel) {</span></a>
 <a name="86"><span class="lineNum">      86 </span><span class="lineNoCov">          0 :       _update(std::execution::par_unseq, learningRate);</span></a>
 <a name="87"><span class="lineNum">      87 </span>            :     } else {</a>
 <a name="88"><span class="lineNum">      88 </span><span class="lineCov">         32 :       _update(std::execution::seq, learningRate);</span></a>

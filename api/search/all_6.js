@@ -2,5 +2,5 @@ var searchData=
 [
   ['filereaderexception_51',['FileReaderException',['../classsipai_1_1FileReaderException.html#afc0f5d68ba724cb5c9c52faf403c9f83',1,'sipai::FileReaderException::FileReaderException()'],['../classsipai_1_1FileReaderException.html',1,'sipai::FileReaderException']]],
   ['filereaderexception_2eh_52',['FileReaderException.h',['../FileReaderException_8h.html',1,'']]],
-  ['forwardpropagation_53',['forwardPropagation',['../classsipai_1_1Layer.html#a8dd83413887cee065c3e554155c7e4fb',1,'sipai::Layer::forwardPropagation()'],['../classsipai_1_1LayerInput.html#a97b9d4eb5b09cc57b2b9828a86d6cf65',1,'sipai::LayerInput::forwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#a7b9c43dab58f568912681d175bba4bc5',1,'sipai::NeuralNetwork::forwardPropagation()']]]
+  ['forwardpropagation_53',['forwardPropagation',['../classsipai_1_1Layer.html#a37256432ea22c3040bcd0099a874849b',1,'sipai::Layer::forwardPropagation()'],['../classsipai_1_1LayerInput.html#a51e72e7ede9928f6e18fd1ded334a30b',1,'sipai::LayerInput::forwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#ac567231970204a1d88a3fbf900be8380',1,'sipai::NeuralNetwork::forwardPropagation()']]]
 ];
