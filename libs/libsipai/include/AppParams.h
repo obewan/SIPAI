@@ -30,10 +30,10 @@ struct AppParams {
   int max_epochs_without_improvement = 10;
   int epoch_autosave = 10;
   /**
-   * @brief This will enable parallax processing on each neurons, suitable only
-   * on massive parallax plateform. Not activable by command line for now (CUDA
+   * @brief This will enable parallel processing on each neurons, suitable only
+   * on massive parallel plateform. Not activable by command line for now (CUDA
    * not implemented).
    */
-  bool enable_parallax = false;
+  bool enable_parallel = false;
 };
 } // namespace sipai

@@ -24,15 +24,16 @@ public:
   LayerInput(size_t size_x, size_t size_y)
       : Layer(LayerType::LayerInput, size_x, size_y) {}
 
-  void forwardPropagation(bool enableParallax = false) override {
+  void forwardPropagation(bool enable_parallel = false) override {
     // No need to implement for input layer
   }
 
-  void backwardPropagation(bool enableParallax = false) override {
+  void backwardPropagation(bool enable_parallel = false) override {
     // No need to implement for input layer (no weights of input layer)
   }
 
-  void updateWeights(float learningRate, bool enableParallax = false) override {
+  void updateWeights(float learningRate,
+                     bool enable_parallel = false) override {
     // No need to implement for input layer (no weights of input layer)
   }
 

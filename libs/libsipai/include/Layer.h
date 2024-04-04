@@ -46,11 +46,11 @@ public:
    * @brief Performs forward propagation using the previous layer.
    *
    */
-  virtual void forwardPropagation(bool enableParallax = false) {
+  virtual void forwardPropagation(bool enable_parallel = false) {
     if (previousLayer == nullptr) {
       return;
     }
-    if (enableParallax) {
+    if (enable_parallel) {
       _forward(std::execution::par_unseq);
     } else {
       _forward(std::execution::seq);
@@ -61,11 +61,11 @@ public:
    * @brief Performs backward propagation using the next layer.
    *
    */
-  virtual void backwardPropagation(bool enableParallax = false) {
+  virtual void backwardPropagation(bool enable_parallel = false) {
     if (nextLayer == nullptr) {
       return;
     }
-    if (enableParallax) {
+    if (enable_parallel) {
       _backward(std::execution::par_unseq);
     } else {
       _backward(std::execution::seq);
@@ -78,11 +78,11 @@ public:
    *
    * @param learningRate The learning rate to use when updating weights.
    */
-  virtual void updateWeights(float learningRate, bool enableParallax = false) {
+  virtual void updateWeights(float learningRate, bool enable_parallel = false) {
     if (previousLayer == nullptr) {
       return;
     }
-    if (enableParallax) {
+    if (enable_parallel) {
       _update(std::execution::par_unseq, learningRate);
     } else {
       _update(std::execution::seq, learningRate);

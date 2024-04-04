@@ -43,7 +43,7 @@ std::vector<RGBA> ImageHelper::convertToRGBAVector(const cv::Mat &image) {
 
   // switch between sequential or parallel processing,
   // beware there will be lots of threads
-  if (Manager::getInstance().app_params.enable_parallax) {
+  if (Manager::getInstance().app_params.enable_parallel) {
     processPixels(std::execution::par_unseq, pixelIterator,
                   pixelIterator + totalPixels);
   } else {
@@ -65,7 +65,7 @@ cv::Mat ImageHelper::convertToMat(const std::vector<RGBA> &image, size_t size_x,
 
   // switch between sequential or parallel processing,
   // beware there will be lots of threads
-  if (Manager::getInstance().app_params.enable_parallax) {
+  if (Manager::getInstance().app_params.enable_parallel) {
     processPixels(std::execution::par_unseq, image);
   } else {
     processPixels(std::execution::seq, image);
