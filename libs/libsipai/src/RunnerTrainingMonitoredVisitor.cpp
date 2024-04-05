@@ -59,7 +59,6 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
       hasLastEpochBeenSaved = false;
       epoch++;
-      epochsWithoutImprovement++;
 
       if (validationLoss < previousValidationLoss ||
           trainingLoss < previousTrainingLoss) {
