@@ -11,6 +11,7 @@
 #pragma once
 #include "AppParams.h"
 #include "NeuralNetwork.h"
+#include "NeuralNetworkParams.h"
 #include <memory>
 
 namespace sipai {
@@ -24,7 +25,8 @@ public:
   /**
    * @brief Parse a json file into a network model.
    */
-  std::unique_ptr<NeuralNetwork> importModel();
+  std::unique_ptr<NeuralNetwork>
+  importModel(const AppParams &appParams, NeuralNetworkParams &networkParams);
 
   /**
    * @brief export a Network model into a json file.

@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "ImageHelper.h"
 #include "NeuralNetwork.h"
+#include "NeuralNetworkBuilder.h"
 #include "SimpleLogger.h"
 #include "TrainingDataFileReaderCSV.h"
 #include <algorithm>
@@ -47,9 +48,8 @@ void Manager::saveImage(const std::string &imagePath,
 
 void Manager::createOrImportNetwork() {
   if (!network) {
-    network = neuralNetworkBuilder_.with(app_params)
-                  .with(network_params)
-                  .createOrImport()
+    auto builder = std::make_unique<NeuralNetworkBuilder>();
+    network = builder->createOrImport()
                   .addLayers()
                   .bindLayers()
                   .addNeighbors()

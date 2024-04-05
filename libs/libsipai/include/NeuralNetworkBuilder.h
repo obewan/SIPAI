@@ -18,6 +18,9 @@
 namespace sipai {
 class NeuralNetworkBuilder {
 public:
+  NeuralNetworkBuilder();
+  NeuralNetworkBuilder(AppParams &appParams,
+                       NeuralNetworkParams &networkParams);
   /**
    * @brief Using an external network to build up.
    *
@@ -35,7 +38,7 @@ public:
    * @param network_params
    * @return NeuralNetworkBuilder&
    */
-  NeuralNetworkBuilder &with(const NeuralNetworkParams &network_params) {
+  NeuralNetworkBuilder &with(NeuralNetworkParams &network_params) {
     network_params_ = network_params;
     return *this;
   }
@@ -94,8 +97,8 @@ public:
 
 private:
   std::unique_ptr<NeuralNetwork> network_ = nullptr;
-  NeuralNetworkParams network_params_;
-  AppParams app_params_;
+  AppParams &app_params_;
+  NeuralNetworkParams &network_params_;
   bool isImported = false;
 };
 } // namespace sipai

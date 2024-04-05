@@ -21,7 +21,8 @@ public:
   /**
    * @brief Import a network model from JSON model file (without weights)
    */
-  virtual std::unique_ptr<NeuralNetwork> importModel();
+  virtual std::unique_ptr<NeuralNetwork>
+  importModel(const AppParams &appParams, NeuralNetworkParams &networkParams);
 
   /**
    * @brief Import the network weights from a CSV weights file (network model

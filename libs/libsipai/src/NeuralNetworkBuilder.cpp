@@ -4,6 +4,7 @@
 #include "LayerHidden.h"
 #include "LayerInput.h"
 #include "LayerOutput.h"
+#include "Manager.h"
 #include "NeuralNetworkImportExportFacade.h"
 #include "RGBA.h"
 #include "SimpleLogger.h"
@@ -13,13 +14,22 @@
 
 using namespace sipai;
 
+NeuralNetworkBuilder::NeuralNetworkBuilder()
+    : app_params_(Manager::getInstance().app_params),
+      network_params_(Manager::getInstance().network_params) {}
+
+NeuralNetworkBuilder::NeuralNetworkBuilder(AppParams &appParams,
+                                           NeuralNetworkParams &networkParams)
+    : app_params_(appParams), network_params_(networkParams) {}
+
 NeuralNetworkBuilder &NeuralNetworkBuilder::createOrImport() {
   if (!app_params_.network_to_import.empty() &&
       std::filesystem::exists(app_params_.network_to_import)) {
     NeuralNetworkImportExportFacade neuralNetworkImportExport;
     SimpleLogger::LOG_INFO("Importing the neural network from ",
                            app_params_.network_to_import, "...");
-    network_ = neuralNetworkImportExport.importModel();
+    network_ =
+        neuralNetworkImportExport.importModel(app_params_, network_params_);
     isImported = true;
   } else {
     SimpleLogger::LOG_INFO("Creating the neural network...");
