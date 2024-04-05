@@ -19,11 +19,13 @@ public:
    * @brief Import the network neurons data from a CSV file.
    * @param network
    */
-  void importNeuronsWeights(std::unique_ptr<NeuralNetwork> &network) const;
+  void importNeuronsWeights(std::unique_ptr<NeuralNetwork> &network,
+                            const AppParams &appParams) const;
 
   /**
    * @brief Export the network neurons data to a CSV file.
    */
-  void exportNeuronsWeights() const;
+  void exportNeuronsWeights(const std::unique_ptr<NeuralNetwork> &network,
+                            const AppParams &appParams) const;
 };
 } // namespace sipai

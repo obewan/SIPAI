@@ -20,6 +20,10 @@ public:
 
   /**
    * @brief Import a network model from JSON model file (without weights)
+   *
+   * @param appParams
+   * @param networkParams
+   * @return std::unique_ptr<NeuralNetwork>
    */
   virtual std::unique_ptr<NeuralNetwork>
   importModel(const AppParams &appParams, NeuralNetworkParams &networkParams);
@@ -29,13 +33,21 @@ public:
    * should be imported first)
    *
    * @param network
+   * @param appParams
    */
-  void importWeights(std::unique_ptr<NeuralNetwork> &network);
+  void importWeights(std::unique_ptr<NeuralNetwork> &network,
+                     const AppParams &appParams);
 
   /**
    * @brief Export a network model files (JSON meta data and CSV neurons data)
+   *
+   * @param network
+   * @param networkParams
+   * @param appParams
    */
-  virtual void exportModel() const;
+  virtual void exportModel(const std::unique_ptr<NeuralNetwork> &network,
+                           const NeuralNetworkParams &networkParams,
+                           const AppParams &appParams) const;
 
 protected:
   NeuralNetworkImportExportCSV csvIE;

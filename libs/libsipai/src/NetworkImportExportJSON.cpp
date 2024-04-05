@@ -2,13 +2,14 @@
 #include "LayerHidden.h"
 #include "LayerInput.h"
 #include "LayerOutput.h"
-#include "Manager.h"
+#include "NeuralNetwork.h"
 #include "NeuralNetworkImportExportJSON.h"
 #include "NeuralNetworkParams.h"
 #include "SimpleLogger.h"
 #include "exception/ImportExportException.h"
 #include "json.hpp"
 #include <fstream>
+#include <memory>
 // for nlohmann json doc, see https://github.com/nlohmann/json
 
 using namespace sipai;
@@ -113,12 +114,12 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
   }
 }
 
-void NeuralNetworkImportExportJSON::exportModel() const {
+void NeuralNetworkImportExportJSON::exportModel(
+    const std::unique_ptr<NeuralNetwork> &network,
+    const NeuralNetworkParams &networkParams,
+    const AppParams &appParams) const {
   using json = nlohmann::json;
   json json_network;
-  auto &network = Manager::getInstance().network;
-  auto &networkParams = Manager::getInstance().network_params;
-  const auto &appParams = Manager::getInstance().app_params;
 
   // Serialize the version
   json_network["version"] = appParams.version;

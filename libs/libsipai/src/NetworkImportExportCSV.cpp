@@ -1,5 +1,4 @@
 #include "Common.h"
-#include "Manager.h"
 #include "NeuralNetworkImportExportCSV.h"
 #include "NeuronConnection.h"
 #include "csv_parser.h"
@@ -16,7 +15,7 @@
 using namespace sipai;
 
 void NeuralNetworkImportExportCSV::importNeuronsWeights(
-    std::unique_ptr<NeuralNetwork> &network) const {
+    std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams) const {
   // lambda function to convert to float
   auto getIndexValue = [](const std::vector<Csv::CellReference> &cells)
       -> std::optional<size_t> {
@@ -54,7 +53,6 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
       };
 
   // get the csv filename
-  const auto &appParams = Manager::getInstance().app_params;
   std::string filename = getFilenameCsv(appParams.network_to_import);
   std::ifstream file(filename);
   if (!file.is_open()) {
@@ -132,14 +130,14 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
   file.close();
 }
 
-void NeuralNetworkImportExportCSV::exportNeuronsWeights() const {
+void NeuralNetworkImportExportCSV::exportNeuronsWeights(
+    const std::unique_ptr<NeuralNetwork> &network,
+    const AppParams &appParams) const {
   // get the csv filename
-  const auto &appParams = Manager::getInstance().app_params;
   std::string filename = getFilenameCsv(appParams.network_to_export);
   std::ofstream file(filename);
 
   // Determine the maximum number of weights any neuron has
-  auto &network = Manager::getInstance().network;
   size_t max_weights = 0;
   for (const auto &layer : network->layers) {
     for (const auto &neuron : layer->neurons) {
