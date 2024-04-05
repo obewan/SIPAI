@@ -19,6 +19,9 @@ TEST_CASE("Testing the Activation Functions") {
   hlayer->neurons.push_back(n1);
   hlayer->neurons.push_back(n2);
   network->layers.push_back(hlayer);
+  NeuralNetworkBuilder builder;
+  builder.with(network);
+  NeuralNetworkParams networkParams;
   const float eps = 1e-6f; // epsilon for float testing
   float alpha = 0.1f;
   struct hasActivationFunctions {
@@ -144,16 +147,14 @@ TEST_CASE("Testing the Activation Functions") {
         }
       };
 
-  NeuralNetworkBuilder builder;
-  builder.with(network);
-
   for (auto activ : {EActivationFunction::ELU, EActivationFunction::LReLU,
                      EActivationFunction::PReLU, EActivationFunction::ReLU,
                      EActivationFunction::Sigmoid, EActivationFunction::Tanh}) {
-    builder.with((NeuralNetworkParams){
+    networkParams = {
         .hidden_activation_alpha = alpha,
         .hidden_activation_function = activ,
-    });
+    };
+    builder.with(networkParams);
     CHECK_NOTHROW(builder.setActivationFunction());
     for (const auto &neu : hlayer->neurons) {
       testActivationFunction(neu, activ);
@@ -163,7 +164,11 @@ TEST_CASE("Testing the Activation Functions") {
          hasAF.hasSigm && hasAF.hasTanh) == true);
 
   auto invalidEnum = static_cast<EActivationFunction>(900);
-  builder.with(
-      (NeuralNetworkParams){.hidden_activation_function = invalidEnum});
+  networkParams = {.hidden_activation_function = invalidEnum};
+  builder.with(networkParams);
   CHECK_THROWS_AS(builder.setActivationFunction(), NeuralNetworkException);
+
+  // cleaning
+  networkParams = {};
+  builder.with(networkParams);
 }

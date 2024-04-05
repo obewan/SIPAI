@@ -158,6 +158,5 @@ private:
   Manager() = default;
 
   RunnerVisitorFactory runnerVisitorFactory_;
-  NeuralNetworkBuilder neuralNetworkBuilder_;
 };
 } // namespace sipai

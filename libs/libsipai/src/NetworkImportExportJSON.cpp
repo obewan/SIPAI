@@ -1,8 +1,10 @@
+#include "AppParams.h"
 #include "LayerHidden.h"
 #include "LayerInput.h"
 #include "LayerOutput.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportJSON.h"
+#include "NeuralNetworkParams.h"
 #include "SimpleLogger.h"
 #include "exception/ImportExportException.h"
 #include "json.hpp"
@@ -11,10 +13,11 @@
 
 using namespace sipai;
 
-std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
+std::unique_ptr<NeuralNetwork>
+NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
+                                           NeuralNetworkParams &networkParams) {
   using json = nlohmann::json;
   const auto &logger = SimpleLogger::getInstance();
-  const auto &appParams = Manager::getInstance().app_params;
 
   if (appParams.network_to_import.empty()) {
     throw ImportExportException("Empty parameter network_to_import");
@@ -50,22 +53,21 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportJSON::importModel() {
     }
 
     // Create a new Network object and deserialize the JSON data into it.
-    auto &params = Manager::getInstance().network_params;
-    params.input_size_x = json_model["parameters"]["input_size_x"];
-    params.input_size_y = json_model["parameters"]["input_size_y"];
-    params.hidden_size_x = json_model["parameters"]["hidden_size_x"];
-    params.hidden_size_y = json_model["parameters"]["hidden_size_y"];
-    params.output_size_x = json_model["parameters"]["output_size_x"];
-    params.output_size_y = json_model["parameters"]["output_size_y"];
-    params.hiddens_count = json_model["parameters"]["hiddens_count"];
-    params.learning_rate = json_model["parameters"]["learning_rate"];
-    params.hidden_activation_alpha =
+    networkParams.input_size_x = json_model["parameters"]["input_size_x"];
+    networkParams.input_size_y = json_model["parameters"]["input_size_y"];
+    networkParams.hidden_size_x = json_model["parameters"]["hidden_size_x"];
+    networkParams.hidden_size_y = json_model["parameters"]["hidden_size_y"];
+    networkParams.output_size_x = json_model["parameters"]["output_size_x"];
+    networkParams.output_size_y = json_model["parameters"]["output_size_y"];
+    networkParams.hiddens_count = json_model["parameters"]["hiddens_count"];
+    networkParams.learning_rate = json_model["parameters"]["learning_rate"];
+    networkParams.hidden_activation_alpha =
         json_model["parameters"]["hidden_activation_alpha"];
-    params.output_activation_alpha =
+    networkParams.output_activation_alpha =
         json_model["parameters"]["output_activation_alpha"];
-    params.hidden_activation_function =
+    networkParams.hidden_activation_function =
         json_model["parameters"]["hidden_activation_function"];
-    params.output_activation_function =
+    networkParams.output_activation_function =
         json_model["parameters"]["output_activation_function"];
 
     for (auto json_layer : json_model["layers"]) {

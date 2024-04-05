@@ -7,9 +7,10 @@
 
 using namespace sipai;
 
-std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportFacade::importModel() {
+std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportFacade::importModel(
+    const AppParams &appParams, NeuralNetworkParams &networkParams) {
   try {
-    auto network = jsonIE.importModel();
+    auto network = jsonIE.importModel(appParams, networkParams);
     return network;
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
