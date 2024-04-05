@@ -68,9 +68,10 @@ public:
    * RGBA values.
    * @param size_y The original height of the image represented by the vector of
    * RGBA values.
+   * @param scale The scale of exported image.
    */
   void saveImage(const std::string &imagePath, const std::vector<RGBA> &image,
-                 size_t size_x, size_t size_y);
+                 size_t size_x, size_t size_y, float scale = 1.0);
   /**
    * @brief Exports a resized image to a specified path.
    *

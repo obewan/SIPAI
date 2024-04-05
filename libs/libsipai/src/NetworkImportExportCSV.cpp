@@ -16,7 +16,7 @@ using namespace sipai;
 
 void NeuralNetworkImportExportCSV::importNeuronsWeights(
     std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams) const {
-  // lambda function to convert to float
+  // lambda function to convert to index size_t
   auto getIndexValue = [](const std::vector<Csv::CellReference> &cells)
       -> std::optional<size_t> {
     auto val = cells[0].getDouble();
@@ -26,31 +26,31 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
       return std::nullopt;
     }
   };
-
-  // lambda function to convert to RGBA floats
-  auto getRGBAValue =
-      [](const std::vector<Csv::CellReference> &cells) -> std::optional<RGBA> {
-    RGBA rgba;
-    for (int i = 0; i < 4; ++i) {
-      auto val = cells[i].getDouble();
-      if (val.has_value()) {
-        rgba.value[i] = static_cast<float>(val.value());
-      } else {
-        return std::nullopt;
-      }
+  // lambda function to convert to float
+  auto getFloatValue =
+      [](const std::vector<Csv::CellReference> &cells) -> std::optional<float> {
+    auto val = cells[0].getDouble();
+    if (val.has_value()) {
+      return static_cast<float>(val.value());
+    } else {
+      return std::nullopt;
     }
-    return rgba;
   };
-
-  // lambda function to add cell value to the weights vector
-  auto processCell =
-      [&getRGBAValue](std::vector<RGBA> &weights,
-                      const std::vector<Csv::CellReference> &cells) {
-        const auto &rgba = getRGBAValue(cells);
-        if (rgba.has_value()) {
-          weights.push_back(rgba.value());
-        }
-      };
+  // lambda function to convert to RGBA
+  auto getRGBAValue =
+      [getFloatValue](
+          const std::vector<std::vector<Csv::CellReference>> &cell_refs,
+          size_t pos) -> std::optional<RGBA> {
+    auto r = getFloatValue(cell_refs.at(pos));
+    auto g = getFloatValue(cell_refs.at(pos + 1));
+    auto b = getFloatValue(cell_refs.at(pos + 2));
+    auto a = getFloatValue(cell_refs.at(pos + 3));
+    if (r.has_value() && g.has_value() && b.has_value() && a.has_value()) {
+      return RGBA(r.value(), g.value(), b.value(), a.value());
+    } else {
+      return std::nullopt;
+    }
+  };
 
   // get the csv filename
   std::string filename = getFilenameCsv(appParams.network_to_import);
@@ -97,8 +97,12 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
       std::vector<RGBA> weights;
 
       if (layer_index && neuron_index) {
-        std::for_each(cell_refs.begin() + 3, cell_refs.end(),
-                      std::bind_front(processCell, std::ref(weights)));
+        for (size_t pos = 3; pos + 3 < cell_refs.size(); pos += 4) {
+          auto rgba = getRGBAValue(cell_refs, pos);
+          if (rgba.has_value()) {
+            weights.push_back(rgba.value());
+          }
+        }
         if (!neighboors_count) {
           // add the neuron weights
           network->layers.at(layer_index.value())
@@ -169,11 +173,14 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
       // Write the weights to the CSV file
       for (size_t i = 0; i < max_weights; ++i) {
         if (i < neuron.weights.size()) {
-          file << "," << neuron.weights[i].toStringCsv();
+          file << neuron.weights[i].toStringCsv();
         } else {
           // If the neuron doesn't have a weight for this index, write a blank
           // RGBA 4 columns to fill the csv
-          file << ",,,,";
+          file << ",,,";
+        }
+        if (i < max_weights - 1) {
+          file << ","; // add a separator except for last columns
         }
       }
       file << "\n";
@@ -181,14 +188,17 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
       // Then write the neuron's neighbors connections weights on a single line
       // (to reduce csv file size)
       file << layer_index << "," << neuron_index << ","
-           << neuron.neighbors.size();
+           << neuron.neighbors.size() << ",";
       for (size_t i = 0; i < max_weights; ++i) {
         if (i < neuron.neighbors.size()) {
-          file << "," << neuron.neighbors[i].weight.toStringCsv();
+          file << neuron.neighbors[i].weight.toStringCsv();
         } else {
           // If no more neighbor connection write a blank RGBA 4 columns to
           // fill the csv
-          file << ",,,,";
+          file << ",,,";
+        }
+        if (i < max_weights - 1) {
+          file << ","; // add a separator except for last columns
         }
       }
       file << "\n";

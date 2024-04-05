@@ -34,46 +34,51 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     return;
   }
 
-  // Split training data into training and validation sets
-  const auto &[trainingDataPairs, validationDataPairs] =
-      manager.splitData(trainingData, manager.app_params.split_ratio);
+  try {
+    // Split training data into training and validation sets
+    const auto &[trainingDataPairs, validationDataPairs] =
+        manager.splitData(trainingData, manager.app_params.split_ratio);
 
-  // Reset the stopTraining flag
-  stopTraining = false;
+    // Reset the stopTraining flag
+    stopTraining = false;
 
-  // Set up signal handler
-  std::signal(SIGINT, signalHandler);
+    // Set up signal handler
+    std::signal(SIGINT, signalHandler);
 
-  float bestValidationLoss = std::numeric_limits<float>::max();
-  int epoch = 0;
-  int epochsWithoutImprovement = 0;
-  bool hasLastEpochBeenSaved = false;
-  while (!stopTraining &&
-         shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
-    float trainingLoss = trainOnEpoch(trainingDataPairs);
-    float validationLoss = evaluateOnValidationSet(validationDataPairs);
+    float bestValidationLoss = std::numeric_limits<float>::max();
+    int epoch = 0;
+    int epochsWithoutImprovement = 0;
+    bool hasLastEpochBeenSaved = false;
+    while (!stopTraining &&
+           shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
+      float trainingLoss = trainOnEpoch(trainingDataPairs);
+      float validationLoss = evaluateOnValidationSet(validationDataPairs);
 
-    logTrainingProgress(epoch, trainingLoss, validationLoss);
+      logTrainingProgress(epoch, trainingLoss, validationLoss);
 
-    if (validationLoss < bestValidationLoss) {
-      bestValidationLoss = validationLoss;
-      epochsWithoutImprovement = 0;
-    } else {
-      epochsWithoutImprovement++;
+      if (validationLoss < bestValidationLoss) {
+        bestValidationLoss = validationLoss;
+        epochsWithoutImprovement = 0;
+      } else {
+        epochsWithoutImprovement++;
+      }
+
+      epoch++;
+      hasLastEpochBeenSaved = false;
+      if (epoch % appParams.epoch_autosave == 0) {
+        saveNetwork(hasLastEpochBeenSaved);
+      }
     }
 
-    epoch++;
-    hasLastEpochBeenSaved = false;
-    if (epoch % appParams.epoch_autosave == 0) {
-      saveNetwork(hasLastEpochBeenSaved);
-    }
+    SimpleLogger::LOG_INFO("Exiting training...");
+    saveNetwork(hasLastEpochBeenSaved);
+    const auto end{std::chrono::steady_clock::now()};
+    const std::chrono::duration<double> elapsed_seconds{end - start};
+    SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
+
+  } catch (std::exception &ex) {
+    SimpleLogger::LOG_ERROR("Training error: ", ex.what());
   }
-
-  SimpleLogger::LOG_INFO("Exiting training...");
-  saveNetwork(hasLastEpochBeenSaved);
-  const auto end{std::chrono::steady_clock::now()};
-  const std::chrono::duration<double> elapsed_seconds{end - start};
-  SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
 }
 
 float RunnerTrainingMonitoredVisitor::trainOnEpoch(
@@ -116,14 +121,14 @@ float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
     size_t orig_iy;
     size_t orig_tx;
     size_t orig_ty;
-    std::vector<RGBA> inputImage = manager.loadImage(
-        inputPath, orig_ix, orig_iy, manager.network_params.input_size_x,
-        manager.network_params.input_size_y);
-    std::vector<RGBA> targetImage = manager.loadImage(
-        targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
-        manager.network_params.output_size_y);
+    auto inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,
+                                        manager.network_params.input_size_x,
+                                        manager.network_params.input_size_y);
+    auto targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,
+                                         manager.network_params.output_size_x,
+                                         manager.network_params.output_size_y);
 
-    std::vector<RGBA> outputImage = manager.network->forwardPropagation(
+    auto outputImage = manager.network->forwardPropagation(
         inputImage, manager.app_params.enable_parallel);
     validationLoss += imageHelper.computeLoss(outputImage, targetImage);
   }
@@ -143,7 +148,7 @@ bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
 
 void RunnerTrainingMonitoredVisitor::logTrainingProgress(
     int epoch, float trainingLoss, float validationLoss) const {
-  SimpleLogger::LOG_INFO("Epoch: ", epoch,
+  SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
                          ", Train Loss: ", trainingLoss * 100.0f,
                          "%, Validation Loss: ", validationLoss * 100.0f, "%");
 }

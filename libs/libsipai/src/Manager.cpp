@@ -33,8 +33,8 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
 
 void Manager::saveImage(const std::string &imagePath,
                         const std::vector<RGBA> &image, size_t size_x,
-                        size_t size_y) {
-  saveImage(imagePath, image, size_x, size_y, size_x, size_y);
+                        size_t size_y, float scale) {
+  saveImage(imagePath, image, size_x, size_y, size_x * scale, size_y * scale);
 };
 
 void Manager::saveImage(const std::string &imagePath,
@@ -61,7 +61,7 @@ void Manager::createOrImportNetwork() {
 
 void Manager::exportNetwork() {
   if (!app_params.network_to_export.empty()) {
-    SimpleLogger::LOG_INFO("Saving the neural network, to ",
+    SimpleLogger::LOG_INFO("Saving the neural network to ",
                            app_params.network_to_export, " and ",
                            getFilenameCsv(app_params.network_to_export), "...");
     auto exportator = std::make_unique<NeuralNetworkImportExportFacade>();

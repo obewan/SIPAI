@@ -13,6 +13,7 @@
 #include <array>
 #include <cmath>
 #include <functional>
+#include <iomanip> // for std::setprecision
 #include <math.h>
 #include <numeric>
 #include <opencv2/core/types.hpp>
@@ -110,12 +111,15 @@ struct RGBA {
    */
   std::string toStringCsv() const {
     std::ostringstream oss;
-    oss << std::fixed; // avoid scientific notation
+    oss << std::fixed << std::setprecision(3); // avoid scientific notation
     for (float v : value) {
       oss << v << ",";
     }
-    oss.seekp(-1, std::ios_base::end); // Remove the trailing comma
-    return oss.str();
+    std::string str = oss.str();
+    if (!str.empty()) {
+      str.pop_back(); // Remove the trailing comma
+    }
+    return str;
   }
 
   /**
