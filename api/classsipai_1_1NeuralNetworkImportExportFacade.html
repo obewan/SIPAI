@@ -80,9 +80,9 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af4c5a426028b688e548b06bfa4e9c8bd"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd">~NeuralNetworkImportExportFacade</a> ()=default</td></tr>
 <tr class="separator:af4c5a426028b688e548b06bfa4e9c8bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a3b3f8569d134fb2fe5be13d4b659af9c">importModel</a> ()</td></tr>
-<tr class="memdesc:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import a network model from JSON model file (without weights)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a3b3f8569d134fb2fe5be13d4b659af9c">More...</a><br /></td></tr>
-<tr class="separator:a3b3f8569d134fb2fe5be13d4b659af9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1f073caa1ed937bb59c984209588ade"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#aa1f073caa1ed937bb59c984209588ade">importModel</a> (const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams, <a class="el" href="structsipai_1_1NeuralNetworkParams.html">NeuralNetworkParams</a> &amp;networkParams)</td></tr>
+<tr class="memdesc:aa1f073caa1ed937bb59c984209588ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import a network model from JSON model file (without weights)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#aa1f073caa1ed937bb59c984209588ade">More...</a><br /></td></tr>
+<tr class="separator:aa1f073caa1ed937bb59c984209588ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11a9d41442123436577204d7a85c1060"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a11a9d41442123436577204d7a85c1060">importWeights</a> (std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; &amp;network)</td></tr>
 <tr class="memdesc:a11a9d41442123436577204d7a85c1060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import the network weights from a CSV weights file (network model should be imported first)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a11a9d41442123436577204d7a85c1060">More...</a><br /></td></tr>
 <tr class="separator:a11a9d41442123436577204d7a85c1060"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,8 +151,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3b3f8569d134fb2fe5be13d4b659af9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b3f8569d134fb2fe5be13d4b659af9c">&#9670;&nbsp;</a></span>importModel()</h2>
+<a id="aa1f073caa1ed937bb59c984209588ade"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1f073caa1ed937bb59c984209588ade">&#9670;&nbsp;</a></span>importModel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,8 +163,19 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; NeuralNetworkImportExportFacade::importModel </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>appParams</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="structsipai_1_1NeuralNetworkParams.html">NeuralNetworkParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>networkParams</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
