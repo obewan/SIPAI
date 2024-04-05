@@ -45,8 +45,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     // Set up signal handler
     std::signal(SIGINT, signalHandler);
 
-    float bestTrainingLoss = std::numeric_limits<float>::max();
-    float bestValidationLoss = std::numeric_limits<float>::max();
+    float previousTrainingLoss = std::numeric_limits<float>::max();
+    float previousValidationLoss = std::numeric_limits<float>::max();
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
@@ -59,17 +59,16 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
       hasLastEpochBeenSaved = false;
       epoch++;
-      epochsWithoutImprovement++;
 
-      if (validationLoss < bestValidationLoss) {
-        bestValidationLoss = validationLoss;
+      if (validationLoss < previousValidationLoss ||
+          trainingLoss < previousTrainingLoss) {
         epochsWithoutImprovement = 0;
+      } else {
+        epochsWithoutImprovement++;
       }
 
-      if (trainingLoss < bestTrainingLoss) {
-        bestTrainingLoss = trainingLoss;
-        epochsWithoutImprovement = 0;
-      }
+      previousTrainingLoss = trainingLoss;
+      previousValidationLoss = validationLoss;
 
       if (epoch % appParams.epoch_autosave == 0) {
         saveNetwork(hasLastEpochBeenSaved);
