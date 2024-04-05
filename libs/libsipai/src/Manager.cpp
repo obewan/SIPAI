@@ -25,7 +25,7 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
   size_x = s.width;
   size_y = s.height;
 
-  // Resize the image to the neurons layer
+  // Resize the image to the input or output layer
   cv::resize(image, image, cv::Size(resize_x, resize_y));
 
   return imageHelper.convertToRGBAVector(image);
@@ -33,8 +33,8 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
 
 void Manager::saveImage(const std::string &imagePath,
                         const std::vector<RGBA> &image, size_t size_x,
-                        size_t size_y) {
-  saveImage(imagePath, image, size_x, size_y, size_x, size_y);
+                        size_t size_y, float scale) {
+  saveImage(imagePath, image, size_x, size_y, size_x * scale, size_y * scale);
 };
 
 void Manager::saveImage(const std::string &imagePath,
@@ -61,49 +61,54 @@ void Manager::createOrImportNetwork() {
 
 void Manager::exportNetwork() {
   if (!app_params.network_to_export.empty()) {
-    SimpleLogger::LOG_INFO("Saving the neural network, to ",
-                           app_params.network_to_export, "...");
-    NeuralNetworkImportExportFacade{}.exportModel();
+    SimpleLogger::LOG_INFO("Saving the neural network to ",
+                           app_params.network_to_export, " and ",
+                           getFilenameCsv(app_params.network_to_export), "...");
+    auto exportator = std::make_unique<NeuralNetworkImportExportFacade>();
+    exportator->exportModel(network, network_params, app_params);
   }
 }
 
 void Manager::run() {
   SimpleLogger::LOG_INFO(getVersionHeader());
 
+  // Initialize network
+  createOrImportNetwork();
+
+  // Run with visitor
   switch (app_params.run_mode) {
   case ERunMode::TrainingMonitored:
     runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
+    break;
+  case ERunMode::Enhancer:
+    runWithVisitor(runnerVisitorFactory_.getEnhancerVisitor());
     break;
   default:
     break;
   }
 }
 
-void Manager::runWithVisitor(const RunnerVisitor &visitor) {
-  // Initialize network
-  createOrImportNetwork();
+void Manager::runWithVisitor(const RunnerVisitor &visitor) { visitor.visit(); }
 
-  // Run the visitor
-  visitor.visit();
-}
-
-TrainingData Manager::loadTrainingData() {
+std::unique_ptr<TrainingData> Manager::loadTrainingData() {
   return TrainingDataFileReaderCSV{}.getTrainingData();
 }
 
-std::pair<TrainingData, TrainingData> Manager::splitData(TrainingData data,
-                                                         float split_ratio) {
+std::pair<std::unique_ptr<TrainingData>, std::unique_ptr<TrainingData>>
+Manager::splitData(std::unique_ptr<TrainingData> &data, float split_ratio) {
   // Shuffle the data randomly for unbiased training and validation
   std::random_device rd;
   std::mt19937 g(rd());
-  std::shuffle(data.begin(), data.end(), g);
+  std::shuffle(data->begin(), data->end(), g);
 
   // Calculate the split index based on the split ratio
-  size_t split_index = static_cast<size_t>(data.size() * split_ratio);
+  size_t split_index = static_cast<size_t>(data->size() * split_ratio);
 
   // Split the data into training and validation sets
-  TrainingData training_data(data.begin(), data.begin() + split_index);
-  TrainingData validation_data(data.begin() + split_index, data.end());
+  auto training_data = std::make_unique<TrainingData>(
+      data->begin(), data->begin() + split_index);
+  auto validation_data =
+      std::make_unique<TrainingData>(data->begin() + split_index, data->end());
 
-  return std::make_pair(training_data, validation_data);
+  return std::make_pair(std::move(training_data), std::move(validation_data));
 }

@@ -1,5 +1,5 @@
 /**
- * @file TrainingMonitoredVisitor.h
+ * @file RunnerTrainingMonitoredVisitor.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Concret RunnerVisitor for TrainingMonitored run.
  * @date 2024-03-17
@@ -10,9 +10,10 @@
 #pragma once
 #include "Common.h"
 #include "RunnerVisitor.h"
+#include <memory>
 
 namespace sipai {
-class TrainingMonitoredVisitor : public RunnerVisitor {
+class RunnerTrainingMonitoredVisitor : public RunnerVisitor {
 public:
   void visit() const override;
 
@@ -23,7 +24,7 @@ public:
    * paths.
    * @return The average loss over the training dataset for the current epoch.
    */
-  float trainOnEpoch(const TrainingData &dataSet) const;
+  float trainOnEpoch(const std::unique_ptr<TrainingData> &dataSet) const;
 
   /**
    * @brief Evaluates the network on the validation set.
@@ -32,7 +33,8 @@ public:
    * target image paths.
    * @return The average loss over the validation set.
    */
-  float evaluateOnValidationSet(const TrainingData &validationSet) const;
+  float evaluateOnValidationSet(
+      const std::unique_ptr<TrainingData> &validationSet) const;
 
   /**
    * @brief Determines whether the training should continue based on the

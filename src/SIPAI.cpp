@@ -125,6 +125,12 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "valid, and the application must have write permissions to the "
          "specified location.")
       ->check(valid_path);
+  app.add_option("--os,--output_scale", app_params.output_scale,
+                 "The scale of the output image.\nThis option "
+                 "is used in conjunction with the Enhancer mode.")
+      ->default_val(app_params.output_scale)
+      ->check(CLI::PositiveNumber)
+      ->check(CLI::TypeValidator<float>());
   app.add_option(
          "--tf,--training_file", app_params.training_data_file,
          "Specify the data file to be used for training and testing.\n"

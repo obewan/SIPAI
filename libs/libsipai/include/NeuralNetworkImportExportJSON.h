@@ -24,13 +24,23 @@ class NeuralNetworkImportExportJSON {
 public:
   /**
    * @brief Parse a json file into a network model.
+   *
+   * @param appParams
+   * @param networkParams
+   * @return std::unique_ptr<NeuralNetwork>
    */
   std::unique_ptr<NeuralNetwork>
   importModel(const AppParams &appParams, NeuralNetworkParams &networkParams);
 
   /**
-   * @brief export a Network model into a json file.
+   * @brief Export a Network model into a json file.
+   *
+   * @param network
+   * @param networkParams
+   * @param appParams
    */
-  void exportModel() const;
+  void exportModel(const std::unique_ptr<NeuralNetwork> &network,
+                   const NeuralNetworkParams &networkParams,
+                   const AppParams &appParams) const;
 };
 } // namespace sipai

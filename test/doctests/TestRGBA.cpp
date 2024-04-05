@@ -15,4 +15,9 @@ TEST_CASE("Testing the RGBA struct") {
     CHECK_FALSE(rgba1.isOutOfRange());
     CHECK_FALSE(rgba2.isOutOfRange());
   }
+
+  SUBCASE("Test toStringCsv") {
+    auto rgba = RGBA(0.1, 0.2, 0.3, 0.4);
+    CHECK(rgba.toStringCsv() == "0.100,0.200,0.300,0.400");
+  }
 }

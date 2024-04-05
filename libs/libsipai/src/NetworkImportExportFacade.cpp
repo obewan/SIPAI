@@ -1,7 +1,6 @@
 #include "NeuralNetwork.h"
 #include "NeuralNetworkImportExportFacade.h"
 #include "exception/ImportExportException.h"
-#include <Manager.h>
 #include <exception>
 #include <memory>
 
@@ -18,18 +17,21 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportFacade::importModel(
 }
 
 void NeuralNetworkImportExportFacade::importWeights(
-    std::unique_ptr<NeuralNetwork> &network) {
+    std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams) {
   try {
-    csvIE.importNeuronsWeights(network);
+    csvIE.importNeuronsWeights(network, appParams);
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
   }
 }
 
-void NeuralNetworkImportExportFacade::exportModel() const {
+void NeuralNetworkImportExportFacade::exportModel(
+    const std::unique_ptr<NeuralNetwork> &network,
+    const NeuralNetworkParams &networkParams,
+    const AppParams &appParams) const {
   try {
-    jsonIE.exportModel();
-    csvIE.exportNeuronsWeights();
+    jsonIE.exportModel(network, networkParams, appParams);
+    csvIE.exportNeuronsWeights(network, appParams);
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
   }
