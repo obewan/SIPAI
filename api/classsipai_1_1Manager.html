@@ -86,9 +86,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad9390d642b87aaaa07cf3367e618f76e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#ad9390d642b87aaaa07cf3367e618f76e">loadImage</a> (const std::string &amp;imagePath, size_t &amp;size_x, size_t &amp;size_y, size_t resize_x, size_t resize_y)</td></tr>
 <tr class="memdesc:ad9390d642b87aaaa07cf3367e618f76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a specified path and resizes it for the input layer.  <a href="classsipai_1_1Manager.html#ad9390d642b87aaaa07cf3367e618f76e">More...</a><br /></td></tr>
 <tr class="separator:ad9390d642b87aaaa07cf3367e618f76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aada4b8d5c033d6bb002bbf294bccb157"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#aada4b8d5c033d6bb002bbf294bccb157">saveImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y)</td></tr>
-<tr class="memdesc:aada4b8d5c033d6bb002bbf294bccb157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#aada4b8d5c033d6bb002bbf294bccb157">More...</a><br /></td></tr>
-<tr class="separator:aada4b8d5c033d6bb002bbf294bccb157"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a908edc578066ea9b623cc7ecf025262c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a908edc578066ea9b623cc7ecf025262c">saveImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y, float scale=1.0)</td></tr>
+<tr class="memdesc:a908edc578066ea9b623cc7ecf025262c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#a908edc578066ea9b623cc7ecf025262c">More...</a><br /></td></tr>
+<tr class="separator:a908edc578066ea9b623cc7ecf025262c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#ad578b76f936d353aa07d8feb5a1c2f1b">saveImage</a> (const std::string &amp;imagePath, const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;image, size_t size_x, size_t size_y, size_t resize_x, size_t resize_y)</td></tr>
 <tr class="memdesc:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exports a resized image to a specified path.  <a href="classsipai_1_1Manager.html#ad578b76f936d353aa07d8feb5a1c2f1b">More...</a><br /></td></tr>
 <tr class="separator:ad578b76f936d353aa07d8feb5a1c2f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,12 +104,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a443755f9ba6461de1a8e252677bff85a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a443755f9ba6461de1a8e252677bff85a">runWithVisitor</a> (const <a class="el" href="classsipai_1_1RunnerVisitor.html">RunnerVisitor</a> &amp;visitor)</td></tr>
 <tr class="memdesc:a443755f9ba6461de1a8e252677bff85a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the provided visitor on the training and validation data sets with the initialized neural network.  <a href="classsipai_1_1Manager.html#a443755f9ba6461de1a8e252677bff85a">More...</a><br /></td></tr>
 <tr class="separator:a443755f9ba6461de1a8e252677bff85a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7da452d4b0ad62052724bbf29786608"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#af7da452d4b0ad62052724bbf29786608">loadTrainingData</a> ()</td></tr>
-<tr class="memdesc:af7da452d4b0ad62052724bbf29786608"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the training data from the specified source.  <a href="classsipai_1_1Manager.html#af7da452d4b0ad62052724bbf29786608">More...</a><br /></td></tr>
-<tr class="separator:af7da452d4b0ad62052724bbf29786608"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50b975537081aed87ebc831ac31ef483"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a>, <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a50b975537081aed87ebc831ac31ef483">splitData</a> (<a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> data, float split_ratio)</td></tr>
-<tr class="memdesc:a50b975537081aed87ebc831ac31ef483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuffle and splits the training data into training and validation sets.  <a href="classsipai_1_1Manager.html#a50b975537081aed87ebc831ac31ef483">More...</a><br /></td></tr>
-<tr class="separator:a50b975537081aed87ebc831ac31ef483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabf892014ddecc04d690d8d5d4652b9d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#aabf892014ddecc04d690d8d5d4652b9d">loadTrainingData</a> ()</td></tr>
+<tr class="memdesc:aabf892014ddecc04d690d8d5d4652b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the training data from the specified source.  <a href="classsipai_1_1Manager.html#aabf892014ddecc04d690d8d5d4652b9d">More...</a><br /></td></tr>
+<tr class="separator:aabf892014ddecc04d690d8d5d4652b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a218d5cfc0206da4586aba4478aea8c95"><td class="memItemLeft" align="right" valign="top">std::pair&lt; std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt;, std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#a218d5cfc0206da4586aba4478aea8c95">splitData</a> (std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;data, float split_ratio)</td></tr>
+<tr class="memdesc:a218d5cfc0206da4586aba4478aea8c95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuffle and splits the training data into training and validation sets.  <a href="classsipai_1_1Manager.html#a218d5cfc0206da4586aba4478aea8c95">More...</a><br /></td></tr>
+<tr class="separator:a218d5cfc0206da4586aba4478aea8c95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad386f96ac4bae3e934f35978ab54045"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045">getVersionHeader</a> () const</td></tr>
 <tr class="memdesc:aad386f96ac4bae3e934f35978ab54045"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a title line with the version.  <a href="classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045">More...</a><br /></td></tr>
 <tr class="separator:aad386f96ac4bae3e934f35978ab54045"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -309,14 +309,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af7da452d4b0ad62052724bbf29786608"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7da452d4b0ad62052724bbf29786608">&#9670;&nbsp;</a></span>loadTrainingData()</h2>
+<a id="aabf892014ddecc04d690d8d5d4652b9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabf892014ddecc04d690d8d5d4652b9d">&#9670;&nbsp;</a></span>loadTrainingData()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> Manager::loadTrainingData </td>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; Manager::loadTrainingData </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -401,8 +401,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aada4b8d5c033d6bb002bbf294bccb157"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aada4b8d5c033d6bb002bbf294bccb157">&#9670;&nbsp;</a></span>saveImage() <span class="overload">[1/2]</span></h2>
+<a id="a908edc578066ea9b623cc7ecf025262c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a908edc578066ea9b623cc7ecf025262c">&#9670;&nbsp;</a></span>saveImage() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -429,7 +429,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size_y</em>&#160;</td>
+          <td class="paramname"><em>size_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>scale</em> = <code>1.0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -446,6 +452,7 @@ Public Attributes</h2></td></tr>
     <tr><td class="paramname">image</td><td>A vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values representing the image to be exported. </td></tr>
     <tr><td class="paramname">size_x</td><td>The original width of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
     <tr><td class="paramname">size_y</td><td>The original height of the image represented by the vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values. </td></tr>
+    <tr><td class="paramname">scale</td><td>The scale of exported image. </td></tr>
   </table>
   </dd>
 </dl>
@@ -517,16 +524,16 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a50b975537081aed87ebc831ac31ef483"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50b975537081aed87ebc831ac31ef483">&#9670;&nbsp;</a></span>splitData()</h2>
+<a id="a218d5cfc0206da4586aba4478aea8c95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a218d5cfc0206da4586aba4478aea8c95">&#9670;&nbsp;</a></span>splitData()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a>, <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; Manager::splitData </td>
+          <td class="memname">std::pair&lt; std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt;, std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &gt; Manager::splitData </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a>&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>

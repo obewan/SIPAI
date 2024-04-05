@@ -71,27 +71,39 @@ $(function() {
 <div class="contents">
 <a href="RunnerVisitorFactory_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="TrainingMonitoredVisitor_8h.html">TrainingMonitoredVisitor.h</a>&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesipai.html">sipai</a> {</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classsipai_1_1RunnerVisitorFactory.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsipai_1_1RunnerVisitorFactory.html">RunnerVisitorFactory</a> {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717">   17</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classsipai_1_1RunnerVisitor.html">RunnerVisitor</a> &amp;<a class="code" href="classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717">getTrainingMonitoredVisitor</a>() {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">if</span> (!trainingMonitoredVisitor_) {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;      trainingMonitoredVisitor_ = std::make_unique&lt;TrainingMonitoredVisitor&gt;();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">return</span> *trainingMonitoredVisitor_;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  }</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="comment">// Add more visitors getters here</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  std::unique_ptr&lt;TrainingMonitoredVisitor&gt; trainingMonitoredVisitor_ = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;} <span class="comment">// namespace sipai</span></div>
-<div class="ttc" id="aTrainingMonitoredVisitor_8h_html"><div class="ttname"><a href="TrainingMonitoredVisitor_8h.html">TrainingMonitoredVisitor.h</a></div><div class="ttdoc">Concret RunnerVisitor for TrainingMonitored run.</div></div>
-<div class="ttc" id="aclasssipai_1_1RunnerVisitorFactory_html"><div class="ttname"><a href="classsipai_1_1RunnerVisitorFactory.html">sipai::RunnerVisitorFactory</a></div><div class="ttdef"><b>Definition:</b> RunnerVisitorFactory.h:15</div></div>
-<div class="ttc" id="aclasssipai_1_1RunnerVisitorFactory_html_a53ba8a13a2a2dde56df7296faefa3717"><div class="ttname"><a href="classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717">sipai::RunnerVisitorFactory::getTrainingMonitoredVisitor</a></div><div class="ttdeci">const RunnerVisitor &amp; getTrainingMonitoredVisitor()</div><div class="ttdef"><b>Definition:</b> RunnerVisitorFactory.h:17</div></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="RunnerEnhancerVisitor_8h.html">RunnerEnhancerVisitor.h</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="RunnerTrainingMonitoredVisitor_8h.html">RunnerTrainingMonitoredVisitor.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesipai.html">sipai</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classsipai_1_1RunnerVisitorFactory.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsipai_1_1RunnerVisitorFactory.html">RunnerVisitorFactory</a> {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717">   18</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classsipai_1_1RunnerVisitor.html">RunnerVisitor</a> &amp;<a class="code" href="classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717">getTrainingMonitoredVisitor</a>() {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordflow">if</span> (!trainingMonitoredVisitor_) {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;      trainingMonitoredVisitor_ =</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;          std::make_unique&lt;RunnerTrainingMonitoredVisitor&gt;();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    }</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> *trainingMonitoredVisitor_;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  }</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classsipai_1_1RunnerVisitorFactory.html#aa1838e9bf9dd9e50529f4bf27bae4b7e">   26</a></span>&#160;  <span class="keyword">const</span> <a class="code" href="classsipai_1_1RunnerVisitor.html">RunnerVisitor</a> &amp;<a class="code" href="classsipai_1_1RunnerVisitorFactory.html#aa1838e9bf9dd9e50529f4bf27bae4b7e">getEnhancerVisitor</a>() {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordflow">if</span> (!enhancerVisitor_) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      enhancerVisitor_ = std::make_unique&lt;RunnerEnhancerVisitor&gt;();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">return</span> *enhancerVisitor_;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  }</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  std::unique_ptr&lt;RunnerTrainingMonitoredVisitor&gt; trainingMonitoredVisitor_ =</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  std::unique_ptr&lt;RunnerEnhancerVisitor&gt; enhancerVisitor_ = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;} <span class="comment">// namespace sipai</span></div>
+<div class="ttc" id="aRunnerEnhancerVisitor_8h_html"><div class="ttname"><a href="RunnerEnhancerVisitor_8h.html">RunnerEnhancerVisitor.h</a></div><div class="ttdoc">Concret RunnerVisitor for Enhancer run.</div></div>
+<div class="ttc" id="aRunnerTrainingMonitoredVisitor_8h_html"><div class="ttname"><a href="RunnerTrainingMonitoredVisitor_8h.html">RunnerTrainingMonitoredVisitor.h</a></div><div class="ttdoc">Concret RunnerVisitor for TrainingMonitored run.</div></div>
+<div class="ttc" id="aclasssipai_1_1RunnerVisitorFactory_html"><div class="ttname"><a href="classsipai_1_1RunnerVisitorFactory.html">sipai::RunnerVisitorFactory</a></div><div class="ttdef"><b>Definition:</b> RunnerVisitorFactory.h:16</div></div>
+<div class="ttc" id="aclasssipai_1_1RunnerVisitorFactory_html_a53ba8a13a2a2dde56df7296faefa3717"><div class="ttname"><a href="classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717">sipai::RunnerVisitorFactory::getTrainingMonitoredVisitor</a></div><div class="ttdeci">const RunnerVisitor &amp; getTrainingMonitoredVisitor()</div><div class="ttdef"><b>Definition:</b> RunnerVisitorFactory.h:18</div></div>
+<div class="ttc" id="aclasssipai_1_1RunnerVisitorFactory_html_aa1838e9bf9dd9e50529f4bf27bae4b7e"><div class="ttname"><a href="classsipai_1_1RunnerVisitorFactory.html#aa1838e9bf9dd9e50529f4bf27bae4b7e">sipai::RunnerVisitorFactory::getEnhancerVisitor</a></div><div class="ttdeci">const RunnerVisitor &amp; getEnhancerVisitor()</div><div class="ttdef"><b>Definition:</b> RunnerVisitorFactory.h:26</div></div>
 <div class="ttc" id="aclasssipai_1_1RunnerVisitor_html"><div class="ttname"><a href="classsipai_1_1RunnerVisitor.html">sipai::RunnerVisitor</a></div><div class="ttdef"><b>Definition:</b> RunnerVisitor.h:17</div></div>
 <div class="ttc" id="anamespacesipai_html"><div class="ttname"><a href="namespacesipai.html">sipai</a></div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:18</div></div>
 </div><!-- fragment --></div><!-- contents -->

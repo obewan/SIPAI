@@ -14,10 +14,10 @@ var searchData=
   ['error_42',['error',['../classsipai_1_1Neuron.html#abf46b121d9437e750c17da8611155eab',1,'sipai::Neuron::error()'],['../classsipai_1_1SimpleLogger.html#af7a757fa082a979d2c53a085d0b25797',1,'sipai::SimpleLogger::error()']]],
   ['error_43',['ERROR',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0abb1ca97ec761fc37101737ba0aa2e7c5',1,'sipai']]],
   ['erunmode_44',['ERunMode',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032',1,'sipai']]],
-  ['evaluateonvalidationset_45',['evaluateOnValidationSet',['../classsipai_1_1TrainingMonitoredVisitor.html#aa9aa352d4279b7a80f01774aa01d7542',1,'sipai::TrainingMonitoredVisitor']]],
+  ['evaluateonvalidationset_45',['evaluateOnValidationSet',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#ad682bc809549c55d744c7e508b91e030',1,'sipai::RunnerTrainingMonitoredVisitor']]],
   ['exit_5fhelp_46',['EXIT_HELP',['../classSIPAI.html#a7b10521718bb6554476359639e2ffe0d',1,'SIPAI']]],
   ['exit_5fversion_47',['EXIT_VERSION',['../classSIPAI.html#a8240208e9d64cd499cfdc70e3f70a2f2',1,'SIPAI']]],
-  ['exportmodel_48',['exportModel',['../classsipai_1_1NeuralNetworkImportExportJSON.html#ae095f412aaf9d20b6fbba1b0984c3fcf',1,'sipai::NeuralNetworkImportExportJSON::exportModel()'],['../classsipai_1_1NeuralNetworkImportExportFacade.html#a97ca5fdbf8af65855dc293fcfa1502c0',1,'sipai::NeuralNetworkImportExportFacade::exportModel()']]],
+  ['exportmodel_48',['exportModel',['../classsipai_1_1NeuralNetworkImportExportJSON.html#ab40604ecad0208f18e333e88104acd27',1,'sipai::NeuralNetworkImportExportJSON::exportModel()'],['../classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726',1,'sipai::NeuralNetworkImportExportFacade::exportModel()']]],
   ['exportnetwork_49',['exportNetwork',['../classsipai_1_1Manager.html#aba29378e09dc2e3781b40d38e8d4314e',1,'sipai::Manager']]],
-  ['exportneuronsweights_50',['exportNeuronsWeights',['../classsipai_1_1NeuralNetworkImportExportCSV.html#ae71f3d6129946130f48a8cba65c26c99',1,'sipai::NeuralNetworkImportExportCSV']]]
+  ['exportneuronsweights_50',['exportNeuronsWeights',['../classsipai_1_1NeuralNetworkImportExportCSV.html#a2a81b9ad2ae27e22956a432ad6c39006',1,'sipai::NeuralNetworkImportExportCSV']]]
 ];
