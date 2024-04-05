@@ -1,9 +1,10 @@
-#include "TrainingMonitoredVisitor.h"
+#include "RunnerTrainingMonitoredVisitor.h"
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
 #include <csignal>
 #include <exception>
+#include <memory>
 
 using namespace sipai;
 
@@ -18,7 +19,7 @@ void signalHandler(int signal) {
   }
 }
 
-void TrainingMonitoredVisitor::visit() const {
+void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::LOG_INFO(
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
   auto &manager = Manager::getInstance();
@@ -27,8 +28,8 @@ void TrainingMonitoredVisitor::visit() const {
   SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
-  const auto &trainingData = manager.loadTrainingData();
-  if (trainingData.empty()) {
+  auto trainingData = manager.loadTrainingData();
+  if (trainingData->empty()) {
     SimpleLogger::LOG_ERROR("No training data found. Aborting.");
     return;
   }
@@ -75,12 +76,12 @@ void TrainingMonitoredVisitor::visit() const {
   SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
 }
 
-float TrainingMonitoredVisitor::trainOnEpoch(
-    const TrainingData &dataSet) const {
+float RunnerTrainingMonitoredVisitor::trainOnEpoch(
+    const std::unique_ptr<TrainingData> &dataSet) const {
   auto &manager = Manager::getInstance();
   ImageHelper imageHelper;
   float epochLoss = 0.0f;
-  for (const auto &[inputPath, targetPath] : dataSet) {
+  for (const auto &[inputPath, targetPath] : *dataSet) {
     size_t orig_ix;
     size_t orig_iy;
     size_t orig_tx;
@@ -101,16 +102,16 @@ float TrainingMonitoredVisitor::trainOnEpoch(
     manager.network->updateWeights(manager.network_params.learning_rate,
                                    manager.app_params.enable_parallel);
   }
-  epochLoss /= dataSet.size();
+  epochLoss /= dataSet->size();
   return epochLoss;
 }
 
-float TrainingMonitoredVisitor::evaluateOnValidationSet(
-    const TrainingData &validationSet) const {
+float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
+    const std::unique_ptr<TrainingData> &validationSet) const {
   auto &manager = Manager::getInstance();
   ImageHelper imageHelper;
   float validationLoss = 0.0f;
-  for (const auto &[inputPath, targetPath] : validationSet) {
+  for (const auto &[inputPath, targetPath] : *validationSet) {
     size_t orig_ix;
     size_t orig_iy;
     size_t orig_tx;
@@ -126,11 +127,11 @@ float TrainingMonitoredVisitor::evaluateOnValidationSet(
         inputImage, manager.app_params.enable_parallel);
     validationLoss += imageHelper.computeLoss(outputImage, targetImage);
   }
-  validationLoss /= validationSet.size();
+  validationLoss /= validationSet->size();
   return validationLoss;
 }
 
-bool TrainingMonitoredVisitor::shouldContinueTraining(
+bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
     int epoch, int epochsWithoutImprovement, const AppParams &appParams) const {
   bool improvementCondition =
       epochsWithoutImprovement < appParams.max_epochs_without_improvement;
@@ -140,15 +141,15 @@ bool TrainingMonitoredVisitor::shouldContinueTraining(
   return improvementCondition && epochCondition;
 }
 
-void TrainingMonitoredVisitor::logTrainingProgress(int epoch,
-                                                   float trainingLoss,
-                                                   float validationLoss) const {
+void RunnerTrainingMonitoredVisitor::logTrainingProgress(
+    int epoch, float trainingLoss, float validationLoss) const {
   SimpleLogger::LOG_INFO("Epoch: ", epoch,
                          ", Train Loss: ", trainingLoss * 100.0f,
                          "%, Validation Loss: ", validationLoss * 100.0f, "%");
 }
 
-void TrainingMonitoredVisitor::saveNetwork(bool &hasLastEpochBeenSaved) const {
+void RunnerTrainingMonitoredVisitor::saveNetwork(
+    bool &hasLastEpochBeenSaved) const {
   try {
     if (!hasLastEpochBeenSaved) {
       Manager::getInstance().exportNetwork();

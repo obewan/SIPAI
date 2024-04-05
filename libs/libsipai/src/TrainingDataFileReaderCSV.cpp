@@ -4,12 +4,13 @@
 #include "csv_parser.h"
 #include "exception/FileReaderException.h"
 #include <fstream>
+#include <memory>
 #include <string>
 // for csv_parser doc, see https://github.com/ashaduri/csv-parser
 
 using namespace sipai;
 
-TrainingData TrainingDataFileReaderCSV::getTrainingData() {
+std::unique_ptr<TrainingData> TrainingDataFileReaderCSV::getTrainingData() {
   const auto &trainingDataFile =
       Manager::getInstance().app_params.training_data_file;
   if (trainingDataFile.empty()) {
@@ -23,7 +24,7 @@ TrainingData TrainingDataFileReaderCSV::getTrainingData() {
     throw FileReaderException("Failed to open file: " + trainingDataFile);
   }
 
-  TrainingData trainingData;
+  auto trainingData = std::make_unique<TrainingData>();
   Csv::Parser csvParser;
   std::vector<std::vector<Csv::CellReference>> cell_refs;
   std::string line;
@@ -42,7 +43,7 @@ TrainingData TrainingDataFileReaderCSV::getTrainingData() {
       std::pair<std::string, std::string> columns;
       columns.first = cell_refs[0][0].getCleanString().value();
       columns.second = cell_refs[1][0].getCleanString().value();
-      trainingData.push_back(columns);
+      trainingData->push_back(columns);
       lineNumber++;
     } catch (Csv::ParseError &ex) {
       SimpleLogger::LOG_ERROR("CSV parsing error at line (", lineNumber,

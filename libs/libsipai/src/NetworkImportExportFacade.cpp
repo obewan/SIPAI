@@ -1,7 +1,6 @@
 #include "NeuralNetwork.h"
 #include "NeuralNetworkImportExportFacade.h"
 #include "exception/ImportExportException.h"
-#include <Manager.h>
 #include <exception>
 #include <memory>
 

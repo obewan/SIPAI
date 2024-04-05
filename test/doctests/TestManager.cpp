@@ -114,8 +114,8 @@ TEST_CASE("Testing the Manager class") {
     auto &manager = Manager::getInstance();
     manager.app_params.training_data_file = "images-test1.csv";
     const auto &data = manager.loadTrainingData();
-    CHECK(data.size() == 10);
-    for (auto &[source, target] : data) {
+    CHECK(data->size() == 10);
+    for (auto &[source, target] : *data) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
       CHECK_MESSAGE(std::filesystem::exists(source) == true, source);
@@ -166,17 +166,17 @@ TEST_CASE("Testing the Manager class") {
   SUBCASE("Test splitData") {
     auto &manager = Manager::getInstance();
     manager.app_params.training_data_file = "images-test1.csv";
-    const auto &data = manager.loadTrainingData();
+    auto data = manager.loadTrainingData();
     const auto &split = manager.splitData(data, 0.8);
-    CHECK(split.first.size() == 8);
-    CHECK(split.second.size() == 2);
-    for (auto &[source, target] : split.first) {
+    CHECK(split.first->size() == 8);
+    CHECK(split.second->size() == 2);
+    for (auto &[source, target] : *split.first) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
       CHECK_MESSAGE(std::filesystem::exists(source), source);
       CHECK_MESSAGE(std::filesystem::exists(target), target);
     }
-    for (auto &[source, target] : split.second) {
+    for (auto &[source, target] : *split.second) {
       CHECK(source.length() > 0);
       CHECK(target.length() > 0);
       CHECK_MESSAGE(std::filesystem::exists(source), source);

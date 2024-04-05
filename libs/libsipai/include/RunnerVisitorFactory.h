@@ -8,7 +8,8 @@
  *
  */
 #pragma once
-#include "TrainingMonitoredVisitor.h"
+#include "RunnerEnhancerVisitor.h"
+#include "RunnerTrainingMonitoredVisitor.h"
 #include <memory>
 
 namespace sipai {
@@ -16,13 +17,22 @@ class RunnerVisitorFactory {
 public:
   const RunnerVisitor &getTrainingMonitoredVisitor() {
     if (!trainingMonitoredVisitor_) {
-      trainingMonitoredVisitor_ = std::make_unique<TrainingMonitoredVisitor>();
+      trainingMonitoredVisitor_ =
+          std::make_unique<RunnerTrainingMonitoredVisitor>();
     }
     return *trainingMonitoredVisitor_;
   }
-  // Add more visitors getters here
+
+  const RunnerVisitor &getEnhancerVisitor() {
+    if (!enhancerVisitor_) {
+      enhancerVisitor_ = std::make_unique<RunnerEnhancerVisitor>();
+    }
+    return *enhancerVisitor_;
+  }
 
 private:
-  std::unique_ptr<TrainingMonitoredVisitor> trainingMonitoredVisitor_ = nullptr;
+  std::unique_ptr<RunnerTrainingMonitoredVisitor> trainingMonitoredVisitor_ =
+      nullptr;
+  std::unique_ptr<RunnerEnhancerVisitor> enhancerVisitor_ = nullptr;
 };
 } // namespace sipai

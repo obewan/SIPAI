@@ -127,7 +127,7 @@ public:
    * @return A vector of pairs, where each pair contains the paths to the input
    * image and the corresponding target image.
    */
-  TrainingData loadTrainingData();
+  std::unique_ptr<TrainingData> loadTrainingData();
 
   /**
    * @brief Shuffle and splits the training data into training and validation
@@ -142,8 +142,8 @@ public:
    * @return A pair of vectors, where the first element is the training
    * data, and the second element is the validation data.
    */
-  std::pair<TrainingData, TrainingData> splitData(TrainingData data,
-                                                  float split_ratio);
+  std::pair<std::unique_ptr<TrainingData>, std::unique_ptr<TrainingData>>
+  splitData(std::unique_ptr<TrainingData> &data, float split_ratio);
 
   /**
    * @brief Get a title line with the version

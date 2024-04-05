@@ -38,6 +38,6 @@ public:
    * @return A vector of pairs, where each pair contains the input file path and
    * the corresponding target file path.
    */
-  TrainingData getTrainingData();
+  std::unique_ptr<TrainingData> getTrainingData();
 };
 } // namespace sipai
