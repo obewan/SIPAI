@@ -49,6 +49,7 @@ public:
    * values.
    *
    * @param inputValues The input values for forward propagation.
+   * @param enable_parallel enable parallelism (experimental)
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
@@ -60,6 +61,7 @@ public:
    * expected values.
    *
    * @param expectedValues The expected values for backward propagation.
+   * @param enable_parallel enable parallelism (experimental)
    */
   void backwardPropagation(const std::vector<RGBA> &expectedValues,
                            bool enable_parallel = false);
@@ -67,6 +69,9 @@ public:
   /**
    * @brief Updates the weights of the neurons in the network using the learning
    * rate.
+   *
+   * @param learning_rate The learning rate
+   * @param enable_parallel enable parallelism (experimental)
    */
   void updateWeights(float learning_rate, bool enable_parallel = false);
 };
