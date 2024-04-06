@@ -48,7 +48,7 @@ TEST_CASE("Testing the Manager class") {
 
     const auto &inputLayer = network->layers.front();
     CHECK(inputLayer->neurons.size() == (np.input_size_x * np.input_size_y));
-    CHECK(inputLayer->neurons.at(0).neighbors.size() == 2);
+    CHECK(inputLayer->neurons.at(0).neighbors.size() == 0);
 
     const auto &hiddenLayer = network->layers.at(1);
     CHECK(hiddenLayer->neurons.size() == (np.hidden_size_x * np.hidden_size_y));
@@ -102,7 +102,7 @@ TEST_CASE("Testing the Manager class") {
     CHECK(nn->layers.front()->neurons.size() == 4);
     CHECK(nn->layers.at(1)->neurons.size() == 6);
     CHECK(nn->layers.back()->neurons.size() == 9);
-    CHECK(nn->layers.front()->neurons.at(0).neighbors.size() == 2);
+    CHECK(nn->layers.front()->neurons.at(0).neighbors.size() == 0);
     CHECK(nn->layers.back()->neurons.at(0).neighbors.size() == 2);
 
     std::filesystem::remove(ap.network_to_export);

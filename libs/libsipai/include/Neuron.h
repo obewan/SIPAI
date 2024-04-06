@@ -64,6 +64,38 @@ public:
     }
   }
 
+  std::string toStringCsv(size_t max_weights) const {
+    std::ostringstream oss;
+    for (const auto &weight : weights) {
+      oss << weight.toStringCsv() << ",";
+    }
+    // fill the lasts columns with empty ",RGBA"
+    for (size_t i = weights.size(); i < max_weights; ++i) {
+      oss << ",,,,";
+    }
+    std::string str = oss.str();
+    if (!str.empty()) {
+      str.pop_back(); // remove the extra comma
+    }
+    return str;
+  }
+
+  std::string toNeighborsStringCsv(size_t max_weights) const {
+    std::ostringstream oss;
+    for (const auto &neighbor : neighbors) {
+      oss << neighbor.weight.toStringCsv() << ",";
+    }
+    // fill the lasts columns with empty ",RGBA"
+    for (size_t i = neighbors.size(); i < max_weights; ++i) {
+      oss << ",,,,";
+    }
+    std::string str = oss.str();
+    if (!str.empty()) {
+      str.pop_back(); // remove the extra comma
+    }
+    return str;
+  }
+
   std::function<RGBA(RGBA)> activationFunction;
   std::function<RGBA(RGBA)> activationFunctionDerivative;
 };

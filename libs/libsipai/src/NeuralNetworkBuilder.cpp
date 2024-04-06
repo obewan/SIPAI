@@ -89,6 +89,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
       {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
   for (auto layer : network_->layers) {
+    if (layer->layerType == LayerType::LayerInput) {
+      continue;
+    }
     for (auto &neuron : layer->neurons) {
       size_t pos = &neuron - &layer->neurons[0];
       // Compute the coordinates of the neuron in the 2D grid
@@ -106,6 +109,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
             ny < (int)layer->size_y) {
           int ni = ny * layer->size_x + nx;
           Neuron &neighbor = layer->neurons[ni];
+          // Add connection weight
           RGBA weight = isImported ? RGBA() : RGBA().random(fanIn_fanOut);
           neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
         }

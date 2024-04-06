@@ -116,9 +116,7 @@ struct RGBA {
       oss << v << ",";
     }
     std::string str = oss.str();
-    if (!str.empty()) {
-      str.pop_back(); // Remove the trailing comma
-    }
+    str.pop_back(); // Remove the trailing comma
     return str;
   }
 
