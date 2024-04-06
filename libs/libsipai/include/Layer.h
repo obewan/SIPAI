@@ -44,7 +44,7 @@ public:
 
   /**
    * @brief Performs forward propagation using the previous layer.
-   *
+   * @param enable_parallel enable parallelism (experimental)
    */
   virtual void forwardPropagation(bool enable_parallel = false) {
     if (previousLayer == nullptr) {
@@ -59,7 +59,7 @@ public:
 
   /**
    * @brief Performs backward propagation using the next layer.
-   *
+   * @param enable_parallel enable parallelism (experimental)
    */
   virtual void backwardPropagation(bool enable_parallel = false) {
     if (nextLayer == nullptr) {
@@ -77,6 +77,7 @@ public:
    * layer and a learning rate.
    *
    * @param learningRate The learning rate to use when updating weights.
+   * @param enable_parallel enable parallelism (experimental)
    */
   virtual void updateWeights(float learningRate, bool enable_parallel = false) {
     if (previousLayer == nullptr) {
@@ -112,8 +113,6 @@ protected:
    *
    * @tparam ExecutionPolicy the sequential or parallel execution policy type
    * @param executionPolicy
-   * @param neurons
-   * @param previousLayer
    */
   template <typename ExecutionPolicy>
   void _forward(ExecutionPolicy executionPolicy) {
@@ -132,6 +131,12 @@ protected:
                   });
   };
 
+  /**
+   * @brief Backward propagation core methode
+   *
+   * @tparam ExecutionPolicy
+   * @param executionPolicy
+   */
   template <typename ExecutionPolicy>
   void _backward(ExecutionPolicy executionPolicy) {
     if (nextLayer == nullptr) {
@@ -162,9 +167,7 @@ protected:
    *
    * @tparam ExecutionPolicy the sequential or parallel execution policy type
    * @param executionPolicy
-   * @param neurons
    * @param learningRate
-   * @param previousLayer
    */
   template <typename ExecutionPolicy>
   void _update(ExecutionPolicy executionPolicy, float learningRate) {
