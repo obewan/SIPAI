@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['parametricrelu_486',['parametricRelu',['../namespacesipai.html#a1054f011782057a93919baf09a141879',1,'sipai']]],
-  ['parametricreluderivative_487',['parametricReluDerivative',['../namespacesipai.html#a07bcbe09fe9ab29378d50150b61cd3b8',1,'sipai']]],
-  ['previouslayer_488',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]]
+  ['parametricrelu_488',['parametricRelu',['../namespacesipai.html#a1054f011782057a93919baf09a141879',1,'sipai']]],
+  ['parametricreluderivative_489',['parametricReluDerivative',['../namespacesipai.html#a07bcbe09fe9ab29378d50150b61cd3b8',1,'sipai']]],
+  ['previouslayer_490',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]]
 ];
