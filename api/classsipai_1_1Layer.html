@@ -136,6 +136,7 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a3744991387f8e5bf149980cf1c1406b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ccb14679293fc3d2cd2375f14625d18"><td class="memTemplParams" colspan="2">template&lt;typename ExecutionPolicy &gt; </td></tr>
 <tr class="memitem:a6ccb14679293fc3d2cd2375f14625d18"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a6ccb14679293fc3d2cd2375f14625d18">_backward</a> (ExecutionPolicy executionPolicy)</td></tr>
+<tr class="memdesc:a6ccb14679293fc3d2cd2375f14625d18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Backward propagation core methode.  <a href="classsipai_1_1Layer.html#a6ccb14679293fc3d2cd2375f14625d18">More...</a><br /></td></tr>
 <tr class="separator:a6ccb14679293fc3d2cd2375f14625d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add915f96087c74e515510ebeaca05918"><td class="memTemplParams" colspan="2">template&lt;typename ExecutionPolicy &gt; </td></tr>
 <tr class="memitem:add915f96087c74e515510ebeaca05918"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#add915f96087c74e515510ebeaca05918">_update</a> (ExecutionPolicy executionPolicy, float learningRate)</td></tr>
@@ -239,6 +240,20 @@ template&lt;typename ExecutionPolicy &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Backward propagation core methode. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ExecutionPolicy</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">executionPolicy</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a3744991387f8e5bf149980cf1c1406b9"></a>
@@ -277,8 +292,6 @@ template&lt;typename ExecutionPolicy &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">executionPolicy</td><td></td></tr>
-    <tr><td class="paramname">neurons</td><td></td></tr>
-    <tr><td class="paramname">previousLayer</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -331,9 +344,7 @@ template&lt;typename ExecutionPolicy &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">executionPolicy</td><td></td></tr>
-    <tr><td class="paramname">neurons</td><td></td></tr>
     <tr><td class="paramname">learningRate</td><td></td></tr>
-    <tr><td class="paramname">previousLayer</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -365,6 +376,12 @@ template&lt;typename ExecutionPolicy &gt; </div>
 </div><div class="memdoc">
 
 <p>Performs backward propagation using the next layer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enable_parallel</td><td>enable parallelism (experimental) </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#a4f459ce4ca7929764a7fc1d1f42e1264">sipai::LayerInput</a>.</p>
 
@@ -395,6 +412,12 @@ template&lt;typename ExecutionPolicy &gt; </div>
 </div><div class="memdoc">
 
 <p>Performs forward propagation using the previous layer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enable_parallel</td><td>enable parallelism (experimental) </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#a51e72e7ede9928f6e18fd1ded334a30b">sipai::LayerInput</a>.</p>
 
@@ -499,6 +522,7 @@ template&lt;typename ExecutionPolicy &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">learningRate</td><td>The learning rate to use when updating weights. </td></tr>
+    <tr><td class="paramname">enable_parallel</td><td>enable parallelism (experimental) </td></tr>
   </table>
   </dd>
 </dl>
