@@ -1,4 +1,5 @@
 #include "Common.h"
+#include "Layer.h"
 #include "NeuralNetworkImportExportCSV.h"
 #include "NeuronConnection.h"
 #include "csv_parser.h"
@@ -38,7 +39,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
   };
   // lambda function to convert to RGBA
   auto getRGBAValue =
-      [getFloatValue](
+      [&getFloatValue](
           const std::vector<std::vector<Csv::CellReference>> &cell_refs,
           size_t pos) -> std::optional<RGBA> {
     auto r = getFloatValue(cell_refs.at(pos));
@@ -63,13 +64,8 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
   Csv::Parser csv_parser;
   std::string line;
   int current_line_number = 0;
-  bool header_skipped = false;
   while (std::getline(file, line)) {
     current_line_number++;
-    if (!header_skipped) {
-      header_skipped = true;
-      continue;
-    }
     std::vector<std::vector<Csv::CellReference>> cell_refs;
 
     try {
@@ -151,18 +147,14 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
     }
   }
 
-  // Write the header to the CSV file
-  file << "Layer,Neuron,Neighbors";
-  for (size_t i = 0; i < max_weights; ++i) {
-    file << ",wR" << (i + 1) << ",wG" << (i + 1) << ",wB" << (i + 1) << ",wA"
-         << (i + 1);
-  }
-  file << "\n";
-
   // Write the data
   for (size_t layer_index = 0; layer_index < network->layers.size();
        layer_index++) {
     const auto &layer = network->layers.at(layer_index);
+    if (layer->layerType == LayerType::LayerInput) {
+      // no weights for Input Layer, as it will be input data weights
+      continue;
+    }
     for (size_t neuron_index = 0; neuron_index < layer->neurons.size();
          neuron_index++) {
       const auto &neuron = layer->neurons.at(neuron_index);
