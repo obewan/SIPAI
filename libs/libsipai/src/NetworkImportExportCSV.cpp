@@ -12,46 +12,12 @@
 #include <fstream>
 #include <optional>
 #include <string>
+// for csv_paser doc, see https://github.com/ashaduri/csv-parser
 
 using namespace sipai;
 
 void NeuralNetworkImportExportCSV::importNeuronsWeights(
     std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams) const {
-  // lambda function to convert to index size_t
-  auto getIndexValue = [](const std::vector<Csv::CellReference> &cells)
-      -> std::optional<size_t> {
-    auto val = cells[0].getDouble();
-    if (val.has_value()) {
-      return static_cast<size_t>(val.value());
-    } else {
-      return std::nullopt;
-    }
-  };
-  // lambda function to convert to float
-  auto getFloatValue =
-      [](const std::vector<Csv::CellReference> &cells) -> std::optional<float> {
-    auto val = cells[0].getDouble();
-    if (val.has_value()) {
-      return static_cast<float>(val.value());
-    } else {
-      return std::nullopt;
-    }
-  };
-  // lambda function to convert to RGBA
-  auto getRGBAValue =
-      [&getFloatValue](
-          const std::vector<std::vector<Csv::CellReference>> &cell_refs,
-          size_t pos) -> std::optional<RGBA> {
-    auto r = getFloatValue(cell_refs.at(pos));
-    auto g = getFloatValue(cell_refs.at(pos + 1));
-    auto b = getFloatValue(cell_refs.at(pos + 2));
-    auto a = getFloatValue(cell_refs.at(pos + 3));
-    if (r.has_value() && g.has_value() && b.has_value() && a.has_value()) {
-      return RGBA(r.value(), g.value(), b.value(), a.value());
-    } else {
-      return std::nullopt;
-    }
-  };
 
   // get the csv filename
   std::string filename = getFilenameCsv(appParams.network_to_import);
@@ -87,16 +53,20 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
     }
 
     try {
-      auto layer_index = getIndexValue(cell_refs.at(0));
-      auto neuron_index = getIndexValue(cell_refs.at(1));
-      auto neighboors_count = getIndexValue(cell_refs.at(2));
+      auto layer_index = cell_refs.at(0).at(0).getDouble();
+      auto neuron_index = cell_refs.at(1).at(0).getDouble();
+      auto neighboors_count = cell_refs.at(2).at(0).getDouble();
       std::vector<RGBA> weights;
 
       if (layer_index && neuron_index) {
         for (size_t pos = 3; pos + 3 < cell_refs.size(); pos += 4) {
-          auto rgba = getRGBAValue(cell_refs, pos);
-          if (rgba.has_value()) {
-            weights.push_back(rgba.value());
+          auto r = cell_refs.at(pos).at(0).getDouble();
+          auto g = cell_refs.at(pos + 1).at(0).getDouble();
+          auto b = cell_refs.at(pos + 2).at(0).getDouble();
+          auto a = cell_refs.at(pos + 3).at(0).getDouble();
+          if (r.has_value() && g.has_value() && b.has_value() &&
+              a.has_value()) {
+            weights.push_back(RGBA(r.value(), g.value(), b.value(), a.value()));
           }
         }
         if (!neighboors_count) {
