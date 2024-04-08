@@ -1,16 +1,8 @@
 var searchData=
 [
-  ['activation_5fmap_3',['activation_map',['../namespacesipai.html#acecdfef9c16fa14e9921e2aaca700fb0',1,'sipai']]],
-  ['activationfunction_4',['activationFunction',['../classsipai_1_1Neuron.html#ab92ba2c5b7463aff457f52aba633bcce',1,'sipai::Neuron']]],
-  ['activationfunctionderivative_5',['activationFunctionDerivative',['../classsipai_1_1Neuron.html#ad4869ec2370229129a9086ded2bc5d55',1,'sipai::Neuron']]],
-  ['activationfunctions_2eh_6',['ActivationFunctions.h',['../ActivationFunctions_8h.html',1,'']]],
-  ['addlayers_7',['addLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a5fabf5a39071cb7bfda642d261acf682',1,'sipai::NeuralNetworkBuilder']]],
-  ['addneighbors_8',['addNeighbors',['../classsipai_1_1NeuralNetworkBuilder.html#a155910cf51b0212e87a4830f3f50ba82',1,'sipai::NeuralNetworkBuilder']]],
-  ['app_5fparams_9',['app_params',['../classsipai_1_1Manager.html#a04f60db76f56d7c2f8d62d15e7b436db',1,'sipai::Manager']]],
-  ['append_10',['append',['../classsipai_1_1SimpleLogger.html#a0ae83f8a9835e9c7d3f3581dadd91eb0',1,'sipai::SimpleLogger']]],
-  ['appenderror_11',['appendError',['../classsipai_1_1SimpleLogger.html#ab9912fa2472cf76c90be0012512ae922',1,'sipai::SimpleLogger']]],
-  ['apply_12',['apply',['../structsipai_1_1RGBA.html#a35bb3ad1e967b81b6bae5125e4cb1ccd',1,'sipai::RGBA::apply(const std::function&lt; float(float)&gt; &amp;func) const'],['../structsipai_1_1RGBA.html#a65b0e38fe7ad830aafa8c0530771249d',1,'sipai::RGBA::apply(const std::function&lt; float(float, float)&gt; &amp;func, float param) const']]],
-  ['applytoelements_13',['applyToElements',['../structsipai_1_1RGBA.html#a1a81ad2f001fb432a7c1efd92e967962',1,'sipai::RGBA']]],
-  ['appparams_14',['AppParams',['../structsipai_1_1AppParams.html',1,'sipai']]],
-  ['appparams_2eh_15',['AppParams.h',['../AppParams_8h.html',1,'']]]
+  ['backwardpropagation_13',['backwardPropagation',['../classsipai_1_1Layer.html#a615a4068e689b84e521d14ef82213bf2',1,'sipai::Layer::backwardPropagation()'],['../classsipai_1_1LayerInput.html#a4f459ce4ca7929764a7fc1d1f42e1264',1,'sipai::LayerInput::backwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#a25e816ec307e88abe641a51be1665f67',1,'sipai::NeuralNetwork::backwardPropagation()']]],
+  ['bias_14',['bias',['../classsipai_1_1Neuron.html#a2d8e7653f2cecc22924b3b99aeb1c8dd',1,'sipai::Neuron']]],
+  ['bindlayers_15',['bindLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a82c7fb7fb4cd8f4d4dda7cc399f44735',1,'sipai::NeuralNetworkBuilder']]],
+  ['build_16',['build',['../classsipai_1_1NeuralNetworkBuilder.html#a603dea4a2850a433bc1e33719b4b7179',1,'sipai::NeuralNetworkBuilder']]],
+  ['bulk_5floading_17',['bulk_loading',['../structsipai_1_1AppParams.html#a5b2d855b14a63d73dda3faf9b1b6d000',1,'sipai::AppParams']]]
 ];

@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['main_391',['main',['../Main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'Main.cpp']]],
-  ['manager_392',['Manager',['../classsipai_1_1Manager.html#ae8a3cd9ce06b6ad35c15023860749222',1,'sipai::Manager']]],
-  ['managerexception_393',['ManagerException',['../classsipai_1_1ManagerException.html#a522527139da1a978a18602c77748a269',1,'sipai::ManagerException']]]
+  ['neuralnetwork_397',['NeuralNetwork',['../classsipai_1_1NeuralNetwork.html#aeda647a2109867fa2571630d4ac37309',1,'sipai::NeuralNetwork::NeuralNetwork()=default'],['../classsipai_1_1NeuralNetwork.html#a872f97ba46cf153405908edb329f0e8a',1,'sipai::NeuralNetwork::NeuralNetwork(const NeuralNetwork &amp;other)=delete'],['../classsipai_1_1NeuralNetwork.html#a8ab36afb92397ae42afc54b3de0d76cf',1,'sipai::NeuralNetwork::NeuralNetwork(NeuralNetwork &amp;&amp;other)=delete']]],
+  ['neuralnetworkbuilder_398',['NeuralNetworkBuilder',['../classsipai_1_1NeuralNetworkBuilder.html#a2d674d4760225c8b75a45bbef807f496',1,'sipai::NeuralNetworkBuilder::NeuralNetworkBuilder()'],['../classsipai_1_1NeuralNetworkBuilder.html#ade44a7f1479aedd9e8264d505b56f847',1,'sipai::NeuralNetworkBuilder::NeuralNetworkBuilder(AppParams &amp;appParams, NeuralNetworkParams &amp;networkParams)']]],
+  ['neuralnetworkexception_399',['NeuralNetworkException',['../classsipai_1_1NeuralNetworkException.html#ab73475eddd6010709f7bc213a98e3ef4',1,'sipai::NeuralNetworkException']]],
+  ['neuron_400',['Neuron',['../classsipai_1_1Neuron.html#aac8499a824b98f50f44c3a7692a7a167',1,'sipai::Neuron']]],
+  ['neuronconnection_401',['NeuronConnection',['../classsipai_1_1NeuronConnection.html#aca3642ae4b49aca7993741ddc872a7e0',1,'sipai::NeuronConnection']]]
 ];

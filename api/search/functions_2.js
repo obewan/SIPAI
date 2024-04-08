@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['backwardpropagation_340',['backwardPropagation',['../classsipai_1_1Layer.html#a615a4068e689b84e521d14ef82213bf2',1,'sipai::Layer::backwardPropagation()'],['../classsipai_1_1LayerInput.html#a4f459ce4ca7929764a7fc1d1f42e1264',1,'sipai::LayerInput::backwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#a4c95db103b8bc3c86f7cf06452a8bca2',1,'sipai::NeuralNetwork::backwardPropagation()']]],
-  ['bindlayers_341',['bindLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a82c7fb7fb4cd8f4d4dda7cc399f44735',1,'sipai::NeuralNetworkBuilder']]],
-  ['build_342',['build',['../classsipai_1_1NeuralNetworkBuilder.html#a603dea4a2850a433bc1e33719b4b7179',1,'sipai::NeuralNetworkBuilder']]]
+  ['clamp_346',['clamp',['../structsipai_1_1RGBA.html#ae543cfa70d0f345bcf1ea5c1bbf586c4',1,'sipai::RGBA']]],
+  ['computeerrors_347',['computeErrors',['../classsipai_1_1LayerOutput.html#a3fc84e1a433a237a6288d9d32636ee63',1,'sipai::LayerOutput']]],
+  ['computeloss_348',['computeLoss',['../classsipai_1_1ImageHelper.html#a68e4e365290ee325a48b0d0a2812ce16',1,'sipai::ImageHelper']]],
+  ['converttomat_349',['convertToMat',['../classsipai_1_1ImageHelper.html#a0125ece3cc80df4ef5a8f2defcd3c61b',1,'sipai::ImageHelper']]],
+  ['converttorgbavector_350',['convertToRGBAVector',['../classsipai_1_1ImageHelper.html#a1f4240cfc0352e26400fa84262250166',1,'sipai::ImageHelper']]],
+  ['createorimport_351',['createOrImport',['../classsipai_1_1NeuralNetworkBuilder.html#add0c63f0be168d004619714d75fdde37',1,'sipai::NeuralNetworkBuilder']]],
+  ['createorimportnetwork_352',['createOrImportNetwork',['../classsipai_1_1Manager.html#a6db3c17c6d2a4cd9038cbc5078315b51',1,'sipai::Manager']]]
 ];

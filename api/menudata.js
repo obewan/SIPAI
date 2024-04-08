@@ -38,7 +38,6 @@ var menudata={children:[
 {text:"Class Hierarchy",url:"hierarchy.html"},
 {text:"Class Members",url:"functions.html",children:[
 {text:"All",url:"functions.html",children:[
-{text:"_",url:"functions.html#index__5F"},
 {text:"a",url:"functions.html#index_a"},
 {text:"b",url:"functions.html#index_b"},
 {text:"c",url:"functions.html#index_c"},
@@ -62,7 +61,6 @@ var menudata={children:[
 {text:"w",url:"functions.html#index_w"},
 {text:"~",url:"functions.html#index__7E"}]},
 {text:"Functions",url:"functions_func.html",children:[
-{text:"_",url:"functions_func.html#index__5F"},
 {text:"a",url:"functions_func.html#index_a"},
 {text:"b",url:"functions_func.html#index_b"},
 {text:"c",url:"functions_func.html#index_c"},

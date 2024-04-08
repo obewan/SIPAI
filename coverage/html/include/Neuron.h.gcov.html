@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-06 20:10:57</td>
+            <td class="headerValue">2024-04-08 22:32:36</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -90,7 +90,7 @@
 <a name="28"><span class="lineNum">      28 </span>            : class Neuron {</a>
 <a name="29"><span class="lineNum">      29 </span>            : public:</a>
 <a name="30"><span class="lineNum">      30 </span>            :   // Default constructor</a>
-<a name="31"><span class="lineNum">      31 </span><span class="lineCov">         84 :   Neuron() = default;</span></a>
+<a name="31"><span class="lineNum">      31 </span><span class="lineCov">        134 :   Neuron() = default;</span></a>
 <a name="32"><span class="lineNum">      32 </span>            : </a>
 <a name="33"><span class="lineNum">      33 </span>            :   // The weights of the neuron</a>
 <a name="34"><span class="lineNum">      34 </span>            :   std::vector&lt;RGBA&gt; weights;</a>
@@ -116,15 +116,15 @@
 <a name="54"><span class="lineNum">      54 </span>            :    *</a>
 <a name="55"><span class="lineNum">      55 </span>            :    * @param new_size The new size of the weights vector.</a>
 <a name="56"><span class="lineNum">      56 </span>            :    */</a>
-<a name="57"><span class="lineNum">      57 </span><span class="lineCov">         51 :   void initWeights(size_t new_size) {</span></a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">         51 :     weights.resize(new_size);</span></a>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">         93 :   void initWeights(size_t new_size) {</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">         93 :     weights.resize(new_size);</span></a>
 <a name="59"><span class="lineNum">      59 </span>            : </a>
 <a name="60"><span class="lineNum">      60 </span>            :     // Random initialization</a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">         51 :     const float fanIn_fanOut = new_size + 4.0f; // 4 as the 4 values of RGBA</span></a>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        321 :     for (auto &amp;w : weights) {</span></a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineCov">        270 :       w = w.random(fanIn_fanOut);</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">         93 :     const float fanIn_fanOut = new_size + 4.0f; // 4 as the 4 values of RGBA</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        591 :     for (auto &amp;w : weights) {</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineCov">        498 :       w = w.random(fanIn_fanOut);</span></a>
 <a name="64"><span class="lineNum">      64 </span>            :     }</a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">         51 :   }</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">         93 :   }</span></a>
 <a name="66"><span class="lineNum">      66 </span>            : </a>
 <a name="67"><span class="lineNum">      67 </span><span class="lineCov">         30 :   std::string toStringCsv(size_t max_weights) const {</span></a>
 <a name="68"><span class="lineNum">      68 </span><span class="lineCov">         30 :     std::ostringstream oss;</span></a>

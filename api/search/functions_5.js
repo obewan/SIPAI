@@ -1,10 +1,5 @@
 var searchData=
 [
-  ['endl_351',['endl',['../classsipai_1_1SimpleLogger.html#aa642aeeccec9ac5a09a0e1b9e17c13f9',1,'sipai::SimpleLogger']]],
-  ['err_352',['err',['../classsipai_1_1SimpleLogger.html#a4c9d0ed38ad80b44761063134d071a1a',1,'sipai::SimpleLogger']]],
-  ['error_353',['error',['../classsipai_1_1SimpleLogger.html#af7a757fa082a979d2c53a085d0b25797',1,'sipai::SimpleLogger']]],
-  ['evaluateonvalidationset_354',['evaluateOnValidationSet',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#ad682bc809549c55d744c7e508b91e030',1,'sipai::RunnerTrainingMonitoredVisitor']]],
-  ['exportmodel_355',['exportModel',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726',1,'sipai::NeuralNetworkImportExportFacade::exportModel()'],['../classsipai_1_1NeuralNetworkImportExportJSON.html#ab40604ecad0208f18e333e88104acd27',1,'sipai::NeuralNetworkImportExportJSON::exportModel()']]],
-  ['exportnetwork_356',['exportNetwork',['../classsipai_1_1Manager.html#aba29378e09dc2e3781b40d38e8d4314e',1,'sipai::Manager']]],
-  ['exportneuronsweights_357',['exportNeuronsWeights',['../classsipai_1_1NeuralNetworkImportExportCSV.html#a2a81b9ad2ae27e22956a432ad6c39006',1,'sipai::NeuralNetworkImportExportCSV']]]
+  ['filereaderexception_361',['FileReaderException',['../classsipai_1_1FileReaderException.html#afc0f5d68ba724cb5c9c52faf403c9f83',1,'sipai::FileReaderException']]],
+  ['forwardpropagation_362',['forwardPropagation',['../classsipai_1_1Layer.html#a37256432ea22c3040bcd0099a874849b',1,'sipai::Layer::forwardPropagation()'],['../classsipai_1_1LayerInput.html#a51e72e7ede9928f6e18fd1ded334a30b',1,'sipai::LayerInput::forwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#afa854292539aa30d92d38c27afca680d',1,'sipai::NeuralNetwork::forwardPropagation()']]]
 ];

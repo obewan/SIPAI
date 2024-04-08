@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-06 20:10:57</td>
+            <td class="headerValue">2024-04-08 22:32:36</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -83,9 +83,9 @@
 <a name="21"><span class="lineNum">      21 </span>            : namespace sipai {</a>
 <a name="22"><span class="lineNum">      22 </span>            : class Manager {</a>
 <a name="23"><span class="lineNum">      23 </span>            : public:</a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         74 :   static Manager &amp;getInstance() {</span></a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         74 :     static Manager instance;</span></a>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         74 :     return instance;</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">        111 :   static Manager &amp;getInstance() {</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">        111 :     static Manager instance;</span></a>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">        111 :     return instance;</span></a>
 <a name="27"><span class="lineNum">      27 </span>            :   }</a>
 <a name="28"><span class="lineNum">      28 </span>            :   Manager(Manager const &amp;) = delete;</a>
 <a name="29"><span class="lineNum">      29 </span>            :   void operator=(Manager const &amp;) = delete;</a>
@@ -118,8 +118,8 @@
 <a name="56"><span class="lineNum">      56 </span>            :    * @param resize_y The desired height to which the image should be resized.</a>
 <a name="57"><span class="lineNum">      57 </span>            :    * @return A vector of RGBA values representing the resized image.</a>
 <a name="58"><span class="lineNum">      58 </span>            :    */</a>
-<a name="59"><span class="lineNum">      59 </span>            :   std::vector&lt;RGBA&gt; loadImage(const std::string &amp;imagePath, size_t &amp;size_x,</a>
-<a name="60"><span class="lineNum">      60 </span>            :                               size_t &amp;size_y, size_t resize_x, size_t resize_y);</a>
+<a name="59"><span class="lineNum">      59 </span>            :   image loadImage(const std::string &amp;imagePath, size_t &amp;size_x, size_t &amp;size_y,</a>
+<a name="60"><span class="lineNum">      60 </span>            :                   size_t resize_x, size_t resize_y);</a>
 <a name="61"><span class="lineNum">      61 </span>            : </a>
 <a name="62"><span class="lineNum">      62 </span>            :   /**</a>
 <a name="63"><span class="lineNum">      63 </span>            :    * @brief Exports a resized image to a specified path.</a>
@@ -132,7 +132,7 @@
 <a name="70"><span class="lineNum">      70 </span>            :    * RGBA values.</a>
 <a name="71"><span class="lineNum">      71 </span>            :    * @param scale The scale of exported image.</a>
 <a name="72"><span class="lineNum">      72 </span>            :    */</a>
-<a name="73"><span class="lineNum">      73 </span>            :   void saveImage(const std::string &amp;imagePath, const std::vector&lt;RGBA&gt; &amp;image,</a>
+<a name="73"><span class="lineNum">      73 </span>            :   void saveImage(const std::string &amp;imagePath, const image &amp;image,</a>
 <a name="74"><span class="lineNum">      74 </span>            :                  size_t size_x, size_t size_y, float scale = 1.0);</a>
 <a name="75"><span class="lineNum">      75 </span>            :   /**</a>
 <a name="76"><span class="lineNum">      76 </span>            :    * @brief Exports a resized image to a specified path.</a>
@@ -148,7 +148,7 @@
 <a name="86"><span class="lineNum">      86 </span>            :    * @param resize_y The desired height to which the image should be resized</a>
 <a name="87"><span class="lineNum">      87 </span>            :    * before exporting.</a>
 <a name="88"><span class="lineNum">      88 </span>            :    */</a>
-<a name="89"><span class="lineNum">      89 </span>            :   void saveImage(const std::string &amp;imagePath, const std::vector&lt;RGBA&gt; &amp;image,</a>
+<a name="89"><span class="lineNum">      89 </span>            :   void saveImage(const std::string &amp;imagePath, const image &amp;image,</a>
 <a name="90"><span class="lineNum">      90 </span>            :                  size_t size_x, size_t size_y, size_t resize_x,</a>
 <a name="91"><span class="lineNum">      91 </span>            :                  size_t resize_y);</a>
 <a name="92"><span class="lineNum">      92 </span>            : </a>

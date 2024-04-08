@@ -31,17 +31,17 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">57</td>
             <td class="headerCovTableEntry">64</td>
-            <td class="headerCovTableEntry">71</td>
-            <td class="headerCovTableEntryHi">90.1 %</td>
+            <td class="headerCovTableEntryMed">89.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-06 20:10:57</td>
+            <td class="headerValue">2024-04-08 22:32:36</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">5</td>
-            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
@@ -155,40 +155,28 @@
 <a name="93"><span class="lineNum">      93 </span><span class="lineCov">          2 :   std::string filename = getFilenameCsv(appParams.network_to_export);</span></a>
 <a name="94"><span class="lineNum">      94 </span><span class="lineCov">          2 :   std::ofstream file(filename);</span></a>
 <a name="95"><span class="lineNum">      95 </span>            : </a>
-<a name="96"><span class="lineNum">      96 </span>            :   // Determine the maximum number of weights any neuron has</a>
-<a name="97"><span class="lineNum">      97 </span><span class="lineCov">          2 :   size_t max_weights = 0;</span></a>
-<a name="98"><span class="lineNum">      98 </span><span class="lineCov">          8 :   for (const auto &amp;layer : network-&gt;layers) {</span></a>
-<a name="99"><span class="lineNum">      99 </span><span class="lineCov">          6 :     auto neuron_max = std::max_element(</span></a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineCov">          6 :         layer-&gt;neurons.begin(), layer-&gt;neurons.end(),</span></a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         32 :         [](const auto &amp;neuron1, const auto &amp;neuron2) {</span></a>
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         32 :           return neuron1.weights.size() &lt; neuron2.weights.size();</span></a>
-<a name="103"><span class="lineNum">     103 </span>            :         });</a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">          6 :     if (neuron_max-&gt;weights.size() &gt; max_weights) {</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">          4 :       max_weights = neuron_max-&gt;weights.size();</span></a>
-<a name="106"><span class="lineNum">     106 </span>            :     }</a>
-<a name="107"><span class="lineNum">     107 </span>            :   }</a>
-<a name="108"><span class="lineNum">     108 </span>            : </a>
-<a name="109"><span class="lineNum">     109 </span>            :   // Write the data</a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">          8 :   for (size_t layer_index = 0; layer_index &lt; network-&gt;layers.size();</span></a>
-<a name="111"><span class="lineNum">     111 </span>            :        layer_index++) {</a>
-<a name="112"><span class="lineNum">     112 </span><span class="lineCov">          6 :     const auto &amp;layer = network-&gt;layers.at(layer_index);</span></a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineCov">          6 :     if (layer-&gt;layerType == LayerType::LayerInput) {</span></a>
-<a name="114"><span class="lineNum">     114 </span>            :       // no weights for Input Layer, as it will be input data weights</a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">          2 :       continue;</span></a>
-<a name="116"><span class="lineNum">     116 </span>            :     }</a>
-<a name="117"><span class="lineNum">     117 </span><span class="lineCov">         34 :     for (size_t neuron_index = 0; neuron_index &lt; layer-&gt;neurons.size();</span></a>
-<a name="118"><span class="lineNum">     118 </span>            :          neuron_index++) {</a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineCov">         30 :       const auto &amp;neuron = layer-&gt;neurons.at(neuron_index);</span></a>
-<a name="120"><span class="lineNum">     120 </span>            :       // Write the neuron weights, empty 3rd neighbors column then</a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineCov">         30 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,,&quot;</span></a>
-<a name="122"><span class="lineNum">     122 </span><span class="lineCov">         30 :            &lt;&lt; neuron.toStringCsv(max_weights) &lt;&lt; &quot;\n&quot;;</span></a>
-<a name="123"><span class="lineNum">     123 </span>            :       // Write the neighbors connections weights</a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         30 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">         30 :            &lt;&lt; neuron.neighbors.size() &lt;&lt; &quot;,&quot;</span></a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         30 :            &lt;&lt; neuron.toNeighborsStringCsv(max_weights) &lt;&lt; &quot;\n&quot;;</span></a>
-<a name="127"><span class="lineNum">     127 </span>            :     }</a>
-<a name="128"><span class="lineNum">     128 </span>            :   }</a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">          2 : }</span></a>
+<a name="96"><span class="lineNum">      96 </span>            :   // Write the data</a>
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">          2 :   size_t max_weights = network-&gt;max_weights;</span></a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">          8 :   for (size_t layer_index = 0; layer_index &lt; network-&gt;layers.size();</span></a>
+<a name="99"><span class="lineNum">      99 </span>            :        layer_index++) {</a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">          6 :     const auto &amp;layer = network-&gt;layers.at(layer_index);</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">          6 :     if (layer-&gt;layerType == LayerType::LayerInput) {</span></a>
+<a name="102"><span class="lineNum">     102 </span>            :       // no weights for Input Layer, as it will be input data weights</a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">          2 :       continue;</span></a>
+<a name="104"><span class="lineNum">     104 </span>            :     }</a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         34 :     for (size_t neuron_index = 0; neuron_index &lt; layer-&gt;neurons.size();</span></a>
+<a name="106"><span class="lineNum">     106 </span>            :          neuron_index++) {</a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         30 :       const auto &amp;neuron = layer-&gt;neurons.at(neuron_index);</span></a>
+<a name="108"><span class="lineNum">     108 </span>            :       // Write the neuron weights, empty 3rd neighbors column then</a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         30 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,,&quot;</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         30 :            &lt;&lt; neuron.toStringCsv(max_weights) &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="111"><span class="lineNum">     111 </span>            :       // Write the neighbors connections weights</a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         30 :       file &lt;&lt; layer_index &lt;&lt; &quot;,&quot; &lt;&lt; neuron_index &lt;&lt; &quot;,&quot;</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         30 :            &lt;&lt; neuron.neighbors.size() &lt;&lt; &quot;,&quot;</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         30 :            &lt;&lt; neuron.toNeighborsStringCsv(max_weights) &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="115"><span class="lineNum">     115 </span>            :     }</a>
+<a name="116"><span class="lineNum">     116 </span>            :   }</a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">          2 : }</span></a>
 </pre>
       </td>
     </tr>

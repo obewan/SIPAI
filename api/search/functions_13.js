@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['warn_434',['warn',['../classsipai_1_1SimpleLogger.html#ad7579e9bfdeaa8057674b8808545f5dc',1,'sipai::SimpleLogger']]],
-  ['what_435',['what',['../classsipai_1_1FileReaderException.html#a1cc84ae427674f4caae74c3f691c22a9',1,'sipai::FileReaderException::what()'],['../classsipai_1_1ImageHelperException.html#a85505d8ad9582a908db7f6fe986b0c70',1,'sipai::ImageHelperException::what()'],['../classsipai_1_1ImportExportException.html#a88125b93b3a0a1e9beceba9e23ebcded',1,'sipai::ImportExportException::what()'],['../classsipai_1_1ManagerException.html#a1a4a83457a92d1e7409e66379db73f34',1,'sipai::ManagerException::what()'],['../classsipai_1_1NeuralNetworkException.html#a937270df8f282f4f6a40ff6a10c4cf26',1,'sipai::NeuralNetworkException::what()']]],
-  ['with_436',['with',['../classsipai_1_1NeuralNetworkBuilder.html#aabb77c0f4ec86f4f72350b88acae2a02',1,'sipai::NeuralNetworkBuilder::with(std::unique_ptr&lt; NeuralNetwork &gt; &amp;network)'],['../classsipai_1_1NeuralNetworkBuilder.html#a52f27779baefcc524f4fee1a16fe0d8d',1,'sipai::NeuralNetworkBuilder::with(NeuralNetworkParams &amp;network_params)'],['../classsipai_1_1NeuralNetworkBuilder.html#a6a3eb01aa81f82be52fe375251c0fece',1,'sipai::NeuralNetworkBuilder::with(const AppParams &amp;app_params)']]]
+  ['_7eimportexportexception_443',['~ImportExportException',['../classsipai_1_1ImportExportException.html#aa34649beee8409576b5ac842540136dc',1,'sipai::ImportExportException']]],
+  ['_7elayer_444',['~Layer',['../classsipai_1_1Layer.html#a38c8c0374443ce22ea762150078f0add',1,'sipai::Layer']]],
+  ['_7eneuralnetwork_445',['~NeuralNetwork',['../classsipai_1_1NeuralNetwork.html#aa2cd9852cf13fe56c395dd7e5c11e35e',1,'sipai::NeuralNetwork']]],
+  ['_7eneuralnetworkimportexportfacade_446',['~NeuralNetworkImportExportFacade',['../classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd',1,'sipai::NeuralNetworkImportExportFacade']]],
+  ['_7erunnervisitor_447',['~RunnerVisitor',['../classsipai_1_1RunnerVisitor.html#a9eff828476354487d390af23b47516f0',1,'sipai::RunnerVisitor']]]
 ];

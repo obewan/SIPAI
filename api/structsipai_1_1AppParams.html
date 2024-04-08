@@ -79,7 +79,7 @@ $(function() {
 Public Attributes</h2></td></tr>
 <tr class="memitem:a98d78e26b8c627eabc6288ea970dac01"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a98d78e26b8c627eabc6288ea970dac01">title</a> = &quot;SIPAI - Simple Image Processing Artificial Intelligence&quot;</td></tr>
 <tr class="separator:a98d78e26b8c627eabc6288ea970dac01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7807c73ba7fec1dbbb4ac38c931a6bf1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1">version</a> = &quot;1.0.0&quot;</td></tr>
+<tr class="memitem:a7807c73ba7fec1dbbb4ac38c931a6bf1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1">version</a> = &quot;0.0.1&quot;</td></tr>
 <tr class="separator:a7807c73ba7fec1dbbb4ac38c931a6bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b62227d9472ba41b924929d402520e1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a9b62227d9472ba41b924929d402520e1">input_file</a> = &quot;&quot;</td></tr>
 <tr class="separator:a9b62227d9472ba41b924929d402520e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,11 +103,27 @@ Public Attributes</h2></td></tr>
 <tr class="separator:acc2ed6e7c9112fe64f2dd9b882192a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae61a7a760ba975865154ecae35ea7535"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#ae61a7a760ba975865154ecae35ea7535">epoch_autosave</a> = 100</td></tr>
 <tr class="separator:ae61a7a760ba975865154ecae35ea7535"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b2d855b14a63d73dda3faf9b1b6d000"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a5b2d855b14a63d73dda3faf9b1b6d000">bulk_loading</a> = false</td></tr>
+<tr class="separator:a5b2d855b14a63d73dda3faf9b1b6d000"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251">enable_parallel</a> = false</td></tr>
-<tr class="memdesc:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="mdescLeft">&#160;</td><td class="mdescRight">This will enable parallel processing on each neurons, suitable only on massive parallel plateform. Not activable by command line for now (CUDA not implemented).  <a href="structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251">More...</a><br /></td></tr>
+<tr class="memdesc:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not activable by command line for now (still under development).  <a href="structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251">More...</a><br /></td></tr>
 <tr class="separator:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5b2d855b14a63d73dda3faf9b1b6d000"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b2d855b14a63d73dda3faf9b1b6d000">&#9670;&nbsp;</a></span>bulk_loading</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sipai::AppParams::bulk_loading = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1c7dc9d1c2d82e756e9717fdb5bb9251"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c7dc9d1c2d82e756e9717fdb5bb9251">&#9670;&nbsp;</a></span>enable_parallel</h2>
 
@@ -120,7 +136,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This will enable parallel processing on each neurons, suitable only on massive parallel plateform. Not activable by command line for now (CUDA not implemented). </p>
+<p>Not activable by command line for now (still under development). </p>
 
 </div>
 </div>
@@ -299,7 +315,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string sipai::AppParams::version = &quot;1.0.0&quot;</td>
+          <td class="memname">std::string sipai::AppParams::version = &quot;0.0.1&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">

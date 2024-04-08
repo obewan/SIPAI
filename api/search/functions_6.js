@@ -1,5 +1,12 @@
 var searchData=
 [
-  ['filereaderexception_358',['FileReaderException',['../classsipai_1_1FileReaderException.html#afc0f5d68ba724cb5c9c52faf403c9f83',1,'sipai::FileReaderException']]],
-  ['forwardpropagation_359',['forwardPropagation',['../classsipai_1_1Layer.html#a37256432ea22c3040bcd0099a874849b',1,'sipai::Layer::forwardPropagation()'],['../classsipai_1_1LayerInput.html#a51e72e7ede9928f6e18fd1ded334a30b',1,'sipai::LayerInput::forwardPropagation()'],['../classsipai_1_1NeuralNetwork.html#ac567231970204a1d88a3fbf900be8380',1,'sipai::NeuralNetwork::forwardPropagation()']]]
+  ['getenhancervisitor_363',['getEnhancerVisitor',['../classsipai_1_1RunnerVisitorFactory.html#aa1838e9bf9dd9e50529f4bf27bae4b7e',1,'sipai::RunnerVisitorFactory']]],
+  ['getfilenamecsv_364',['getFilenameCsv',['../namespacesipai.html#a75649a3fec248cda3e742668f865fb9e',1,'sipai']]],
+  ['getinstance_365',['getInstance',['../classsipai_1_1Manager.html#a4ff7ad31f5666902d6eaaccf13e50293',1,'sipai::Manager::getInstance()'],['../classsipai_1_1RandomFactory.html#ac1e399ff29dcb96d65b4cf3e5084b55d',1,'sipai::RandomFactory::getInstance()'],['../classsipai_1_1SimpleLogger.html#a0505655e9a1bf6b7f2ee828c84c002b9',1,'sipai::SimpleLogger::getInstance()']]],
+  ['getlayertypestr_366',['getLayerTypeStr',['../classsipai_1_1Layer.html#a53ea394f3982019473bc918f4a999bbe',1,'sipai::Layer']]],
+  ['getoutputvalues_367',['getOutputValues',['../classsipai_1_1LayerOutput.html#acfef1f5ddf58a599fea72690ccd1bb73',1,'sipai::LayerOutput']]],
+  ['getrandom_368',['getRandom',['../classsipai_1_1RandomFactory.html#a5c32ddafb5ee3580fe07e419e20d48a8',1,'sipai::RandomFactory']]],
+  ['gettrainingdata_369',['getTrainingData',['../classsipai_1_1TrainingDataFileReaderCSV.html#a2e6abf711b9db6dd4af6bc5b8cf9b4f1',1,'sipai::TrainingDataFileReaderCSV']]],
+  ['gettrainingmonitoredvisitor_370',['getTrainingMonitoredVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a53ba8a13a2a2dde56df7296faefa3717',1,'sipai::RunnerVisitorFactory']]],
+  ['getversionheader_371',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]]
 ];

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-06 20:10:57</td>
+            <td class="headerValue">2024-04-08 22:32:36</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">24</td>
@@ -152,9 +152,9 @@
 <a name="90"><span class="lineNum">      90 </span>            :  * ReLU problem where neurons become inactive and only output zero.</a>
 <a name="91"><span class="lineNum">      91 </span>            :  * Combine LReLU with clamping to [0, 1] range</a>
 <a name="92"><span class="lineNum">      92 </span>            :  */</a>
-<a name="93"><span class="lineNum">      93 </span><span class="lineCov">        304 : inline auto leakyRelu = [](const RGBA &amp;rgba) {</span></a>
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">        608 :   return rgba.apply(</span></a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineCov">       1824 :       [](float v) -&gt; float { return std::clamp(0.01f * v, 0.0f, 1.0f); });</span></a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineCov">        325 : inline auto leakyRelu = [](const RGBA &amp;rgba) {</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">        650 :   return rgba.apply(</span></a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">       1950 :       [](float v) -&gt; float { return std::clamp(0.01f * v, 0.0f, 1.0f); });</span></a>
 <a name="96"><span class="lineNum">      96 </span>            : };</a>
 <a name="97"><span class="lineNum">      97 </span>            : </a>
 <a name="98"><span class="lineNum">      98 </span><span class="lineCov">        100 : inline auto leakyReluDerivative = [](const RGBA &amp;rgba) {</span></a>
