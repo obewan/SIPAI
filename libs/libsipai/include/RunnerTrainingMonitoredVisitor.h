@@ -9,6 +9,7 @@
  */
 #pragma once
 #include "Common.h"
+#include "RGBA.h"
 #include "RunnerVisitor.h"
 #include <memory>
 
@@ -66,5 +67,21 @@ public:
    * @param hasLastEpochBeenSaved
    */
   void saveNetwork(bool &hasLastEpochBeenSaved) const;
+
+private:
+  mutable std::unique_ptr<std::vector<std::pair<image, image>>>
+      training_images_ = nullptr;
+  mutable std::unique_ptr<std::vector<std::pair<image, image>>>
+      validation_images_ = nullptr;
+  std::pair<image, image> loadImages(const std::string &inputPath,
+                                     const std::string &targetPath) const;
+  std::vector<std::pair<image, image>>
+  loadBulkImages(const std::unique_ptr<TrainingData> &dataSet,
+                 std::string logPrefix) const;
+
+  float computeLoss(const std::vector<std::pair<image, image>> &images,
+                    bool withBackwardAndUpdateWeights) const;
+  float computeLoss(const TrainingData &dataSet,
+                    bool withBackwardAndUpdateWeights) const;
 };
 } // namespace sipai

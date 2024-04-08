@@ -30,6 +30,7 @@ struct AppParams {
   int max_epochs = NOMAX_EPOCHS;
   int max_epochs_without_improvement = 2;
   int epoch_autosave = 100;
+  bool bulk_loading = false;
   /**
    * @brief This will enable parallel processing on each neurons, suitable only
    * on massive parallel plateform. Not activable by command line for now (CUDA

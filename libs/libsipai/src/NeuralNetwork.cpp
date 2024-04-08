@@ -7,9 +7,8 @@
 
 using namespace sipai;
 
-std::vector<RGBA>
-NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues,
-                                  bool enable_parallel) {
+image NeuralNetwork::forwardPropagation(const image &inputValues,
+                                        bool enable_parallel) {
   if (layers.front()->layerType != LayerType::LayerInput) {
     throw NeuralNetworkException("Invalid front layer type");
   }
@@ -23,7 +22,7 @@ NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues,
   return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
-void NeuralNetwork::backwardPropagation(const std::vector<RGBA> &expectedValues,
+void NeuralNetwork::backwardPropagation(const image &expectedValues,
                                         bool enable_parallel) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NeuralNetworkException("Invalid back layer type");

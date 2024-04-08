@@ -14,9 +14,8 @@
 
 using namespace sipai;
 
-std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
-                                     size_t &size_x, size_t &size_y,
-                                     size_t resize_x, size_t resize_y) {
+image Manager::loadImage(const std::string &imagePath, size_t &size_x,
+                         size_t &size_y, size_t resize_x, size_t resize_y) {
   ImageHelper imageHelper;
   cv::Mat image = imageHelper.loadImage(imagePath);
 
@@ -31,15 +30,14 @@ std::vector<RGBA> Manager::loadImage(const std::string &imagePath,
   return imageHelper.convertToRGBAVector(image);
 }
 
-void Manager::saveImage(const std::string &imagePath,
-                        const std::vector<RGBA> &image, size_t size_x,
-                        size_t size_y, float scale) {
+void Manager::saveImage(const std::string &imagePath, const image &image,
+                        size_t size_x, size_t size_y, float scale) {
   saveImage(imagePath, image, size_x, size_y, size_x * scale, size_y * scale);
 };
 
-void Manager::saveImage(const std::string &imagePath,
-                        const std::vector<RGBA> &image, size_t size_x,
-                        size_t size_y, size_t resize_x, size_t resize_y) {
+void Manager::saveImage(const std::string &imagePath, const image &image,
+                        size_t size_x, size_t size_y, size_t resize_x,
+                        size_t resize_y) {
   ImageHelper imageHelper;
   cv::Mat dest = imageHelper.convertToMat(image, size_x, size_y);
   cv::resize(dest, dest, cv::Size(resize_x, resize_y));
