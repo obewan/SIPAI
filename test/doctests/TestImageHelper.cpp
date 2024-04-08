@@ -20,9 +20,9 @@ TEST_CASE("Testing ImageHelper") {
     if (std::filesystem::exists(tmpImage)) {
       std::filesystem::remove(tmpImage);
     }
-    CHECK(std::filesystem::exists(tmpImage) == false);
+    CHECK_FALSE(std::filesystem::exists(tmpImage));
     imageHelper.saveImage(tmpImage, image);
-    CHECK(std::filesystem::exists(tmpImage) == true);
+    CHECK(std::filesystem::exists(tmpImage));
     auto image2 = imageHelper.loadImage(tmpImage);
     CHECK(image2.size() == image.size());
     std::filesystem::remove(tmpImage);

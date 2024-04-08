@@ -174,6 +174,14 @@ struct RGBA {
     return *this;
   }
 
+  bool operator==(const RGBA &rhs) const {
+    return this->value.size() == rhs.value.size() &&
+           std::equal(this->value.begin(), this->value.end(),
+                      rhs.value.begin());
+  }
+
+  bool operator!=(const RGBA &rhs) const { return !(*this == rhs); }
+
   RGBA operator*(const RGBA &rhs) const {
     return applyToElements(std::multiplies<>(), rhs);
   }
