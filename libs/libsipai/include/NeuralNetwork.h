@@ -10,6 +10,7 @@
 #pragma once
 #include "Layer.h"
 #include <atomic>
+#include <cstddef>
 
 namespace sipai {
 
@@ -74,6 +75,12 @@ public:
    * @param enable_parallel enable parallelism (experimental)
    */
   void updateWeights(float learning_rate, bool enable_parallel = false);
+
+  /**
+   * @brief max weights of all neurons, useful for csv export
+   *
+   */
+  size_t max_weights = 0;
 };
 
 } // namespace sipai
