@@ -9,10 +9,12 @@
  */
 #pragma once
 #include "Neuron.h"
+#include <atomic>
 #include <cstddef>
 #include <execution>
 #include <functional>
 #include <map>
+#include <thread>
 
 namespace sipai {
 enum class LayerType { LayerInput, LayerHidden, LayerOutput };
@@ -50,10 +52,13 @@ public:
     if (previousLayer == nullptr) {
       return;
     }
-    if (enable_parallel) {
-      _forward(std::execution::par_unseq);
-    } else {
-      _forward(std::execution::seq);
+    for (auto &n : neurons) {
+      n.value = {0.0, 0.0, 0.0, 0.0};
+      for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
+        n.value += previousLayer->neurons[i].value * n.weights[i];
+      }
+      // Use activation function
+      n.value = n.activationFunction(n.value);
     }
   };
 
@@ -65,10 +70,21 @@ public:
     if (nextLayer == nullptr) {
       return;
     }
-    if (enable_parallel) {
-      _backward(std::execution::par_unseq);
-    } else {
-      _backward(std::execution::seq);
+    float error_min = -1.0f;
+    float error_max = 1.0f;
+    for (auto &n : neurons) {
+      size_t pos = &n - &neurons[0];
+      RGBA error = {0.0, 0.0, 0.0, 0.0};
+      for (Neuron &nn : nextLayer->neurons) {
+        error += nn.weights[pos] * nn.error;
+      }
+      // Consider errors of adjacent neurons
+      for (NeuronConnection &conn : n.neighbors) {
+        error += conn.neuron->error * conn.weight;
+      }
+      // Use the derivative of the activation function
+      n.error = (error * n.activationFunctionDerivative(n.value))
+                    .clamp(error_min, error_max);
     }
   }
 
@@ -83,10 +99,52 @@ public:
     if (previousLayer == nullptr) {
       return;
     }
+
     if (enable_parallel) {
-      _update(std::execution::par_unseq, learningRate);
+      std::vector<std::jthread> threads;
+      size_t num_threads =
+          std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
+      std::atomic<size_t> current_index = 0; // atomicity between threads
+
+      for (size_t i = 0; i < num_threads; ++i) {
+        threads.emplace_back([this, &current_index, learningRate]() {
+          while (true) {
+            size_t index = current_index.fetch_add(1);
+            if (index >= neurons.size()) {
+              break;
+            }
+
+            auto &n = neurons[index];
+            const auto learningRateError = learningRate * n.error;
+            // Update weights based on neurons in the previous layer
+            for (size_t k = 0; k < n.weights.size(); ++k) {
+              n.weights[k] -=
+                  previousLayer->neurons[k].value * learningRateError;
+            }
+            // Update weights based on neighboring neurons
+            for (NeuronConnection &conn : n.neighbors) {
+              conn.weight -= conn.neuron->value * learningRateError;
+            }
+          }
+        });
+      }
+
+      for (auto &thread : threads) {
+        thread.join();
+      }
+
     } else {
-      _update(std::execution::seq, learningRate);
+      for (auto &n : neurons) {
+        const auto &learningRateError = learningRate * n.error;
+        // Update weights based on neurons in the previous layer
+        for (size_t i = 0; i < n.weights.size(); ++i) {
+          n.weights[i] -= previousLayer->neurons[i].value * learningRateError;
+        }
+        // Update weights based on neighboring neurons
+        for (NeuronConnection &conn : n.neighbors) {
+          conn.weight -= conn.neuron->value * learningRateError;
+        }
+      }
     }
   }
 
@@ -106,93 +164,5 @@ public:
       n.activationFunctionDerivative = derivative;
     }
   }
-
-protected:
-  /**
-   * @brief Forward propagation core methode
-   *
-   * @tparam ExecutionPolicy the sequential or parallel execution policy type
-   * @param executionPolicy
-   */
-  template <typename ExecutionPolicy>
-  void _forward(ExecutionPolicy executionPolicy) {
-    if (previousLayer == nullptr) {
-      return;
-    }
-    std::for_each(executionPolicy, neurons.begin(), neurons.end(),
-                  [this](Neuron &n) {
-                    n.value = {0.0, 0.0, 0.0, 0.0};
-                    for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
-                      n.value += previousLayer->neurons[i].value * n.weights[i];
-                    }
-
-                    // Use activation function
-                    n.value = n.activationFunction(n.value);
-                  });
-  };
-
-  /**
-   * @brief Backward propagation core methode
-   *
-   * @tparam ExecutionPolicy
-   * @param executionPolicy
-   */
-  template <typename ExecutionPolicy>
-  void _backward(ExecutionPolicy executionPolicy) {
-    if (nextLayer == nullptr) {
-      return;
-    }
-    float error_min = -1.0f;
-    float error_max = 1.0f;
-    std::for_each(executionPolicy, neurons.begin(), neurons.end(),
-                  [this, &error_min, &error_max](Neuron &n) {
-                    size_t pos = &n - &neurons[0];
-                    RGBA error = {0.0, 0.0, 0.0, 0.0};
-                    for (Neuron &nn : nextLayer->neurons) {
-                      error += nn.weights[pos] * nn.error;
-                    }
-
-                    // Consider errors of adjacent neurons
-                    for (NeuronConnection &conn : n.neighbors) {
-                      error += conn.neuron->error * conn.weight;
-                    }
-                    // Use the derivative of the activation function
-                    n.error = (error * n.activationFunctionDerivative(n.value))
-                                  .clamp(error_min, error_max);
-                  });
-  }
-
-  /**
-   * @brief Update weights core methode
-   *
-   * @tparam ExecutionPolicy the sequential or parallel execution policy type
-   * @param executionPolicy
-   * @param learningRate
-   */
-  template <typename ExecutionPolicy>
-  void _update(ExecutionPolicy executionPolicy, float learningRate) {
-    if (previousLayer == nullptr) {
-      return;
-    }
-    float error_min = -1.0f;
-    float error_max = 1.0f;
-    std::for_each(executionPolicy, neurons.begin(), neurons.end(),
-                  [this, &learningRate, &error_min, &error_max](Neuron &n) {
-                    // Update weights based on neurons in the previous layer
-                    for (size_t j = 0; j < n.weights.size(); ++j) {
-                      auto dE_dw = previousLayer->neurons[j].value * n.error;
-                      n.weights[j] -=
-                          learningRate * dE_dw.clamp(error_min, error_max);
-                      n.weights[j] = n.weights[j].clamp();
-                    }
-
-                    // Update weights based on neighboring neurons
-                    for (NeuronConnection &conn : n.neighbors) {
-                      auto dE_dw = conn.neuron->value * n.error;
-                      conn.weight -=
-                          learningRate * dE_dw.clamp(error_min, error_max);
-                    }
-                  });
-  };
 };
 } // namespace sipai

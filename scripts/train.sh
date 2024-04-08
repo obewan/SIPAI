@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # script to test the TrainingMonitored on a release, for local testing
-res_i=20
-res_h=25
-res_o=30
+res_i=60
+res_h=65
+res_o=70
 hl=1
 algo="LReLU"
 lr=0.0002

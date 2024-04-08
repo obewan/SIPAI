@@ -32,9 +32,7 @@ struct AppParams {
   int epoch_autosave = 100;
   bool bulk_loading = false;
   /**
-   * @brief This will enable parallel processing on each neurons, suitable only
-   * on massive parallel plateform. Not activable by command line for now (CUDA
-   * not implemented).
+   * @brief Not activable by command line for now (still under development).
    */
   bool enable_parallel = false;
 };

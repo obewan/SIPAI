@@ -163,14 +163,43 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
     const std::unique_ptr<TrainingData> &dataSet, std::string logPrefix) const {
   std::vector<std::pair<image, image>> images;
   SimpleLogger::LOG_INFO(logPrefix + " loading images... (bulk loading)");
-  try {
-    for (const auto &[inputPath, targetPath] : *dataSet) {
-      images.emplace_back(loadImages(inputPath, targetPath));
-    }
-  } catch (const std::bad_alloc &e) {
-    throw RunnerVisitorException(logPrefix +
-                                 " loading image error: out of memory.");
+
+  std::mutex images_mutex;
+  std::atomic<size_t> current_index = 0; // atomicity between threads
+  size_t num_threads =
+      std::min((size_t)std::thread::hardware_concurrency(), dataSet->size());
+
+  std::vector<std::jthread> threads;
+  for (size_t i = 0; i < num_threads; ++i) {
+    threads.emplace_back([this, &dataSet, &images, &images_mutex,
+                          &current_index, logPrefix]() {
+      try {
+        while (true) {
+          size_t index = current_index.fetch_add(1);
+          if (index >= dataSet->size()) {
+            break;
+          }
+
+          auto it = std::next(dataSet->begin(), index);
+          const auto &[inputPath, targetPath] = *it;
+          std::pair<image, image> pair = loadImages(inputPath, targetPath);
+
+          {
+            std::lock_guard<std::mutex> lock(images_mutex);
+            images.emplace_back(std::move(pair));
+          }
+        }
+      } catch (const std::bad_alloc &e) {
+        throw RunnerVisitorException(logPrefix +
+                                     " loading image error: out of memory.");
+      }
+    });
   }
+
+  for (auto &thread : threads) {
+    thread.join();
+  }
+
   return images;
 }
 

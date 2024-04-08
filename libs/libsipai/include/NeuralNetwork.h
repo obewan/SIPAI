@@ -75,7 +75,7 @@ public:
    * @param learning_rate The learning rate
    * @param enable_parallel enable parallelism (experimental)
    */
-  void updateWeights(float learning_rate, bool enable_parallel = false);
+  void updateWeights(float learning_rate, bool enable_parallel);
 
   /**
    * @brief max weights of all neurons, useful for csv export

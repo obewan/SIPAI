@@ -53,8 +53,9 @@ struct RGBA {
    */
   RGBA clamp(const float &min = 0.0f, const float &max = 1.0f) const {
     RGBA result;
-    std::transform(value.begin(), value.end(), result.value.begin(),
-                   [min, max](float val) { return std::clamp(val, min, max); });
+    std::transform(
+        value.begin(), value.end(), result.value.begin(),
+        [&min, &max](const float &val) { return std::clamp(val, min, max); });
     return result;
   }
 
