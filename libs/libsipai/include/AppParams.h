@@ -18,7 +18,7 @@ constexpr int NOMAX_EPOCHS = -1;
 
 struct AppParams {
   std::string title = "SIPAI - Simple Image Processing Artificial Intelligence";
-  std::string version = "1.0.0";
+  std::string version = "0.0.1";
   std::string input_file = "";
   std::string output_file = "";
   std::string training_data_file = "";
@@ -30,10 +30,9 @@ struct AppParams {
   int max_epochs = NOMAX_EPOCHS;
   int max_epochs_without_improvement = 2;
   int epoch_autosave = 100;
+  bool bulk_loading = false;
   /**
-   * @brief This will enable parallel processing on each neurons, suitable only
-   * on massive parallel plateform. Not activable by command line for now (CUDA
-   * not implemented).
+   * @brief Not activable by command line for now (still under development).
    */
   bool enable_parallel = false;
 };

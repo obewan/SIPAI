@@ -156,10 +156,15 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
   if (network_->layers.empty()) {
     throw NeuralNetworkException("empty layers");
   }
+  network_->max_weights = 0;
   for (auto layer : network_->layers) {
     if (layer->previousLayer != nullptr) {
       for (auto &n : layer->neurons) {
-        n.initWeights(layer->previousLayer->neurons.size());
+        size_t new_size = layer->previousLayer->neurons.size();
+        n.initWeights(new_size);
+        if (new_size > network_->max_weights) {
+          network_->max_weights = new_size;
+        }
       }
     }
   }

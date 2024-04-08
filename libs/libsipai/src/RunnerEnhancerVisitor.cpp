@@ -2,6 +2,7 @@
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
+#include "exception/RunnerVisitorException.h"
 #include <exception>
 
 using namespace sipai;
@@ -11,18 +12,15 @@ void RunnerEnhancerVisitor::visit() const {
   auto &manager = Manager::getInstance();
 
   if (!manager.network) {
-    SimpleLogger::LOG_ERROR("No neural network. Aborting.");
-    return;
+    throw RunnerVisitorException("No neural network. Aborting.");
   }
 
   if (manager.app_params.input_file.empty()) {
-    SimpleLogger::LOG_ERROR("No input file. Aborting.");
-    return;
+    throw RunnerVisitorException("No input file. Aborting.");
   }
 
   if (manager.app_params.output_file.empty()) {
-    SimpleLogger::LOG_ERROR("No output file. Aborting.");
-    return;
+    throw RunnerVisitorException("No output file. Aborting.");
   }
 
   try {
@@ -42,6 +40,6 @@ void RunnerEnhancerVisitor::visit() const {
                            manager.app_params.output_file);
 
   } catch (std::exception &ex) {
-    SimpleLogger::LOG_ERROR("Image enhancement error: ", ex.what());
+    throw RunnerVisitorException(ex.what());
   }
 }

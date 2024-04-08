@@ -9,7 +9,7 @@
  */
 #pragma once
 
-#include "RGBA.h"
+#include "Common.h"
 #include "exception/ImageHelperException.h"
 #include <cstddef>
 #include <exception>
@@ -43,7 +43,7 @@ public:
    * @param image The OpenCV Mat image to be converted.
    * @return std::vector<RGBA> The converted image as a vector of RGBA values.
    */
-  std::vector<RGBA> convertToRGBAVector(const cv::Mat &image);
+  image convertToRGBAVector(const cv::Mat &image);
 
   /**
    * @brief Converts a vector of RGBA values into an OpenCV Mat image.
@@ -55,8 +55,7 @@ public:
    * values.
    * @return cv::Mat The converted image as an OpenCV Mat.
    */
-  cv::Mat convertToMat(const std::vector<RGBA> &image, size_t size_x,
-                       size_t size_y);
+  cv::Mat convertToMat(const image &image, size_t size_x, size_t size_y);
 
   /**
    * @brief Computes the loss between the output image
@@ -67,7 +66,6 @@ public:
    *
    * @return The computed loss.
    */
-  float computeLoss(const std::vector<RGBA> &outputImage,
-                    const std::vector<RGBA> &targetImage);
+  float computeLoss(const image &outputImage, const image &targetImage);
 };
 } // namespace sipai

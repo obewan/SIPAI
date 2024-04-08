@@ -8,8 +8,10 @@
  *
  */
 #pragma once
+#include "Common.h"
 #include "Layer.h"
 #include <atomic>
+#include <cstddef>
 
 namespace sipai {
 
@@ -49,26 +51,37 @@ public:
    * values.
    *
    * @param inputValues The input values for forward propagation.
+   * @param enable_parallel enable parallelism (experimental)
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues,
-                                       bool enable_parallel = false);
+  image forwardPropagation(const image &inputValues,
+                           bool enable_parallel = false);
 
   /**
    * @brief Performs backward propagation on the network using the given
    * expected values.
    *
    * @param expectedValues The expected values for backward propagation.
+   * @param enable_parallel enable parallelism (experimental)
    */
-  void backwardPropagation(const std::vector<RGBA> &expectedValues,
+  void backwardPropagation(const image &expectedValues,
                            bool enable_parallel = false);
 
   /**
    * @brief Updates the weights of the neurons in the network using the learning
    * rate.
+   *
+   * @param learning_rate The learning rate
+   * @param enable_parallel enable parallelism (experimental)
    */
-  void updateWeights(float learning_rate, bool enable_parallel = false);
+  void updateWeights(float learning_rate, bool enable_parallel);
+
+  /**
+   * @brief max weights of all neurons, useful for csv export
+   *
+   */
+  size_t max_weights = 0;
 };
 
 } // namespace sipai

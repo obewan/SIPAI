@@ -56,8 +56,8 @@ public:
    * @param resize_y The desired height to which the image should be resized.
    * @return A vector of RGBA values representing the resized image.
    */
-  std::vector<RGBA> loadImage(const std::string &imagePath, size_t &size_x,
-                              size_t &size_y, size_t resize_x, size_t resize_y);
+  image loadImage(const std::string &imagePath, size_t &size_x, size_t &size_y,
+                  size_t resize_x, size_t resize_y);
 
   /**
    * @brief Exports a resized image to a specified path.
@@ -70,7 +70,7 @@ public:
    * RGBA values.
    * @param scale The scale of exported image.
    */
-  void saveImage(const std::string &imagePath, const std::vector<RGBA> &image,
+  void saveImage(const std::string &imagePath, const image &image,
                  size_t size_x, size_t size_y, float scale = 1.0);
   /**
    * @brief Exports a resized image to a specified path.
@@ -86,7 +86,7 @@ public:
    * @param resize_y The desired height to which the image should be resized
    * before exporting.
    */
-  void saveImage(const std::string &imagePath, const std::vector<RGBA> &image,
+  void saveImage(const std::string &imagePath, const image &image,
                  size_t size_x, size_t size_y, size_t resize_x,
                  size_t resize_y);
 

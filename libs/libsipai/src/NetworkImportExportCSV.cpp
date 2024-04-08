@@ -93,20 +93,8 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
   std::string filename = getFilenameCsv(appParams.network_to_export);
   std::ofstream file(filename);
 
-  // Determine the maximum number of weights any neuron has
-  size_t max_weights = 0;
-  for (const auto &layer : network->layers) {
-    auto neuron_max = std::max_element(
-        layer->neurons.begin(), layer->neurons.end(),
-        [](const auto &neuron1, const auto &neuron2) {
-          return neuron1.weights.size() < neuron2.weights.size();
-        });
-    if (neuron_max->weights.size() > max_weights) {
-      max_weights = neuron_max->weights.size();
-    }
-  }
-
   // Write the data
+  size_t max_weights = network->max_weights;
   for (size_t layer_index = 0; layer_index < network->layers.size();
        layer_index++) {
     const auto &layer = network->layers.at(layer_index);

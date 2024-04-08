@@ -263,6 +263,10 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "memory.")
       ->default_val(app_params.run_mode)
       ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
+  app.add_flag("--bl,--bulk_loading", app_params.bulk_loading,
+               "This flag will activate a bulk loading of all images, "
+               "resulting training speed, but at the cost of more memory, "
+               "depending on the images total count.");
   app.add_flag("-v,--version", version, "Show current version.");
 }
 

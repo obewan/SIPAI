@@ -71,6 +71,8 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
     networkParams.output_activation_function =
         json_model["parameters"]["output_activation_function"];
 
+    network->max_weights = json_model["max_weights"];
+
     for (auto json_layer : json_model["layers"]) {
       // Get the type of the layer.
       std::string layer_type_str = json_layer["type"];
@@ -132,6 +134,9 @@ void NeuralNetworkImportExportJSON::exportModel(
                        {"neurons", layer->neurons.size()}};
     json_network["layers"].push_back(json_layer);
   }
+
+  // max weights info
+  json_network["max_weights"] = network->max_weights;
 
   // Serialize the parameters to JSON.
   json_network["parameters"]["input_size_x"] = json(networkParams.input_size_x);

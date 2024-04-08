@@ -2,9 +2,11 @@
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
+#include "exception/RunnerVisitorException.h"
 #include <csignal>
 #include <exception>
 #include <memory>
+#include <utility>
 
 using namespace sipai;
 
@@ -87,56 +89,29 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 }
 
 float RunnerTrainingMonitoredVisitor::trainOnEpoch(
-    const std::unique_ptr<TrainingData> &dataSet) const {
+    const std::unique_ptr<TrainingData> &trainingSet) const {
   auto &manager = Manager::getInstance();
-  ImageHelper imageHelper;
-  float epochLoss = 0.0f;
-  for (const auto &[inputPath, targetPath] : *dataSet) {
-    size_t orig_ix;
-    size_t orig_iy;
-    size_t orig_tx;
-    size_t orig_ty;
-    std::vector<RGBA> inputImage = manager.loadImage(
-        inputPath, orig_ix, orig_iy, manager.network_params.input_size_x,
-        manager.network_params.input_size_y);
-    std::vector<RGBA> targetImage = manager.loadImage(
-        targetPath, orig_tx, orig_ty, manager.network_params.output_size_x,
-        manager.network_params.output_size_y);
-
-    std::vector<RGBA> outputImage = manager.network->forwardPropagation(
-        inputImage, manager.app_params.enable_parallel);
-    epochLoss += imageHelper.computeLoss(outputImage, targetImage);
-
-    manager.network->backwardPropagation(targetImage,
-                                         manager.app_params.enable_parallel);
-    manager.network->updateWeights(manager.network_params.learning_rate,
-                                   manager.app_params.enable_parallel);
+  if (manager.app_params.bulk_loading && !training_images_) {
+    training_images_ = std::make_unique<std::vector<std::pair<image, image>>>(
+        loadBulkImages(trainingSet, "Training:"));
   }
-  epochLoss /= dataSet->size();
+  float epochLoss = manager.app_params.bulk_loading
+                        ? computeLoss(*training_images_, true)
+                        : computeLoss(*trainingSet, true);
+  epochLoss /= trainingSet->size();
   return epochLoss;
 }
 
 float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
     const std::unique_ptr<TrainingData> &validationSet) const {
   auto &manager = Manager::getInstance();
-  ImageHelper imageHelper;
-  float validationLoss = 0.0f;
-  for (const auto &[inputPath, targetPath] : *validationSet) {
-    size_t orig_ix;
-    size_t orig_iy;
-    size_t orig_tx;
-    size_t orig_ty;
-    auto inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,
-                                        manager.network_params.input_size_x,
-                                        manager.network_params.input_size_y);
-    auto targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,
-                                         manager.network_params.output_size_x,
-                                         manager.network_params.output_size_y);
-
-    auto outputImage = manager.network->forwardPropagation(
-        inputImage, manager.app_params.enable_parallel);
-    validationLoss += imageHelper.computeLoss(outputImage, targetImage);
+  if (manager.app_params.bulk_loading && !validation_images_) {
+    validation_images_ = std::make_unique<std::vector<std::pair<image, image>>>(
+        loadBulkImages(validationSet, "Validation:"));
   }
+  float validationLoss = manager.app_params.bulk_loading
+                             ? computeLoss(*validation_images_, false)
+                             : computeLoss(*validationSet, false);
   validationLoss /= validationSet->size();
   return validationLoss;
 }
@@ -168,4 +143,102 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
   } catch (std::exception &ex) {
     SimpleLogger::LOG_INFO("Saving the neural network error: ", ex.what());
   }
+}
+
+std::pair<image, image> RunnerTrainingMonitoredVisitor::loadImages(
+    const std::string &inputPath, const std::string &targetPath) const {
+  auto &manager = Manager::getInstance();
+  size_t orig_ix, orig_iy, orig_tx, orig_ty;
+  image inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,
+                                       manager.network_params.input_size_x,
+                                       manager.network_params.input_size_y);
+  image targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,
+                                        manager.network_params.output_size_x,
+                                        manager.network_params.output_size_y);
+  return std::make_pair(inputImage, targetImage);
+}
+
+std::vector<std::pair<image, image>>
+RunnerTrainingMonitoredVisitor::loadBulkImages(
+    const std::unique_ptr<TrainingData> &dataSet, std::string logPrefix) const {
+  std::vector<std::pair<image, image>> images;
+  SimpleLogger::LOG_INFO(logPrefix + " loading images... (bulk loading)");
+
+  std::mutex images_mutex;
+  std::atomic<size_t> current_index = 0; // atomicity between threads
+  size_t num_threads =
+      std::min((size_t)std::thread::hardware_concurrency(), dataSet->size());
+
+  std::vector<std::jthread> threads;
+  for (size_t i = 0; i < num_threads; ++i) {
+    threads.emplace_back([this, &dataSet, &images, &images_mutex,
+                          &current_index, logPrefix]() {
+      try {
+        while (true) {
+          size_t index = current_index.fetch_add(1);
+          if (index >= dataSet->size()) {
+            break;
+          }
+
+          auto it = std::next(dataSet->begin(), index);
+          const auto &[inputPath, targetPath] = *it;
+          std::pair<image, image> pair = loadImages(inputPath, targetPath);
+
+          {
+            std::lock_guard<std::mutex> lock(images_mutex);
+            images.emplace_back(std::move(pair));
+          }
+        }
+      } catch (const std::bad_alloc &e) {
+        throw RunnerVisitorException(logPrefix +
+                                     " loading image error: out of memory.");
+      }
+    });
+  }
+
+  for (auto &thread : threads) {
+    thread.join();
+  }
+
+  return images;
+}
+
+float RunnerTrainingMonitoredVisitor::computeLoss(
+    const std::vector<std::pair<image, image>> &images,
+    bool withBackwardAndUpdateWeights) const {
+  auto &manager = Manager::getInstance();
+  ImageHelper imageHelper;
+  float loss = 0.0f;
+  for (const auto &[inputImage, targetImage] : images) {
+    image outputImage = manager.network->forwardPropagation(
+        inputImage, manager.app_params.enable_parallel);
+    loss += imageHelper.computeLoss(outputImage, targetImage);
+    if (withBackwardAndUpdateWeights) {
+      manager.network->backwardPropagation(targetImage,
+                                           manager.app_params.enable_parallel);
+      manager.network->updateWeights(manager.network_params.learning_rate,
+                                     manager.app_params.enable_parallel);
+    }
+  }
+  return loss;
+}
+
+float RunnerTrainingMonitoredVisitor::computeLoss(
+    const TrainingData &dataSet, bool withBackwardAndUpdateWeights) const {
+  auto &manager = Manager::getInstance();
+  ImageHelper imageHelper;
+  float loss = 0.0f;
+  for (const auto &[inputPath, targetPath] : dataSet) {
+    const auto &[inputImage, targetImage] = loadImages(inputPath, targetPath);
+    image outputImage = manager.network->forwardPropagation(
+        inputImage, manager.app_params.enable_parallel);
+    loss += imageHelper.computeLoss(outputImage, targetImage);
+    if (withBackwardAndUpdateWeights) {
+      manager.network->backwardPropagation(targetImage,
+                                           manager.app_params.enable_parallel);
+      manager.network->updateWeights(manager.network_params.learning_rate,
+                                     manager.app_params.enable_parallel);
+    }
+  }
+  return loss;
 }

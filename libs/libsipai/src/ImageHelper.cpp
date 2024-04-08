@@ -21,14 +21,14 @@ void ImageHelper::saveImage(const std::string &imagePath, cv::Mat &image) {
   }
 }
 
-std::vector<RGBA> ImageHelper::convertToRGBAVector(const cv::Mat &image) {
-  const int channels = image.channels();
-  const int rows = image.rows;
-  const int cols = image.cols;
+image ImageHelper::convertToRGBAVector(const cv::Mat &mat) {
+  const int channels = mat.channels();
+  const int rows = mat.rows;
+  const int cols = mat.cols;
   const int totalPixels = rows * cols;
 
-  std::vector<RGBA> rgbaValues(totalPixels);
-  auto pixelIterator = image.begin<cv::Vec4b>();
+  image rgbaValues(totalPixels);
+  auto pixelIterator = mat.begin<cv::Vec4b>();
 
   /// std::execution::par_unseq enables parallel execution of the
   /// transformation while relaxing the requirement for sequential execution
@@ -53,7 +53,7 @@ std::vector<RGBA> ImageHelper::convertToRGBAVector(const cv::Mat &image) {
   return rgbaValues;
 }
 
-cv::Mat ImageHelper::convertToMat(const std::vector<RGBA> &image, size_t size_x,
+cv::Mat ImageHelper::convertToMat(const image &image, size_t size_x,
                                   size_t size_y) {
   cv::Mat dest(size_y, size_x, CV_8UC4);
   auto destPtr = dest.begin<cv::Vec4b>();
@@ -73,8 +73,8 @@ cv::Mat ImageHelper::convertToMat(const std::vector<RGBA> &image, size_t size_x,
   return dest;
 }
 
-float ImageHelper::computeLoss(const std::vector<RGBA> &outputImage,
-                               const std::vector<RGBA> &targetImage) {
+float ImageHelper::computeLoss(const image &outputImage,
+                               const image &targetImage) {
   if (outputImage.size() != targetImage.size()) {
     throw std::invalid_argument(
         "Output and target images must have the same size.");

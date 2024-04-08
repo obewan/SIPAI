@@ -53,8 +53,9 @@ struct RGBA {
    */
   RGBA clamp(const float &min = 0.0f, const float &max = 1.0f) const {
     RGBA result;
-    std::transform(value.begin(), value.end(), result.value.begin(),
-                   [min, max](float val) { return std::clamp(val, min, max); });
+    std::transform(
+        value.begin(), value.end(), result.value.begin(),
+        [&min, &max](const float &val) { return std::clamp(val, min, max); });
     return result;
   }
 
@@ -172,6 +173,14 @@ struct RGBA {
                    this->value.begin(), std::multiplies<>());
     return *this;
   }
+
+  bool operator==(const RGBA &rhs) const {
+    return this->value.size() == rhs.value.size() &&
+           std::equal(this->value.begin(), this->value.end(),
+                      rhs.value.begin());
+  }
+
+  bool operator!=(const RGBA &rhs) const { return !(*this == rhs); }
 
   RGBA operator*(const RGBA &rhs) const {
     return applyToElements(std::multiplies<>(), rhs);
