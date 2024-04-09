@@ -52,13 +52,40 @@ public:
     if (previousLayer == nullptr) {
       return;
     }
-    for (auto &n : neurons) {
+
+    auto updateNeuron = [](Neuron &n, Layer *previousLayer) {
       n.value = {0.0, 0.0, 0.0, 0.0};
       for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
         n.value += previousLayer->neurons[i].value * n.weights[i];
       }
       // Use activation function
       n.value = n.activationFunction(n.value);
+    };
+
+    if (enable_parallel) {
+      std::vector<std::jthread> threads;
+      size_t num_threads =
+          std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
+      std::atomic<size_t> current_index = 0; // atomicity between threads
+      for (size_t i = 0; i < num_threads; ++i) {
+        threads.emplace_back([this, &updateNeuron, &current_index]() {
+          while (true) {
+            size_t index = current_index.fetch_add(1);
+            if (index >= neurons.size()) {
+              break;
+            }
+            updateNeuron(neurons[index], previousLayer);
+          }
+        });
+      }
+      for (auto &thread : threads) {
+        thread.join();
+      }
+
+    } else {
+      for (auto &n : neurons) {
+        updateNeuron(n, previousLayer);
+      }
     }
   };
 
@@ -72,8 +99,9 @@ public:
     }
     float error_min = -1.0f;
     float error_max = 1.0f;
-    for (auto &n : neurons) {
-      size_t pos = &n - &neurons[0];
+
+    auto updateNeuron = [](Neuron &n, const size_t &pos, Layer *nextLayer,
+                           const float &error_min, const float &error_max) {
       RGBA error = {0.0, 0.0, 0.0, 0.0};
       for (Neuron &nn : nextLayer->neurons) {
         error += nn.weights[pos] * nn.error;
@@ -85,12 +113,40 @@ public:
       // Use the derivative of the activation function
       n.error = (error * n.activationFunctionDerivative(n.value))
                     .clamp(error_min, error_max);
+    };
+
+    if (enable_parallel) {
+      std::vector<std::jthread> threads;
+      size_t num_threads =
+          std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
+      std::atomic<size_t> current_index = 0; // atomicity between threads
+      for (size_t i = 0; i < num_threads; ++i) {
+        threads.emplace_back(
+            [this, &updateNeuron, &current_index, error_min, error_max]() {
+              while (true) {
+                size_t index = current_index.fetch_add(1);
+                if (index >= neurons.size()) {
+                  break;
+                }
+                updateNeuron(neurons[index], index, nextLayer, error_min,
+                             error_max);
+              }
+            });
+      }
+      for (auto &thread : threads) {
+        thread.join();
+      }
+
+    } else {
+      for (size_t index = 0; index < neurons.size(); ++index) {
+        updateNeuron(neurons[index], index, nextLayer, error_min, error_max);
+      }
     }
   }
 
   /**
-   * @brief Updates the weights of the neurons in this layer using the previous
-   * layer and a learning rate.
+   * @brief Updates the weights of the neurons in this layer using the
+   * previous layer and a learning rate.
    *
    * @param learningRate The learning rate to use when updating weights.
    * @param enable_parallel enable parallelism (experimental)
@@ -100,50 +156,43 @@ public:
       return;
     }
 
+    auto updateNeuron = [](Neuron &n, Layer *previousLayer,
+                           const float &learningRate) {
+      const auto learningRateError = learningRate * n.error;
+      // Update weights based on neurons in the previous layer
+      for (size_t k = 0; k < n.weights.size(); ++k) {
+        n.weights[k] -= previousLayer->neurons[k].value * learningRateError;
+      }
+      // Update weights based on neighboring neurons
+      for (NeuronConnection &conn : n.neighbors) {
+        conn.weight -= conn.neuron->value * learningRateError;
+      }
+    };
+
     if (enable_parallel) {
       std::vector<std::jthread> threads;
       size_t num_threads =
           std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
       std::atomic<size_t> current_index = 0; // atomicity between threads
-
       for (size_t i = 0; i < num_threads; ++i) {
-        threads.emplace_back([this, &current_index, learningRate]() {
-          while (true) {
-            size_t index = current_index.fetch_add(1);
-            if (index >= neurons.size()) {
-              break;
-            }
-
-            auto &n = neurons[index];
-            const auto learningRateError = learningRate * n.error;
-            // Update weights based on neurons in the previous layer
-            for (size_t k = 0; k < n.weights.size(); ++k) {
-              n.weights[k] -=
-                  previousLayer->neurons[k].value * learningRateError;
-            }
-            // Update weights based on neighboring neurons
-            for (NeuronConnection &conn : n.neighbors) {
-              conn.weight -= conn.neuron->value * learningRateError;
-            }
-          }
-        });
+        threads.emplace_back(
+            [this, &updateNeuron, &current_index, learningRate]() {
+              while (true) {
+                size_t index = current_index.fetch_add(1);
+                if (index >= neurons.size()) {
+                  break;
+                }
+                updateNeuron(neurons[index], previousLayer, learningRate);
+              }
+            });
       }
-
       for (auto &thread : threads) {
         thread.join();
       }
 
     } else {
       for (auto &n : neurons) {
-        const auto &learningRateError = learningRate * n.error;
-        // Update weights based on neurons in the previous layer
-        for (size_t i = 0; i < n.weights.size(); ++i) {
-          n.weights[i] -= previousLayer->neurons[i].value * learningRateError;
-        }
-        // Update weights based on neighboring neurons
-        for (NeuronConnection &conn : n.neighbors) {
-          conn.weight -= conn.neuron->value * learningRateError;
-        }
+        updateNeuron(n, previousLayer, learningRate);
       }
     }
   }
