@@ -9,7 +9,10 @@ TEST_CASE("Testing ImageHelper") {
   SUBCASE("Test loadImage") {
     ImageHelper imageHelper;
     const auto &image = imageHelper.loadImage("../data/images/001a.png");
-    CHECK(image.size_x * image.size_y > 0);
+    CHECK(image.size_x == 150);
+    CHECK(image.size_y == 150);
+    CHECK(image.size() == 150 * 150);
+    CHECK(image.data.size() == image.size());
     for (const auto &rgba : image.data) {
       CHECK_FALSE(rgba.isOutOfRange());
     }
