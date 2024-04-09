@@ -7,7 +7,7 @@
 
 using namespace sipai;
 
-image NeuralNetwork::forwardPropagation(const image &inputValues,
+Image NeuralNetwork::forwardPropagation(const Image &inputValues,
                                         bool enable_parallel) {
   if (layers.front()->layerType != LayerType::LayerInput) {
     throw NeuralNetworkException("Invalid front layer type");
@@ -22,7 +22,7 @@ image NeuralNetwork::forwardPropagation(const image &inputValues,
   return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
-void NeuralNetwork::backwardPropagation(const image &expectedValues,
+void NeuralNetwork::backwardPropagation(const Image &expectedValues,
                                         bool enable_parallel) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NeuralNetworkException("Invalid back layer type");

@@ -43,7 +43,7 @@ public:
    * @param image The OpenCV Mat image to be converted.
    * @return std::vector<RGBA> The converted image as a vector of RGBA values.
    */
-  image convertToRGBAVector(const cv::Mat &image);
+  Image convertToRGBAVector(const cv::Mat &image);
 
   /**
    * @brief Converts a vector of RGBA values into an OpenCV Mat image.
@@ -55,7 +55,7 @@ public:
    * values.
    * @return cv::Mat The converted image as an OpenCV Mat.
    */
-  cv::Mat convertToMat(const image &image, size_t size_x, size_t size_y);
+  cv::Mat convertToMat(const Image &image, size_t size_x, size_t size_y);
 
   /**
    * @brief Computes the loss between the output image
@@ -66,6 +66,6 @@ public:
    *
    * @return The computed loss.
    */
-  float computeLoss(const image &outputImage, const image &targetImage);
+  float computeLoss(const Image &outputImage, const Image &targetImage);
 };
 } // namespace sipai

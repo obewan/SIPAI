@@ -92,7 +92,7 @@ float RunnerTrainingMonitoredVisitor::trainOnEpoch(
     const std::unique_ptr<TrainingData> &trainingSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !training_images_) {
-    training_images_ = std::make_unique<std::vector<std::pair<image, image>>>(
+    training_images_ = std::make_unique<std::vector<std::pair<Image, Image>>>(
         loadBulkImages(trainingSet, "Training:"));
   }
   float epochLoss = manager.app_params.bulk_loading
@@ -106,7 +106,7 @@ float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
     const std::unique_ptr<TrainingData> &validationSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !validation_images_) {
-    validation_images_ = std::make_unique<std::vector<std::pair<image, image>>>(
+    validation_images_ = std::make_unique<std::vector<std::pair<Image, Image>>>(
         loadBulkImages(validationSet, "Validation:"));
   }
   float validationLoss = manager.app_params.bulk_loading
@@ -145,23 +145,23 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
   }
 }
 
-std::pair<image, image> RunnerTrainingMonitoredVisitor::loadImages(
+std::pair<Image, Image> RunnerTrainingMonitoredVisitor::loadImages(
     const std::string &inputPath, const std::string &targetPath) const {
   auto &manager = Manager::getInstance();
   size_t orig_ix, orig_iy, orig_tx, orig_ty;
-  image inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,
+  Image inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,
                                        manager.network_params.input_size_x,
                                        manager.network_params.input_size_y);
-  image targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,
+  Image targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,
                                         manager.network_params.output_size_x,
                                         manager.network_params.output_size_y);
   return std::make_pair(inputImage, targetImage);
 }
 
-std::vector<std::pair<image, image>>
+std::vector<std::pair<Image, Image>>
 RunnerTrainingMonitoredVisitor::loadBulkImages(
     const std::unique_ptr<TrainingData> &dataSet, std::string logPrefix) const {
-  std::vector<std::pair<image, image>> images;
+  std::vector<std::pair<Image, Image>> images;
   SimpleLogger::LOG_INFO(logPrefix + " loading images... (bulk loading)");
 
   std::mutex images_mutex;
@@ -182,7 +182,7 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
 
           auto it = std::next(dataSet->begin(), index);
           const auto &[inputPath, targetPath] = *it;
-          std::pair<image, image> pair = loadImages(inputPath, targetPath);
+          std::pair<Image, Image> pair = loadImages(inputPath, targetPath);
 
           {
             std::lock_guard<std::mutex> lock(images_mutex);
@@ -204,13 +204,13 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(
-    const std::vector<std::pair<image, image>> &images,
+    const std::vector<std::pair<Image, Image>> &images,
     bool withBackwardAndUpdateWeights) const {
   auto &manager = Manager::getInstance();
   ImageHelper imageHelper;
   float loss = 0.0f;
   for (const auto &[inputImage, targetImage] : images) {
-    image outputImage = manager.network->forwardPropagation(
+    Image outputImage = manager.network->forwardPropagation(
         inputImage, manager.app_params.enable_parallel);
     loss += imageHelper.computeLoss(outputImage, targetImage);
     if (withBackwardAndUpdateWeights) {
@@ -230,7 +230,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
   float loss = 0.0f;
   for (const auto &[inputPath, targetPath] : dataSet) {
     const auto &[inputImage, targetImage] = loadImages(inputPath, targetPath);
-    image outputImage = manager.network->forwardPropagation(
+    Image outputImage = manager.network->forwardPropagation(
         inputImage, manager.app_params.enable_parallel);
     loss += imageHelper.computeLoss(outputImage, targetImage);
     if (withBackwardAndUpdateWeights) {

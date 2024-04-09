@@ -17,7 +17,7 @@
 
 namespace sipai {
 using TrainingData = std::vector<std::pair<std::string, std::string>>;
-using image = std::vector<RGBA>;
+using Image = std::vector<RGBA>;
 
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;

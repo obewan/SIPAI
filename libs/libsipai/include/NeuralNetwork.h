@@ -55,7 +55,7 @@ public:
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  image forwardPropagation(const image &inputValues,
+  Image forwardPropagation(const Image &inputValues,
                            bool enable_parallel = false);
 
   /**
@@ -65,7 +65,7 @@ public:
    * @param expectedValues The expected values for backward propagation.
    * @param enable_parallel enable parallelism (experimental)
    */
-  void backwardPropagation(const image &expectedValues,
+  void backwardPropagation(const Image &expectedValues,
                            bool enable_parallel = false);
 
   /**

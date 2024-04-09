@@ -14,7 +14,7 @@
 
 using namespace sipai;
 
-image Manager::loadImage(const std::string &imagePath, size_t &size_x,
+Image Manager::loadImage(const std::string &imagePath, size_t &size_x,
                          size_t &size_y, size_t resize_x, size_t resize_y) {
   ImageHelper imageHelper;
   cv::Mat image = imageHelper.loadImage(imagePath);
@@ -30,12 +30,12 @@ image Manager::loadImage(const std::string &imagePath, size_t &size_x,
   return imageHelper.convertToRGBAVector(image);
 }
 
-void Manager::saveImage(const std::string &imagePath, const image &image,
+void Manager::saveImage(const std::string &imagePath, const Image &image,
                         size_t size_x, size_t size_y, float scale) {
   saveImage(imagePath, image, size_x, size_y, size_x * scale, size_y * scale);
 };
 
-void Manager::saveImage(const std::string &imagePath, const image &image,
+void Manager::saveImage(const std::string &imagePath, const Image &image,
                         size_t size_x, size_t size_y, size_t resize_x,
                         size_t resize_y) {
   ImageHelper imageHelper;

@@ -21,13 +21,13 @@ void ImageHelper::saveImage(const std::string &imagePath, cv::Mat &image) {
   }
 }
 
-image ImageHelper::convertToRGBAVector(const cv::Mat &mat) {
+Image ImageHelper::convertToRGBAVector(const cv::Mat &mat) {
   const int channels = mat.channels();
   const int rows = mat.rows;
   const int cols = mat.cols;
   const int totalPixels = rows * cols;
 
-  image rgbaValues(totalPixels);
+  Image rgbaValues(totalPixels);
   auto pixelIterator = mat.begin<cv::Vec4b>();
 
   /// std::execution::par_unseq enables parallel execution of the
@@ -53,7 +53,7 @@ image ImageHelper::convertToRGBAVector(const cv::Mat &mat) {
   return rgbaValues;
 }
 
-cv::Mat ImageHelper::convertToMat(const image &image, size_t size_x,
+cv::Mat ImageHelper::convertToMat(const Image &image, size_t size_x,
                                   size_t size_y) {
   cv::Mat dest(size_y, size_x, CV_8UC4);
   auto destPtr = dest.begin<cv::Vec4b>();
@@ -73,8 +73,8 @@ cv::Mat ImageHelper::convertToMat(const image &image, size_t size_x,
   return dest;
 }
 
-float ImageHelper::computeLoss(const image &outputImage,
-                               const image &targetImage) {
+float ImageHelper::computeLoss(const Image &outputImage,
+                               const Image &targetImage) {
   if (outputImage.size() != targetImage.size()) {
     throw std::invalid_argument(
         "Output and target images must have the same size.");
