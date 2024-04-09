@@ -1,6 +1,5 @@
 #include "Manager.h"
 #include "Common.h"
-#include "ImageHelper.h"
 #include "NeuralNetwork.h"
 #include "NeuralNetworkBuilder.h"
 #include "SimpleLogger.h"
@@ -13,36 +12,6 @@
 #include <vector>
 
 using namespace sipai;
-
-image Manager::loadImage(const std::string &imagePath, size_t &size_x,
-                         size_t &size_y, size_t resize_x, size_t resize_y) {
-  ImageHelper imageHelper;
-  cv::Mat image = imageHelper.loadImage(imagePath);
-
-  // Save the original size
-  cv::Size s = image.size();
-  size_x = s.width;
-  size_y = s.height;
-
-  // Resize the image to the input or output layer
-  cv::resize(image, image, cv::Size(resize_x, resize_y));
-
-  return imageHelper.convertToRGBAVector(image);
-}
-
-void Manager::saveImage(const std::string &imagePath, const image &image,
-                        size_t size_x, size_t size_y, float scale) {
-  saveImage(imagePath, image, size_x, size_y, size_x * scale, size_y * scale);
-};
-
-void Manager::saveImage(const std::string &imagePath, const image &image,
-                        size_t size_x, size_t size_y, size_t resize_x,
-                        size_t resize_y) {
-  ImageHelper imageHelper;
-  cv::Mat dest = imageHelper.convertToMat(image, size_x, size_y);
-  cv::resize(dest, dest, cv::Size(resize_x, resize_y));
-  imageHelper.saveImage(imagePath, dest);
-}
 
 void Manager::createOrImportNetwork() {
   if (!network) {

@@ -1,18 +1,23 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" TRUE)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+endif()
 
-if(ENABLE_COVERAGE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    # Add gcov code coverage
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")    
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage")    
     set(CMAKE_EXE_LINKER_FLAGS "-lgcov") 
 endif()
 
+# Add OpenCV lib
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
 
-
+# Add included libs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libjson nlohmann-json)
 

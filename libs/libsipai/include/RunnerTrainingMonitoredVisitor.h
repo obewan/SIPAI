@@ -9,7 +9,8 @@
  */
 #pragma once
 #include "Common.h"
-#include "RGBA.h"
+#include "Image.h"
+#include "ImageHelper.h"
 #include "RunnerVisitor.h"
 #include <memory>
 
@@ -69,17 +70,19 @@ public:
   void saveNetwork(bool &hasLastEpochBeenSaved) const;
 
 private:
-  mutable std::unique_ptr<std::vector<std::pair<image, image>>>
+  ImageHelper imageHelper_;
+  mutable std::unique_ptr<std::vector<std::pair<Image, Image>>>
       training_images_ = nullptr;
-  mutable std::unique_ptr<std::vector<std::pair<image, image>>>
+  mutable std::unique_ptr<std::vector<std::pair<Image, Image>>>
       validation_images_ = nullptr;
-  std::pair<image, image> loadImages(const std::string &inputPath,
+
+  std::pair<Image, Image> loadImages(const std::string &inputPath,
                                      const std::string &targetPath) const;
-  std::vector<std::pair<image, image>>
+  std::vector<std::pair<Image, Image>>
   loadBulkImages(const std::unique_ptr<TrainingData> &dataSet,
                  std::string logPrefix) const;
 
-  float computeLoss(const std::vector<std::pair<image, image>> &images,
+  float computeLoss(const std::vector<std::pair<Image, Image>> &images,
                     bool withBackwardAndUpdateWeights) const;
   float computeLoss(const TrainingData &dataSet,
                     bool withBackwardAndUpdateWeights) const;

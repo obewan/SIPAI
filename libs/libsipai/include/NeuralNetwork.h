@@ -9,6 +9,7 @@
  */
 #pragma once
 #include "Common.h"
+#include "Image.h"
 #include "Layer.h"
 #include <atomic>
 #include <cstddef>
@@ -55,8 +56,8 @@ public:
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  image forwardPropagation(const image &inputValues,
-                           bool enable_parallel = false);
+  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues,
+                                       bool enable_parallel = false);
 
   /**
    * @brief Performs backward propagation on the network using the given
@@ -65,7 +66,7 @@ public:
    * @param expectedValues The expected values for backward propagation.
    * @param enable_parallel enable parallelism (experimental)
    */
-  void backwardPropagation(const image &expectedValues,
+  void backwardPropagation(const std::vector<RGBA> &expectedValues,
                            bool enable_parallel = false);
 
   /**

@@ -24,18 +24,19 @@ void RunnerEnhancerVisitor::visit() const {
   }
 
   try {
-    size_t orig_ix;
-    size_t orig_iy;
     const auto &app_params = manager.app_params;
     const auto &network_params = manager.network_params;
-    auto inputImage = manager.loadImage(app_params.input_file, orig_ix, orig_iy,
-                                        network_params.input_size_x,
-                                        network_params.input_size_y);
-    auto outputImage = manager.network->forwardPropagation(
-        inputImage, app_params.enable_parallel);
+    const auto &inputImage = imageHelper_.loadImage(
+        app_params.input_file, network_params.input_size_x,
+        network_params.input_size_y);
+    const auto &outputData = manager.network->forwardPropagation(
+        inputImage.data, app_params.enable_parallel);
+    Image outputImage(outputData, network_params.output_size_x,
+                      network_params.output_size_y);
 
-    manager.saveImage(app_params.output_file, outputImage, orig_ix, orig_iy,
-                      app_params.output_scale);
+    imageHelper_.saveImage(app_params.output_file, outputImage,
+                           outputImage.size_x * app_params.output_scale,
+                           outputImage.size_y * app_params.output_scale);
     SimpleLogger::LOG_INFO("Image enhancement done. Image output saved in ",
                            manager.app_params.output_file);
 

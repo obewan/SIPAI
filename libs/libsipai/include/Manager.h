@@ -44,53 +44,6 @@ public:
   std::unique_ptr<NeuralNetwork> network = nullptr;
 
   /**
-   * @brief Loads an image from a specified path and resizes it for the input
-   * layer.
-   *
-   * @param imagePath The file path of the image to be loaded.
-   * @param size_x A reference to a variable where the original image width will
-   * be stored.
-   * @param size_y A reference to a variable where the original image height
-   * will be stored.
-   * @param resize_x The desired width to which the image should be resized.
-   * @param resize_y The desired height to which the image should be resized.
-   * @return A vector of RGBA values representing the resized image.
-   */
-  image loadImage(const std::string &imagePath, size_t &size_x, size_t &size_y,
-                  size_t resize_x, size_t resize_y);
-
-  /**
-   * @brief Exports a resized image to a specified path.
-   *
-   * @param imagePath The file path where the image will be exported.
-   * @param image A vector of RGBA values representing the image to be exported.
-   * @param size_x The original width of the image represented by the vector of
-   * RGBA values.
-   * @param size_y The original height of the image represented by the vector of
-   * RGBA values.
-   * @param scale The scale of exported image.
-   */
-  void saveImage(const std::string &imagePath, const image &image,
-                 size_t size_x, size_t size_y, float scale = 1.0);
-  /**
-   * @brief Exports a resized image to a specified path.
-   *
-   * @param imagePath The file path where the image will be exported.
-   * @param image A vector of RGBA values representing the image to be exported.
-   * @param size_x The original width of the image represented by the vector of
-   * RGBA values.
-   * @param size_y The original height of the image represented by the vector of
-   * RGBA values.
-   * @param resize_x The desired width to which the image should be resized
-   * before exporting.
-   * @param resize_y The desired height to which the image should be resized
-   * before exporting.
-   */
-  void saveImage(const std::string &imagePath, const image &image,
-                 size_t size_x, size_t size_y, size_t resize_x,
-                 size_t resize_y);
-
-  /**
    * @brief Network builder.
    */
   void createOrImportNetwork();
