@@ -9,7 +9,6 @@
  */
 
 #pragma once
-#include "RGBA.h"
 #include <map>
 #include <regex> // for std::regex and std::regex_replace
 #include <string>
@@ -17,7 +16,6 @@
 
 namespace sipai {
 using TrainingData = std::vector<std::pair<std::string, std::string>>;
-using Image = std::vector<RGBA>;
 
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;

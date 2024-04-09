@@ -9,11 +9,15 @@
  */
 #pragma once
 #include "Common.h"
+#include "ImageHelper.h"
 #include "RunnerVisitor.h"
 
 namespace sipai {
 class RunnerEnhancerVisitor : public RunnerVisitor {
 public:
   void visit() const override;
+
+private:
+  ImageHelper imageHelper_;
 };
 } // namespace sipai

@@ -147,14 +147,11 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
 
 std::pair<Image, Image> RunnerTrainingMonitoredVisitor::loadImages(
     const std::string &inputPath, const std::string &targetPath) const {
-  auto &manager = Manager::getInstance();
-  size_t orig_ix, orig_iy, orig_tx, orig_ty;
-  Image inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,
-                                       manager.network_params.input_size_x,
-                                       manager.network_params.input_size_y);
-  Image targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,
-                                        manager.network_params.output_size_x,
-                                        manager.network_params.output_size_y);
+  const auto &network_params = Manager::getInstance().network_params;
+  const auto &inputImage = imageHelper_.loadImage(
+      inputPath, network_params.input_size_x, network_params.input_size_y);
+  const auto &targetImage = imageHelper_.loadImage(
+      targetPath, network_params.output_size_x, network_params.output_size_y);
   return std::make_pair(inputImage, targetImage);
 }
 
@@ -191,7 +188,7 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
         }
       } catch (const std::bad_alloc &e) {
         throw RunnerVisitorException(logPrefix +
-                                     " loading image error: out of memory.");
+                                     " loading images error: out of memory.");
       }
     });
   }
@@ -207,14 +204,13 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
     const std::vector<std::pair<Image, Image>> &images,
     bool withBackwardAndUpdateWeights) const {
   auto &manager = Manager::getInstance();
-  ImageHelper imageHelper;
   float loss = 0.0f;
   for (const auto &[inputImage, targetImage] : images) {
-    Image outputImage = manager.network->forwardPropagation(
-        inputImage, manager.app_params.enable_parallel);
-    loss += imageHelper.computeLoss(outputImage, targetImage);
+    const auto &outputData = manager.network->forwardPropagation(
+        inputImage.data, manager.app_params.enable_parallel);
+    loss += imageHelper_.computeLoss(outputData, targetImage.data);
     if (withBackwardAndUpdateWeights) {
-      manager.network->backwardPropagation(targetImage,
+      manager.network->backwardPropagation(targetImage.data,
                                            manager.app_params.enable_parallel);
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);
@@ -226,15 +222,14 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
 float RunnerTrainingMonitoredVisitor::computeLoss(
     const TrainingData &dataSet, bool withBackwardAndUpdateWeights) const {
   auto &manager = Manager::getInstance();
-  ImageHelper imageHelper;
   float loss = 0.0f;
   for (const auto &[inputPath, targetPath] : dataSet) {
     const auto &[inputImage, targetImage] = loadImages(inputPath, targetPath);
-    Image outputImage = manager.network->forwardPropagation(
-        inputImage, manager.app_params.enable_parallel);
-    loss += imageHelper.computeLoss(outputImage, targetImage);
+    const auto &outputData = manager.network->forwardPropagation(
+        inputImage.data, manager.app_params.enable_parallel);
+    loss += imageHelper_.computeLoss(outputData, targetImage.data);
     if (withBackwardAndUpdateWeights) {
-      manager.network->backwardPropagation(targetImage,
+      manager.network->backwardPropagation(targetImage.data,
                                            manager.app_params.enable_parallel);
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);

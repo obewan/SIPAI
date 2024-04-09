@@ -10,6 +10,7 @@
 #pragma once
 
 #include "Common.h"
+#include "Image.h"
 #include "exception/ImageHelperException.h"
 #include <cstddef>
 #include <exception>
@@ -25,17 +26,23 @@ public:
    * Mat.
    *
    * @param imagePath The file path of the image to be loaded.
-   * @return cv::Mat The imported image as an OpenCV Mat.
+   * @param resize_x Optional resize the imported image on X (width)
+   * @param resize_y Optional resize the imported image on Y (height)
+   * @return Image The imported image, optionally resized.
    */
-  cv::Mat loadImage(const std::string &imagePath);
+  Image loadImage(const std::string &imagePath, size_t resize_x = 0,
+                  size_t resize_y = 0) const;
 
   /**
    * @brief Save an OpenCV Matas image.
    *
    * @param imagePath The file path of the image to be saved.
-   * @param image The OpenCV Mat to save.
+   * @param image The Image to save.
+   * @param resize_x Optional resize the exported image on X (width)
+   * @param resize_y Optional resize the exported image on Y (height)
    */
-  void saveImage(const std::string &imagePath, cv::Mat &image);
+  void saveImage(const std::string &imagePath, const Image &image,
+                 size_t resize_x = 0, size_t resize_y = 0) const;
 
   /**
    * @brief Converts an OpenCV Mat image into a vector of RGBA values.
@@ -43,29 +50,26 @@ public:
    * @param image The OpenCV Mat image to be converted.
    * @return std::vector<RGBA> The converted image as a vector of RGBA values.
    */
-  Image convertToRGBAVector(const cv::Mat &image);
+  std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) const;
 
   /**
    * @brief Converts a vector of RGBA values into an OpenCV Mat image.
    *
    * @param image The vector of RGBA values to be converted.
-   * @param size_x The width of the image represented by the vector of RGBA
-   * values.
-   * @param size_y The height of the image represented by the vector of RGBA
-   * values.
    * @return cv::Mat The converted image as an OpenCV Mat.
    */
-  cv::Mat convertToMat(const Image &image, size_t size_x, size_t size_y);
+  cv::Mat convertToMat(const Image &image) const;
 
   /**
    * @brief Computes the loss between the output image
    * and the target image. The smaller loss, the better.
    *
-   * @param outputImage The output image produced by the neural network.
-   * @param targetImage The expected target image.
+   * @param outputData The output image data produced by the neural network.
+   * @param targetData The expected target image data.
    *
    * @return The computed loss.
    */
-  float computeLoss(const Image &outputImage, const Image &targetImage);
+  float computeLoss(const std::vector<RGBA> &outputData,
+                    const std::vector<RGBA> &targetData) const;
 };
 } // namespace sipai

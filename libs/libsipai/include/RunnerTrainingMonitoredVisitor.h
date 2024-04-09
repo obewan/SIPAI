@@ -9,7 +9,8 @@
  */
 #pragma once
 #include "Common.h"
-#include "RGBA.h"
+#include "Image.h"
+#include "ImageHelper.h"
 #include "RunnerVisitor.h"
 #include <memory>
 
@@ -69,10 +70,12 @@ public:
   void saveNetwork(bool &hasLastEpochBeenSaved) const;
 
 private:
+  ImageHelper imageHelper_;
   mutable std::unique_ptr<std::vector<std::pair<Image, Image>>>
       training_images_ = nullptr;
   mutable std::unique_ptr<std::vector<std::pair<Image, Image>>>
       validation_images_ = nullptr;
+
   std::pair<Image, Image> loadImages(const std::string &inputPath,
                                      const std::string &targetPath) const;
   std::vector<std::pair<Image, Image>>
