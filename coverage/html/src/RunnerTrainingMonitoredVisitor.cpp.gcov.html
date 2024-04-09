@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-08 22:32:36</td>
+            <td class="headerValue">2024-04-09 17:42:08</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">8</td>
@@ -154,7 +154,7 @@
 <a name="92"><span class="lineNum">      92 </span>            :     const std::unique_ptr&lt;TrainingData&gt; &amp;trainingSet) const {</a>
 <a name="93"><span class="lineNum">      93 </span><span class="lineCov">          2 :   auto &amp;manager = Manager::getInstance();</span></a>
 <a name="94"><span class="lineNum">      94 </span><span class="lineCov">          2 :   if (manager.app_params.bulk_loading &amp;&amp; !training_images_) {</span></a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineNoCov">          0 :     training_images_ = std::make_unique&lt;std::vector&lt;std::pair&lt;image, image&gt;&gt;&gt;(</span></a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineNoCov">          0 :     training_images_ = std::make_unique&lt;std::vector&lt;std::pair&lt;Image, Image&gt;&gt;&gt;(</span></a>
 <a name="96"><span class="lineNum">      96 </span><span class="lineNoCov">          0 :         loadBulkImages(trainingSet, &quot;Training:&quot;));</span></a>
 <a name="97"><span class="lineNum">      97 </span>            :   }</a>
 <a name="98"><span class="lineNum">      98 </span><span class="lineCov">          2 :   float epochLoss = manager.app_params.bulk_loading</span></a>
@@ -168,7 +168,7 @@
 <a name="106"><span class="lineNum">     106 </span>            :     const std::unique_ptr&lt;TrainingData&gt; &amp;validationSet) const {</a>
 <a name="107"><span class="lineNum">     107 </span><span class="lineCov">          2 :   auto &amp;manager = Manager::getInstance();</span></a>
 <a name="108"><span class="lineNum">     108 </span><span class="lineCov">          2 :   if (manager.app_params.bulk_loading &amp;&amp; !validation_images_) {</span></a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineNoCov">          0 :     validation_images_ = std::make_unique&lt;std::vector&lt;std::pair&lt;image, image&gt;&gt;&gt;(</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineNoCov">          0 :     validation_images_ = std::make_unique&lt;std::vector&lt;std::pair&lt;Image, Image&gt;&gt;&gt;(</span></a>
 <a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 :         loadBulkImages(validationSet, &quot;Validation:&quot;));</span></a>
 <a name="111"><span class="lineNum">     111 </span>            :   }</a>
 <a name="112"><span class="lineNum">     112 </span><span class="lineCov">          2 :   float validationLoss = manager.app_params.bulk_loading</span></a>
@@ -207,103 +207,98 @@
 <a name="145"><span class="lineNum">     145 </span><span class="lineNoCov">          0 :   }</span></a>
 <a name="146"><span class="lineNum">     146 </span><span class="lineCov">          1 : }</span></a>
 <a name="147"><span class="lineNum">     147 </span>            : </a>
-<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         20 : std::pair&lt;image, image&gt; RunnerTrainingMonitoredVisitor::loadImages(</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         20 : std::pair&lt;Image, Image&gt; RunnerTrainingMonitoredVisitor::loadImages(</span></a>
 <a name="149"><span class="lineNum">     149 </span>            :     const std::string &amp;inputPath, const std::string &amp;targetPath) const {</a>
-<a name="150"><span class="lineNum">     150 </span><span class="lineCov">         20 :   auto &amp;manager = Manager::getInstance();</span></a>
-<a name="151"><span class="lineNum">     151 </span>            :   size_t orig_ix, orig_iy, orig_tx, orig_ty;</a>
-<a name="152"><span class="lineNum">     152 </span>            :   image inputImage = manager.loadImage(inputPath, orig_ix, orig_iy,</a>
-<a name="153"><span class="lineNum">     153 </span>            :                                        manager.network_params.input_size_x,</a>
-<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         20 :                                        manager.network_params.input_size_y);</span></a>
-<a name="155"><span class="lineNum">     155 </span>            :   image targetImage = manager.loadImage(targetPath, orig_tx, orig_ty,</a>
-<a name="156"><span class="lineNum">     156 </span>            :                                         manager.network_params.output_size_x,</a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">         20 :                                         manager.network_params.output_size_y);</span></a>
-<a name="158"><span class="lineNum">     158 </span><span class="lineCov">         40 :   return std::make_pair(inputImage, targetImage);</span></a>
-<a name="159"><span class="lineNum">     159 </span><span class="lineCov">         20 : }</span></a>
-<a name="160"><span class="lineNum">     160 </span>            : </a>
-<a name="161"><span class="lineNum">     161 </span>            : std::vector&lt;std::pair&lt;image, image&gt;&gt;</a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineNoCov">          0 : RunnerTrainingMonitoredVisitor::loadBulkImages(</span></a>
-<a name="163"><span class="lineNum">     163 </span>            :     const std::unique_ptr&lt;TrainingData&gt; &amp;dataSet, std::string logPrefix) const {</a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineNoCov">          0 :   std::vector&lt;std::pair&lt;image, image&gt;&gt; images;</span></a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 :   SimpleLogger::LOG_INFO(logPrefix + &quot; loading images... (bulk loading)&quot;);</span></a>
-<a name="166"><span class="lineNum">     166 </span>            : </a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineNoCov">          0 :   std::mutex images_mutex;</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineNoCov">          0 :   std::atomic&lt;size_t&gt; current_index = 0; // atomicity between threads</span></a>
-<a name="169"><span class="lineNum">     169 </span>            :   size_t num_threads =</a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineNoCov">          0 :       std::min((size_t)std::thread::hardware_concurrency(), dataSet-&gt;size());</span></a>
-<a name="171"><span class="lineNum">     171 </span>            : </a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineNoCov">          0 :   std::vector&lt;std::jthread&gt; threads;</span></a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineNoCov">          0 :   for (size_t i = 0; i &lt; num_threads; ++i) {</span></a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineNoCov">          0 :     threads.emplace_back([this, &amp;dataSet, &amp;images, &amp;images_mutex,</span></a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 :                           &amp;current_index, logPrefix]() {</span></a>
-<a name="176"><span class="lineNum">     176 </span>            :       try {</a>
-<a name="177"><span class="lineNum">     177 </span>            :         while (true) {</a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineNoCov">          0 :           size_t index = current_index.fetch_add(1);</span></a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :           if (index &gt;= dataSet-&gt;size()) {</span></a>
-<a name="180"><span class="lineNum">     180 </span><span class="lineNoCov">          0 :             break;</span></a>
-<a name="181"><span class="lineNum">     181 </span>            :           }</a>
-<a name="182"><span class="lineNum">     182 </span>            : </a>
-<a name="183"><span class="lineNum">     183 </span><span class="lineNoCov">          0 :           auto it = std::next(dataSet-&gt;begin(), index);</span></a>
-<a name="184"><span class="lineNum">     184 </span><span class="lineNoCov">          0 :           const auto &amp;[inputPath, targetPath] = *it;</span></a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :           std::pair&lt;image, image&gt; pair = loadImages(inputPath, targetPath);</span></a>
-<a name="186"><span class="lineNum">     186 </span>            : </a>
-<a name="187"><span class="lineNum">     187 </span>            :           {</a>
-<a name="188"><span class="lineNum">     188 </span><span class="lineNoCov">          0 :             std::lock_guard&lt;std::mutex&gt; lock(images_mutex);</span></a>
-<a name="189"><span class="lineNum">     189 </span><span class="lineNoCov">          0 :             images.emplace_back(std::move(pair));</span></a>
-<a name="190"><span class="lineNum">     190 </span><span class="lineNoCov">          0 :           }</span></a>
-<a name="191"><span class="lineNum">     191 </span><span class="lineNoCov">          0 :         }</span></a>
-<a name="192"><span class="lineNum">     192 </span><span class="lineNoCov">          0 :       } catch (const std::bad_alloc &amp;e) {</span></a>
-<a name="193"><span class="lineNum">     193 </span><span class="lineNoCov">          0 :         throw RunnerVisitorException(logPrefix +</span></a>
-<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 :                                      &quot; loading image error: out of memory.&quot;);</span></a>
-<a name="195"><span class="lineNum">     195 </span><span class="lineNoCov">          0 :       }</span></a>
-<a name="196"><span class="lineNum">     196 </span><span class="lineNoCov">          0 :     });</span></a>
-<a name="197"><span class="lineNum">     197 </span>            :   }</a>
-<a name="198"><span class="lineNum">     198 </span>            : </a>
-<a name="199"><span class="lineNum">     199 </span><span class="lineNoCov">          0 :   for (auto &amp;thread : threads) {</span></a>
-<a name="200"><span class="lineNum">     200 </span><span class="lineNoCov">          0 :     thread.join();</span></a>
-<a name="201"><span class="lineNum">     201 </span>            :   }</a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">         20 :   const auto &amp;network_params = Manager::getInstance().network_params;</span></a>
+<a name="151"><span class="lineNum">     151 </span>            :   const auto &amp;inputImage = imageHelper_.loadImage(</a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineCov">         20 :       inputPath, network_params.input_size_x, network_params.input_size_y);</span></a>
+<a name="153"><span class="lineNum">     153 </span>            :   const auto &amp;targetImage = imageHelper_.loadImage(</a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         20 :       targetPath, network_params.output_size_x, network_params.output_size_y);</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         40 :   return std::make_pair(inputImage, targetImage);</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">         20 : }</span></a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span>            : std::vector&lt;std::pair&lt;Image, Image&gt;&gt;</a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineNoCov">          0 : RunnerTrainingMonitoredVisitor::loadBulkImages(</span></a>
+<a name="160"><span class="lineNum">     160 </span>            :     const std::unique_ptr&lt;TrainingData&gt; &amp;dataSet, std::string logPrefix) const {</a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineNoCov">          0 :   std::vector&lt;std::pair&lt;Image, Image&gt;&gt; images;</span></a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineNoCov">          0 :   SimpleLogger::LOG_INFO(logPrefix + &quot; loading images... (bulk loading)&quot;);</span></a>
+<a name="163"><span class="lineNum">     163 </span>            : </a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineNoCov">          0 :   std::mutex images_mutex;</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 :   std::atomic&lt;size_t&gt; current_index = 0; // atomicity between threads</span></a>
+<a name="166"><span class="lineNum">     166 </span>            :   size_t num_threads =</a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineNoCov">          0 :       std::min((size_t)std::thread::hardware_concurrency(), dataSet-&gt;size());</span></a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineNoCov">          0 :   std::vector&lt;std::jthread&gt; threads;</span></a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineNoCov">          0 :   for (size_t i = 0; i &lt; num_threads; ++i) {</span></a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineNoCov">          0 :     threads.emplace_back([this, &amp;dataSet, &amp;images, &amp;images_mutex,</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineNoCov">          0 :                           &amp;current_index, logPrefix]() {</span></a>
+<a name="173"><span class="lineNum">     173 </span>            :       try {</a>
+<a name="174"><span class="lineNum">     174 </span>            :         while (true) {</a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 :           size_t index = current_index.fetch_add(1);</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineNoCov">          0 :           if (index &gt;= dataSet-&gt;size()) {</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineNoCov">          0 :             break;</span></a>
+<a name="178"><span class="lineNum">     178 </span>            :           }</a>
+<a name="179"><span class="lineNum">     179 </span>            : </a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineNoCov">          0 :           auto it = std::next(dataSet-&gt;begin(), index);</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :           const auto &amp;[inputPath, targetPath] = *it;</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :           std::pair&lt;Image, Image&gt; pair = loadImages(inputPath, targetPath);</span></a>
+<a name="183"><span class="lineNum">     183 </span>            : </a>
+<a name="184"><span class="lineNum">     184 </span>            :           {</a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :             std::lock_guard&lt;std::mutex&gt; lock(images_mutex);</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineNoCov">          0 :             images.emplace_back(std::move(pair));</span></a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineNoCov">          0 :           }</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineNoCov">          0 :         }</span></a>
+<a name="189"><span class="lineNum">     189 </span><span class="lineNoCov">          0 :       } catch (const std::bad_alloc &amp;e) {</span></a>
+<a name="190"><span class="lineNum">     190 </span><span class="lineNoCov">          0 :         throw RunnerVisitorException(logPrefix +</span></a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineNoCov">          0 :                                      &quot; loading images error: out of memory.&quot;);</span></a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineNoCov">          0 :       }</span></a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineNoCov">          0 :     });</span></a>
+<a name="194"><span class="lineNum">     194 </span>            :   }</a>
+<a name="195"><span class="lineNum">     195 </span>            : </a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineNoCov">          0 :   for (auto &amp;thread : threads) {</span></a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineNoCov">          0 :     thread.join();</span></a>
+<a name="198"><span class="lineNum">     198 </span>            :   }</a>
+<a name="199"><span class="lineNum">     199 </span>            : </a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineNoCov">          0 :   return images;</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineNoCov">          0 : }</span></a>
 <a name="202"><span class="lineNum">     202 </span>            : </a>
-<a name="203"><span class="lineNum">     203 </span><span class="lineNoCov">          0 :   return images;</span></a>
-<a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 : }</span></a>
-<a name="205"><span class="lineNum">     205 </span>            : </a>
-<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 : float RunnerTrainingMonitoredVisitor::computeLoss(</span></a>
-<a name="207"><span class="lineNum">     207 </span>            :     const std::vector&lt;std::pair&lt;image, image&gt;&gt; &amp;images,</a>
-<a name="208"><span class="lineNum">     208 </span>            :     bool withBackwardAndUpdateWeights) const {</a>
-<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :   auto &amp;manager = Manager::getInstance();</span></a>
-<a name="210"><span class="lineNum">     210 </span>            :   ImageHelper imageHelper;</a>
-<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :   float loss = 0.0f;</span></a>
-<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :   for (const auto &amp;[inputImage, targetImage] : images) {</span></a>
-<a name="213"><span class="lineNum">     213 </span>            :     image outputImage = manager.network-&gt;forwardPropagation(</a>
-<a name="214"><span class="lineNum">     214 </span><span class="lineNoCov">          0 :         inputImage, manager.app_params.enable_parallel);</span></a>
-<a name="215"><span class="lineNum">     215 </span><span class="lineNoCov">          0 :     loss += imageHelper.computeLoss(outputImage, targetImage);</span></a>
-<a name="216"><span class="lineNum">     216 </span><span class="lineNoCov">          0 :     if (withBackwardAndUpdateWeights) {</span></a>
-<a name="217"><span class="lineNum">     217 </span><span class="lineNoCov">          0 :       manager.network-&gt;backwardPropagation(targetImage,</span></a>
-<a name="218"><span class="lineNum">     218 </span><span class="lineNoCov">          0 :                                            manager.app_params.enable_parallel);</span></a>
-<a name="219"><span class="lineNum">     219 </span><span class="lineNoCov">          0 :       manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
-<a name="220"><span class="lineNum">     220 </span><span class="lineNoCov">          0 :                                      manager.app_params.enable_parallel);</span></a>
-<a name="221"><span class="lineNum">     221 </span>            :     }</a>
-<a name="222"><span class="lineNum">     222 </span><span class="lineNoCov">          0 :   }</span></a>
-<a name="223"><span class="lineNum">     223 </span><span class="lineNoCov">          0 :   return loss;</span></a>
-<a name="224"><span class="lineNum">     224 </span>            : }</a>
-<a name="225"><span class="lineNum">     225 </span>            : </a>
-<a name="226"><span class="lineNum">     226 </span><span class="lineCov">          4 : float RunnerTrainingMonitoredVisitor::computeLoss(</span></a>
-<a name="227"><span class="lineNum">     227 </span>            :     const TrainingData &amp;dataSet, bool withBackwardAndUpdateWeights) const {</a>
-<a name="228"><span class="lineNum">     228 </span><span class="lineCov">          4 :   auto &amp;manager = Manager::getInstance();</span></a>
-<a name="229"><span class="lineNum">     229 </span>            :   ImageHelper imageHelper;</a>
-<a name="230"><span class="lineNum">     230 </span><span class="lineCov">          4 :   float loss = 0.0f;</span></a>
-<a name="231"><span class="lineNum">     231 </span><span class="lineCov">         24 :   for (const auto &amp;[inputPath, targetPath] : dataSet) {</span></a>
-<a name="232"><span class="lineNum">     232 </span><span class="lineCov">         20 :     const auto &amp;[inputImage, targetImage] = loadImages(inputPath, targetPath);</span></a>
-<a name="233"><span class="lineNum">     233 </span>            :     image outputImage = manager.network-&gt;forwardPropagation(</a>
-<a name="234"><span class="lineNum">     234 </span><span class="lineCov">         20 :         inputImage, manager.app_params.enable_parallel);</span></a>
-<a name="235"><span class="lineNum">     235 </span><span class="lineCov">         20 :     loss += imageHelper.computeLoss(outputImage, targetImage);</span></a>
-<a name="236"><span class="lineNum">     236 </span><span class="lineCov">         20 :     if (withBackwardAndUpdateWeights) {</span></a>
-<a name="237"><span class="lineNum">     237 </span><span class="lineCov">         16 :       manager.network-&gt;backwardPropagation(targetImage,</span></a>
-<a name="238"><span class="lineNum">     238 </span><span class="lineCov">         16 :                                            manager.app_params.enable_parallel);</span></a>
-<a name="239"><span class="lineNum">     239 </span><span class="lineCov">         16 :       manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
-<a name="240"><span class="lineNum">     240 </span><span class="lineCov">         16 :                                      manager.app_params.enable_parallel);</span></a>
-<a name="241"><span class="lineNum">     241 </span>            :     }</a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineCov">         20 :   }</span></a>
-<a name="243"><span class="lineNum">     243 </span><span class="lineCov">          4 :   return loss;</span></a>
-<a name="244"><span class="lineNum">     244 </span>            : }</a>
+<a name="203"><span class="lineNum">     203 </span><span class="lineNoCov">          0 : float RunnerTrainingMonitoredVisitor::computeLoss(</span></a>
+<a name="204"><span class="lineNum">     204 </span>            :     const std::vector&lt;std::pair&lt;Image, Image&gt;&gt; &amp;images,</a>
+<a name="205"><span class="lineNum">     205 </span>            :     bool withBackwardAndUpdateWeights) const {</a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 :   auto &amp;manager = Manager::getInstance();</span></a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineNoCov">          0 :   float loss = 0.0f;</span></a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :   for (const auto &amp;[inputImage, targetImage] : images) {</span></a>
+<a name="209"><span class="lineNum">     209 </span>            :     const auto &amp;outputData = manager.network-&gt;forwardPropagation(</a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 :         inputImage.data, manager.app_params.enable_parallel);</span></a>
+<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :     loss += imageHelper_.computeLoss(outputData, targetImage.data);</span></a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :     if (withBackwardAndUpdateWeights) {</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 :       manager.network-&gt;backwardPropagation(targetImage.data,</span></a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineNoCov">          0 :                                            manager.app_params.enable_parallel);</span></a>
+<a name="215"><span class="lineNum">     215 </span><span class="lineNoCov">          0 :       manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineNoCov">          0 :                                      manager.app_params.enable_parallel);</span></a>
+<a name="217"><span class="lineNum">     217 </span>            :     }</a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineNoCov">          0 :   }</span></a>
+<a name="219"><span class="lineNum">     219 </span><span class="lineNoCov">          0 :   return loss;</span></a>
+<a name="220"><span class="lineNum">     220 </span>            : }</a>
+<a name="221"><span class="lineNum">     221 </span>            : </a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">          4 : float RunnerTrainingMonitoredVisitor::computeLoss(</span></a>
+<a name="223"><span class="lineNum">     223 </span>            :     const TrainingData &amp;dataSet, bool withBackwardAndUpdateWeights) const {</a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineCov">          4 :   auto &amp;manager = Manager::getInstance();</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineCov">          4 :   float loss = 0.0f;</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">         24 :   for (const auto &amp;[inputPath, targetPath] : dataSet) {</span></a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineCov">         20 :     const auto &amp;[inputImage, targetImage] = loadImages(inputPath, targetPath);</span></a>
+<a name="228"><span class="lineNum">     228 </span>            :     const auto &amp;outputData = manager.network-&gt;forwardPropagation(</a>
+<a name="229"><span class="lineNum">     229 </span><span class="lineCov">         20 :         inputImage.data, manager.app_params.enable_parallel);</span></a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineCov">         20 :     loss += imageHelper_.computeLoss(outputData, targetImage.data);</span></a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">         20 :     if (withBackwardAndUpdateWeights) {</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">         16 :       manager.network-&gt;backwardPropagation(targetImage.data,</span></a>
+<a name="233"><span class="lineNum">     233 </span><span class="lineCov">         16 :                                            manager.app_params.enable_parallel);</span></a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">         16 :       manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineCov">         16 :                                      manager.app_params.enable_parallel);</span></a>
+<a name="236"><span class="lineNum">     236 </span>            :     }</a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineCov">         20 :   }</span></a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineCov">          4 :   return loss;</span></a>
+<a name="239"><span class="lineNum">     239 </span>            : }</a>
 </pre>
       </td>
     </tr>

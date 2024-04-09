@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-08 22:32:36</td>
+            <td class="headerValue">2024-04-09 17:42:08</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -71,48 +71,46 @@
 <a name="9"><span class="lineNum">       9 </span>            :  */</a>
 <a name="10"><span class="lineNum">      10 </span>            : </a>
 <a name="11"><span class="lineNum">      11 </span>            : #pragma once</a>
-<a name="12"><span class="lineNum">      12 </span>            : #include &quot;RGBA.h&quot;</a>
-<a name="13"><span class="lineNum">      13 </span>            : #include &lt;map&gt;</a>
-<a name="14"><span class="lineNum">      14 </span>            : #include &lt;regex&gt; // for std::regex and std::regex_replace</a>
-<a name="15"><span class="lineNum">      15 </span>            : #include &lt;string&gt;</a>
-<a name="16"><span class="lineNum">      16 </span>            : #include &lt;vector&gt;</a>
-<a name="17"><span class="lineNum">      17 </span>            : </a>
-<a name="18"><span class="lineNum">      18 </span>            : namespace sipai {</a>
-<a name="19"><span class="lineNum">      19 </span>            : using TrainingData = std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;;</a>
-<a name="20"><span class="lineNum">      20 </span>            : using image = std::vector&lt;RGBA&gt;;</a>
-<a name="21"><span class="lineNum">      21 </span>            : </a>
-<a name="22"><span class="lineNum">      22 </span>            : consteval unsigned long long operator&quot;&quot; _K(unsigned long long x) {</a>
-<a name="23"><span class="lineNum">      23 </span>            :   return x * 1024;</a>
-<a name="24"><span class="lineNum">      24 </span>            : }</a>
-<a name="25"><span class="lineNum">      25 </span>            : </a>
-<a name="26"><span class="lineNum">      26 </span>            : consteval unsigned long long operator&quot;&quot; _M(unsigned long long x) {</a>
-<a name="27"><span class="lineNum">      27 </span>            :   return x * 1024_K;</a>
-<a name="28"><span class="lineNum">      28 </span>            : }</a>
-<a name="29"><span class="lineNum">      29 </span>            : </a>
-<a name="30"><span class="lineNum">      30 </span>            : consteval unsigned long long operator&quot;&quot; _G(unsigned long long x) {</a>
-<a name="31"><span class="lineNum">      31 </span>            :   return x * 1024_M;</a>
-<a name="32"><span class="lineNum">      32 </span>            : }</a>
+<a name="12"><span class="lineNum">      12 </span>            : #include &lt;map&gt;</a>
+<a name="13"><span class="lineNum">      13 </span>            : #include &lt;regex&gt; // for std::regex and std::regex_replace</a>
+<a name="14"><span class="lineNum">      14 </span>            : #include &lt;string&gt;</a>
+<a name="15"><span class="lineNum">      15 </span>            : #include &lt;vector&gt;</a>
+<a name="16"><span class="lineNum">      16 </span>            : </a>
+<a name="17"><span class="lineNum">      17 </span>            : namespace sipai {</a>
+<a name="18"><span class="lineNum">      18 </span>            : using TrainingData = std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;;</a>
+<a name="19"><span class="lineNum">      19 </span>            : </a>
+<a name="20"><span class="lineNum">      20 </span>            : consteval unsigned long long operator&quot;&quot; _K(unsigned long long x) {</a>
+<a name="21"><span class="lineNum">      21 </span>            :   return x * 1024;</a>
+<a name="22"><span class="lineNum">      22 </span>            : }</a>
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<a name="24"><span class="lineNum">      24 </span>            : consteval unsigned long long operator&quot;&quot; _M(unsigned long long x) {</a>
+<a name="25"><span class="lineNum">      25 </span>            :   return x * 1024_K;</a>
+<a name="26"><span class="lineNum">      26 </span>            : }</a>
+<a name="27"><span class="lineNum">      27 </span>            : </a>
+<a name="28"><span class="lineNum">      28 </span>            : consteval unsigned long long operator&quot;&quot; _G(unsigned long long x) {</a>
+<a name="29"><span class="lineNum">      29 </span>            :   return x * 1024_M;</a>
+<a name="30"><span class="lineNum">      30 </span>            : }</a>
+<a name="31"><span class="lineNum">      31 </span>            : </a>
+<a name="32"><span class="lineNum">      32 </span>            : enum class ERunMode { Enhancer, Testing, Training, TrainingMonitored };</a>
 <a name="33"><span class="lineNum">      33 </span>            : </a>
-<a name="34"><span class="lineNum">      34 </span>            : enum class ERunMode { Enhancer, Testing, Training, TrainingMonitored };</a>
-<a name="35"><span class="lineNum">      35 </span>            : </a>
-<a name="36"><span class="lineNum">      36 </span>            : const std::map&lt;std::string, ERunMode, std::less&lt;&gt;&gt; mode_map{</a>
-<a name="37"><span class="lineNum">      37 </span>            :     {&quot;Enhancer&quot;, ERunMode::Enhancer},</a>
-<a name="38"><span class="lineNum">      38 </span>            :     {&quot;Testing&quot;, ERunMode::Testing},</a>
-<a name="39"><span class="lineNum">      39 </span>            :     {&quot;Training&quot;, ERunMode::Training},</a>
-<a name="40"><span class="lineNum">      40 </span>            :     {&quot;TrainingMonitored&quot;, ERunMode::TrainingMonitored}};</a>
-<a name="41"><span class="lineNum">      41 </span>            : </a>
-<a name="42"><span class="lineNum">      42 </span>            : /**</a>
-<a name="43"><span class="lineNum">      43 </span>            :  * @brief Get the Filename .csv from a Filename .json</a>
-<a name="44"><span class="lineNum">      44 </span>            :  *</a>
-<a name="45"><span class="lineNum">      45 </span>            :  * @param filenameJson</a>
-<a name="46"><span class="lineNum">      46 </span>            :  * @return std::string</a>
-<a name="47"><span class="lineNum">      47 </span>            :  */</a>
-<a name="48"><span class="lineNum">      48 </span><span class="lineCov">          6 : inline std::string getFilenameCsv(const std::string &amp;filenameJson) {</span></a>
-<a name="49"><span class="lineNum">      49 </span>            :   return std::regex_replace(filenameJson,</a>
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">         12 :                             std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
-<a name="51"><span class="lineNum">      51 </span>            : }</a>
-<a name="52"><span class="lineNum">      52 </span>            : </a>
-<a name="53"><span class="lineNum">      53 </span>            : } // namespace sipai</a>
+<a name="34"><span class="lineNum">      34 </span>            : const std::map&lt;std::string, ERunMode, std::less&lt;&gt;&gt; mode_map{</a>
+<a name="35"><span class="lineNum">      35 </span>            :     {&quot;Enhancer&quot;, ERunMode::Enhancer},</a>
+<a name="36"><span class="lineNum">      36 </span>            :     {&quot;Testing&quot;, ERunMode::Testing},</a>
+<a name="37"><span class="lineNum">      37 </span>            :     {&quot;Training&quot;, ERunMode::Training},</a>
+<a name="38"><span class="lineNum">      38 </span>            :     {&quot;TrainingMonitored&quot;, ERunMode::TrainingMonitored}};</a>
+<a name="39"><span class="lineNum">      39 </span>            : </a>
+<a name="40"><span class="lineNum">      40 </span>            : /**</a>
+<a name="41"><span class="lineNum">      41 </span>            :  * @brief Get the Filename .csv from a Filename .json</a>
+<a name="42"><span class="lineNum">      42 </span>            :  *</a>
+<a name="43"><span class="lineNum">      43 </span>            :  * @param filenameJson</a>
+<a name="44"><span class="lineNum">      44 </span>            :  * @return std::string</a>
+<a name="45"><span class="lineNum">      45 </span>            :  */</a>
+<a name="46"><span class="lineNum">      46 </span><span class="lineCov">          6 : inline std::string getFilenameCsv(const std::string &amp;filenameJson) {</span></a>
+<a name="47"><span class="lineNum">      47 </span>            :   return std::regex_replace(filenameJson,</a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineCov">         12 :                             std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
+<a name="49"><span class="lineNum">      49 </span>            : }</a>
+<a name="50"><span class="lineNum">      50 </span>            : </a>
+<a name="51"><span class="lineNum">      51 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>

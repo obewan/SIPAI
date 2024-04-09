@@ -1,9 +1,12 @@
 var searchData=
 [
-  ['output_5factivation_5falpha_490',['output_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#af59652ab9640efbe3e1ee1d24bfdf3eb',1,'sipai::NeuralNetworkParams']]],
-  ['output_5factivation_5ffunction_491',['output_activation_function',['../structsipai_1_1NeuralNetworkParams.html#af53014e1ec358e4d4afab1c8c9b03315',1,'sipai::NeuralNetworkParams']]],
-  ['output_5ffile_492',['output_file',['../structsipai_1_1AppParams.html#aca50bfed2557acec4d1d50c38a9736a7',1,'sipai::AppParams']]],
-  ['output_5fscale_493',['output_scale',['../structsipai_1_1AppParams.html#a600f0e89aa9acc0b0c9d9131dc3115e7',1,'sipai::AppParams']]],
-  ['output_5fsize_5fx_494',['output_size_x',['../structsipai_1_1NeuralNetworkParams.html#a5892a752119dd90f07f0e4fac4adcd4d',1,'sipai::NeuralNetworkParams']]],
-  ['output_5fsize_5fy_495',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]]
+  ['neighbors_489',['neighbors',['../classsipai_1_1Neuron.html#a2563fc6f15a4ea0fcc7eab9ddf5f0046',1,'sipai::Neuron']]],
+  ['network_490',['network',['../classsipai_1_1Manager.html#a63c0ccc0b6c996b0fd10a2414c9a7ff2',1,'sipai::Manager']]],
+  ['network_5fparams_491',['network_params',['../classsipai_1_1Manager.html#a32d4f24db92ee4cbb2e3e15adc613207',1,'sipai::Manager']]],
+  ['network_5fto_5fexport_492',['network_to_export',['../structsipai_1_1AppParams.html#a5330b8b96411fed3ec8031d631832803',1,'sipai::AppParams']]],
+  ['network_5fto_5fimport_493',['network_to_import',['../structsipai_1_1AppParams.html#af4cef02031523a7596087fd1b7adf5ce',1,'sipai::AppParams']]],
+  ['neuron_494',['neuron',['../classsipai_1_1NeuronConnection.html#af33cf7a1913fc73e6e728c45d8d192be',1,'sipai::NeuronConnection']]],
+  ['neurons_495',['neurons',['../classsipai_1_1Layer.html#a74ba2e8d1949eebc1f829af9a158e9c9',1,'sipai::Layer']]],
+  ['nextlayer_496',['nextLayer',['../classsipai_1_1Layer.html#a4942c6d92e0c07a5558ef46ad704d201',1,'sipai::Layer']]],
+  ['nomax_5fepochs_497',['NOMAX_EPOCHS',['../namespacesipai.html#a56e9fa2be87cd2f76b7c37721c94cb44',1,'sipai']]]
 ];

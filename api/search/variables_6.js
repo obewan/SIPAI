@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['jsonie_470',['jsonIE',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a1a803d9d4ba153bd492a48ff66a918c4',1,'sipai::NeuralNetworkImportExportFacade']]]
+  ['input_5ffile_475',['input_file',['../structsipai_1_1AppParams.html#a9b62227d9472ba41b924929d402520e1',1,'sipai::AppParams']]],
+  ['input_5fsize_5fx_476',['input_size_x',['../structsipai_1_1NeuralNetworkParams.html#a0e8c7e49aae5ffa9c53faec705c55d2f',1,'sipai::NeuralNetworkParams']]],
+  ['input_5fsize_5fy_477',['input_size_y',['../structsipai_1_1NeuralNetworkParams.html#ae33caf09674e5dba331172da4570538e',1,'sipai::NeuralNetworkParams']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['weight_515',['weight',['../classsipai_1_1NeuronConnection.html#a5c3fe08491ac1a0b912d553e22475cc0',1,'sipai::NeuronConnection']]],
-  ['weights_516',['weights',['../classsipai_1_1Neuron.html#a1ef50b08701aa813b15bb961201a8f8c',1,'sipai::Neuron']]]
+  ['value_523',['value',['../classsipai_1_1Neuron.html#ae8520bf3d77d8859eeb90304a7cf7243',1,'sipai::Neuron::value()'],['../structsipai_1_1RGBA.html#a1357c219bce94d836d5e16af5683176a',1,'sipai::RGBA::value()']]],
+  ['version_524',['version',['../structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1',1,'sipai::AppParams']]]
 ];
