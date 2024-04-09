@@ -38,8 +38,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
   try {
     // Split training data into training and validation sets
-    const auto &[trainingDataPairs, validationDataPairs] =
-        manager.splitData(trainingData, manager.app_params.split_ratio);
+    const auto &[trainingDataPairs, validationDataPairs] = manager.splitData(
+        trainingData, manager.app_params.training_split_ratio);
 
     // Reset the stopTraining flag
     stopTraining = false;
@@ -121,7 +121,7 @@ bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
   bool improvementCondition =
       epochsWithoutImprovement < appParams.max_epochs_without_improvement;
   bool epochCondition =
-      (appParams.max_epochs == NOMAX_EPOCHS) || (epoch < appParams.max_epochs);
+      (appParams.max_epochs == NO_MAX_EPOCHS) || (epoch < appParams.max_epochs);
 
   return improvementCondition && epochCondition;
 }

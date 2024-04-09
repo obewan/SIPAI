@@ -182,7 +182,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
   app.add_option("--ep,--epochs", app_params.max_epochs,
                  "The maximum number of epochs to run during training. For no "
                  "maximum, indicate " +
-                     std::to_string(NOMAX_EPOCHS))
+                     std::to_string(NO_MAX_EPOCHS))
       ->default_val(app_params.max_epochs)
       ->check(CLI::NonNegativeNumber);
   app.add_option(
@@ -192,10 +192,11 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "after which the training will stop.")
       ->default_val(app_params.max_epochs_without_improvement)
       ->check(CLI::NonNegativeNumber);
-  app.add_option("--sr, --split_ratio", app_params.split_ratio,
+  app.add_option("--tsr, --training_split_ratio",
+                 app_params.training_split_ratio,
                  "The training ratio of the file to switch between data for "
                  "training and data for testing, should be around 0.7.")
-      ->default_val(app_params.split_ratio)
+      ->default_val(app_params.training_split_ratio)
       ->check(CLI::Range(0.0f, 1.0f))
       ->check(CLI::TypeValidator<float>());
   app.add_option(
@@ -248,6 +249,14 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "network will be saved and exported to the file path specified "
          "by the export_network option.")
       ->default_val(app_params.epoch_autosave)
+      ->check(CLI::PositiveNumber);
+  app.add_option(
+         "--is, --image_split", app_params.image_split,
+         "Split the training image into smaller parts, that will fit "
+         "better smaller neural network input layer resolution, and so should "
+         "improve the final result, which will be reconstitued from the "
+         "smaller parts.")
+      ->default_val(app_params.image_split)
       ->check(CLI::PositiveNumber);
   app.add_option(
          "-m, --mode", app_params.run_mode,

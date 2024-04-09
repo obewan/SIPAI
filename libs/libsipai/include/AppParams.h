@@ -14,7 +14,7 @@
 #include <string>
 
 namespace sipai {
-constexpr int NOMAX_EPOCHS = -1;
+constexpr int NO_MAX_EPOCHS = -1;
 
 struct AppParams {
   std::string title = "SIPAI - Simple Image Processing Artificial Intelligence";
@@ -26,10 +26,11 @@ struct AppParams {
   std::string network_to_export = "";
   ERunMode run_mode = ERunMode::Enhancer;
   float output_scale = 1.0;
-  float split_ratio = 0.8;
-  int max_epochs = NOMAX_EPOCHS;
-  int max_epochs_without_improvement = 2;
-  int epoch_autosave = 100;
+  float training_split_ratio = 0.7;
+  int max_epochs = NO_MAX_EPOCHS;
+  size_t max_epochs_without_improvement = 2;
+  size_t epoch_autosave = 100;
+  size_t image_split = 1;
   bool bulk_loading = false;
   /**
    * @brief Not activable by command line for now (still under development).
