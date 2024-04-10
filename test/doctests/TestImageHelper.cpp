@@ -8,26 +8,35 @@ TEST_CASE("Testing ImageHelper") {
 
   SUBCASE("Test loadImage") {
     ImageHelper imageHelper;
-    const auto &image = imageHelper.loadImage("../data/images/001a.png");
-    CHECK(image.size_x * image.size_y > 0);
-    for (const auto &rgba : image.data) {
-      CHECK_FALSE(rgba.isOutOfRange());
+    size_t split = 3;
+    const auto &image = imageHelper.loadImage("../data/images/001a.png", split);
+    for (const auto &part : image) {
+      CHECK(part.size_x == 50);
+      CHECK(part.size_y == 50);
+      CHECK(part.size() == 50 * 50);
+      CHECK(part.data.size() == part.size());
+      for (const auto &rgba : part.data) {
+        CHECK_FALSE(rgba.isOutOfRange());
+      }
     }
   }
 
   SUBCASE("Test saveImage") {
     ImageHelper imageHelper;
-    const auto &image = imageHelper.loadImage("../data/images/001a.png");
+    size_t split = 2;
+    const auto &image = imageHelper.loadImage("../data/images/001a.png", split);
     std::string tmpImage = "tmpImage.png";
     if (std::filesystem::exists(tmpImage)) {
       std::filesystem::remove(tmpImage);
     }
     CHECK_FALSE(std::filesystem::exists(tmpImage));
-    imageHelper.saveImage(tmpImage, image);
+    imageHelper.saveImage(tmpImage, image, split);
     CHECK(std::filesystem::exists(tmpImage));
-    const auto &image2 = imageHelper.loadImage(tmpImage);
-    CHECK(image2.size_x == image.size_x);
-    CHECK(image2.size_y == image.size_y);
+    const auto &image2 = imageHelper.loadImage(tmpImage, split);
+    for (size_t i = 0; i < image2.size(); i++) {
+      CHECK(image2[i].size_x == image[i].size_x);
+      CHECK(image2[i].size_y == image[i].size_y);
+    }
     std::filesystem::remove(tmpImage);
   }
 

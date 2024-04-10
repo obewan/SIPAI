@@ -182,7 +182,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
   app.add_option("--ep,--epochs", app_params.max_epochs,
                  "The maximum number of epochs to run during training. For no "
                  "maximum, indicate " +
-                     std::to_string(NOMAX_EPOCHS))
+                     std::to_string(NO_MAX_EPOCHS))
       ->default_val(app_params.max_epochs)
       ->check(CLI::NonNegativeNumber);
   app.add_option(
@@ -192,10 +192,11 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "after which the training will stop.")
       ->default_val(app_params.max_epochs_without_improvement)
       ->check(CLI::NonNegativeNumber);
-  app.add_option("--sr, --split_ratio", app_params.split_ratio,
+  app.add_option("--tsr, --training_split_ratio",
+                 app_params.training_split_ratio,
                  "The training ratio of the file to switch between data for "
                  "training and data for testing, should be around 0.7.")
-      ->default_val(app_params.split_ratio)
+      ->default_val(app_params.training_split_ratio)
       ->check(CLI::Range(0.0f, 1.0f))
       ->check(CLI::TypeValidator<float>());
   app.add_option(
@@ -250,6 +251,18 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       ->default_val(app_params.epoch_autosave)
       ->check(CLI::PositiveNumber);
   app.add_option(
+         "--is, --image_split", app_params.image_split,
+         "Split the training image into smaller parts, in x and y, that will "
+         "fit better smaller neural network input layer resolution,\nand so "
+         "should improve the final result, which will be reconstitued from the "
+         "smaller parts.\nFor example, a split of 2 will result in 4 smaller "
+         "parts, and a split of 3 will result in 9 smaller parts.\nTo avoid "
+         "padding, make sure the split number is a multiple of the image width "
+         "and height.\nAlso, be aware that using a split will increase the "
+         "training time.")
+      ->default_val(app_params.image_split)
+      ->check(CLI::PositiveNumber);
+  app.add_option(
          "-m, --mode", app_params.run_mode,
          "Select the running mode:\n  - Enhancer:This mode uses an "
          "input image to generate its enhanced image (default).\n    The "
@@ -265,8 +278,20 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
   app.add_flag("--bl,--bulk_loading", app_params.bulk_loading,
                "This flag will activate a bulk loading of all images, "
-               "resulting training speed, but at the cost of more memory, "
-               "depending on the images total count.");
+               "resulting training speed, but at the cost of more memory,\n"
+               "depending on the images total count. The bulk loading is also "
+               "a multi-threads loading.");
+  app.add_flag(
+      "--par,--parallelism", app_params.enable_parallel,
+      "Enables parallel processing for neural network computations. "
+      "While this can potentially improve performance by utilizing multiple "
+      "cores,\n"
+      "it's important to note that it may not always lead to speedup.\n"
+      "The overhead of managing multiple threads can sometimes outweigh the "
+      "benefits,\n"
+      "especially for smaller tasks or on systems with limited resources. "
+      "Use this flag judiciously and benchmark your application to determine "
+      "its impact.");
   app.add_flag("-v,--version", version, "Show current version.");
 }
 

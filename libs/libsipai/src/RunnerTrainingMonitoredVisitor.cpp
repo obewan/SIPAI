@@ -1,11 +1,14 @@
 #include "RunnerTrainingMonitoredVisitor.h"
+#include "AppParams.h"
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
 #include "exception/RunnerVisitorException.h"
 #include <csignal>
+#include <cstddef>
 #include <exception>
 #include <memory>
+#include <string>
 #include <utility>
 
 using namespace sipai;
@@ -24,8 +27,10 @@ void signalHandler(int signal) {
 void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::LOG_INFO(
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
+
   auto &manager = Manager::getInstance();
-  const auto &appParams = Manager::getInstance().app_params;
+  const auto &appParams = manager.app_params;
+
   const auto start{std::chrono::steady_clock::now()}; // starting timer
   SimpleLogger::getInstance().setPrecision(2);
 
@@ -39,7 +44,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   try {
     // Split training data into training and validation sets
     const auto &[trainingDataPairs, validationDataPairs] =
-        manager.splitData(trainingData, manager.app_params.split_ratio);
+        manager.splitData(trainingData, appParams.training_split_ratio);
 
     // Reset the stopTraining flag
     stopTraining = false;
@@ -92,13 +97,13 @@ float RunnerTrainingMonitoredVisitor::trainOnEpoch(
     const std::unique_ptr<TrainingData> &trainingSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !training_images_) {
-    training_images_ = std::make_unique<std::vector<std::pair<Image, Image>>>(
-        loadBulkImages(trainingSet, "Training:"));
+    training_images_ =
+        std::make_unique<std::vector<std::pair<ImageParts, ImageParts>>>(
+            loadBulkImages(trainingSet, "Training:"));
   }
   float epochLoss = manager.app_params.bulk_loading
                         ? computeLoss(*training_images_, true)
                         : computeLoss(*trainingSet, true);
-  epochLoss /= trainingSet->size();
   return epochLoss;
 }
 
@@ -106,22 +111,23 @@ float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
     const std::unique_ptr<TrainingData> &validationSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !validation_images_) {
-    validation_images_ = std::make_unique<std::vector<std::pair<Image, Image>>>(
-        loadBulkImages(validationSet, "Validation:"));
+    validation_images_ =
+        std::make_unique<std::vector<std::pair<ImageParts, ImageParts>>>(
+            loadBulkImages(validationSet, "Validation:"));
   }
   float validationLoss = manager.app_params.bulk_loading
                              ? computeLoss(*validation_images_, false)
                              : computeLoss(*validationSet, false);
-  validationLoss /= validationSet->size();
   return validationLoss;
 }
 
 bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
-    int epoch, int epochsWithoutImprovement, const AppParams &appParams) const {
+    int epoch, size_t epochsWithoutImprovement,
+    const AppParams &appParams) const {
   bool improvementCondition =
       epochsWithoutImprovement < appParams.max_epochs_without_improvement;
   bool epochCondition =
-      (appParams.max_epochs == NOMAX_EPOCHS) || (epoch < appParams.max_epochs);
+      (appParams.max_epochs == NO_MAX_EPOCHS) || (epoch < appParams.max_epochs);
 
   return improvementCondition && epochCondition;
 }
@@ -145,20 +151,35 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
   }
 }
 
-std::pair<Image, Image> RunnerTrainingMonitoredVisitor::loadImages(
+std::pair<ImageParts, ImageParts> RunnerTrainingMonitoredVisitor::loadImages(
     const std::string &inputPath, const std::string &targetPath) const {
   const auto &network_params = Manager::getInstance().network_params;
-  const auto &inputImage = imageHelper_.loadImage(
-      inputPath, network_params.input_size_x, network_params.input_size_y);
-  const auto &targetImage = imageHelper_.loadImage(
-      targetPath, network_params.output_size_x, network_params.output_size_y);
-  return std::make_pair(inputImage, targetImage);
+  const auto &app_params = Manager::getInstance().app_params;
+
+  // Load and split the input image
+  const auto &inputImageParts = imageHelper_.loadImage(
+      inputPath, app_params.image_split, network_params.input_size_x,
+      network_params.input_size_y);
+
+  // Load and split the target image
+  const auto &targetImageParts = imageHelper_.loadImage(
+      targetPath, app_params.image_split, network_params.output_size_x,
+      network_params.output_size_y);
+
+  // Check if the number of parts is the same for both images
+  if (inputImageParts.size() != targetImageParts.size()) {
+    throw RunnerVisitorException(
+        "Mismatch in number of image parts: expected " +
+        std::to_string(inputImageParts.size()) + ", got " +
+        std::to_string(targetImageParts.size()));
+  }
+  return std::make_pair(inputImageParts, targetImageParts);
 }
 
-std::vector<std::pair<Image, Image>>
+std::vector<std::pair<ImageParts, ImageParts>>
 RunnerTrainingMonitoredVisitor::loadBulkImages(
     const std::unique_ptr<TrainingData> &dataSet, std::string logPrefix) const {
-  std::vector<std::pair<Image, Image>> images;
+  std::vector<std::pair<ImageParts, ImageParts>> images;
   SimpleLogger::LOG_INFO(logPrefix + " loading images... (bulk loading)");
 
   std::mutex images_mutex;
@@ -179,7 +200,8 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
 
           auto it = std::next(dataSet->begin(), index);
           const auto &[inputPath, targetPath] = *it;
-          std::pair<Image, Image> pair = loadImages(inputPath, targetPath);
+          std::pair<ImageParts, ImageParts> pair =
+              loadImages(inputPath, targetPath);
 
           {
             std::lock_guard<std::mutex> lock(images_mutex);
@@ -197,43 +219,129 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
     thread.join();
   }
 
+  SimpleLogger::LOG_INFO(logPrefix + " images loaded...");
+
   return images;
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(
-    const std::vector<std::pair<Image, Image>> &images,
-    bool withBackwardAndUpdateWeights) const {
+    const ImageParts &inputImage, const ImageParts &targetImage,
+    bool withBackwardAndUpdateWeights, bool isLossFrequency) const {
   auto &manager = Manager::getInstance();
-  float loss = 0.0f;
-  for (const auto &[inputImage, targetImage] : images) {
+  if (inputImage.size() != targetImage.size()) {
+    throw ImageHelperException(
+        "internal exception: input and target parts have different sizes.");
+  }
+
+  // Initialize the loss for the current image to 0
+  float partsLoss = 0.0f;
+
+  // Initialize a counter to keep track of the number of parts for which the
+  // loss is computed
+  size_t partsLossComputed = 0;
+
+  // Loop over all parts of the current image
+  for (size_t i = 0; i < inputImage.size(); i++) {
+    // Get the input and target parts
+    const auto &inputPart = inputImage.at(i);
+    const auto &targetPart = targetImage.at(i);
+
+    // Perform forward propagation
     const auto &outputData = manager.network->forwardPropagation(
-        inputImage.data, manager.app_params.enable_parallel);
-    loss += imageHelper_.computeLoss(outputData, targetImage.data);
+        inputPart.data, manager.app_params.enable_parallel);
+
+    // If the loss should be computed for the current image, compute the loss
+    // for the current part
+    if (isLossFrequency) {
+      partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+      partsLossComputed++;
+    }
+
+    // If backward propagation and weight update should be performed, perform
+    // them
     if (withBackwardAndUpdateWeights) {
-      manager.network->backwardPropagation(targetImage.data,
+      manager.network->backwardPropagation(targetPart.data,
                                            manager.app_params.enable_parallel);
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);
     }
   }
-  return loss;
+
+  return (partsLoss / static_cast<float>(partsLossComputed));
+}
+
+float RunnerTrainingMonitoredVisitor::computeLoss(
+    const std::vector<std::pair<ImageParts, ImageParts>> &images,
+    bool withBackwardAndUpdateWeights) const {
+  // Initialize the total loss to 0
+  float loss = 0.0f;
+  size_t lossComputed = 0;
+  size_t counter = 0;
+  bool isLossFrequency = false;
+
+  // Compute the frequency at which the loss should be computed
+  size_t lossFrequency =
+      std::max(static_cast<size_t>(std::sqrt(images.size())), (size_t)1);
+
+  // Loop over all images
+  for (const auto &[inputImageParts, targetImageParts] : images) {
+    counter++;
+
+    // Check if the loss should be computed for the current image
+    isLossFrequency = counter % lossFrequency == 0 ? true : false;
+
+    // Compute the image parts loss
+    float imageLoss =
+        computeLoss(inputImageParts, targetImageParts,
+                    withBackwardAndUpdateWeights, isLossFrequency);
+
+    // If the loss was computed for the current image, add the average loss for
+    // the current image to the total loss
+    if (isLossFrequency) {
+      loss += imageLoss;
+      lossComputed++;
+    }
+  }
+
+  // Return the average loss over all images for which the loss was computed
+  return (loss / static_cast<float>(lossComputed));
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(
     const TrainingData &dataSet, bool withBackwardAndUpdateWeights) const {
-  auto &manager = Manager::getInstance();
+  // Initialize the total loss to 0
   float loss = 0.0f;
+  size_t lossComputed = 0;
+  size_t counter = 0;
+  bool isLossFrequency = false;
+
+  // Compute the frequency at which the loss should be computed
+  size_t lossFrequency =
+      std::max(static_cast<size_t>(std::sqrt(dataSet.size())), (size_t)1);
+
+  // Loop over all images
   for (const auto &[inputPath, targetPath] : dataSet) {
-    const auto &[inputImage, targetImage] = loadImages(inputPath, targetPath);
-    const auto &outputData = manager.network->forwardPropagation(
-        inputImage.data, manager.app_params.enable_parallel);
-    loss += imageHelper_.computeLoss(outputData, targetImage.data);
-    if (withBackwardAndUpdateWeights) {
-      manager.network->backwardPropagation(targetImage.data,
-                                           manager.app_params.enable_parallel);
-      manager.network->updateWeights(manager.network_params.learning_rate,
-                                     manager.app_params.enable_parallel);
+    // Load the image parts
+    const auto &[inputImageParts, targetImageParts] =
+        loadImages(inputPath, targetPath);
+    counter++;
+
+    // Check if the loss should be computed for the current image
+    isLossFrequency = counter % lossFrequency == 0 ? true : false;
+
+    // Compute the image parts loss
+    float imageLoss =
+        computeLoss(inputImageParts, targetImageParts,
+                    withBackwardAndUpdateWeights, isLossFrequency);
+
+    // If the loss was computed for the current image, add the average loss for
+    // the current image to the total loss
+    if (isLossFrequency) {
+      loss += imageLoss;
+      lossComputed++;
     }
+
+    // Unload images
   }
-  return loss;
+  return (loss / static_cast<float>(lossComputed));
 }

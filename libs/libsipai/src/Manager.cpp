@@ -1,4 +1,5 @@
 #include "Manager.h"
+#include "AppParams.h"
 #include "Common.h"
 #include "NeuralNetwork.h"
 #include "NeuralNetworkBuilder.h"
@@ -41,6 +42,35 @@ void Manager::run() {
 
   // Initialize network
   createOrImportNetwork();
+
+  SimpleLogger::LOG_INFO(
+      "Parameters: ", "\nmode: ", getRunModeStr(app_params.run_mode),
+      "\nauto-save every ", app_params.epoch_autosave, " epochs",
+      "\nauto-exit after ", app_params.max_epochs_without_improvement,
+      " epochs without improvement",
+      app_params.max_epochs == NO_MAX_EPOCHS
+          ? "\nno maximum epochs"
+          : "\nauto-exit after a maximum of " +
+                std::to_string(app_params.max_epochs) + " epochs",
+      "\ntraining/validation ratio: ", app_params.training_split_ratio,
+      "\nlearning rate: ", network_params.learning_rate,
+      "\ninput layer size: ", network_params.input_size_x, "x",
+      network_params.input_size_y,
+      "\nhidden layer size: ", network_params.hidden_size_x, "x",
+      network_params.hidden_size_y,
+      "\noutput layer size: ", network_params.output_size_x, "x",
+      network_params.output_size_y,
+      "\nhidden layers: ", network_params.hiddens_count,
+      "\nhidden activation function: ",
+      getActivationStr(network_params.hidden_activation_function),
+      "\nhidden activation alpha: ", network_params.hidden_activation_alpha,
+      "\noutput activation function: ",
+      getActivationStr(network_params.output_activation_function),
+      "\noutput activation alpha: ", network_params.output_activation_alpha,
+      "\nimage split: ", app_params.image_split,
+      "\noutput scale: ", app_params.output_scale,
+      "\nimages bulk loading: ", app_params.bulk_loading ? "true" : "false",
+      "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false");
 
   // Run with visitor
   switch (app_params.run_mode) {

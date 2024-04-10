@@ -22,33 +22,58 @@ namespace sipai {
 class ImageHelper {
 public:
   /**
-   * @brief Reads an image from a specified path and returns it as an OpenCV
-   * Mat.
+   * @brief Reads an image from a specified path and returns it as Image parts
    *
    * @param imagePath The file path of the image to be loaded.
-   * @param resize_x Optional resize the imported image on X (width)
-   * @param resize_y Optional resize the imported image on Y (height)
-   * @return Image The imported image, optionally resized.
+   * @param split The split factor.
+   * @param resize_x Optional resize the imported image on X (width).
+   * @param resize_y Optional resize the imported image on Y (height).
+   * @return Image The imported image parts, optionally resized.
    */
-  Image loadImage(const std::string &imagePath, size_t resize_x = 0,
-                  size_t resize_y = 0) const;
+  ImageParts loadImage(const std::string &imagePath, size_t split,
+                       size_t resize_x = 0, size_t resize_y = 0) const;
 
   /**
-   * @brief Save an OpenCV Matas image.
+   * @brief Split an OpenCV Mat to smaller Mats.
+   *
+   * @param inputImage The OpenCV Mat to split.
+   * @param split The split factor.
+   * @param withPadding Add padding if split is not a multiple of image width
+   * and height
+   * @return std::vector<cv::Mat>
+   */
+  std::vector<cv::Mat> splitImage(const cv::Mat &inputImage, size_t split,
+                                  bool withPadding = false) const;
+
+  /**
+   * @brief Save an image.
    *
    * @param imagePath The file path of the image to be saved.
-   * @param image The Image to save.
+   * @param imageParts The Image to save.
+   * @param split The split factor.
    * @param resize_x Optional resize the exported image on X (width)
    * @param resize_y Optional resize the exported image on Y (height)
    */
-  void saveImage(const std::string &imagePath, const Image &image,
-                 size_t resize_x = 0, size_t resize_y = 0) const;
+  void saveImage(const std::string &imagePath, const ImageParts &imageParts,
+                 size_t split, size_t resize_x = 0, size_t resize_y = 0) const;
+
+  /**
+   * @brief Concat the images parts into one image.
+   *
+   * @param images OpenCV image parts
+   * @param splitsX
+   * @param splitsY
+   * @return cv::Mat
+   */
+  cv::Mat joinImages(const std::vector<cv::Mat> &images, int splitsX,
+                     int splitsY) const;
 
   /**
    * @brief Converts an OpenCV Mat image into a vector of RGBA values.
    *
    * @param image The OpenCV Mat image to be converted.
-   * @return std::vector<RGBA> The converted image as a vector of RGBA values.
+   * @return std::vector<RGBA> The converted image as a vector of RGBA
+   * values.
    */
   std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) const;
 

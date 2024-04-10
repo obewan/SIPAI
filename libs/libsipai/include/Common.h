@@ -9,6 +9,7 @@
  */
 
 #pragma once
+#include "Image.h"
 #include <map>
 #include <regex> // for std::regex and std::regex_replace
 #include <string>
@@ -16,6 +17,7 @@
 
 namespace sipai {
 using TrainingData = std::vector<std::pair<std::string, std::string>>;
+using ImageParts = std::vector<Image>;
 
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;
@@ -36,6 +38,15 @@ const std::map<std::string, ERunMode, std::less<>> mode_map{
     {"Testing", ERunMode::Testing},
     {"Training", ERunMode::Training},
     {"TrainingMonitored", ERunMode::TrainingMonitored}};
+
+inline std::string getRunModeStr(ERunMode mode) {
+  for (const auto &[key, value] : mode_map) {
+    if (value == mode) {
+      return key;
+    }
+  }
+  return "";
+}
 
 /**
  * @brief Get the Filename .csv from a Filename .json

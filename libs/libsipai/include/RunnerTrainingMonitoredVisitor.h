@@ -49,7 +49,7 @@ public:
    * of epochs and maximum epochs without improvement.
    * @return True if the training should continue, false otherwise.
    */
-  bool shouldContinueTraining(int epoch, int epochsWithoutImprovement,
+  bool shouldContinueTraining(int epoch, size_t epochsWithoutImprovement,
                               const AppParams &appParams) const;
 
   /**
@@ -71,19 +71,47 @@ public:
 
 private:
   ImageHelper imageHelper_;
-  mutable std::unique_ptr<std::vector<std::pair<Image, Image>>>
+  mutable std::unique_ptr<std::vector<std::pair<ImageParts, ImageParts>>>
       training_images_ = nullptr;
-  mutable std::unique_ptr<std::vector<std::pair<Image, Image>>>
+  mutable std::unique_ptr<std::vector<std::pair<ImageParts, ImageParts>>>
       validation_images_ = nullptr;
 
-  std::pair<Image, Image> loadImages(const std::string &inputPath,
-                                     const std::string &targetPath) const;
-  std::vector<std::pair<Image, Image>>
+  std::pair<ImageParts, ImageParts>
+  loadImages(const std::string &inputPath, const std::string &targetPath) const;
+  std::vector<std::pair<ImageParts, ImageParts>>
   loadBulkImages(const std::unique_ptr<TrainingData> &dataSet,
                  std::string logPrefix) const;
 
-  float computeLoss(const std::vector<std::pair<Image, Image>> &images,
-                    bool withBackwardAndUpdateWeights) const;
+  /**
+   * @brief Compute the loss of an input image and its target image
+   *
+   * @param inputImage
+   * @param targetImage
+   * @param withBackwardAndUpdateWeights
+   * @param isLossFrequency
+   * @return float
+   */
+  float computeLoss(const ImageParts &inputImage, const ImageParts &targetImage,
+                    bool withBackwardAndUpdateWeights,
+                    bool isLossFrequency) const;
+  /**
+   * @brief Compute the loss of loaded images, without unloading.
+   *
+   * @param images
+   * @param withBackwardAndUpdateWeights
+   * @return float
+   */
+  float
+  computeLoss(const std::vector<std::pair<ImageParts, ImageParts>> &images,
+              bool withBackwardAndUpdateWeights) const;
+  /**
+   * @brief Compute the loss of a data set of image paths, loading/unloading
+   * image one by one for low memory usage
+   *
+   * @param dataSet
+   * @param withBackwardAndUpdateWeights
+   * @return float
+   */
   float computeLoss(const TrainingData &dataSet,
                     bool withBackwardAndUpdateWeights) const;
 };
