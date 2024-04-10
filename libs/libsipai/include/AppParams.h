@@ -22,6 +22,7 @@ struct AppParams {
   std::string input_file = "";
   std::string output_file = "";
   std::string training_data_file = "";
+  std::string training_data_folder = "";
   std::string network_to_import = "";
   std::string network_to_export = "";
   ERunMode run_mode = ERunMode::Enhancer;
@@ -31,6 +32,7 @@ struct AppParams {
   size_t max_epochs_without_improvement = 2;
   size_t epoch_autosave = 100;
   size_t image_split = 1;
+  size_t training_reduce_factor = 4;
   bool bulk_loading = false;
   bool enable_parallel = false;
   bool enable_padding = false;
