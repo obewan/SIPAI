@@ -104,7 +104,6 @@ float RunnerTrainingMonitoredVisitor::trainOnEpoch(
   float epochLoss = manager.app_params.bulk_loading
                         ? computeLoss(*training_images_, true)
                         : computeLoss(*trainingSet, true);
-  epochLoss /= trainingSet->size();
   return epochLoss;
 }
 
@@ -119,7 +118,6 @@ float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
   float validationLoss = manager.app_params.bulk_loading
                              ? computeLoss(*validation_images_, false)
                              : computeLoss(*validationSet, false);
-  validationLoss /= validationSet->size();
   return validationLoss;
 }
 
@@ -222,19 +220,61 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
     const std::vector<std::pair<ImageParts, ImageParts>> &images,
     bool withBackwardAndUpdateWeights) const {
   auto &manager = Manager::getInstance();
+  // Initialize the total loss to 0
   float loss = 0.0f;
+  size_t lossComputed = 0;
+
+  // Compute the frequency at which the loss should be computed
+  size_t lossFrequency =
+      std::max(static_cast<size_t>(std::sqrt(images.size())), (size_t)1);
+
+  // Initialize a counter to keep track of the number of images processed
+  size_t counter = 0;
+
+  // Initialize a flag to indicate whether the loss should be computed for the
+  // current image
+  bool isLossFrequency = false;
+
+  // Loop over all images
   for (const auto &[inputImageParts, targetImageParts] : images) {
+    // Throw an exception if the input and target parts have different sizes
     if (inputImageParts.size() != targetImageParts.size()) {
       throw ImageHelperException(
           "internal exception: input and target parts have different sizes.");
     }
+
+    // Increment the counter
+    counter++;
+
+    // Check if the loss should be computed for the current image
+    isLossFrequency = counter % lossFrequency == 0 ? true : false;
+
+    // Initialize the loss for the current image to 0
     float partsLoss = 0.0f;
+
+    // Initialize a counter to keep track of the number of parts for which the
+    // loss is computed
+    size_t partsLossComputed = 0;
+
+    // Loop over all parts of the current image
     for (size_t i = 0; i < inputImageParts.size(); i++) {
+      // Get the input and target parts
       const auto &inputPart = inputImageParts.at(i);
       const auto &targetPart = targetImageParts.at(i);
+
+      // Perform forward propagation
       const auto &outputData = manager.network->forwardPropagation(
           inputPart.data, manager.app_params.enable_parallel);
-      partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+
+      // If the loss should be computed for the current image, compute the loss
+      // for the current part
+      if (isLossFrequency) {
+        partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+        partsLossComputed++;
+      }
+
+      // If backward propagation and weight update should be performed, perform
+      // them
       if (withBackwardAndUpdateWeights) {
         manager.network->backwardPropagation(
             targetPart.data, manager.app_params.enable_parallel);
@@ -242,29 +282,81 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
                                        manager.app_params.enable_parallel);
       }
     }
-    loss += (partsLoss / static_cast<float>(inputImageParts.size()));
+
+    // If the loss was computed for the current image, add the average loss for
+    // the current image to the total loss
+    if (isLossFrequency) {
+      loss += (partsLoss / static_cast<float>(partsLossComputed));
+      lossComputed++;
+    }
   }
-  return loss;
+
+  // Return the average loss over all images for which the loss was computed
+  return (loss / static_cast<float>(lossComputed));
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(
     const TrainingData &dataSet, bool withBackwardAndUpdateWeights) const {
   auto &manager = Manager::getInstance();
+  // Initialize the total loss to 0
   float loss = 0.0f;
+  size_t lossComputed = 0;
+
+  // Compute the frequency at which the loss should be computed
+  size_t lossFrequency =
+      std::max(static_cast<size_t>(std::sqrt(dataSet.size())), (size_t)1);
+
+  // Initialize a counter to keep track of the number of images processed
+  size_t counter = 0;
+
+  // Initialize a flag to indicate whether the loss should be computed for the
+  // current image
+  bool isLossFrequency = false;
+
+  // Loop over all images
   for (const auto &[inputPath, targetPath] : dataSet) {
-    float partsLoss = 0.0f;
+    // Load the image parts
     const auto &[inputImageParts, targetImageParts] =
         loadImages(inputPath, targetPath);
+
+    // Throw an exception if the input and target parts have different sizes
     if (inputImageParts.size() != targetImageParts.size()) {
       throw ImageHelperException(
           "internal exception: input and target parts have different sizes.");
     }
+
+    // Increment the counter
+    counter++;
+
+    // Check if the loss should be computed for the current image
+    isLossFrequency = counter % lossFrequency == 0 ? true : false;
+
+    // Initialize the loss for the current image to 0
+    float partsLoss = 0.0f;
+
+    // Initialize a counter to keep track of the number of parts for which the
+    // loss is computed
+    size_t partsLossComputed = 0;
+
+    // Loop over all parts of the current image
     for (size_t i = 0; i < inputImageParts.size(); i++) {
+      // Get the input and target parts
       const auto &inputPart = inputImageParts.at(i);
       const auto &targetPart = targetImageParts.at(i);
+
+      // Perform forward propagation
       const auto &outputData = manager.network->forwardPropagation(
           inputPart.data, manager.app_params.enable_parallel);
-      partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+
+      // If the loss should be computed for the current image, compute the loss
+      // for the current part
+      if (isLossFrequency) {
+        partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+        partsLossComputed++;
+      }
+
+      // If backward propagation and weight update should be performed, perform
+      // them
       if (withBackwardAndUpdateWeights) {
         manager.network->backwardPropagation(
             targetPart.data, manager.app_params.enable_parallel);
@@ -272,7 +364,13 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
                                        manager.app_params.enable_parallel);
       }
     }
-    loss += (partsLoss / static_cast<float>(inputImageParts.size()));
+
+    // If the loss was computed for the current image, add the average loss for
+    // the current image to the total loss
+    if (isLossFrequency) {
+      loss += (partsLoss / static_cast<float>(partsLossComputed));
+      lossComputed++;
+    }
   }
-  return loss;
+  return (loss / static_cast<float>(lossComputed));
 }
