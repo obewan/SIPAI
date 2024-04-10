@@ -262,6 +262,15 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "training time.")
       ->default_val(app_params.image_split)
       ->check(CLI::PositiveNumber);
+  app.add_flag(
+      "--pad, --padding", app_params.enable_padding,
+      "Enable this flag to add padding to the image if the split factor is not "
+      "a multiple of the image width and height.\nPadding helps to avoid image "
+      "ratio deformation when splitting the image into smaller "
+      "parts.\nHowever, "
+      "it adds extra pixels to the image that are not part of the original "
+      "content.\nThese extra pixels are filled with a default color (black in "
+      "this case).");
   app.add_option(
          "-m, --mode", app_params.run_mode,
          "Select the running mode:\n  - Enhancer:This mode uses an "

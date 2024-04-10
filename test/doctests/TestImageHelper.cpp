@@ -9,7 +9,8 @@ TEST_CASE("Testing ImageHelper") {
   SUBCASE("Test loadImage") {
     ImageHelper imageHelper;
     size_t split = 3;
-    const auto &image = imageHelper.loadImage("../data/images/001a.png", split);
+    const auto &image =
+        imageHelper.loadImage("../data/images/001a.png", split, false);
     for (const auto &part : image) {
       CHECK(part.size_x == 50);
       CHECK(part.size_y == 50);
@@ -24,7 +25,8 @@ TEST_CASE("Testing ImageHelper") {
   SUBCASE("Test saveImage") {
     ImageHelper imageHelper;
     size_t split = 2;
-    const auto &image = imageHelper.loadImage("../data/images/001a.png", split);
+    const auto &image =
+        imageHelper.loadImage("../data/images/001a.png", split, true);
     std::string tmpImage = "tmpImage.png";
     if (std::filesystem::exists(tmpImage)) {
       std::filesystem::remove(tmpImage);
@@ -32,7 +34,7 @@ TEST_CASE("Testing ImageHelper") {
     CHECK_FALSE(std::filesystem::exists(tmpImage));
     imageHelper.saveImage(tmpImage, image, split);
     CHECK(std::filesystem::exists(tmpImage));
-    const auto &image2 = imageHelper.loadImage(tmpImage, split);
+    const auto &image2 = imageHelper.loadImage(tmpImage, split, true);
     for (size_t i = 0; i < image2.size(); i++) {
       CHECK(image2[i].size_x == image[i].size_x);
       CHECK(image2[i].size_y == image[i].size_y);

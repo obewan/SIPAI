@@ -158,13 +158,13 @@ std::pair<ImageParts, ImageParts> RunnerTrainingMonitoredVisitor::loadImages(
 
   // Load and split the input image
   const auto &inputImageParts = imageHelper_.loadImage(
-      inputPath, app_params.image_split, network_params.input_size_x,
-      network_params.input_size_y);
+      inputPath, app_params.image_split, app_params.enable_padding,
+      network_params.input_size_x, network_params.input_size_y);
 
   // Load and split the target image
   const auto &targetImageParts = imageHelper_.loadImage(
-      targetPath, app_params.image_split, network_params.output_size_x,
-      network_params.output_size_y);
+      targetPath, app_params.image_split, app_params.enable_padding,
+      network_params.output_size_x, network_params.output_size_y);
 
   // Check if the number of parts is the same for both images
   if (inputImageParts.size() != targetImageParts.size()) {

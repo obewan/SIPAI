@@ -26,12 +26,14 @@ public:
    *
    * @param imagePath The file path of the image to be loaded.
    * @param split The split factor.
+   * @param withPadding Add padding to the splitted image parts.
    * @param resize_x Optional resize the imported image on X (width).
    * @param resize_y Optional resize the imported image on Y (height).
    * @return Image The imported image parts, optionally resized.
    */
   ImageParts loadImage(const std::string &imagePath, size_t split,
-                       size_t resize_x = 0, size_t resize_y = 0) const;
+                       bool withPadding, size_t resize_x = 0,
+                       size_t resize_y = 0) const;
 
   /**
    * @brief Split an OpenCV Mat to smaller Mats.

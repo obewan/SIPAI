@@ -33,5 +33,6 @@ struct AppParams {
   size_t image_split = 1;
   bool bulk_loading = false;
   bool enable_parallel = false;
+  bool enable_padding = false;
 };
 } // namespace sipai

@@ -5,7 +5,8 @@
 using namespace sipai;
 
 ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
-                                  size_t resize_x, size_t resize_y) const {
+                                  bool withPadding, size_t resize_x,
+                                  size_t resize_y) const {
   if (split == 0) {
     throw ImageHelperException("internal exception: split 0.");
   }
@@ -16,7 +17,7 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   }
 
   ImageParts imagesParts;
-  auto matParts = splitImage(mat, split);
+  auto matParts = splitImage(mat, split, withPadding);
   for (auto &matPart : matParts) {
     cv::Size s = matPart.size();
 
