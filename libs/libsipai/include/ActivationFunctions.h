@@ -30,6 +30,15 @@ const std::map<std::string, EActivationFunction, std::less<>> activation_map{
     {"Sigmoid", EActivationFunction::Sigmoid},
     {"Tanh", EActivationFunction::Tanh}};
 
+inline std::string getActivationStr(EActivationFunction activation) {
+  for (const auto &[key, value] : activation_map) {
+    if (value == activation) {
+      return key;
+    }
+  }
+  return "";
+}
+
 /**
  * @brief the sigmoid function is commonly used as the
  * activation function during the forward propagation step. The reason for this

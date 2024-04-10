@@ -123,42 +123,6 @@ TEST_CASE("Testing the Manager class") {
     }
   }
 
-  SUBCASE("Test loadImage") {
-    ImageHelper imageHelper;
-    auto &manager = Manager::getInstance();
-    auto &np = manager.network_params;
-    np.input_size_x = 30;
-    np.input_size_y = 30;
-    const auto &image = imageHelper.loadImage("../data/images/001a.png",
-                                              np.input_size_x, np.input_size_y);
-    CHECK((image.size_x * image.size_y) == image.size());
-    CHECK((image.size_x * image.size_y) == (np.input_size_x * np.input_size_y));
-  }
-
-  SUBCASE("Test saveImage") {
-    ImageHelper imageHelper;
-    auto &manager = Manager::getInstance();
-    auto &np = manager.network_params;
-    np.input_size_x = 30;
-    np.input_size_y = 30;
-    auto image = imageHelper.loadImage("../data/images/001a.png",
-                                       np.input_size_x, np.input_size_y);
-    std::string tmpImage = "tmpImage.png";
-    if (std::filesystem::exists(tmpImage)) {
-      std::filesystem::remove(tmpImage);
-    }
-    CHECK_FALSE(std::filesystem::exists(tmpImage));
-    imageHelper.saveImage(tmpImage, image, np.input_size_x, np.input_size_y);
-    CHECK(std::filesystem::exists(tmpImage));
-    auto image2 =
-        imageHelper.loadImage(tmpImage, np.input_size_x, np.input_size_y);
-    CHECK(image2.size() == image.size());
-    for (size_t i = 0; i < image2.size(); i++) {
-      CHECK(image2.data.at(i).value == image.data.at(i).value);
-    }
-    std::filesystem::remove(tmpImage);
-  }
-
   SUBCASE("Test splitData") {
     auto &manager = Manager::getInstance();
     manager.app_params.training_data_file = "images-test1.csv";

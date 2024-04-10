@@ -32,9 +32,6 @@ struct AppParams {
   size_t epoch_autosave = 100;
   size_t image_split = 1;
   bool bulk_loading = false;
-  /**
-   * @brief Not activable by command line for now (still under development).
-   */
   bool enable_parallel = false;
 };
 } // namespace sipai

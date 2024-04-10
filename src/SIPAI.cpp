@@ -252,10 +252,14 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       ->check(CLI::PositiveNumber);
   app.add_option(
          "--is, --image_split", app_params.image_split,
-         "Split the training image into smaller parts, that will fit "
-         "better smaller neural network input layer resolution, and so should "
-         "improve the final result, which will be reconstitued from the "
-         "smaller parts.")
+         "Split the training image into smaller parts, in x and y, that will "
+         "fit better smaller neural network input layer resolution, and so "
+         "should improve the final result, which will be reconstitued from the "
+         "smaller parts. For example, a split of 2 will result in 4 smaller "
+         "parts, and a split of 3 will result in 9 smaller parts. To avoid "
+         "padding, make sure the split number is a multiple of the image width "
+         "and height. Also, be aware that using a split will increase the "
+         "training time.")
       ->default_val(app_params.image_split)
       ->check(CLI::PositiveNumber);
   app.add_option(
@@ -275,7 +279,19 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
   app.add_flag("--bl,--bulk_loading", app_params.bulk_loading,
                "This flag will activate a bulk loading of all images, "
                "resulting training speed, but at the cost of more memory, "
-               "depending on the images total count.");
+               "depending on the images total count. The bulk loading is also "
+               "a multi-threads loading.");
+  app.add_flag(
+      "--par,--parallelism", app_params.enable_parallel,
+      "Enables parallel processing for neural network computations. "
+      "While this can potentially improve performance by utilizing multiple "
+      "cores, "
+      "it's important to note that it may not always lead to speedup. "
+      "The overhead of managing multiple threads can sometimes outweigh the "
+      "benefits, "
+      "especially for smaller tasks or on systems with limited resources. "
+      "Use this flag judiciously and benchmark your application to determine "
+      "its impact.");
   app.add_flag("-v,--version", version, "Show current version.");
 }
 

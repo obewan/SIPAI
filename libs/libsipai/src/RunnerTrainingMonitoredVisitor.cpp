@@ -1,11 +1,14 @@
 #include "RunnerTrainingMonitoredVisitor.h"
+#include "AppParams.h"
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
 #include "exception/RunnerVisitorException.h"
 #include <csignal>
+#include <cstddef>
 #include <exception>
 #include <memory>
+#include <string>
 #include <utility>
 
 using namespace sipai;
@@ -24,8 +27,10 @@ void signalHandler(int signal) {
 void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::LOG_INFO(
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
+
   auto &manager = Manager::getInstance();
-  const auto &appParams = Manager::getInstance().app_params;
+  const auto &appParams = manager.app_params;
+
   const auto start{std::chrono::steady_clock::now()}; // starting timer
   SimpleLogger::getInstance().setPrecision(2);
 
@@ -38,8 +43,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
   try {
     // Split training data into training and validation sets
-    const auto &[trainingDataPairs, validationDataPairs] = manager.splitData(
-        trainingData, manager.app_params.training_split_ratio);
+    const auto &[trainingDataPairs, validationDataPairs] =
+        manager.splitData(trainingData, appParams.training_split_ratio);
 
     // Reset the stopTraining flag
     stopTraining = false;
@@ -92,8 +97,9 @@ float RunnerTrainingMonitoredVisitor::trainOnEpoch(
     const std::unique_ptr<TrainingData> &trainingSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !training_images_) {
-    training_images_ = std::make_unique<std::vector<std::pair<Image, Image>>>(
-        loadBulkImages(trainingSet, "Training:"));
+    training_images_ =
+        std::make_unique<std::vector<std::pair<ImageParts, ImageParts>>>(
+            loadBulkImages(trainingSet, "Training:"));
   }
   float epochLoss = manager.app_params.bulk_loading
                         ? computeLoss(*training_images_, true)
@@ -106,8 +112,9 @@ float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
     const std::unique_ptr<TrainingData> &validationSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !validation_images_) {
-    validation_images_ = std::make_unique<std::vector<std::pair<Image, Image>>>(
-        loadBulkImages(validationSet, "Validation:"));
+    validation_images_ =
+        std::make_unique<std::vector<std::pair<ImageParts, ImageParts>>>(
+            loadBulkImages(validationSet, "Validation:"));
   }
   float validationLoss = manager.app_params.bulk_loading
                              ? computeLoss(*validation_images_, false)
@@ -117,7 +124,8 @@ float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
 }
 
 bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
-    int epoch, int epochsWithoutImprovement, const AppParams &appParams) const {
+    int epoch, size_t epochsWithoutImprovement,
+    const AppParams &appParams) const {
   bool improvementCondition =
       epochsWithoutImprovement < appParams.max_epochs_without_improvement;
   bool epochCondition =
@@ -145,20 +153,27 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
   }
 }
 
-std::pair<Image, Image> RunnerTrainingMonitoredVisitor::loadImages(
+std::pair<ImageParts, ImageParts> RunnerTrainingMonitoredVisitor::loadImages(
     const std::string &inputPath, const std::string &targetPath) const {
   const auto &network_params = Manager::getInstance().network_params;
-  const auto &inputImage = imageHelper_.loadImage(
-      inputPath, network_params.input_size_x, network_params.input_size_y);
-  const auto &targetImage = imageHelper_.loadImage(
-      targetPath, network_params.output_size_x, network_params.output_size_y);
-  return std::make_pair(inputImage, targetImage);
+  const auto &app_params = Manager::getInstance().app_params;
+
+  const auto &inputImageParts = imageHelper_.loadImage(
+      inputPath, app_params.image_split, network_params.input_size_x,
+      network_params.input_size_y);
+  const auto &targetImageParts = imageHelper_.loadImage(
+      targetPath, app_params.image_split, network_params.output_size_x,
+      network_params.output_size_y);
+  if (inputImageParts.size() != targetImageParts.size()) {
+    throw RunnerVisitorException("Image parts total not equals");
+  }
+  return std::make_pair(inputImageParts, targetImageParts);
 }
 
-std::vector<std::pair<Image, Image>>
+std::vector<std::pair<ImageParts, ImageParts>>
 RunnerTrainingMonitoredVisitor::loadBulkImages(
     const std::unique_ptr<TrainingData> &dataSet, std::string logPrefix) const {
-  std::vector<std::pair<Image, Image>> images;
+  std::vector<std::pair<ImageParts, ImageParts>> images;
   SimpleLogger::LOG_INFO(logPrefix + " loading images... (bulk loading)");
 
   std::mutex images_mutex;
@@ -179,7 +194,8 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
 
           auto it = std::next(dataSet->begin(), index);
           const auto &[inputPath, targetPath] = *it;
-          std::pair<Image, Image> pair = loadImages(inputPath, targetPath);
+          std::pair<ImageParts, ImageParts> pair =
+              loadImages(inputPath, targetPath);
 
           {
             std::lock_guard<std::mutex> lock(images_mutex);
@@ -197,24 +213,36 @@ RunnerTrainingMonitoredVisitor::loadBulkImages(
     thread.join();
   }
 
+  SimpleLogger::LOG_INFO(logPrefix + " images loaded...");
+
   return images;
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(
-    const std::vector<std::pair<Image, Image>> &images,
+    const std::vector<std::pair<ImageParts, ImageParts>> &images,
     bool withBackwardAndUpdateWeights) const {
   auto &manager = Manager::getInstance();
   float loss = 0.0f;
-  for (const auto &[inputImage, targetImage] : images) {
-    const auto &outputData = manager.network->forwardPropagation(
-        inputImage.data, manager.app_params.enable_parallel);
-    loss += imageHelper_.computeLoss(outputData, targetImage.data);
-    if (withBackwardAndUpdateWeights) {
-      manager.network->backwardPropagation(targetImage.data,
-                                           manager.app_params.enable_parallel);
-      manager.network->updateWeights(manager.network_params.learning_rate,
-                                     manager.app_params.enable_parallel);
+  for (const auto &[inputImageParts, targetImageParts] : images) {
+    if (inputImageParts.size() != targetImageParts.size()) {
+      throw ImageHelperException(
+          "internal exception: input and target parts have different sizes.");
     }
+    float partsLoss = 0.0f;
+    for (size_t i = 0; i < inputImageParts.size(); i++) {
+      const auto &inputPart = inputImageParts.at(i);
+      const auto &targetPart = targetImageParts.at(i);
+      const auto &outputData = manager.network->forwardPropagation(
+          inputPart.data, manager.app_params.enable_parallel);
+      partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+      if (withBackwardAndUpdateWeights) {
+        manager.network->backwardPropagation(
+            targetPart.data, manager.app_params.enable_parallel);
+        manager.network->updateWeights(manager.network_params.learning_rate,
+                                       manager.app_params.enable_parallel);
+      }
+    }
+    loss += (partsLoss / static_cast<float>(inputImageParts.size()));
   }
   return loss;
 }
@@ -224,16 +252,27 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
   auto &manager = Manager::getInstance();
   float loss = 0.0f;
   for (const auto &[inputPath, targetPath] : dataSet) {
-    const auto &[inputImage, targetImage] = loadImages(inputPath, targetPath);
-    const auto &outputData = manager.network->forwardPropagation(
-        inputImage.data, manager.app_params.enable_parallel);
-    loss += imageHelper_.computeLoss(outputData, targetImage.data);
-    if (withBackwardAndUpdateWeights) {
-      manager.network->backwardPropagation(targetImage.data,
-                                           manager.app_params.enable_parallel);
-      manager.network->updateWeights(manager.network_params.learning_rate,
-                                     manager.app_params.enable_parallel);
+    float partsLoss = 0.0f;
+    const auto &[inputImageParts, targetImageParts] =
+        loadImages(inputPath, targetPath);
+    if (inputImageParts.size() != targetImageParts.size()) {
+      throw ImageHelperException(
+          "internal exception: input and target parts have different sizes.");
     }
+    for (size_t i = 0; i < inputImageParts.size(); i++) {
+      const auto &inputPart = inputImageParts.at(i);
+      const auto &targetPart = targetImageParts.at(i);
+      const auto &outputData = manager.network->forwardPropagation(
+          inputPart.data, manager.app_params.enable_parallel);
+      partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+      if (withBackwardAndUpdateWeights) {
+        manager.network->backwardPropagation(
+            targetPart.data, manager.app_params.enable_parallel);
+        manager.network->updateWeights(manager.network_params.learning_rate,
+                                       manager.app_params.enable_parallel);
+      }
+    }
+    loss += (partsLoss / static_cast<float>(inputImageParts.size()));
   }
   return loss;
 }
