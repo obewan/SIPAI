@@ -82,9 +82,36 @@ private:
   loadBulkImages(const std::unique_ptr<TrainingData> &dataSet,
                  std::string logPrefix) const;
 
+  /**
+   * @brief Compute the loss of an input image and its target image
+   *
+   * @param inputImage
+   * @param targetImage
+   * @param withBackwardAndUpdateWeights
+   * @param isLossFrequency
+   * @return float
+   */
+  float computeLoss(const ImageParts &inputImage, const ImageParts &targetImage,
+                    bool withBackwardAndUpdateWeights,
+                    bool isLossFrequency) const;
+  /**
+   * @brief Compute the loss of loaded images, without unloading.
+   *
+   * @param images
+   * @param withBackwardAndUpdateWeights
+   * @return float
+   */
   float
   computeLoss(const std::vector<std::pair<ImageParts, ImageParts>> &images,
               bool withBackwardAndUpdateWeights) const;
+  /**
+   * @brief Compute the loss of a data set of image paths, loading/unloading
+   * image one by one for low memory usage
+   *
+   * @param dataSet
+   * @param withBackwardAndUpdateWeights
+   * @return float
+   */
   float computeLoss(const TrainingData &dataSet,
                     bool withBackwardAndUpdateWeights) const;
 };
