@@ -1,14 +1,11 @@
 var searchData=
 [
-  ['saveimage_430',['saveImage',['../classsipai_1_1ImageHelper.html#aa269445d3c299baf9a5b358b3d9082e6',1,'sipai::ImageHelper']]],
-  ['savenetwork_431',['saveNetwork',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#aa74b131cff92e20288cebfb946cb3e40',1,'sipai::RunnerTrainingMonitoredVisitor']]],
-  ['setactivationfunction_432',['setActivationFunction',['../classsipai_1_1Layer.html#abdaa34d3b5aafbe4b7ed81add4eb1348',1,'sipai::Layer::setActivationFunction()'],['../classsipai_1_1NeuralNetworkBuilder.html#af0e0a48dc3829a68bd1f6333c177802e',1,'sipai::NeuralNetworkBuilder::setActivationFunction()']]],
-  ['setinputvalues_433',['setInputValues',['../classsipai_1_1LayerInput.html#ac7cded76fc3b8c8226f77c59ddfd0cee',1,'sipai::LayerInput']]],
-  ['setprecision_434',['setPrecision',['../classsipai_1_1SimpleLogger.html#a38ac5d2f4773489fef4fedf5d389633e',1,'sipai::SimpleLogger']]],
-  ['shouldcontinuetraining_435',['shouldContinueTraining',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#ac9f471f3d450f6e070fa39b37bbb590f',1,'sipai::RunnerTrainingMonitoredVisitor']]],
-  ['signalhandler_436',['signalHandler',['../RunnerTrainingMonitoredVisitor_8cpp.html#ad2e59c7203b3bddc1bc9a2224b52e8e7',1,'RunnerTrainingMonitoredVisitor.cpp']]],
-  ['simplelogger_437',['SimpleLogger',['../classsipai_1_1SimpleLogger.html#af4a398d42feebbbce4286ead2b724e22',1,'sipai::SimpleLogger']]],
-  ['size_438',['size',['../structsipai_1_1Image.html#ab612a7f326d7d3ddca8ddc7ab7d22528',1,'sipai::Image']]],
-  ['splitdata_439',['splitData',['../classsipai_1_1Manager.html#a218d5cfc0206da4586aba4478aea8c95',1,'sipai::Manager']]],
-  ['sum_440',['sum',['../structsipai_1_1RGBA.html#a4fdf703233c5962c3660c767b593fa04',1,'sipai::RGBA']]]
+  ['rand_432',['Rand',['../classsipai_1_1RandomFactory.html#a64d8c699b6caa60953877466de03510a',1,'sipai::RandomFactory']]],
+  ['random_433',['random',['../structsipai_1_1RGBA.html#ad32882b5514d2cf2e33a4d24373f7865',1,'sipai::RGBA']]],
+  ['randomfactory_434',['RandomFactory',['../classsipai_1_1RandomFactory.html#ae5ebbc829cec94f5754500c23d948e2c',1,'sipai::RandomFactory']]],
+  ['resetprecision_435',['resetPrecision',['../classsipai_1_1SimpleLogger.html#a16030ebfb184d63bd613d2f3d5b83dd3',1,'sipai::SimpleLogger']]],
+  ['rgba_436',['RGBA',['../structsipai_1_1RGBA.html#ace3cb42878d265bab016c5478b5b5211',1,'sipai::RGBA::RGBA()'],['../structsipai_1_1RGBA.html#a2bcafd47d81907af2bbcf552854af8e1',1,'sipai::RGBA::RGBA(float r, float g, float b, float a)'],['../structsipai_1_1RGBA.html#a66fcbc28035399220ecd00fbd516373e',1,'sipai::RGBA::RGBA(const cv::Vec4b &amp;vec, bool hasAlpha=true)']]],
+  ['run_437',['run',['../classSIPAI.html#a2083f3dc3545e3ddad71bb54211429c4',1,'SIPAI::run()'],['../classsipai_1_1Manager.html#af8c67c221068e4e3ccccf1d5f70ba8ee',1,'sipai::Manager::run()']]],
+  ['runnervisitorexception_438',['RunnerVisitorException',['../classsipai_1_1RunnerVisitorException.html#a8a6598fb07cf65c7c1711d59fb4154ab',1,'sipai::RunnerVisitorException']]],
+  ['runwithvisitor_439',['runWithVisitor',['../classsipai_1_1Manager.html#a443755f9ba6461de1a8e252677bff85a',1,'sipai::Manager']]]
 ];

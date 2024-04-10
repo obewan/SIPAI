@@ -157,6 +157,8 @@ Classes</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:a64e0bb44a4af191b5e765f04ba8cefca"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> = std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;</td></tr>
 <tr class="separator:a64e0bb44a4af191b5e765f04ba8cefca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4764282462094bbfbf494652e8c35b5b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> = std::vector&lt; <a class="el" href="structsipai_1_1Image.html">Image</a> &gt;</td></tr>
+<tr class="separator:a4764282462094bbfbf494652e8c35b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -192,12 +194,16 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:afc58de401b1cdc41abcc97c4d98efe56"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#afc58de401b1cdc41abcc97c4d98efe56">getActivationStr</a> (<a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194">EActivationFunction</a> activation)</td></tr>
+<tr class="separator:afc58de401b1cdc41abcc97c4d98efe56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7acc8cad3ad16468ff3ad375bd0e7408"><td class="memItemLeft" align="right" valign="top">consteval unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a7acc8cad3ad16468ff3ad375bd0e7408">operator&quot;&quot;_K</a> (unsigned long long x)</td></tr>
 <tr class="separator:a7acc8cad3ad16468ff3ad375bd0e7408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a530b8bee6048178fc409bf40934c4505"><td class="memItemLeft" align="right" valign="top">consteval unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a530b8bee6048178fc409bf40934c4505">operator&quot;&quot;_M</a> (unsigned long long x)</td></tr>
 <tr class="separator:a530b8bee6048178fc409bf40934c4505"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae718ee7f1d5973fe0c098517fef3d66f"><td class="memItemLeft" align="right" valign="top">consteval unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ae718ee7f1d5973fe0c098517fef3d66f">operator&quot;&quot;_G</a> (unsigned long long x)</td></tr>
 <tr class="separator:ae718ee7f1d5973fe0c098517fef3d66f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a413f1fb666f38fa6ee38d1dc3e316e6d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a413f1fb666f38fa6ee38d1dc3e316e6d">getRunModeStr</a> (<a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a> mode)</td></tr>
+<tr class="separator:a413f1fb666f38fa6ee38d1dc3e316e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75649a3fec248cda3e742668f865fb9e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a75649a3fec248cda3e742668f865fb9e">getFilenameCsv</a> (const std::string &amp;filenameJson)</td></tr>
 <tr class="memdesc:a75649a3fec248cda3e742668f865fb9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Filename .csv from a Filename .json.  <a href="namespacesipai.html#a75649a3fec248cda3e742668f865fb9e">More...</a><br /></td></tr>
 <tr class="separator:a75649a3fec248cda3e742668f865fb9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,14 +242,28 @@ Variables</h2></td></tr>
 <tr class="separator:a59ab2586c52d0cb588fd3f25766c7c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52d20ea3c7b78d0f33fb012b2192e7c7"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a52d20ea3c7b78d0f33fb012b2192e7c7">eluDerivative</a></td></tr>
 <tr class="separator:a52d20ea3c7b78d0f33fb012b2192e7c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56e9fa2be87cd2f76b7c37721c94cb44"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a56e9fa2be87cd2f76b7c37721c94cb44">NOMAX_EPOCHS</a> = -1</td></tr>
-<tr class="separator:a56e9fa2be87cd2f76b7c37721c94cb44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9d8d07c41fed4bf4302acbc5ac98c2e"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a> = -1</td></tr>
+<tr class="separator:ab9d8d07c41fed4bf4302acbc5ac98c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a>, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38">mode_map</a></td></tr>
 <tr class="separator:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0d5df6a1588c2cba272a4e4dccd8ab3"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a>, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ae0d5df6a1588c2cba272a4e4dccd8ab3">layer_map</a></td></tr>
 <tr class="separator:ae0d5df6a1588c2cba272a4e4dccd8ab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
+<a id="a4764282462094bbfbf494652e8c35b5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4764282462094bbfbf494652e8c35b5b">&#9670;&nbsp;</a></span>ImageParts</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">sipai::ImageParts</a> = typedef std::vector&lt;<a class="el" href="structsipai_1_1Image.html">Image</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a64e0bb44a4af191b5e765f04ba8cefca"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a64e0bb44a4af191b5e765f04ba8cefca">&#9670;&nbsp;</a></span>TrainingData</h2>
 
@@ -375,6 +395,32 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="afc58de401b1cdc41abcc97c4d98efe56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc58de401b1cdc41abcc97c4d98efe56">&#9670;&nbsp;</a></span>getActivationStr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string sipai::getActivationStr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194">EActivationFunction</a>&#160;</td>
+          <td class="paramname"><em>activation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a75649a3fec248cda3e742668f865fb9e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a75649a3fec248cda3e742668f865fb9e">&#9670;&nbsp;</a></span>getFilenameCsv()</h2>
 
@@ -407,6 +453,32 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
+</div>
+</div>
+<a id="a413f1fb666f38fa6ee38d1dc3e316e6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a413f1fb666f38fa6ee38d1dc3e316e6d">&#9670;&nbsp;</a></span>getRunModeStr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string sipai::getRunModeStr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -635,8 +707,8 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a56e9fa2be87cd2f76b7c37721c94cb44"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56e9fa2be87cd2f76b7c37721c94cb44">&#9670;&nbsp;</a></span>NOMAX_EPOCHS</h2>
+<a id="ab9d8d07c41fed4bf4302acbc5ac98c2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9d8d07c41fed4bf4302acbc5ac98c2e">&#9670;&nbsp;</a></span>NO_MAX_EPOCHS</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -645,7 +717,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr int sipai::NOMAX_EPOCHS = -1</td>
+          <td class="memname">constexpr int sipai::NO_MAX_EPOCHS = -1</td>
         </tr>
       </table>
   </td>
@@ -829,7 +901,7 @@ Variables</h2></td></tr>
 <div class="line">  RGBA sigmoidValue = <a class="code" href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sigmoid</a>(rgba);</div>
 <div class="line">  <span class="keywordflow">return</span> sigmoidValue.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> v * (1 - v); });</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacesipai_html_a5d64288ca760fc3e1b426c80aa0e7534"><div class="ttname"><a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sipai::sigmoid</a></div><div class="ttdeci">auto sigmoid</div><div class="ttdoc">the sigmoid function is commonly used as the activation function during the forward propagation step....</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:42</div></div>
+<div class="ttc" id="anamespacesipai_html_a5d64288ca760fc3e1b426c80aa0e7534"><div class="ttname"><a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sipai::sigmoid</a></div><div class="ttdeci">auto sigmoid</div><div class="ttdoc">the sigmoid function is commonly used as the activation function during the forward propagation step....</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:51</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -856,7 +928,7 @@ Variables</h2></td></tr>
 <div class="line">  RGBA tanhValue = <a class="code" href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">tanhFunc</a>(rgba);</div>
 <div class="line">  <span class="keywordflow">return</span> tanhValue.apply([](<span class="keywordtype">float</span> v) { <span class="keywordflow">return</span> 1 - v * v; });</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacesipai_html_a703f16daca81e1a86081c4582ef042ba"><div class="ttname"><a href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">sipai::tanhFunc</a></div><div class="ttdeci">auto tanhFunc</div><div class="ttdoc">Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the inp...</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:59</div></div>
+<div class="ttc" id="anamespacesipai_html_a703f16daca81e1a86081c4582ef042ba"><div class="ttname"><a href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">sipai::tanhFunc</a></div><div class="ttdeci">auto tanhFunc</div><div class="ttdoc">Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the inp...</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:68</div></div>
 </div><!-- fragment -->
 </div>
 </div>

@@ -77,12 +77,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1d50ea8de0c643943bee6d36a565330c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsipai_1_1Image.html">Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#a1d50ea8de0c643943bee6d36a565330c">loadImage</a> (const std::string &amp;imagePath, size_t resize_x=0, size_t resize_y=0) const</td></tr>
-<tr class="memdesc:a1d50ea8de0c643943bee6d36a565330c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an image from a specified path and returns it as an OpenCV Mat.  <a href="classsipai_1_1ImageHelper.html#a1d50ea8de0c643943bee6d36a565330c">More...</a><br /></td></tr>
-<tr class="separator:a1d50ea8de0c643943bee6d36a565330c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa269445d3c299baf9a5b358b3d9082e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#aa269445d3c299baf9a5b358b3d9082e6">saveImage</a> (const std::string &amp;imagePath, const <a class="el" href="structsipai_1_1Image.html">Image</a> &amp;image, size_t resize_x=0, size_t resize_y=0) const</td></tr>
-<tr class="memdesc:aa269445d3c299baf9a5b358b3d9082e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save an OpenCV Matas image.  <a href="classsipai_1_1ImageHelper.html#aa269445d3c299baf9a5b358b3d9082e6">More...</a><br /></td></tr>
-<tr class="separator:aa269445d3c299baf9a5b358b3d9082e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af35d7859b48c02c96b1a9fa1c4b9895e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#af35d7859b48c02c96b1a9fa1c4b9895e">loadImage</a> (const std::string &amp;imagePath, size_t split, size_t resize_x=0, size_t resize_y=0) const</td></tr>
+<tr class="memdesc:af35d7859b48c02c96b1a9fa1c4b9895e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an image from a specified path and returns it as <a class="el" href="structsipai_1_1Image.html">Image</a> parts.  <a href="classsipai_1_1ImageHelper.html#af35d7859b48c02c96b1a9fa1c4b9895e">More...</a><br /></td></tr>
+<tr class="separator:af35d7859b48c02c96b1a9fa1c4b9895e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdcd609ce750e34aefb3bc952b5cc2aa"><td class="memItemLeft" align="right" valign="top">std::vector&lt; cv::Mat &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#acdcd609ce750e34aefb3bc952b5cc2aa">splitImage</a> (const cv::Mat &amp;inputImage, size_t split, bool withPadding=false) const</td></tr>
+<tr class="memdesc:acdcd609ce750e34aefb3bc952b5cc2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split an OpenCV Mat to smaller Mats.  <a href="classsipai_1_1ImageHelper.html#acdcd609ce750e34aefb3bc952b5cc2aa">More...</a><br /></td></tr>
+<tr class="separator:acdcd609ce750e34aefb3bc952b5cc2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d12dc5f32e5b3e639020d7992c05740"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740">saveImage</a> (const std::string &amp;imagePath, const <a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> &amp;imageParts, size_t split, size_t resize_x=0, size_t resize_y=0) const</td></tr>
+<tr class="memdesc:a6d12dc5f32e5b3e639020d7992c05740"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save an image.  <a href="classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740">More...</a><br /></td></tr>
+<tr class="separator:a6d12dc5f32e5b3e639020d7992c05740"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae22aba46229aa0e11c131186043e51ce"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#ae22aba46229aa0e11c131186043e51ce">joinImages</a> (const std::vector&lt; cv::Mat &gt; &amp;images, int splitsX, int splitsY) const</td></tr>
+<tr class="memdesc:ae22aba46229aa0e11c131186043e51ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concat the images parts into one image.  <a href="classsipai_1_1ImageHelper.html#ae22aba46229aa0e11c131186043e51ce">More...</a><br /></td></tr>
+<tr class="separator:ae22aba46229aa0e11c131186043e51ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afde3a1e9b65fa28728080dbbdc03b585"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#afde3a1e9b65fa28728080dbbdc03b585">convertToRGBAVector</a> (const cv::Mat &amp;image) const</td></tr>
 <tr class="memdesc:afde3a1e9b65fa28728080dbbdc03b585"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts an OpenCV Mat image into a vector of <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> values.  <a href="classsipai_1_1ImageHelper.html#afde3a1e9b65fa28728080dbbdc03b585">More...</a><br /></td></tr>
 <tr class="separator:afde3a1e9b65fa28728080dbbdc03b585"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,17 +192,68 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a1d50ea8de0c643943bee6d36a565330c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d50ea8de0c643943bee6d36a565330c">&#9670;&nbsp;</a></span>loadImage()</h2>
+<a id="ae22aba46229aa0e11c131186043e51ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae22aba46229aa0e11c131186043e51ce">&#9670;&nbsp;</a></span>joinImages()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structsipai_1_1Image.html">Image</a> ImageHelper::loadImage </td>
+          <td class="memname">cv::Mat ImageHelper::joinImages </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; cv::Mat &gt; &amp;&#160;</td>
+          <td class="paramname"><em>images</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>splitsX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>splitsY</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Concat the images parts into one image. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">images</td><td>OpenCV image parts </td></tr>
+    <tr><td class="paramname">splitsX</td><td></td></tr>
+    <tr><td class="paramname">splitsY</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>cv::Mat </dd></dl>
+
+</div>
+</div>
+<a id="af35d7859b48c02c96b1a9fa1c4b9895e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af35d7859b48c02c96b1a9fa1c4b9895e">&#9670;&nbsp;</a></span>loadImage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> ImageHelper::loadImage </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>imagePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>split</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -218,21 +275,22 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Reads an image from a specified path and returns it as an OpenCV Mat. </p>
+<p>Reads an image from a specified path and returns it as <a class="el" href="structsipai_1_1Image.html">Image</a> parts. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">imagePath</td><td>The file path of the image to be loaded. </td></tr>
-    <tr><td class="paramname">resize_x</td><td>Optional resize the imported image on X (width) </td></tr>
-    <tr><td class="paramname">resize_y</td><td>Optional resize the imported image on Y (height) </td></tr>
+    <tr><td class="paramname">split</td><td>The split factor. </td></tr>
+    <tr><td class="paramname">resize_x</td><td>Optional resize the imported image on X (width). </td></tr>
+    <tr><td class="paramname">resize_y</td><td>Optional resize the imported image on Y (height). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structsipai_1_1Image.html">Image</a> The imported image, optionally resized. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structsipai_1_1Image.html">Image</a> The imported image parts, optionally resized. </dd></dl>
 
 </div>
 </div>
-<a id="aa269445d3c299baf9a5b358b3d9082e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa269445d3c299baf9a5b358b3d9082e6">&#9670;&nbsp;</a></span>saveImage()</h2>
+<a id="a6d12dc5f32e5b3e639020d7992c05740"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d12dc5f32e5b3e639020d7992c05740">&#9670;&nbsp;</a></span>saveImage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -246,8 +304,14 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structsipai_1_1Image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>image</em>, </td>
+          <td class="paramtype">const <a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> &amp;&#160;</td>
+          <td class="paramname"><em>imageParts</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>split</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -269,16 +333,62 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Save an OpenCV Matas image. </p>
+<p>Save an image. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">imagePath</td><td>The file path of the image to be saved. </td></tr>
-    <tr><td class="paramname">image</td><td>The <a class="el" href="structsipai_1_1Image.html">Image</a> to save. </td></tr>
+    <tr><td class="paramname">imageParts</td><td>The <a class="el" href="structsipai_1_1Image.html">Image</a> to save. </td></tr>
+    <tr><td class="paramname">split</td><td>The split factor. </td></tr>
     <tr><td class="paramname">resize_x</td><td>Optional resize the exported image on X (width) </td></tr>
     <tr><td class="paramname">resize_y</td><td>Optional resize the exported image on Y (height) </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="acdcd609ce750e34aefb3bc952b5cc2aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdcd609ce750e34aefb3bc952b5cc2aa">&#9670;&nbsp;</a></span>splitImage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; cv::Mat &gt; ImageHelper::splitImage </td>
+          <td>(</td>
+          <td class="paramtype">const cv::Mat &amp;&#160;</td>
+          <td class="paramname"><em>inputImage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>split</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>withPadding</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Split an OpenCV Mat to smaller Mats. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inputImage</td><td>The OpenCV Mat to split. </td></tr>
+    <tr><td class="paramname">split</td><td>The split factor. </td></tr>
+    <tr><td class="paramname">withPadding</td><td>Add padding if split is not a multiple of image width and height </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;cv::Mat&gt; </dd></dl>
 
 </div>
 </div>

@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['_7eimportexportexception_258',['~ImportExportException',['../classsipai_1_1ImportExportException.html#aa34649beee8409576b5ac842540136dc',1,'sipai::ImportExportException']]],
-  ['_7elayer_259',['~Layer',['../classsipai_1_1Layer.html#a38c8c0374443ce22ea762150078f0add',1,'sipai::Layer']]],
-  ['_7eneuralnetwork_260',['~NeuralNetwork',['../classsipai_1_1NeuralNetwork.html#aa2cd9852cf13fe56c395dd7e5c11e35e',1,'sipai::NeuralNetwork']]],
-  ['_7eneuralnetworkimportexportfacade_261',['~NeuralNetworkImportExportFacade',['../classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd',1,'sipai::NeuralNetworkImportExportFacade']]],
-  ['_7erunnervisitor_262',['~RunnerVisitor',['../classsipai_1_1RunnerVisitor.html#a9eff828476354487d390af23b47516f0',1,'sipai::RunnerVisitor']]]
+  ['_7eimportexportexception_265',['~ImportExportException',['../classsipai_1_1ImportExportException.html#aa34649beee8409576b5ac842540136dc',1,'sipai::ImportExportException']]],
+  ['_7elayer_266',['~Layer',['../classsipai_1_1Layer.html#a38c8c0374443ce22ea762150078f0add',1,'sipai::Layer']]],
+  ['_7eneuralnetwork_267',['~NeuralNetwork',['../classsipai_1_1NeuralNetwork.html#aa2cd9852cf13fe56c395dd7e5c11e35e',1,'sipai::NeuralNetwork']]],
+  ['_7eneuralnetworkimportexportfacade_268',['~NeuralNetworkImportExportFacade',['../classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd',1,'sipai::NeuralNetworkImportExportFacade']]],
+  ['_7erunnervisitor_269',['~RunnerVisitor',['../classsipai_1_1RunnerVisitor.html#a9eff828476354487d390af23b47516f0',1,'sipai::RunnerVisitor']]]
 ];

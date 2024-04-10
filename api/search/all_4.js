@@ -9,7 +9,7 @@ var searchData=
   ['enable_5fparallel_36',['enable_parallel',['../structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251',1,'sipai::AppParams']]],
   ['endl_37',['endl',['../classsipai_1_1SimpleLogger.html#aa642aeeccec9ac5a09a0e1b9e17c13f9',1,'sipai::SimpleLogger']]],
   ['enhancer_38',['Enhancer',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b',1,'sipai']]],
-  ['epoch_5fautosave_39',['epoch_autosave',['../structsipai_1_1AppParams.html#ae61a7a760ba975865154ecae35ea7535',1,'sipai::AppParams']]],
+  ['epoch_5fautosave_39',['epoch_autosave',['../structsipai_1_1AppParams.html#a16dba5a5773057267b97b31ba197b9d5',1,'sipai::AppParams']]],
   ['err_40',['err',['../classsipai_1_1SimpleLogger.html#a4c9d0ed38ad80b44761063134d071a1a',1,'sipai::SimpleLogger']]],
   ['error_41',['error',['../classsipai_1_1Neuron.html#abf46b121d9437e750c17da8611155eab',1,'sipai::Neuron::error()'],['../classsipai_1_1SimpleLogger.html#af7a757fa082a979d2c53a085d0b25797',1,'sipai::SimpleLogger::error()']]],
   ['error_42',['ERROR',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0abb1ca97ec761fc37101737ba0aa2e7c5',1,'sipai']]],

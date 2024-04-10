@@ -95,9 +95,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad682bc809549c55d744c7e508b91e030"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ad682bc809549c55d744c7e508b91e030">evaluateOnValidationSet</a> (const std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;validationSet) const</td></tr>
 <tr class="memdesc:ad682bc809549c55d744c7e508b91e030"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the network on the validation set.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ad682bc809549c55d744c7e508b91e030">More...</a><br /></td></tr>
 <tr class="separator:ad682bc809549c55d744c7e508b91e030"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9f471f3d450f6e070fa39b37bbb590f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ac9f471f3d450f6e070fa39b37bbb590f">shouldContinueTraining</a> (int epoch, int epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
-<tr class="memdesc:ac9f471f3d450f6e070fa39b37bbb590f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the training should continue based on the provided conditions.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ac9f471f3d450f6e070fa39b37bbb590f">More...</a><br /></td></tr>
-<tr class="separator:ac9f471f3d450f6e070fa39b37bbb590f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8">shouldContinueTraining</a> (int epoch, size_t epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
+<tr class="memdesc:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the training should continue based on the provided conditions.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8">More...</a><br /></td></tr>
+<tr class="separator:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a158a5a6de8d9773c45d4af6fbc29237c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a158a5a6de8d9773c45d4af6fbc29237c">logTrainingProgress</a> (int epoch, float trainingLoss, float validationLoss) const</td></tr>
 <tr class="memdesc:a158a5a6de8d9773c45d4af6fbc29237c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs the training progress for the current epoch.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a158a5a6de8d9773c45d4af6fbc29237c">More...</a><br /></td></tr>
 <tr class="separator:a158a5a6de8d9773c45d4af6fbc29237c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,8 +206,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac9f471f3d450f6e070fa39b37bbb590f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9f471f3d450f6e070fa39b37bbb590f">&#9670;&nbsp;</a></span>shouldContinueTraining()</h2>
+<a id="a974d3c256ff05573f2dd1db0f1a84bd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a974d3c256ff05573f2dd1db0f1a84bd8">&#9670;&nbsp;</a></span>shouldContinueTraining()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,7 +221,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>epochsWithoutImprovement</em>, </td>
         </tr>
         <tr>

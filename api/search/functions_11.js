@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['visit_446',['visit',['../classsipai_1_1RunnerEnhancerVisitor.html#a8198fb773d38fc6b5a1df4536905ce80',1,'sipai::RunnerEnhancerVisitor::visit()'],['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#a4cb42e940abffdc071e292e7c57ff230',1,'sipai::RunnerTrainingMonitoredVisitor::visit()'],['../classsipai_1_1RunnerVisitor.html#a6300f208cce52718005492f57aab919c',1,'sipai::RunnerVisitor::visit()']]]
+  ['updateweights_456',['updateWeights',['../classsipai_1_1Layer.html#a52719eb9730d1d166494f18dc8eb54e2',1,'sipai::Layer::updateWeights()'],['../classsipai_1_1LayerInput.html#a165171c1ed7d9a2e9036331e4a3f923e',1,'sipai::LayerInput::updateWeights()'],['../classsipai_1_1NeuralNetwork.html#a43c2acc8114864e9c6cf50eb746093bb',1,'sipai::NeuralNetwork::updateWeights()']]]
 ];
