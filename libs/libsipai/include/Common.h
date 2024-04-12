@@ -16,8 +16,10 @@
 #include <vector>
 
 namespace sipai {
-using TrainingData = std::vector<std::pair<std::string, std::string>>;
 using ImageParts = std::vector<Image>;
+using ImagePartsPair = std::pair<ImageParts, ImageParts>;
+using ImagePathPair = std::pair<std::string, std::string>;
+using ImagePartsPairList = std::vector<std::pair<ImageParts, ImageParts>>;
 
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;

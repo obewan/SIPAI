@@ -14,6 +14,8 @@
 
 using namespace sipai;
 
+std::unique_ptr<Manager> Manager::instance_ = nullptr;
+
 void Manager::createOrImportNetwork() {
   if (!network) {
     auto builder = std::make_unique<NeuralNetworkBuilder>();
@@ -88,12 +90,14 @@ void Manager::run() {
 
 void Manager::runWithVisitor(const RunnerVisitor &visitor) { visitor.visit(); }
 
-std::unique_ptr<TrainingData> Manager::loadTrainingData() {
-  return TrainingDataFileReaderCSV{}.getTrainingData();
+std::unique_ptr<std::vector<ImagePathPair>> Manager::loadTrainingData() {
+  return TrainingDataFileReaderCSV{}.loadTrainingDataPaths();
 }
 
-std::pair<std::unique_ptr<TrainingData>, std::unique_ptr<TrainingData>>
-Manager::splitData(std::unique_ptr<TrainingData> &data, float split_ratio) {
+std::pair<std::unique_ptr<std::vector<ImagePathPair>>,
+          std::unique_ptr<std::vector<ImagePathPair>>>
+Manager::splitData(std::unique_ptr<std::vector<ImagePathPair>> &data,
+                   float split_ratio) {
   // Shuffle the data randomly for unbiased training and validation
   std::random_device rd;
   std::mt19937 g(rd());
@@ -103,10 +107,10 @@ Manager::splitData(std::unique_ptr<TrainingData> &data, float split_ratio) {
   size_t split_index = static_cast<size_t>(data->size() * split_ratio);
 
   // Split the data into training and validation sets
-  auto training_data = std::make_unique<TrainingData>(
+  auto training_data = std::make_unique<std::vector<ImagePathPair>>(
       data->begin(), data->begin() + split_index);
-  auto validation_data =
-      std::make_unique<TrainingData>(data->begin() + split_index, data->end());
+  auto validation_data = std::make_unique<std::vector<ImagePathPair>>(
+      data->begin() + split_index, data->end());
 
   return std::make_pair(std::move(training_data), std::move(validation_data));
 }

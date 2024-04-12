@@ -8,17 +8,22 @@
  *
  */
 #pragma once
+#include <memory>
+#include <mutex>
 #include <random>
 
 namespace sipai {
 class RandomFactory {
 public:
   static RandomFactory &getInstance() {
-    static RandomFactory instance;
-    return instance;
+    static std::once_flag initInstanceFlag;
+    std::call_once(initInstanceFlag,
+                   [] { instance_.reset(new RandomFactory); });
+    return *instance_;
   }
   RandomFactory(RandomFactory const &) = delete;
   void operator=(RandomFactory const &) = delete;
+  ~RandomFactory() = default;
 
   /**
    * @brief Generates a random number from a normal distribution.
@@ -46,7 +51,9 @@ public:
 
 private:
   RandomFactory() : gen(rd()) {}
+  static std::unique_ptr<RandomFactory> instance_;
+
   std::random_device rd;
   std::mt19937 gen;
-}; // namespace sipai
+};
 } // namespace sipai

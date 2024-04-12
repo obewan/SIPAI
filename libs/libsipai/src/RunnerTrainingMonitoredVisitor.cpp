@@ -1,8 +1,10 @@
 #include "RunnerTrainingMonitoredVisitor.h"
 #include "AppParams.h"
+#include "Common.h"
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
+#include "TrainingDataFactory.h"
 #include "exception/RunnerVisitorException.h"
 #include <csignal>
 #include <cstddef>
@@ -94,7 +96,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 }
 
 float RunnerTrainingMonitoredVisitor::trainOnEpoch(
-    const std::unique_ptr<TrainingData> &trainingSet) const {
+    const std::unique_ptr<std::vector<ImagePathPair>> &trainingSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !training_images_) {
     training_images_ =
@@ -108,7 +110,7 @@ float RunnerTrainingMonitoredVisitor::trainOnEpoch(
 }
 
 float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet(
-    const std::unique_ptr<TrainingData> &validationSet) const {
+    const std::unique_ptr<std::vector<ImagePathPair>> &validationSet) const {
   auto &manager = Manager::getInstance();
   if (manager.app_params.bulk_loading && !validation_images_) {
     validation_images_ =
@@ -178,7 +180,8 @@ std::pair<ImageParts, ImageParts> RunnerTrainingMonitoredVisitor::loadImages(
 
 std::vector<std::pair<ImageParts, ImageParts>>
 RunnerTrainingMonitoredVisitor::loadBulkImages(
-    const std::unique_ptr<TrainingData> &dataSet, std::string logPrefix) const {
+    const std::unique_ptr<std::vector<ImagePathPair>> &dataSet,
+    std::string logPrefix) const {
   std::vector<std::pair<ImageParts, ImageParts>> images;
   SimpleLogger::LOG_INFO(logPrefix + " loading images... (bulk loading)");
 
@@ -308,7 +311,8 @@ float RunnerTrainingMonitoredVisitor::computeLoss(
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(
-    const TrainingData &dataSet, bool withBackwardAndUpdateWeights) const {
+    const std::vector<ImagePathPair> &dataSet,
+    bool withBackwardAndUpdateWeights) const {
   // Initialize the total loss to 0
   float loss = 0.0f;
   size_t lossComputed = 0;

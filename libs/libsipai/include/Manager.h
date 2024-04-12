@@ -17,16 +17,22 @@
 #include "RunnerVisitorFactory.h"
 #include <cstddef>
 #include <memory>
+#include <mutex>
 
 namespace sipai {
 class Manager {
 public:
   static Manager &getInstance() {
-    static Manager instance;
-    return instance;
+    static std::once_flag initInstanceFlag;
+    std::call_once(initInstanceFlag, [] { instance_.reset(new Manager); });
+    return *instance_;
+  }
+  static const Manager &getConstInstance() {
+    return const_cast<const Manager &>(getInstance());
   }
   Manager(Manager const &) = delete;
   void operator=(Manager const &) = delete;
+  ~Manager() = default;
 
   /**
    * @brief Application parameters.
@@ -81,7 +87,7 @@ public:
    * @return A vector of pairs, where each pair contains the paths to the input
    * image and the corresponding target image.
    */
-  std::unique_ptr<TrainingData> loadTrainingData();
+  std::unique_ptr<std::vector<ImagePathPair>> loadTrainingData();
 
   /**
    * @brief Shuffle and splits the training data into training and validation
@@ -96,8 +102,10 @@ public:
    * @return A pair of vectors, where the first element is the training
    * data, and the second element is the validation data.
    */
-  std::pair<std::unique_ptr<TrainingData>, std::unique_ptr<TrainingData>>
-  splitData(std::unique_ptr<TrainingData> &data, float split_ratio);
+  std::pair<std::unique_ptr<std::vector<ImagePathPair>>,
+            std::unique_ptr<std::vector<ImagePathPair>>>
+  splitData(std::unique_ptr<std::vector<ImagePathPair>> &data,
+            float split_ratio);
 
   /**
    * @brief Get a title line with the version
@@ -110,6 +118,8 @@ public:
 
 private:
   Manager() = default;
+
+  static std::unique_ptr<Manager> instance_;
 
   RunnerVisitorFactory runnerVisitorFactory_;
 };

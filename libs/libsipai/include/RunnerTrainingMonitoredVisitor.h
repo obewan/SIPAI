@@ -26,7 +26,8 @@ public:
    * paths.
    * @return The average loss over the training dataset for the current epoch.
    */
-  float trainOnEpoch(const std::unique_ptr<TrainingData> &dataSet) const;
+  float trainOnEpoch(
+      const std::unique_ptr<std::vector<ImagePathPair>> &dataSet) const;
 
   /**
    * @brief Evaluates the network on the validation set.
@@ -36,7 +37,7 @@ public:
    * @return The average loss over the validation set.
    */
   float evaluateOnValidationSet(
-      const std::unique_ptr<TrainingData> &validationSet) const;
+      const std::unique_ptr<std::vector<ImagePathPair>> &validationSet) const;
 
   /**
    * @brief Determines whether the training should continue based on the
@@ -79,7 +80,7 @@ private:
   std::pair<ImageParts, ImageParts>
   loadImages(const std::string &inputPath, const std::string &targetPath) const;
   std::vector<std::pair<ImageParts, ImageParts>>
-  loadBulkImages(const std::unique_ptr<TrainingData> &dataSet,
+  loadBulkImages(const std::unique_ptr<std::vector<ImagePathPair>> &dataSet,
                  std::string logPrefix) const;
 
   /**
@@ -112,7 +113,7 @@ private:
    * @param withBackwardAndUpdateWeights
    * @return float
    */
-  float computeLoss(const TrainingData &dataSet,
+  float computeLoss(const std::vector<ImagePathPair> &dataSet,
                     bool withBackwardAndUpdateWeights) const;
 };
 } // namespace sipai

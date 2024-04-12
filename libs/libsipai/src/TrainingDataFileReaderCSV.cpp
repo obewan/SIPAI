@@ -10,7 +10,8 @@
 
 using namespace sipai;
 
-std::unique_ptr<TrainingData> TrainingDataFileReaderCSV::getTrainingData() {
+std::unique_ptr<std::vector<ImagePathPair>>
+TrainingDataFileReaderCSV::loadTrainingDataPaths() {
   const auto &trainingDataFile =
       Manager::getInstance().app_params.training_data_file;
   if (trainingDataFile.empty()) {
@@ -24,7 +25,7 @@ std::unique_ptr<TrainingData> TrainingDataFileReaderCSV::getTrainingData() {
     throw FileReaderException("Failed to open file: " + trainingDataFile);
   }
 
-  auto trainingData = std::make_unique<TrainingData>();
+  auto trainingData = std::make_unique<std::vector<ImagePathPair>>();
   Csv::Parser csvParser;
   std::vector<std::vector<Csv::CellReference>> cell_refs;
   std::string line;
