@@ -39,6 +39,42 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   return imagesParts;
 }
 
+ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
+                                           size_t reduce_factor,
+                                           size_t resize_x,
+                                           size_t resize_y) const {
+  ImageParts imagesParts;
+  for (auto &imagePart : targetImage) {
+    auto mat = convertToMat(*imagePart);
+
+    // reduce the resolution of the input image
+    cv::Size s = mat.size();
+    if (reduce_factor != 0) {
+      float new_width = s.width * (1.0f / (float)reduce_factor);
+      float new_height = s.height * (1.0f / (float)reduce_factor);
+      cv::resize(mat, mat, cv::Size(new_width, new_height));
+    }
+    // get the new size if any resize
+    s = mat.size();
+
+    // then resize to the layer resolution
+    if (resize_x > 0 && resize_y > 0) {
+      cv::resize(mat, mat, cv::Size(resize_x, resize_y));
+    } else {
+      resize_x = s.width;
+      resize_y = s.height;
+    }
+
+    // finally convert back to Image
+    const auto &data = convertToRGBAVector(mat);
+    auto image =
+        std::make_unique<Image>(data, resize_x, resize_y, s.width, s.height);
+    imagesParts.push_back(std::move(image));
+  }
+
+  return imagesParts;
+}
+
 std::vector<cv::Mat> ImageHelper::splitImage(const cv::Mat &inputImage,
                                              size_t split,
                                              bool withPadding) const {

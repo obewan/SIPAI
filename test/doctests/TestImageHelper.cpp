@@ -10,7 +10,7 @@ TEST_CASE("Testing ImageHelper") {
     ImageHelper imageHelper;
     size_t split = 3;
     const auto &image =
-        imageHelper.loadImage("../data/images/001a.png", split, false);
+        imageHelper.loadImage("../data/images/input/001a.png", split, false);
     for (const auto &part : image) {
       CHECK(part->size_x == 50);
       CHECK(part->size_y == 50);
@@ -22,11 +22,30 @@ TEST_CASE("Testing ImageHelper") {
     }
   }
 
+  SUBCASE("Test generateInputImage") {
+    ImageHelper imageHelper;
+    size_t split = 3;
+    size_t reduce_factor = 4;
+    const auto &imageTarget =
+        imageHelper.loadImage("../data/images/target/001b.png", split, false);
+    const auto &imageInput =
+        imageHelper.generateInputImage(imageTarget, reduce_factor);
+    for (const auto &part : imageInput) {
+      CHECK(part->size_x == 53);
+      CHECK(part->size_y == 53);
+      CHECK(part->size() == 53 * 53);
+      CHECK(part->data.size() == part->size());
+      for (const auto &rgba : part->data) {
+        CHECK_FALSE(rgba.isOutOfRange());
+      }
+    }
+  }
+
   SUBCASE("Test saveImage") {
     ImageHelper imageHelper;
     size_t split = 2;
     const auto &image =
-        imageHelper.loadImage("../data/images/001a.png", split, true);
+        imageHelper.loadImage("../data/images/input/001a.png", split, true);
     std::string tmpImage = "tmpImage.png";
     if (std::filesystem::exists(tmpImage)) {
       std::filesystem::remove(tmpImage);

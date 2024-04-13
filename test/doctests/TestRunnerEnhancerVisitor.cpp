@@ -20,7 +20,7 @@ TEST_CASE("Testing RunnerEnhancerVisitor") {
     manager.app_params.input_file = "";
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);
 
-    manager.app_params.input_file = "../data/images/001a.png";
+    manager.app_params.input_file = "../data/images/input/001a.png";
     manager.app_params.output_file = "";
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);
   }
@@ -39,8 +39,8 @@ TEST_CASE("Testing RunnerEnhancerVisitor") {
     };
     manager.app_params.network_to_import = "";
     manager.createOrImportNetwork();
-    manager.app_params.input_file = "../data/images/001a.png";
-    manager.app_params.output_file = "../data/images/001a_test.png";
+    manager.app_params.input_file = "../data/images/input/001a.png";
+    manager.app_params.output_file = "../data/images/output/001a_test.png";
     if (std::filesystem::exists(manager.app_params.output_file)) {
       std::filesystem::remove(manager.app_params.output_file);
     }

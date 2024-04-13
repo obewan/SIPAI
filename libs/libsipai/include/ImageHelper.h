@@ -36,6 +36,19 @@ public:
                        size_t resize_y = 0) const;
 
   /**
+   * @brief Generate an input image from a target image
+   *
+   * @param targetImage
+   * @param reduce_factor
+   * @param resize_x
+   * @param resize_y
+   * @return ImageParts
+   */
+  ImageParts generateInputImage(const ImageParts &targetImage,
+                                size_t reduce_factor, size_t resize_x = 0,
+                                size_t resize_y = 0) const;
+
+  /**
    * @brief Split an OpenCV Mat to smaller Mats.
    *
    * @param inputImage The OpenCV Mat to split.

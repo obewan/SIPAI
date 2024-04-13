@@ -1,4 +1,5 @@
 #include "TrainingDataFactory.h"
+#include "ImageHelper.h"
 #include "Manager.h"
 #include "exception/TrainingDataFactoryException.h"
 #include <filesystem>
@@ -9,34 +10,51 @@ using namespace sipai;
 
 std::unique_ptr<TrainingDataFactory> TrainingDataFactory::instance_ = nullptr;
 
+// Rq. if the input data are going more complex, this method should be
+// refactored using another factory
 ImagePartsPair *TrainingDataFactory::next(
     std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
     std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
     std::vector<std::string> &dataTargetPaths, size_t &currentIndex) {
+
   const auto &manager = Manager::getConstInstance();
   const auto &app_params = manager.app_params;
   const auto &network_params = manager.network_params;
 
   currentIndex++;
-  if (currentIndex >= dataPaths.size()) {
+  size_t dataSize = isDataFolder ? dataTargetPaths.size() : dataPaths.size();
+  if (currentIndex >= dataSize) {
     // No more training data
     return nullptr;
   }
 
-  const auto &[inputPath, targetPath] = *dataPaths[currentIndex];
+  const std::string &inputPath =
+      isDataFolder ? "" : dataPaths[currentIndex]->first;
+  const std::string &targetPath = isDataFolder
+                                      ? dataTargetPaths[currentIndex]
+                                      : dataPaths[currentIndex]->second;
 
   if (app_params.bulk_loading && currentIndex < dataBulk.size()) {
     // gets the data from bulk
     return dataBulk.at(currentIndex).get();
   } else {
     // load the data
-    auto inputImageParts = imageHelper_.loadImage(
-        inputPath, app_params.image_split, app_params.enable_padding,
-        network_params.input_size_x, network_params.input_size_y);
 
+    // load the target image
     auto targetImageParts = imageHelper_.loadImage(
         targetPath, app_params.image_split, app_params.enable_padding,
         network_params.output_size_x, network_params.output_size_y);
+
+    // if it is a folder of target images, the input image will be generate,
+    // else it will load the provided input image
+    auto inputImageParts =
+        isDataFolder
+            ? imageHelper_.generateInputImage(
+                  targetImageParts, app_params.training_reduce_factor,
+                  network_params.input_size_x, network_params.input_size_y)
+            : imageHelper_.loadImage(
+                  inputPath, app_params.image_split, app_params.enable_padding,
+                  network_params.input_size_x, network_params.input_size_y);
 
     currentImagePartsPair_ = std::make_unique<ImagePartsPair>(std::make_pair(
         std::move(inputImageParts), std::move(targetImageParts)));
@@ -61,9 +79,13 @@ ImagePartsPair *TrainingDataFactory::nextValidation() {
               dataValidationTargetPaths_, currentValidationIndex);
 }
 
-size_t TrainingDataFactory::trainingSize() { return dataTrainingPaths_.size(); }
+size_t TrainingDataFactory::trainingSize() {
+  return isDataFolder ? dataTrainingTargetPaths_.size()
+                      : dataTrainingPaths_.size();
+}
 size_t TrainingDataFactory::validationSize() {
-  return dataValidationPaths_.size();
+  return isDataFolder ? dataValidationTargetPaths_.size()
+                      : dataValidationPaths_.size();
 }
 
 void TrainingDataFactory::loadData() {

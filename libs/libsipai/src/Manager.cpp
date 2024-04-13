@@ -70,6 +70,7 @@ void Manager::run() {
       getActivationStr(network_params.output_activation_function),
       "\noutput activation alpha: ", network_params.output_activation_alpha,
       "\nimage split: ", app_params.image_split,
+      "\ninput reduce factor: ", app_params.training_reduce_factor,
       "\noutput scale: ", app_params.output_scale,
       "\nimages bulk loading: ", app_params.bulk_loading ? "true" : "false",
       "\npadding enabled: ", app_params.enable_padding ? "true" : "false",
