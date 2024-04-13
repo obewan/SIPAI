@@ -151,9 +151,10 @@ cv::Mat ImageHelper::convertToMat(const Image &image) const {
 
 float ImageHelper::computeLoss(const std::vector<RGBA> &outputData,
                                const std::vector<RGBA> &targetData) const {
-  if (outputData.size() != targetData.size()) {
-    throw std::invalid_argument(
-        "Output and target images must have the same size.");
+  if (outputData.size() != targetData.size() || outputData.size() == 0 ||
+      targetData.size() == 0) {
+    throw std::invalid_argument("Output and target images must have the same "
+                                "size, or size is null.");
   }
   // Using the mean squared error (MSE) loss algorithm
   const auto squaredDifferences = [](const RGBA &a, const RGBA &b) {

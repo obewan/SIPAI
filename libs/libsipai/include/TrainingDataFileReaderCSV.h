@@ -38,6 +38,6 @@ public:
    * @return A vector of pairs, where each pair contains the input file path and
    * the corresponding target file path.
    */
-  std::unique_ptr<std::vector<ImagePathPair>> loadTrainingDataPaths();
+  std::vector<std::unique_ptr<ImagePathPair>> loadTrainingDataPaths();
 };
 } // namespace sipai

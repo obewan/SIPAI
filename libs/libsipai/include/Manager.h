@@ -82,32 +82,6 @@ public:
   void runWithVisitor(const RunnerVisitor &visitor);
 
   /**
-   * @brief Loads the training data from the specified source.
-   *
-   * @return A vector of pairs, where each pair contains the paths to the input
-   * image and the corresponding target image.
-   */
-  std::unique_ptr<std::vector<ImagePathPair>> loadTrainingData();
-
-  /**
-   * @brief Shuffle and splits the training data into training and validation
-   * sets.
-   *
-   * @param data The training data to be split.
-   * @param split_ratio The ratio of the data to be used for the training
-   * set. For example, if split_ratio is 0.8, 80% of the data will be used
-   * for the training set, and the remaining 20% will be used for the
-   * validation set.
-   *
-   * @return A pair of vectors, where the first element is the training
-   * data, and the second element is the validation data.
-   */
-  std::pair<std::unique_ptr<std::vector<ImagePathPair>>,
-            std::unique_ptr<std::vector<ImagePathPair>>>
-  splitData(std::unique_ptr<std::vector<ImagePathPair>> &data,
-            float split_ratio);
-
-  /**
    * @brief Get a title line with the version
    *
    * @return std::string

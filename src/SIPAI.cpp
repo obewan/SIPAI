@@ -305,9 +305,9 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
   app.add_flag("--bl,--bulk_loading", app_params.bulk_loading,
                "This flag will activate a bulk loading of all images, "
-               "resulting training speed, but at the cost of more memory,\n"
-               "depending on the images total count. The bulk loading is also "
-               "a multi-threads loading.");
+               "instead of loading and unloading them, resulting of training "
+               "speed but at the cost of more memory,\n"
+               "depending on the images total count and size.");
   app.add_flag(
       "--par,--parallelism", app_params.enable_parallel,
       "Enables parallel processing for neural network computations. "

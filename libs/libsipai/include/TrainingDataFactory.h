@@ -8,7 +8,9 @@
  *
  */
 #pragma once
+#include "ImageHelper.h"
 #include "TrainingDataFileReaderCSV.h"
+#include <cstddef>
 #include <memory>
 #include <mutex>
 
@@ -28,14 +30,16 @@ public:
   void operator=(TrainingDataFactory const &) = delete;
   ~TrainingDataFactory() = default;
 
-  std::unique_ptr<ImagePartsPair> nextTraining();
-  std::unique_ptr<ImagePartsPair> nextValidation();
+  ImagePartsPair *nextTraining();
+  ImagePartsPair *nextValidation();
 
   size_t trainingSize();
   size_t validationSize();
 
-  void loadData();
-  void reset();
+  void loadDataPaths();
+  void resetCounters();
+  void resetTraining();
+  void resetValidation();
 
   bool isLoaded() const { return isLoaded_; }
 
@@ -43,12 +47,22 @@ private:
   TrainingDataFactory() = default;
   static std::unique_ptr<TrainingDataFactory> instance_;
 
+  ImagePartsPair *next(std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
+                       std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
+                       size_t &currentIndex);
+  void splitData(std::vector<std::unique_ptr<ImagePathPair>> &data,
+                 float split_ratio, bool withRandom = false);
+
+  std::unique_ptr<ImagePartsPair> currentImagePartsPair_ = nullptr;
+
   std::vector<std::unique_ptr<ImagePartsPair>> dataTrainingBulk_;
   std::vector<std::unique_ptr<ImagePartsPair>> dataValidationBulk_;
+
   std::vector<std::unique_ptr<ImagePathPair>> dataTrainingPaths_;
   std::vector<std::unique_ptr<ImagePathPair>> dataValidationPaths_;
 
-  TrainingDataFileReaderCSV fileReaderCSV_;
+  TrainingDataFileReaderCSV trainingDatafileReaderCSV_;
+  ImageHelper imageHelper_;
   bool isLoaded_ = false;
   size_t currentTrainingIndex = 0;
   size_t currentValidationIndex = 0;
