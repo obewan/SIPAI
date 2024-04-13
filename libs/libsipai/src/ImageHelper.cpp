@@ -5,7 +5,8 @@
 using namespace sipai;
 
 ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
-                                  size_t resize_x, size_t resize_y) const {
+                                  bool withPadding, size_t resize_x,
+                                  size_t resize_y) const {
   if (split == 0) {
     throw ImageHelperException("internal exception: split 0.");
   }
@@ -16,7 +17,7 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   }
 
   ImageParts imagesParts;
-  auto matParts = splitImage(mat, split);
+  auto matParts = splitImage(mat, split, withPadding);
   for (auto &matPart : matParts) {
     cv::Size s = matPart.size();
 
@@ -28,11 +29,49 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
     }
 
     const auto &data = convertToRGBAVector(matPart);
-    imagesParts.emplace_back(data, resize_x, resize_y, s.width, s.height);
+    auto image =
+        std::make_unique<Image>(data, resize_x, resize_y, s.width, s.height);
+    imagesParts.push_back(std::move(image));
   }
 
   // Rq. C++ use Return Value Optimization (RVO) to avoid the extra copy or move
   // operation associated with the return.
+  return imagesParts;
+}
+
+ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
+                                           size_t reduce_factor,
+                                           size_t resize_x,
+                                           size_t resize_y) const {
+  ImageParts imagesParts;
+  for (auto &imagePart : targetImage) {
+    auto mat = convertToMat(*imagePart);
+
+    // reduce the resolution of the input image
+    cv::Size s = mat.size();
+    if (reduce_factor != 0) {
+      float new_width = s.width * (1.0f / (float)reduce_factor);
+      float new_height = s.height * (1.0f / (float)reduce_factor);
+      cv::resize(mat, mat, cv::Size(new_width, new_height));
+    }
+    // get the new size if any resize
+    s = mat.size();
+
+    // then resize to the layer resolution
+    if (resize_x > 0 && resize_y > 0) {
+      cv::resize(mat, mat, cv::Size(resize_x, resize_y));
+    } else {
+      resize_x = s.width;
+      resize_y = s.height;
+    }
+
+    // finally convert back to Image
+    const auto &data = convertToRGBAVector(mat);
+    auto image =
+        std::make_unique<Image>(data, resize_x, resize_y, s.width, s.height);
+    imagesParts.push_back(std::move(image));
+  }
+
   return imagesParts;
 }
 
@@ -89,7 +128,9 @@ void ImageHelper::saveImage(const std::string &imagePath,
   try {
     std::vector<cv::Mat> mats(imageParts.size());
     std::transform(imageParts.begin(), imageParts.end(), mats.begin(),
-                   [&](const Image &part) { return convertToMat(part); });
+                   [&](const std::unique_ptr<Image> &part) {
+                     return convertToMat(*part);
+                   });
     auto mat = joinImages(mats, split, split);
 
     if (resize_x > 0 && resize_y > 0) {
@@ -150,9 +191,10 @@ cv::Mat ImageHelper::convertToMat(const Image &image) const {
 
 float ImageHelper::computeLoss(const std::vector<RGBA> &outputData,
                                const std::vector<RGBA> &targetData) const {
-  if (outputData.size() != targetData.size()) {
-    throw std::invalid_argument(
-        "Output and target images must have the same size.");
+  if (outputData.size() != targetData.size() || outputData.size() == 0 ||
+      targetData.size() == 0) {
+    throw std::invalid_argument("Output and target images must have the same "
+                                "size, or size is null.");
   }
   // Using the mean squared error (MSE) loss algorithm
   const auto squaredDifferences = [](const RGBA &a, const RGBA &b) {

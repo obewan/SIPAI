@@ -20,23 +20,12 @@ public:
   void visit() const override;
 
   /**
-   * @brief Performs one epoch of training on the provided dataset.
+   * @brief Compute the loss of all images.
    *
-   * @param dataSet The dataset containing pairs of input and target image
-   * paths.
-   * @return The average loss over the training dataset for the current epoch.
+   * @param isTraining indicate if it is training or validation phase
+   * @return float
    */
-  float trainOnEpoch(const std::unique_ptr<TrainingData> &dataSet) const;
-
-  /**
-   * @brief Evaluates the network on the validation set.
-   *
-   * @param validationSet The validation set containing pairs of input and
-   * target image paths.
-   * @return The average loss over the validation set.
-   */
-  float evaluateOnValidationSet(
-      const std::unique_ptr<TrainingData> &validationSet) const;
+  float computeLoss(bool isTraining) const;
 
   /**
    * @brief Determines whether the training should continue based on the
@@ -70,49 +59,18 @@ public:
   void saveNetwork(bool &hasLastEpochBeenSaved) const;
 
 private:
-  ImageHelper imageHelper_;
-  mutable std::unique_ptr<std::vector<std::pair<ImageParts, ImageParts>>>
-      training_images_ = nullptr;
-  mutable std::unique_ptr<std::vector<std::pair<ImageParts, ImageParts>>>
-      validation_images_ = nullptr;
-
-  std::pair<ImageParts, ImageParts>
-  loadImages(const std::string &inputPath, const std::string &targetPath) const;
-  std::vector<std::pair<ImageParts, ImageParts>>
-  loadBulkImages(const std::unique_ptr<TrainingData> &dataSet,
-                 std::string logPrefix) const;
-
   /**
    * @brief Compute the loss of an input image and its target image
    *
    * @param inputImage
    * @param targetImage
-   * @param withBackwardAndUpdateWeights
+   * @param isTraining
    * @param isLossFrequency
    * @return float
    */
   float computeLoss(const ImageParts &inputImage, const ImageParts &targetImage,
-                    bool withBackwardAndUpdateWeights,
-                    bool isLossFrequency) const;
-  /**
-   * @brief Compute the loss of loaded images, without unloading.
-   *
-   * @param images
-   * @param withBackwardAndUpdateWeights
-   * @return float
-   */
-  float
-  computeLoss(const std::vector<std::pair<ImageParts, ImageParts>> &images,
-              bool withBackwardAndUpdateWeights) const;
-  /**
-   * @brief Compute the loss of a data set of image paths, loading/unloading
-   * image one by one for low memory usage
-   *
-   * @param dataSet
-   * @param withBackwardAndUpdateWeights
-   * @return float
-   */
-  float computeLoss(const TrainingData &dataSet,
-                    bool withBackwardAndUpdateWeights) const;
+                    bool isTraining, bool isLossFrequency) const;
+
+  ImageHelper imageHelper_;
 };
 } // namespace sipai

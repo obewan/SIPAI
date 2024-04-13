@@ -17,16 +17,22 @@
 #include "RunnerVisitorFactory.h"
 #include <cstddef>
 #include <memory>
+#include <mutex>
 
 namespace sipai {
 class Manager {
 public:
   static Manager &getInstance() {
-    static Manager instance;
-    return instance;
+    static std::once_flag initInstanceFlag;
+    std::call_once(initInstanceFlag, [] { instance_.reset(new Manager); });
+    return *instance_;
+  }
+  static const Manager &getConstInstance() {
+    return const_cast<const Manager &>(getInstance());
   }
   Manager(Manager const &) = delete;
   void operator=(Manager const &) = delete;
+  ~Manager() = default;
 
   /**
    * @brief Application parameters.
@@ -76,30 +82,6 @@ public:
   void runWithVisitor(const RunnerVisitor &visitor);
 
   /**
-   * @brief Loads the training data from the specified source.
-   *
-   * @return A vector of pairs, where each pair contains the paths to the input
-   * image and the corresponding target image.
-   */
-  std::unique_ptr<TrainingData> loadTrainingData();
-
-  /**
-   * @brief Shuffle and splits the training data into training and validation
-   * sets.
-   *
-   * @param data The training data to be split.
-   * @param split_ratio The ratio of the data to be used for the training
-   * set. For example, if split_ratio is 0.8, 80% of the data will be used
-   * for the training set, and the remaining 20% will be used for the
-   * validation set.
-   *
-   * @return A pair of vectors, where the first element is the training
-   * data, and the second element is the validation data.
-   */
-  std::pair<std::unique_ptr<TrainingData>, std::unique_ptr<TrainingData>>
-  splitData(std::unique_ptr<TrainingData> &data, float split_ratio);
-
-  /**
    * @brief Get a title line with the version
    *
    * @return std::string
@@ -110,6 +92,8 @@ public:
 
 private:
   Manager() = default;
+
+  static std::unique_ptr<Manager> instance_;
 
   RunnerVisitorFactory runnerVisitorFactory_;
 };

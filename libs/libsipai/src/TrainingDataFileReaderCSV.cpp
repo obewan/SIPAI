@@ -10,7 +10,8 @@
 
 using namespace sipai;
 
-std::unique_ptr<TrainingData> TrainingDataFileReaderCSV::getTrainingData() {
+std::vector<std::unique_ptr<ImagePathPair>>
+TrainingDataFileReaderCSV::loadTrainingDataPaths() {
   const auto &trainingDataFile =
       Manager::getInstance().app_params.training_data_file;
   if (trainingDataFile.empty()) {
@@ -24,11 +25,13 @@ std::unique_ptr<TrainingData> TrainingDataFileReaderCSV::getTrainingData() {
     throw FileReaderException("Failed to open file: " + trainingDataFile);
   }
 
-  auto trainingData = std::make_unique<TrainingData>();
+  std::vector<std::unique_ptr<ImagePathPair>> trainingData;
   Csv::Parser csvParser;
   std::vector<std::vector<Csv::CellReference>> cell_refs;
   std::string line;
   int lineNumber = 1;
+  int totalErrors = 0;
+  int totalErrorsMax = 5;
   while (std::getline(file, line)) {
     try {
       if (line.empty()) {
@@ -40,19 +43,22 @@ std::unique_ptr<TrainingData> TrainingDataFileReaderCSV::getTrainingData() {
         throw FileReaderException("invalid column numbers, at line " +
                                   std::to_string(lineNumber));
       }
-      std::pair<std::string, std::string> columns;
-      columns.first = cell_refs[0][0].getCleanString().value();
-      columns.second = cell_refs[1][0].getCleanString().value();
-      trainingData->push_back(columns);
+      std::unique_ptr<ImagePathPair> columns =
+          std::make_unique<ImagePathPair>();
+      columns->first = cell_refs[0][0].getCleanString().value();
+      columns->second = cell_refs[1][0].getCleanString().value();
+      trainingData.push_back(std::move(columns));
       lineNumber++;
     } catch (Csv::ParseError &ex) {
-      SimpleLogger::LOG_ERROR("CSV parsing error at line (", lineNumber,
-                              "): ", ex.what());
+      totalErrors++;
+      if (totalErrors < totalErrorsMax) {
+        SimpleLogger::LOG_ERROR("CSV parsing error at line (", lineNumber,
+                                "): ", ex.what());
+      } else {
+        throw FileReaderException("Too many parsing errors.");
+      }
     }
   }
-
-  // The file stream object will be automatically closed when it goes out of
-  // scope
 
   return trainingData;
 }

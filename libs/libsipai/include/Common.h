@@ -13,11 +13,14 @@
 #include <map>
 #include <regex> // for std::regex and std::regex_replace
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace sipai {
-using TrainingData = std::vector<std::pair<std::string, std::string>>;
-using ImageParts = std::vector<Image>;
+using ImageParts = std::vector<std::unique_ptr<Image>>;
+using ImagePartsPair = std::pair<ImageParts, ImageParts>;
+using ImagePathPair = std::pair<std::string, std::string>;
+using ImagePartsPairList = std::vector<std::pair<ImageParts, ImageParts>>;
 
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;
@@ -47,6 +50,11 @@ inline std::string getRunModeStr(ERunMode mode) {
   }
   return "";
 }
+
+inline std::unordered_set<std::string> valid_extensions = {
+    ".bmp",  ".dib", ".jpeg", ".jpg", ".jpe", ".jp2", ".png",
+    ".webp", ".pbm", ".pgm",  ".ppm", ".pxm", ".pnm", ".pfm",
+    ".sr",   ".ras", ".tiff", ".tif", ".exr", ".hdr", ".pic"};
 
 /**
  * @brief Get the Filename .csv from a Filename .json
