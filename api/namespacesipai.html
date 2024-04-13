@@ -97,6 +97,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerVisitorException.html">RunnerVisitorException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A custom exception class that inherits from std::exception. This class is thrown when there are issues with runner operations.  <a href="classsipai_1_1RunnerVisitorException.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactoryException.html">TrainingDataFactoryException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A custom exception class that inherits from std::exception. This class is thrown when there are issues with <a class="el" href="classsipai_1_1TrainingDataFactory.html">TrainingDataFactory</a> operations.  <a href="classsipai_1_1TrainingDataFactoryException.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Image.html">Image</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html">ImageHelper</a></td></tr>
@@ -150,15 +153,21 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html">SimpleLogger</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsipai_1_1SimpleLogger.html" title="SimpleLogger class.">SimpleLogger</a> class.  <a href="classsipai_1_1SimpleLogger.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html">TrainingDataFactory</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFileReaderCSV.html">TrainingDataFileReaderCSV</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a64e0bb44a4af191b5e765f04ba8cefca"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> = std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;</td></tr>
-<tr class="separator:a64e0bb44a4af191b5e765f04ba8cefca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4764282462094bbfbf494652e8c35b5b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> = std::vector&lt; <a class="el" href="structsipai_1_1Image.html">Image</a> &gt;</td></tr>
-<tr class="separator:a4764282462094bbfbf494652e8c35b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5345debac23e76611c6a9ef2111b76d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> = std::vector&lt; std::unique_ptr&lt; <a class="el" href="structsipai_1_1Image.html">Image</a> &gt; &gt;</td></tr>
+<tr class="separator:af5345debac23e76611c6a9ef2111b76d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae983eb8b507d8c91984fcc42e2387027"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">ImagePartsPair</a> = std::pair&lt; <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>, <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> &gt;</td></tr>
+<tr class="separator:ae983eb8b507d8c91984fcc42e2387027"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0046d4c618d699675618a696690971f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aa0046d4c618d699675618a696690971f">ImagePathPair</a> = std::pair&lt; std::string, std::string &gt;</td></tr>
+<tr class="separator:aa0046d4c618d699675618a696690971f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4147434b6b8610b7412878af0ddf84a3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a4147434b6b8610b7412878af0ddf84a3">ImagePartsPairList</a> = std::vector&lt; std::pair&lt; <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>, <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> &gt; &gt;</td></tr>
+<tr class="separator:a4147434b6b8610b7412878af0ddf84a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -246,32 +255,62 @@ Variables</h2></td></tr>
 <tr class="separator:ab9d8d07c41fed4bf4302acbc5ac98c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a>, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38">mode_map</a></td></tr>
 <tr class="separator:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae5f7ca99feda8d753952bea7a1884f"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aaae5f7ca99feda8d753952bea7a1884f">valid_extensions</a></td></tr>
+<tr class="separator:aaae5f7ca99feda8d753952bea7a1884f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0d5df6a1588c2cba272a4e4dccd8ab3"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a>, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ae0d5df6a1588c2cba272a4e4dccd8ab3">layer_map</a></td></tr>
 <tr class="separator:ae0d5df6a1588c2cba272a4e4dccd8ab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a4764282462094bbfbf494652e8c35b5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4764282462094bbfbf494652e8c35b5b">&#9670;&nbsp;</a></span>ImageParts</h2>
+<a id="af5345debac23e76611c6a9ef2111b76d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5345debac23e76611c6a9ef2111b76d">&#9670;&nbsp;</a></span>ImageParts</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">sipai::ImageParts</a> = typedef std::vector&lt;<a class="el" href="structsipai_1_1Image.html">Image</a>&gt;</td>
+          <td class="memname">using <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">sipai::ImageParts</a> = typedef std::vector&lt;std::unique_ptr&lt;<a class="el" href="structsipai_1_1Image.html">Image</a>&gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a64e0bb44a4af191b5e765f04ba8cefca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64e0bb44a4af191b5e765f04ba8cefca">&#9670;&nbsp;</a></span>TrainingData</h2>
+<a id="ae983eb8b507d8c91984fcc42e2387027"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae983eb8b507d8c91984fcc42e2387027">&#9670;&nbsp;</a></span>ImagePartsPair</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">sipai::TrainingData</a> = typedef std::vector&lt;std::pair&lt;std::string, std::string&gt; &gt;</td>
+          <td class="memname">using <a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">sipai::ImagePartsPair</a> = typedef std::pair&lt;<a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>, <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4147434b6b8610b7412878af0ddf84a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4147434b6b8610b7412878af0ddf84a3">&#9670;&nbsp;</a></span>ImagePartsPairList</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacesipai.html#a4147434b6b8610b7412878af0ddf84a3">sipai::ImagePartsPairList</a> = typedef std::vector&lt;std::pair&lt;<a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>, <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>&gt; &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa0046d4c618d699675618a696690971f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0046d4c618d699675618a696690971f">&#9670;&nbsp;</a></span>ImagePathPair</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacesipai.html#aa0046d4c618d699675618a696690971f">sipai::ImagePathPair</a> = typedef std::pair&lt;std::string, std::string&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -960,6 +999,32 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 <p>Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the input to a range between -1 and 1. It is often used in the hidden layers of a neural network. </p>
 
+</div>
+</div>
+<a id="aaae5f7ca99feda8d753952bea7a1884f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaae5f7ca99feda8d753952bea7a1884f">&#9670;&nbsp;</a></span>valid_extensions</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_set&lt;std::string&gt; sipai::valid_extensions</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <span class="stringliteral">&quot;.bmp&quot;</span>,  <span class="stringliteral">&quot;.dib&quot;</span>, <span class="stringliteral">&quot;.jpeg&quot;</span>, <span class="stringliteral">&quot;.jpg&quot;</span>, <span class="stringliteral">&quot;.jpe&quot;</span>, <span class="stringliteral">&quot;.jp2&quot;</span>, <span class="stringliteral">&quot;.png&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;.webp&quot;</span>, <span class="stringliteral">&quot;.pbm&quot;</span>, <span class="stringliteral">&quot;.pgm&quot;</span>,  <span class="stringliteral">&quot;.ppm&quot;</span>, <span class="stringliteral">&quot;.pxm&quot;</span>, <span class="stringliteral">&quot;.pnm&quot;</span>, <span class="stringliteral">&quot;.pfm&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;.sr&quot;</span>,   <span class="stringliteral">&quot;.ras&quot;</span>, <span class="stringliteral">&quot;.tiff&quot;</span>, <span class="stringliteral">&quot;.tif&quot;</span>, <span class="stringliteral">&quot;.exr&quot;</span>, <span class="stringliteral">&quot;.hdr&quot;</span>, <span class="stringliteral">&quot;.pic&quot;</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->

@@ -89,12 +89,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4cb42e940abffdc071e292e7c57ff230"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a4cb42e940abffdc071e292e7c57ff230">visit</a> () const override</td></tr>
 <tr class="memdesc:a4cb42e940abffdc071e292e7c57ff230"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the runner operation on the network.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a4cb42e940abffdc071e292e7c57ff230">More...</a><br /></td></tr>
 <tr class="separator:a4cb42e940abffdc071e292e7c57ff230"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb243b68112a740370a0bc3ddd8dc353"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#afb243b68112a740370a0bc3ddd8dc353">trainOnEpoch</a> (const std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;dataSet) const</td></tr>
-<tr class="memdesc:afb243b68112a740370a0bc3ddd8dc353"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs one epoch of training on the provided dataset.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#afb243b68112a740370a0bc3ddd8dc353">More...</a><br /></td></tr>
-<tr class="separator:afb243b68112a740370a0bc3ddd8dc353"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad682bc809549c55d744c7e508b91e030"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ad682bc809549c55d744c7e508b91e030">evaluateOnValidationSet</a> (const std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;validationSet) const</td></tr>
-<tr class="memdesc:ad682bc809549c55d744c7e508b91e030"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the network on the validation set.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ad682bc809549c55d744c7e508b91e030">More...</a><br /></td></tr>
-<tr class="separator:ad682bc809549c55d744c7e508b91e030"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3f8cc674dcc80772fc2dab4c9db999f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ac3f8cc674dcc80772fc2dab4c9db999f">computeLoss</a> (bool isTraining) const</td></tr>
+<tr class="memdesc:ac3f8cc674dcc80772fc2dab4c9db999f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the loss of all images.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#ac3f8cc674dcc80772fc2dab4c9db999f">More...</a><br /></td></tr>
+<tr class="separator:ac3f8cc674dcc80772fc2dab4c9db999f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8">shouldContinueTraining</a> (int epoch, size_t epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
 <tr class="memdesc:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the training should continue based on the provided conditions.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8">More...</a><br /></td></tr>
 <tr class="separator:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,30 +106,30 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9eff828476354487d390af23b47516f0 inherit pub_methods_classsipai_1_1RunnerVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad682bc809549c55d744c7e508b91e030"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad682bc809549c55d744c7e508b91e030">&#9670;&nbsp;</a></span>evaluateOnValidationSet()</h2>
+<a id="ac3f8cc674dcc80772fc2dab4c9db999f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3f8cc674dcc80772fc2dab4c9db999f">&#9670;&nbsp;</a></span>computeLoss()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float RunnerTrainingMonitoredVisitor::evaluateOnValidationSet </td>
+          <td class="memname">float RunnerTrainingMonitoredVisitor::computeLoss </td>
           <td>(</td>
-          <td class="paramtype">const std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>validationSet</em></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isTraining</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Evaluates the network on the validation set. </p>
+<p>Compute the loss of all images. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">validationSet</td><td>The validation set containing pairs of input and target image paths. </td></tr>
+    <tr><td class="paramname">isTraining</td><td>indicate if it is training or validation phase </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The average loss over the validation set. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>float </dd></dl>
 
 </div>
 </div>
@@ -248,33 +245,6 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the training should continue, false otherwise. </dd></dl>
-
-</div>
-</div>
-<a id="afb243b68112a740370a0bc3ddd8dc353"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb243b68112a740370a0bc3ddd8dc353">&#9670;&nbsp;</a></span>trainOnEpoch()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float RunnerTrainingMonitoredVisitor::trainOnEpoch </td>
-          <td>(</td>
-          <td class="paramtype">const std::unique_ptr&lt; <a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">TrainingData</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>dataSet</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Performs one epoch of training on the provided dataset. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">dataSet</td><td>The dataset containing pairs of input and target image paths. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The average loss over the training dataset for the current epoch. </dd></dl>
 
 </div>
 </div>

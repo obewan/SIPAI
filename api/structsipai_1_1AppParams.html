@@ -87,6 +87,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aca50bfed2557acec4d1d50c38a9736a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78e3d56a4a95e3c550ff0ccaf0174fc1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a78e3d56a4a95e3c550ff0ccaf0174fc1">training_data_file</a> = &quot;&quot;</td></tr>
 <tr class="separator:a78e3d56a4a95e3c550ff0ccaf0174fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af52a779d8dc2b083b13a886c4f38b7a9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#af52a779d8dc2b083b13a886c4f38b7a9">training_data_folder</a> = &quot;&quot;</td></tr>
+<tr class="separator:af52a779d8dc2b083b13a886c4f38b7a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4cef02031523a7596087fd1b7adf5ce"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#af4cef02031523a7596087fd1b7adf5ce">network_to_import</a> = &quot;&quot;</td></tr>
 <tr class="separator:af4cef02031523a7596087fd1b7adf5ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5330b8b96411fed3ec8031d631832803"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a5330b8b96411fed3ec8031d631832803">network_to_export</a> = &quot;&quot;</td></tr>
@@ -105,10 +107,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a16dba5a5773057267b97b31ba197b9d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a082243618b65d67e7e39802f2b73f3bb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a082243618b65d67e7e39802f2b73f3bb">image_split</a> = 1</td></tr>
 <tr class="separator:a082243618b65d67e7e39802f2b73f3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8af450510f5c9386a09d4347fba877ee"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a8af450510f5c9386a09d4347fba877ee">training_reduce_factor</a> = 4</td></tr>
+<tr class="separator:a8af450510f5c9386a09d4347fba877ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b2d855b14a63d73dda3faf9b1b6d000"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a5b2d855b14a63d73dda3faf9b1b6d000">bulk_loading</a> = false</td></tr>
 <tr class="separator:a5b2d855b14a63d73dda3faf9b1b6d000"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251">enable_parallel</a> = false</td></tr>
 <tr class="separator:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdccd4ada3363f17e14fbd2a7a027943"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#abdccd4ada3363f17e14fbd2a7a027943">enable_padding</a> = false</td></tr>
+<tr class="separator:abdccd4ada3363f17e14fbd2a7a027943"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a5b2d855b14a63d73dda3faf9b1b6d000"></a>
@@ -119,6 +125,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool sipai::AppParams::bulk_loading = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abdccd4ada3363f17e14fbd2a7a027943"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdccd4ada3363f17e14fbd2a7a027943">&#9670;&nbsp;</a></span>enable_padding</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sipai::AppParams::enable_padding = false</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -301,6 +321,34 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string sipai::AppParams::training_data_file = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af52a779d8dc2b083b13a886c4f38b7a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af52a779d8dc2b083b13a886c4f38b7a9">&#9670;&nbsp;</a></span>training_data_folder</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string sipai::AppParams::training_data_folder = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8af450510f5c9386a09d4347fba877ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8af450510f5c9386a09d4347fba877ee">&#9670;&nbsp;</a></span>training_reduce_factor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sipai::AppParams::training_reduce_factor = 4</td>
         </tr>
       </table>
 </div><div class="memdoc">

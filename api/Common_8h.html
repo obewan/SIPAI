@@ -82,6 +82,7 @@ $(function() {
 <code>#include &lt;map&gt;</code><br />
 <code>#include &lt;regex&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;unordered_set&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="Common_8h_source.html">Go to the source code of this file.</a></p>
@@ -93,10 +94,14 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a64e0bb44a4af191b5e765f04ba8cefca"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a64e0bb44a4af191b5e765f04ba8cefca">sipai::TrainingData</a> = std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;</td></tr>
-<tr class="separator:a64e0bb44a4af191b5e765f04ba8cefca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4764282462094bbfbf494652e8c35b5b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">sipai::ImageParts</a> = std::vector&lt; Image &gt;</td></tr>
-<tr class="separator:a4764282462094bbfbf494652e8c35b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5345debac23e76611c6a9ef2111b76d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">sipai::ImageParts</a> = std::vector&lt; std::unique_ptr&lt; Image &gt; &gt;</td></tr>
+<tr class="separator:af5345debac23e76611c6a9ef2111b76d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae983eb8b507d8c91984fcc42e2387027"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">sipai::ImagePartsPair</a> = std::pair&lt; ImageParts, ImageParts &gt;</td></tr>
+<tr class="separator:ae983eb8b507d8c91984fcc42e2387027"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0046d4c618d699675618a696690971f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aa0046d4c618d699675618a696690971f">sipai::ImagePathPair</a> = std::pair&lt; std::string, std::string &gt;</td></tr>
+<tr class="separator:aa0046d4c618d699675618a696690971f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4147434b6b8610b7412878af0ddf84a3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a4147434b6b8610b7412878af0ddf84a3">sipai::ImagePartsPairList</a> = std::vector&lt; std::pair&lt; ImageParts, ImageParts &gt; &gt;</td></tr>
+<tr class="separator:a4147434b6b8610b7412878af0ddf84a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -125,6 +130,8 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, ERunMode, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38">sipai::mode_map</a></td></tr>
 <tr class="separator:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae5f7ca99feda8d753952bea7a1884f"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aaae5f7ca99feda8d753952bea7a1884f">sipai::valid_extensions</a></td></tr>
+<tr class="separator:aaae5f7ca99feda8d753952bea7a1884f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Common objects. </p>

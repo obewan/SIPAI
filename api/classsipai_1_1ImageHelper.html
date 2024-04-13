@@ -77,13 +77,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af35d7859b48c02c96b1a9fa1c4b9895e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#af35d7859b48c02c96b1a9fa1c4b9895e">loadImage</a> (const std::string &amp;imagePath, size_t split, size_t resize_x=0, size_t resize_y=0) const</td></tr>
-<tr class="memdesc:af35d7859b48c02c96b1a9fa1c4b9895e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an image from a specified path and returns it as <a class="el" href="structsipai_1_1Image.html">Image</a> parts.  <a href="classsipai_1_1ImageHelper.html#af35d7859b48c02c96b1a9fa1c4b9895e">More...</a><br /></td></tr>
-<tr class="separator:af35d7859b48c02c96b1a9fa1c4b9895e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4f7bfe3c204bf6367e68efec198d35a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#ae4f7bfe3c204bf6367e68efec198d35a">loadImage</a> (const std::string &amp;imagePath, size_t split, bool withPadding, size_t resize_x=0, size_t resize_y=0) const</td></tr>
+<tr class="memdesc:ae4f7bfe3c204bf6367e68efec198d35a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an image from a specified path and returns it as <a class="el" href="structsipai_1_1Image.html">Image</a> parts.  <a href="classsipai_1_1ImageHelper.html#ae4f7bfe3c204bf6367e68efec198d35a">More...</a><br /></td></tr>
+<tr class="separator:ae4f7bfe3c204bf6367e68efec198d35a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4220efac15e29fdc0159415c22385c11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#a4220efac15e29fdc0159415c22385c11">generateInputImage</a> (const <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> &amp;targetImage, size_t reduce_factor, size_t resize_x=0, size_t resize_y=0) const</td></tr>
+<tr class="memdesc:a4220efac15e29fdc0159415c22385c11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate an input image from a target image.  <a href="classsipai_1_1ImageHelper.html#a4220efac15e29fdc0159415c22385c11">More...</a><br /></td></tr>
+<tr class="separator:a4220efac15e29fdc0159415c22385c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdcd609ce750e34aefb3bc952b5cc2aa"><td class="memItemLeft" align="right" valign="top">std::vector&lt; cv::Mat &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#acdcd609ce750e34aefb3bc952b5cc2aa">splitImage</a> (const cv::Mat &amp;inputImage, size_t split, bool withPadding=false) const</td></tr>
 <tr class="memdesc:acdcd609ce750e34aefb3bc952b5cc2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split an OpenCV Mat to smaller Mats.  <a href="classsipai_1_1ImageHelper.html#acdcd609ce750e34aefb3bc952b5cc2aa">More...</a><br /></td></tr>
 <tr class="separator:acdcd609ce750e34aefb3bc952b5cc2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d12dc5f32e5b3e639020d7992c05740"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740">saveImage</a> (const std::string &amp;imagePath, const <a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> &amp;imageParts, size_t split, size_t resize_x=0, size_t resize_y=0) const</td></tr>
+<tr class="memitem:a6d12dc5f32e5b3e639020d7992c05740"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740">saveImage</a> (const std::string &amp;imagePath, const <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> &amp;imageParts, size_t split, size_t resize_x=0, size_t resize_y=0) const</td></tr>
 <tr class="memdesc:a6d12dc5f32e5b3e639020d7992c05740"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save an image.  <a href="classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740">More...</a><br /></td></tr>
 <tr class="separator:a6d12dc5f32e5b3e639020d7992c05740"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae22aba46229aa0e11c131186043e51ce"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1ImageHelper.html#ae22aba46229aa0e11c131186043e51ce">joinImages</a> (const std::vector&lt; cv::Mat &gt; &amp;images, int splitsX, int splitsY) const</td></tr>
@@ -192,6 +195,58 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a4220efac15e29fdc0159415c22385c11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4220efac15e29fdc0159415c22385c11">&#9670;&nbsp;</a></span>generateInputImage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> ImageHelper::generateInputImage </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> &amp;&#160;</td>
+          <td class="paramname"><em>targetImage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>reduce_factor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>resize_x</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>resize_y</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generate an input image from a target image. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">targetImage</td><td></td></tr>
+    <tr><td class="paramname">reduce_factor</td><td></td></tr>
+    <tr><td class="paramname">resize_x</td><td></td></tr>
+    <tr><td class="paramname">resize_y</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>ImageParts </dd></dl>
+
+</div>
+</div>
 <a id="ae22aba46229aa0e11c131186043e51ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae22aba46229aa0e11c131186043e51ce">&#9670;&nbsp;</a></span>joinImages()</h2>
 
@@ -237,14 +292,14 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af35d7859b48c02c96b1a9fa1c4b9895e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af35d7859b48c02c96b1a9fa1c4b9895e">&#9670;&nbsp;</a></span>loadImage()</h2>
+<a id="ae4f7bfe3c204bf6367e68efec198d35a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4f7bfe3c204bf6367e68efec198d35a">&#9670;&nbsp;</a></span>loadImage()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> ImageHelper::loadImage </td>
+          <td class="memname"><a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> ImageHelper::loadImage </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>imagePath</em>, </td>
@@ -254,6 +309,12 @@ Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>split</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>withPadding</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -280,6 +341,7 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">imagePath</td><td>The file path of the image to be loaded. </td></tr>
     <tr><td class="paramname">split</td><td>The split factor. </td></tr>
+    <tr><td class="paramname">withPadding</td><td>Add padding to the splitted image parts. </td></tr>
     <tr><td class="paramname">resize_x</td><td>Optional resize the imported image on X (width). </td></tr>
     <tr><td class="paramname">resize_y</td><td>Optional resize the imported image on Y (height). </td></tr>
   </table>
@@ -304,7 +366,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacesipai.html#a4764282462094bbfbf494652e8c35b5b">ImageParts</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacesipai.html#af5345debac23e76611c6a9ef2111b76d">ImageParts</a> &amp;&#160;</td>
           <td class="paramname"><em>imageParts</em>, </td>
         </tr>
         <tr>
