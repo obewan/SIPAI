@@ -4,6 +4,7 @@
 #include "SimpleLogger.h"
 #include "exception/RunnerVisitorException.h"
 #include <exception>
+#include <memory>
 
 using namespace sipai;
 
@@ -37,18 +38,23 @@ void RunnerEnhancerVisitor::visit() const {
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
       const auto &outputData = manager.network->forwardPropagation(
-          inputPart.data, app_params.enable_parallel);
-      outputParts.emplace_back(outputData, network_params.output_size_x,
-                               network_params.output_size_y);
+          inputPart->data, app_params.enable_parallel);
+      outputParts.push_back(
+          std::make_unique<Image>(outputData, network_params.output_size_x,
+                                  network_params.output_size_y));
     }
 
     // Save the output image parts as a single image
-    size_t outputSizeX = std::accumulate(
-        outputParts.begin(), outputParts.end(), 0,
-        [](size_t total, const Image &im) { return total + im.size_x; });
-    size_t outputSizeY = std::accumulate(
-        outputParts.begin(), outputParts.end(), 0,
-        [](size_t total, const Image &im) { return total + im.size_y; });
+    size_t outputSizeX =
+        std::accumulate(outputParts.begin(), outputParts.end(), 0,
+                        [](size_t total, const std::unique_ptr<Image> &im) {
+                          return total + im->size_x;
+                        });
+    size_t outputSizeY =
+        std::accumulate(outputParts.begin(), outputParts.end(), 0,
+                        [](size_t total, const std::unique_ptr<Image> &im) {
+                          return total + im->size_y;
+                        });
     imageHelper_.saveImage(app_params.output_file, outputParts,
                            app_params.image_split,
                            outputSizeX * app_params.output_scale,

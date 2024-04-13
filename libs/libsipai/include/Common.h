@@ -16,7 +16,7 @@
 #include <vector>
 
 namespace sipai {
-using ImageParts = std::vector<Image>;
+using ImageParts = std::vector<std::unique_ptr<Image>>;
 using ImagePartsPair = std::pair<ImageParts, ImageParts>;
 using ImagePathPair = std::pair<std::string, std::string>;
 using ImagePartsPairList = std::vector<std::pair<ImageParts, ImageParts>>;

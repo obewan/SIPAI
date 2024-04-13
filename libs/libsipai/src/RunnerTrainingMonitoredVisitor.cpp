@@ -149,19 +149,19 @@ float RunnerTrainingMonitoredVisitor::computeLoss(const ImageParts &inputImage,
 
     // Perform forward propagation
     const auto &outputData = manager.network->forwardPropagation(
-        inputPart.data, manager.app_params.enable_parallel);
+        inputPart->data, manager.app_params.enable_parallel);
 
     // If the loss should be computed for the current image, compute the loss
     // for the current part
     if (isLossFrequency) {
-      partsLoss += imageHelper_.computeLoss(outputData, targetPart.data);
+      partsLoss += imageHelper_.computeLoss(outputData, targetPart->data);
       partsLossComputed++;
     }
 
     // If backward propagation and weight update should be performed, perform
     // them
     if (isTraining) {
-      manager.network->backwardPropagation(targetPart.data,
+      manager.network->backwardPropagation(targetPart->data,
                                            manager.app_params.enable_parallel);
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);

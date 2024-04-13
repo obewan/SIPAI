@@ -28,16 +28,16 @@ ImagePartsPair *TrainingDataFactory::next(
     return dataBulk.at(currentIndex).get();
   } else {
     // load the data
-    const auto &inputImageParts = imageHelper_.loadImage(
+    auto inputImageParts = imageHelper_.loadImage(
         inputPath, app_params.image_split, app_params.enable_padding,
         network_params.input_size_x, network_params.input_size_y);
 
-    const auto &targetImageParts = imageHelper_.loadImage(
+    auto targetImageParts = imageHelper_.loadImage(
         targetPath, app_params.image_split, app_params.enable_padding,
         network_params.output_size_x, network_params.output_size_y);
 
-    currentImagePartsPair_ = std::make_unique<ImagePartsPair>(
-        std::make_pair(inputImageParts, targetImageParts));
+    currentImagePartsPair_ = std::make_unique<ImagePartsPair>(std::make_pair(
+        std::move(inputImageParts), std::move(targetImageParts)));
 
     // return the data, make a push in the bulk for a next time
     if (app_params.bulk_loading) {

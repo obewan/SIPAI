@@ -29,7 +29,9 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
     }
 
     const auto &data = convertToRGBAVector(matPart);
-    imagesParts.emplace_back(data, resize_x, resize_y, s.width, s.height);
+    auto image =
+        std::make_unique<Image>(data, resize_x, resize_y, s.width, s.height);
+    imagesParts.push_back(std::move(image));
   }
 
   // Rq. C++ use Return Value Optimization (RVO) to avoid the extra copy or move
@@ -90,7 +92,9 @@ void ImageHelper::saveImage(const std::string &imagePath,
   try {
     std::vector<cv::Mat> mats(imageParts.size());
     std::transform(imageParts.begin(), imageParts.end(), mats.begin(),
-                   [&](const Image &part) { return convertToMat(part); });
+                   [&](const std::unique_ptr<Image> &part) {
+                     return convertToMat(*part);
+                   });
     auto mat = joinImages(mats, split, split);
 
     if (resize_x > 0 && resize_y > 0) {
