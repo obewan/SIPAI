@@ -39,7 +39,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
-  trainingDataFactory.loadDataPaths();
+  trainingDataFactory.loadData();
   if (!trainingDataFactory.isLoaded() ||
       trainingDataFactory.trainingSize() == 0) {
     SimpleLogger::LOG_ERROR("No training data found. Aborting.");

@@ -116,14 +116,17 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "--if,--input_file", app_params.input_file,
          "The path to the input image file to be enhanced.\nThis option "
          "is used in conjunction with the Enhancer mode.\nThe specified "
-         "file must exist.")
+         "file must exist. Currently supported image format: "
+         "\n.bmp, .dib, .jpeg, .jpg, .jpe, .jp2, .png, .webp, .pbm, .pgm,  "
+         "\n.ppm, .pxm, .pnm, .pfm, .sr, .ras, .tiff, .tif, .exr, .hdr, .pic")
       ->check(CLI::ExistingFile);
   app.add_option(
          "--of,--output_file", app_params.output_file,
          "The path where the enhanced output image will be saved.\nThis option "
          "is used in conjunction with the Enhancer mode.\nThe path must be "
          "valid, and the application must have write permissions to the "
-         "specified location.")
+         "specified location."
+         "\nSee the input_file parameter for the supported image formats.")
       ->check(valid_path);
   app.add_option("--os,--output_scale", app_params.output_scale,
                  "The scale of the output image.\nThis option "
@@ -136,7 +139,8 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "Specify the data file to be used for training and testing.\n"
          "It must be a valid CSV file with two columns, \nwhere the first "
          "column contains the input file path, and the second "
-         "column contains the corresponding target file path. No headers.")
+         "column contains the corresponding target file path. No headers."
+         "\nSee the input_file parameter for the supported image formats.")
       ->check(CLI::ExistingFile);
   app.add_option(
          "--tfo,--training_folder", app_params.training_data_folder,
@@ -146,7 +150,8 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "resolution of the target images "
          "according to the 'training_reduce_factor' parameter. "
          "\nNote: When using this option, there's no need for a separate "
-         "training CSV file or pre-prepared input files.")
+         "training CSV file or pre-prepared input files."
+         "\nSee the input_file parameter for the supported image formats.")
       ->check(CLI::ExistingDirectory);
   app.add_option(
          "--trf,--training_reduce_factor", app_params.training_reduce_factor,

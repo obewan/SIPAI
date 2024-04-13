@@ -13,6 +13,7 @@
 #include <map>
 #include <regex> // for std::regex and std::regex_replace
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace sipai {
@@ -49,6 +50,11 @@ inline std::string getRunModeStr(ERunMode mode) {
   }
   return "";
 }
+
+inline std::unordered_set<std::string> valid_extensions = {
+    ".bmp",  ".dib", ".jpeg", ".jpg", ".jpe", ".jp2", ".png",
+    ".webp", ".pbm", ".pgm",  ".ppm", ".pxm", ".pnm", ".pfm",
+    ".sr",   ".ras", ".tiff", ".tif", ".exr", ".hdr", ".pic"};
 
 /**
  * @brief Get the Filename .csv from a Filename .json
