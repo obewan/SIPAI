@@ -108,7 +108,8 @@ void TrainingDataFactory::loadDataPaths() {
   const auto &app_params = Manager::getConstInstance().app_params;
 
   auto dataPaths = trainingDatafileReaderCSV_.loadTrainingDataPaths();
-  splitDataPairPaths(dataPaths, app_params.training_split_ratio);
+  splitDataPairPaths(dataPaths, app_params.training_split_ratio,
+                     app_params.random_loading);
 
   isDataFolder = false;
   isLoaded_ = true;
@@ -134,7 +135,8 @@ void TrainingDataFactory::loadDataFolder() {
     }
   }
 
-  splitDataTargetPaths(dataTargetPaths, app_params.training_split_ratio);
+  splitDataTargetPaths(dataTargetPaths, app_params.training_split_ratio,
+                       app_params.random_loading);
 
   isDataFolder = true;
   isLoaded_ = true;

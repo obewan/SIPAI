@@ -308,6 +308,10 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "memory.")
       ->default_val(app_params.run_mode)
       ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
+  app.add_flag(
+      "--rl,--random_loading", app_params.random_loading,
+      "This flag will activate a random loading of all images, for a better "
+      "training if the images list or folder is not already randomized.");
   app.add_flag("--bl,--bulk_loading", app_params.bulk_loading,
                "This flag will activate a bulk loading of all images, "
                "instead of loading and unloading them, resulting of training "
