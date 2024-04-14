@@ -33,6 +33,7 @@ struct AppParams {
   size_t epoch_autosave = 100;
   size_t image_split = 1;
   size_t training_reduce_factor = 4;
+  bool random_loading = false;
   bool bulk_loading = false;
   bool enable_parallel = false;
   bool enable_padding = false;
