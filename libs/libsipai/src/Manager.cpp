@@ -72,6 +72,7 @@ void Manager::run() {
       "\nimage split: ", app_params.image_split,
       "\ninput reduce factor: ", app_params.training_reduce_factor,
       "\noutput scale: ", app_params.output_scale,
+      "\nimages random loading: ", app_params.random_loading ? "true" : "false",
       "\nimages bulk loading: ", app_params.bulk_loading ? "true" : "false",
       "\npadding enabled: ", app_params.enable_padding ? "true" : "false",
       "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false");
