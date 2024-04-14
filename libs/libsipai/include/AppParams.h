@@ -37,5 +37,6 @@ struct AppParams {
   bool bulk_loading = false;
   bool enable_parallel = false;
   bool enable_padding = false;
+  bool verbose = false;
 };
 } // namespace sipai

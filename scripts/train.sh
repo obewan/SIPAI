@@ -12,4 +12,4 @@ factor=5
 input_folder=/mnt/e/Documents/project/sipai_images/
 
 cd ../build
-./sipai --en test.json --tfo $input_folder --isx $res_i --isy $res_i --hsx $res_h --hsy $res_h --osx $res_o --osy $res_o --hl $hl --haf $algo --oaf $algo --lr $lr --is $split --trf $factor --eas 200 --rl --bl -m TrainingMonitored
+./sipai --en test.json --tfo $input_folder --isx $res_i --isy $res_i --hsx $res_h --hsy $res_h --osx $res_o --osy $res_o --hl $hl --haf $algo --oaf $algo --lr $lr --is $split --trf $factor --eas 200 --rl --bl -m TrainingMonitored -V

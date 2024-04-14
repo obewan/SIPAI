@@ -328,6 +328,9 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       "especially for smaller tasks or on systems with limited resources. "
       "Use this flag judiciously and benchmark your application to determine "
       "its impact.");
+  app.add_flag("-V,--verbose", app_params.verbose,
+               "Enables verbose logs. Can be useful during long epoch "
+               "treatment, to check it is not pending.");
   app.add_flag("-v,--version", version, "Show current version.");
 }
 
