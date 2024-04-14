@@ -22,7 +22,6 @@ ImagePartsPair *TrainingDataFactory::next(
   const auto &app_params = manager.app_params;
   const auto &network_params = manager.network_params;
 
-  currentIndex++;
   size_t dataSize = isDataFolder ? dataTargetPaths.size() : dataPaths.size();
   if (currentIndex >= dataSize) {
     // No more training data
@@ -37,7 +36,7 @@ ImagePartsPair *TrainingDataFactory::next(
 
   if (app_params.bulk_loading && currentIndex < dataBulk.size()) {
     // gets the data from bulk
-    return dataBulk.at(currentIndex).get();
+    return dataBulk.at(currentIndex++).get();
   } else {
     // load the data
 
@@ -61,6 +60,7 @@ ImagePartsPair *TrainingDataFactory::next(
         std::move(inputImageParts), std::move(targetImageParts)));
 
     // return the data, make a push in the bulk for a next time
+    currentIndex++;
     if (app_params.bulk_loading) {
       dataBulk.push_back(std::move(currentImagePartsPair_));
       return dataBulk.back().get();
