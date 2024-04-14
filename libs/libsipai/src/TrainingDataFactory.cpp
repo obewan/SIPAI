@@ -1,6 +1,7 @@
 #include "TrainingDataFactory.h"
 #include "ImageHelper.h"
 #include "Manager.h"
+#include "SimpleLogger.h"
 #include "exception/TrainingDataFactoryException.h"
 #include <filesystem>
 #include <memory>
@@ -94,6 +95,9 @@ void TrainingDataFactory::loadData() {
   }
 
   const auto &app_params = Manager::getConstInstance().app_params;
+  if (app_params.verbose) {
+    SimpleLogger::LOG_INFO("Loading images paths...");
+  }
   if (!app_params.training_data_file.empty()) {
     loadDataPaths();
   } else if (!app_params.training_data_folder.empty()) {
@@ -101,6 +105,11 @@ void TrainingDataFactory::loadData() {
   } else {
     throw TrainingDataFactoryException(
         "Invalid training data file or data folder");
+  }
+  if (app_params.verbose && isLoaded_) {
+    SimpleLogger::LOG_INFO("Images paths loaded: ", trainingSize(),
+                           " images for training, ", validationSize(),
+                           " images for validation.");
   }
 }
 

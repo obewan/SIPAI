@@ -75,7 +75,8 @@ void Manager::run() {
       "\nimages random loading: ", app_params.random_loading ? "true" : "false",
       "\nimages bulk loading: ", app_params.bulk_loading ? "true" : "false",
       "\npadding enabled: ", app_params.enable_padding ? "true" : "false",
-      "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false");
+      "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false",
+      "\nverbose logs enabled: ", app_params.verbose ? "true" : "false");
 
   // Run with visitor
   switch (app_params.run_mode) {

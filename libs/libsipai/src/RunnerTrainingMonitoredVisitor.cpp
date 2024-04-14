@@ -19,10 +19,18 @@ volatile std::sig_atomic_t stopTraining = false;
 
 void signalHandler(int signal) {
   if (signal == SIGINT) {
-    SimpleLogger::LOG_INFO(
-        "Received interrupt signal (CTRL+C). Training will stop after "
-        "the current epoch.");
-    stopTraining = true;
+    if (!stopTraining) {
+      SimpleLogger::LOG_INFO(
+          "Received interrupt signal (CTRL+C). Training will stop after "
+          "the current epoch. Press another time on (CTRL+C) to force exit "
+          "immediately without saving.");
+      stopTraining = true;
+    } else {
+      SimpleLogger::LOG_INFO(
+          "Received another interrupt signal (CTRL+C). "
+          "Forcing quitting immedialty without saving progress.");
+      std::exit(EXIT_SUCCESS); // Terminate the program immediately
+    }
   }
 }
 
@@ -60,8 +68,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     bool hasLastEpochBeenSaved = false;
     while (!stopTraining &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
-      float trainingLoss = computeLoss(true);
-      float validationLoss = computeLoss(false);
+      float trainingLoss = computeLoss(epoch, true);
+      float validationLoss = computeLoss(epoch, false);
 
       logTrainingProgress(epoch, trainingLoss, validationLoss);
 
@@ -124,7 +132,8 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
   }
 }
 
-float RunnerTrainingMonitoredVisitor::computeLoss(const ImageParts &inputImage,
+float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
+                                                  const ImageParts &inputImage,
                                                   const ImageParts &targetImage,
                                                   bool isTraining,
                                                   bool isLossFrequency) const {
@@ -174,7 +183,8 @@ float RunnerTrainingMonitoredVisitor::computeLoss(const ImageParts &inputImage,
   return (partsLoss / static_cast<float>(partsLossComputed));
 }
 
-float RunnerTrainingMonitoredVisitor::computeLoss(bool isTraining) const {
+float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
+                                                  bool isTraining) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;
@@ -183,6 +193,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(bool isTraining) const {
   bool isLossFrequency = false;
   auto &trainingDataFactory = TrainingDataFactory::getInstance();
   trainingDataFactory.resetCounters();
+  const auto &app_params = Manager::getConstInstance().app_params;
 
   // Compute the frequency at which the loss should be computed
   size_t lossFrequency =
@@ -196,14 +207,22 @@ float RunnerTrainingMonitoredVisitor::computeLoss(bool isTraining) const {
                                    ? trainingDataFactory.nextTraining()
                                    : trainingDataFactory.nextValidation()) {
     counter++;
+    if (app_params.verbose) {
+      SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
+                             isTraining ? ", training: " : ", validation: ",
+                             "image ", counter, "/",
+                             isTraining ? trainingDataFactory.trainingSize()
+                                        : trainingDataFactory.validationSize(),
+                             "...");
+    }
 
     // Check if the loss should be computed for the current image
     isLossFrequency = counter % lossFrequency == 0 ? true : false;
 
     // Compute the image parts loss
     const auto &[inputImageParts, targetImageParts] = *imagePartsPair;
-    float imageLoss = computeLoss(inputImageParts, targetImageParts, isTraining,
-                                  isLossFrequency);
+    float imageLoss = computeLoss(epoch, inputImageParts, targetImageParts,
+                                  isTraining, isLossFrequency);
 
     // If the loss was computed for the current image, add the average loss for
     // the current image to the total loss
