@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-14 20:39:43</td>
+            <td class="headerValue">2024-04-14 21:22:07</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">25</td>
@@ -161,13 +161,13 @@
 <a name="99"><span class="lineNum">      99 </span>            :  * ReLU problem where neurons become inactive and only output zero.</a>
 <a name="100"><span class="lineNum">     100 </span>            :  * Combine LReLU with clamping to [0, 1] range</a>
 <a name="101"><span class="lineNum">     101 </span>            :  */</a>
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">        265 : inline auto leakyRelu = [](const RGBA &amp;rgba) {</span></a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        530 :   return rgba.apply(</span></a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">       1590 :       [](float v) -&gt; float { return std::clamp(0.01f * v, 0.0f, 1.0f); });</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">        325 : inline auto leakyRelu = [](const RGBA &amp;rgba) {</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        650 :   return rgba.apply(</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">       1950 :       [](float v) -&gt; float { return std::clamp(0.01f * v, 0.0f, 1.0f); });</span></a>
 <a name="105"><span class="lineNum">     105 </span>            : };</a>
 <a name="106"><span class="lineNum">     106 </span>            : </a>
-<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         76 : inline auto leakyReluDerivative = [](const RGBA &amp;rgba) {</span></a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">        380 :   return rgba.apply([](float v) { return std::max(0.01f, std::min(1.0f, v)); });</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         88 : inline auto leakyReluDerivative = [](const RGBA &amp;rgba) {</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">        440 :   return rgba.apply([](float v) { return std::max(0.01f, std::min(1.0f, v)); });</span></a>
 <a name="109"><span class="lineNum">     109 </span>            : };</a>
 <a name="110"><span class="lineNum">     110 </span>            : </a>
 <a name="111"><span class="lineNum">     111 </span>            : /**</a>
