@@ -93,9 +93,14 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
     SimpleLogger::LOG_INFO("Exiting training...");
     saveNetwork(hasLastEpochBeenSaved);
+
+    // Show elapsed time
     const auto end{std::chrono::steady_clock::now()};
-    const std::chrono::duration<double> elapsed_seconds{end - start};
-    SimpleLogger::LOG_INFO("Elapsed time: ", elapsed_seconds.count(), "s");
+    const std::chrono::duration elapsed_seconds =
+        std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    const auto &hms = getHMSfromS(elapsed_seconds.count());
+    SimpleLogger::LOG_INFO("Elapsed time: ", hms[0], "h ", hms[1], "m ", hms[2],
+                           "s");
 
   } catch (std::exception &ex) {
     SimpleLogger::LOG_ERROR("Training error: ", ex.what());
