@@ -67,4 +67,13 @@ inline std::string getFilenameCsv(const std::string &filenameJson) {
                             std::regex(".json$", std::regex::icase), ".csv");
 }
 
+inline std::array<size_t, 3> getHMSfromS(const size_t seconds) {
+  size_t s = seconds;
+  size_t h = s / 3600;
+  s %= 3600;
+  size_t m = s / 60;
+  s %= 60;
+  return {h, m, s};
+}
+
 } // namespace sipai
