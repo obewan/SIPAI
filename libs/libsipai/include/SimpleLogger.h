@@ -256,6 +256,13 @@ public:
   }
 
   /**
+   * @brief Get the current floating precision
+   *
+   * @return precision
+   */
+  const std::streamsize &getPrecision() const { return current_precision; }
+
+  /**
    * @brief Set the floating precision
    *
    * @param precision

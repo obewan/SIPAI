@@ -40,7 +40,9 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
   auto &manager = Manager::getInstance();
   const auto &appParams = manager.app_params;
-
+  auto &learning_rate = manager.network_params.learning_rate;
+  const auto &adaptive_learning_rate =
+      manager.network_params.adaptive_learning_rate;
   auto &trainingDataFactory = TrainingDataFactory::getInstance();
 
   const auto start{std::chrono::steady_clock::now()}; // starting timer
@@ -76,6 +78,13 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       hasLastEpochBeenSaved = false;
       epoch++;
 
+      // if Adaptive Learning Rate enabled, adapt the learning rate.
+      if (adaptive_learning_rate && epoch > 1) {
+        adaptLearningRate(learning_rate, validationLoss,
+                          previousValidationLoss);
+      }
+
+      // check the epochs without improvement counter
       if (validationLoss < previousValidationLoss ||
           trainingLoss < previousTrainingLoss) {
         epochsWithoutImprovement = 0;
@@ -123,6 +132,38 @@ void RunnerTrainingMonitoredVisitor::logTrainingProgress(
   SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
                          ", Train Loss: ", trainingLoss * 100.0f,
                          "%, Validation Loss: ", validationLoss * 100.0f, "%");
+}
+
+void RunnerTrainingMonitoredVisitor::adaptLearningRate(
+    float &learningRate, const float &validationLoss,
+    const float &previousValidationLoss) const {
+  const auto &manager = Manager::getConstInstance();
+  const auto &appParams = manager.app_params;
+  const auto &learning_rate_min = appParams.learning_rate_min;
+  const auto &learning_rate_max = appParams.learning_rate_max;
+  const auto &learning_rate_adaptive_factor =
+      manager.network_params.adaptive_learning_rate_factor;
+
+  float previous_learning_rate = learningRate;
+
+  if (validationLoss > previousValidationLoss &&
+      learningRate > learning_rate_min) {
+    // this will decrease learningRate (0.001 * 0.5 = 0.0005)
+    learningRate *= learning_rate_adaptive_factor;
+  } else if (validationLoss < previousValidationLoss &&
+             learningRate < learning_rate_max) {
+    // this will increase learningRate (0.001 / 0.5 = 0.002)
+    learningRate /= learning_rate_adaptive_factor;
+  }
+
+  if (appParams.verbose && learningRate != previous_learning_rate) {
+    const auto &current_precision = SimpleLogger::getInstance().getPrecision();
+    SimpleLogger::getInstance()
+        .setPrecision(6)
+        .LOG_INFO("Learning rate ", previous_learning_rate, " adjusted to ",
+                  learningRate)
+        .setPrecision(current_precision);
+  }
 }
 
 void RunnerTrainingMonitoredVisitor::saveNetwork(

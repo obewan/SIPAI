@@ -62,6 +62,7 @@ TEST_CASE("Testing the Manager class") {
   }
 
   SUBCASE("Test import/export network") {
+    const float eps = 1e-6f; // epsilon for float testing
     auto &manager = Manager::getInstance();
     auto &ap = manager.app_params;
     auto &np = manager.network_params;
@@ -72,6 +73,9 @@ TEST_CASE("Testing the Manager class") {
     np.output_size_x = 3;
     np.output_size_y = 3;
     np.hiddens_count = 1;
+    np.learning_rate = 0.02f;
+    np.adaptive_learning_rate = true;
+    np.adaptive_learning_rate_factor = 0.123;
     ap.network_to_import = "";
     ap.network_to_export = "tmpNetwork.json";
     std::string network_csv = "tmpNetwork.csv";
@@ -84,16 +88,31 @@ TEST_CASE("Testing the Manager class") {
     if (std::filesystem::exists(network_csv)) {
       std::filesystem::remove(network_csv);
     }
+    // CREATE
     manager.createOrImportNetwork();
+    // EXPORT
     CHECK_FALSE(std::filesystem::exists(ap.network_to_export));
     manager.exportNetwork();
     CHECK(std::filesystem::exists(ap.network_to_export));
     CHECK(std::filesystem::exists(network_csv));
-    manager.network.reset();
 
     // TEST IMPORT
+    manager.network.reset();
+    manager.network_params = {};
+    CHECK(np.input_size_x != 2);
     ap.network_to_import = "tmpNetwork.json";
     manager.createOrImportNetwork();
+    CHECK(np.input_size_x == 2);
+    CHECK(np.input_size_y == 2);
+    CHECK(np.hidden_size_x == 3);
+    CHECK(np.hidden_size_y == 2);
+    CHECK(np.output_size_x == 3);
+    CHECK(np.output_size_y == 3);
+    CHECK(np.hiddens_count == 1);
+    CHECK(np.learning_rate == doctest::Approx(0.02f).epsilon(eps));
+    CHECK(np.adaptive_learning_rate == true);
+    CHECK(np.adaptive_learning_rate_factor ==
+          doctest::Approx(0.123).epsilon(eps));
     auto &nn = manager.network;
     CHECK(nn->layers.size() == 3);
     CHECK(nn->layers.front()->layerType == LayerType::LayerInput);

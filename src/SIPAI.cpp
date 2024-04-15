@@ -232,12 +232,31 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "could make learning faster but risk overshooting the optimal "
          "solution.")
       ->default_val(network_params.learning_rate)
-      ->check(CLI::Range(0.0f, 1.0f))
+      ->check(CLI::Range(app_params.learning_rate_min,
+                         app_params.learning_rate_max))
+      ->check(CLI::TypeValidator<float>());
+  app.add_flag(
+      "--alr, --adaptive_learning_rate", network_params.adaptive_learning_rate,
+      "This flag enables dynamic adjustment of the learning rate "
+      "based on the validation loss. \nWhen enabled, the learning rate "
+      "increases if the validation loss decreases, and decreases if "
+      "the validation loss increases, potentially improving the "
+      "efficiency and effectiveness of the learning process.");
+  app.add_option(
+         "--alrf, --adaptive_learning_rate_factor",
+         network_params.adaptive_learning_rate_factor,
+         "This factor determines the extent of learning rate adjustments "
+         "during an adaptive learning rate process. \nA larger factor results "
+         "in more drastic changes to the learning rate, potentially leading to "
+         "faster adaptation but also increased risk of instability.")
+      ->default_val(network_params.adaptive_learning_rate_factor)
+      ->check(CLI::Range(0.0001f, 1.0f))
       ->check(CLI::TypeValidator<float>());
   app.add_option(
          "--haf,--hidden_activation_function",
          network_params.hidden_activation_function,
-         "Select the hidden neurons activation function:\n  - ELU: Exponential "
+         "Select the hidden neurons activation function:\n  - ELU: "
+         "Exponential "
          "Linear Units, require an hidden_activation_alpha parameter.\n  - "
          "LReLU: Leaky ReLU.\n  - PReLU: Parametric ReLU, require an "
          "hidden_activation_alpha_parameter.\n  - ReLU: Rectified Linear "
