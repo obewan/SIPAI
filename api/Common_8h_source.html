@@ -123,9 +123,19 @@ $(function() {
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                            std::regex(<span class="stringliteral">&quot;.json$&quot;</span>, std::regex::icase), <span class="stringliteral">&quot;.csv&quot;</span>);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;} <span class="comment">// namespace sipai</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="namespacesipai.html#a13c790b62fe74c6494f7fdb443c5726c">   70</a></span>&#160;<span class="keyword">inline</span> std::array&lt;size_t, 3&gt; <a class="code" href="namespacesipai.html#a13c790b62fe74c6494f7fdb443c5726c">getHMSfromS</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> seconds) {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordtype">size_t</span> s = seconds;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordtype">size_t</span> h = s / 3600;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  s %= 3600;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">size_t</span> m = s / 60;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  s %= 60;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keywordflow">return</span> {h, m, s};</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;} <span class="comment">// namespace sipai</span></div>
 <div class="ttc" id="aImage_8h_html"><div class="ttname"><a href="Image_8h.html">Image.h</a></div><div class="ttdoc">Image data struct.</div></div>
 <div class="ttc" id="anamespacesipai_html"><div class="ttname"><a href="namespacesipai.html">sipai</a></div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:18</div></div>
+<div class="ttc" id="anamespacesipai_html_a13c790b62fe74c6494f7fdb443c5726c"><div class="ttname"><a href="namespacesipai.html#a13c790b62fe74c6494f7fdb443c5726c">sipai::getHMSfromS</a></div><div class="ttdeci">std::array&lt; size_t, 3 &gt; getHMSfromS(const size_t seconds)</div><div class="ttdef"><b>Definition:</b> Common.h:70</div></div>
 <div class="ttc" id="anamespacesipai_html_a413f1fb666f38fa6ee38d1dc3e316e6d"><div class="ttname"><a href="namespacesipai.html#a413f1fb666f38fa6ee38d1dc3e316e6d">sipai::getRunModeStr</a></div><div class="ttdeci">std::string getRunModeStr(ERunMode mode)</div><div class="ttdef"><b>Definition:</b> Common.h:45</div></div>
 <div class="ttc" id="anamespacesipai_html_a4147434b6b8610b7412878af0ddf84a3"><div class="ttname"><a href="namespacesipai.html#a4147434b6b8610b7412878af0ddf84a3">sipai::ImagePartsPairList</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; ImageParts, ImageParts &gt; &gt; ImagePartsPairList</div><div class="ttdef"><b>Definition:</b> Common.h:23</div></div>
 <div class="ttc" id="anamespacesipai_html_a75649a3fec248cda3e742668f865fb9e"><div class="ttname"><a href="namespacesipai.html#a75649a3fec248cda3e742668f865fb9e">sipai::getFilenameCsv</a></div><div class="ttdeci">std::string getFilenameCsv(const std::string &amp;filenameJson)</div><div class="ttdoc">Get the Filename .csv from a Filename .json.</div><div class="ttdef"><b>Definition:</b> Common.h:65</div></div>

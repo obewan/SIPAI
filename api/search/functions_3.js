@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['debug_396',['debug',['../classsipai_1_1SimpleLogger.html#a0f77f63b10dd7e808304cb2081a4e5bd',1,'sipai::SimpleLogger']]]
+  ['debug_397',['debug',['../classsipai_1_1SimpleLogger.html#a0f77f63b10dd7e808304cb2081a4e5bd',1,'sipai::SimpleLogger']]]
 ];

@@ -31,17 +31,17 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">7</td>
-            <td class="headerCovTableEntryMed">85.7 %</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryHi">92.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-14 21:22:07</td>
+            <td class="headerValue">2024-04-15 08:42:18</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">2</td>
-            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">3</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
@@ -129,7 +129,16 @@
 <a name="67"><span class="lineNum">      67 </span><span class="lineCov">         12 :                             std::regex(&quot;.json$&quot;, std::regex::icase), &quot;.csv&quot;);</span></a>
 <a name="68"><span class="lineNum">      68 </span>            : }</a>
 <a name="69"><span class="lineNum">      69 </span>            : </a>
-<a name="70"><span class="lineNum">      70 </span>            : } // namespace sipai</a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">          3 : inline std::array&lt;size_t, 3&gt; getHMSfromS(const size_t seconds) {</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          3 :   size_t s = seconds;</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          3 :   size_t h = s / 3600;</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          3 :   s %= 3600;</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          3 :   size_t m = s / 60;</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          3 :   s %= 60;</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          3 :   return {h, m, s};</span></a>
+<a name="77"><span class="lineNum">      77 </span>            : }</a>
+<a name="78"><span class="lineNum">      78 </span>            : </a>
+<a name="79"><span class="lineNum">      79 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>
