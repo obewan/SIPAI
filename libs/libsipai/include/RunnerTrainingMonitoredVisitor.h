@@ -43,6 +43,16 @@ public:
                               const AppParams &appParams) const;
 
   /**
+   * @brief Adaptive Learning Rate
+   *
+   * @param learningRate
+   * @param validationLoss
+   * @param previousValidationLoss
+   */
+  void adaptLearningRate(float &learningRate, const float &validationLoss,
+                         const float &previousValidationLoss) const;
+
+  /**
    * @brief Logs the training progress for the current epoch.
    *
    * @param epoch The current epoch number.
@@ -75,5 +85,6 @@ private:
                     bool isLossFrequency) const;
 
   ImageHelper imageHelper_;
+  mutable std::mutex threadMutex_;
 };
 } // namespace sipai

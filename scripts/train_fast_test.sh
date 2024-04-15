@@ -1,16 +1,16 @@
 #!/bin/sh
 
 # script to test the TrainingMonitored on a release, for local testing
-res_i=80
-res_h=90
-res_o=100
+res_i=8
+res_h=9
+res_o=10
 hl=1
-algo="PRELU"
+algo="LRELU"
 lr=0.001
 alrf=0.5
 split=4
 factor=4
-input_folder=/mnt/e/Documents/project/sipai_images/
+input_folder=test/data/images/target
 haa=0.001
 oaa=0.001
 
