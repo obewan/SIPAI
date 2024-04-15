@@ -85,5 +85,6 @@ private:
                     bool isLossFrequency) const;
 
   ImageHelper imageHelper_;
+  mutable std::mutex threadMutex_;
 };
 } // namespace sipai

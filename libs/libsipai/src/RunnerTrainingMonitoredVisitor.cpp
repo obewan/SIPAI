@@ -137,6 +137,8 @@ void RunnerTrainingMonitoredVisitor::logTrainingProgress(
 void RunnerTrainingMonitoredVisitor::adaptLearningRate(
     float &learningRate, const float &validationLoss,
     const float &previousValidationLoss) const {
+  std::scoped_lock<std::mutex> lock(threadMutex_);
+
   const auto &manager = Manager::getConstInstance();
   const auto &appParams = manager.app_params;
   const auto &learning_rate_min = appParams.learning_rate_min;
@@ -155,9 +157,10 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
     // this will increase learningRate (0.001 / 0.5 = 0.002)
     learningRate /= learning_rate_adaptive_factor;
   }
+  learningRate = std::clamp(learningRate, learning_rate_min, learning_rate_max);
 
   if (appParams.verbose && learningRate != previous_learning_rate) {
-    const auto &current_precision = SimpleLogger::getInstance().getPrecision();
+    const auto current_precision = SimpleLogger::getInstance().getPrecision();
     SimpleLogger::getInstance()
         .setPrecision(6)
         .LOG_INFO("Learning rate ", previous_learning_rate, " adjusted to ",
@@ -168,6 +171,7 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
 
 void RunnerTrainingMonitoredVisitor::saveNetwork(
     bool &hasLastEpochBeenSaved) const {
+  std::scoped_lock<std::mutex> lock(threadMutex_);
   try {
     if (!hasLastEpochBeenSaved) {
       Manager::getInstance().exportNetwork();
