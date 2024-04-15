@@ -98,10 +98,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a064bfd04d8e567d5f578524f945ce2c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dc30f3e1293e624ab72c2176c1eb7f0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#a8dc30f3e1293e624ab72c2176c1eb7f0">learning_rate</a> = 0.005f</td></tr>
 <tr class="separator:a8dc30f3e1293e624ab72c2176c1eb7f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a562985289601591c2c943c62190a5d45"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#a562985289601591c2c943c62190a5d45">adaptive_learning_rate_factor</a> = 0.5f</td></tr>
+<tr class="separator:a562985289601591c2c943c62190a5d45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27a4692728c541cebe92313b04b1c733"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#a27a4692728c541cebe92313b04b1c733">hidden_activation_alpha</a> = 0.1f</td></tr>
 <tr class="separator:a27a4692728c541cebe92313b04b1c733"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af59652ab9640efbe3e1ee1d24bfdf3eb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#af59652ab9640efbe3e1ee1d24bfdf3eb">output_activation_alpha</a> = 0.1f</td></tr>
 <tr class="separator:af59652ab9640efbe3e1ee1d24bfdf3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05a77384b98ff2d11cce3a42aa3d4a5b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#a05a77384b98ff2d11cce3a42aa3d4a5b">adaptive_learning_rate</a> = false</td></tr>
+<tr class="separator:a05a77384b98ff2d11cce3a42aa3d4a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d750f6632e7ecc3a989a50aad4c0037"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194">EActivationFunction</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#a8d750f6632e7ecc3a989a50aad4c0037">hidden_activation_function</a> = <a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9">EActivationFunction::LReLU</a></td></tr>
 <tr class="separator:a8d750f6632e7ecc3a989a50aad4c0037"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af53014e1ec358e4d4afab1c8c9b03315"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194">EActivationFunction</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1NeuralNetworkParams.html#af53014e1ec358e4d4afab1c8c9b03315">output_activation_function</a> = <a class="el" href="namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9">EActivationFunction::LReLU</a></td></tr>
@@ -110,6 +114,34 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Parameters for the neural Network. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a05a77384b98ff2d11cce3a42aa3d4a5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05a77384b98ff2d11cce3a42aa3d4a5b">&#9670;&nbsp;</a></span>adaptive_learning_rate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sipai::NeuralNetworkParams::adaptive_learning_rate = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a562985289601591c2c943c62190a5d45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a562985289601591c2c943c62190a5d45">&#9670;&nbsp;</a></span>adaptive_learning_rate_factor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float sipai::NeuralNetworkParams::adaptive_learning_rate_factor = 0.5f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a27a4692728c541cebe92313b04b1c733"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a27a4692728c541cebe92313b04b1c733">&#9670;&nbsp;</a></span>hidden_activation_alpha</h2>
 

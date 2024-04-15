@@ -32,17 +32,17 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">35</td>
-            <td class="headerCovTableEntry">61</td>
-            <td class="headerCovTableEntryLo">57.4 %</td>
+            <td class="headerCovTableEntry">62</td>
+            <td class="headerCovTableEntryLo">56.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-15 08:42:18</td>
+            <td class="headerValue">2024-04-15 19:25:05</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">52</td>
-            <td class="headerCovTableEntry">80</td>
-            <td class="headerCovTableEntryLo">65.0 %</td>
+            <td class="headerCovTableEntry">84</td>
+            <td class="headerCovTableEntryLo">61.9 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -318,104 +318,111 @@
 <a name="256"><span class="lineNum">     256 </span>            :   }</a>
 <a name="257"><span class="lineNum">     257 </span>            : </a>
 <a name="258"><span class="lineNum">     258 </span>            :   /**</a>
-<a name="259"><span class="lineNum">     259 </span>            :    * @brief Set the floating precision</a>
+<a name="259"><span class="lineNum">     259 </span>            :    * @brief Get the current floating precision</a>
 <a name="260"><span class="lineNum">     260 </span>            :    *</a>
-<a name="261"><span class="lineNum">     261 </span>            :    * @param precision</a>
-<a name="262"><span class="lineNum">     262 </span>            :    * @return const SimpleLogger&amp;</a>
-<a name="263"><span class="lineNum">     263 </span>            :    */</a>
-<a name="264"><span class="lineNum">     264 </span><span class="lineCov">          1 :   const SimpleLogger &amp;setPrecision(std::streamsize precision) const {</span></a>
-<a name="265"><span class="lineNum">     265 </span><span class="lineCov">          1 :     current_precision = precision;</span></a>
-<a name="266"><span class="lineNum">     266 </span><span class="lineCov">          1 :     return *this;</span></a>
-<a name="267"><span class="lineNum">     267 </span>            :   }</a>
-<a name="268"><span class="lineNum">     268 </span>            : </a>
-<a name="269"><span class="lineNum">     269 </span>            :   /**</a>
-<a name="270"><span class="lineNum">     270 </span>            :    * @brief Reset the floating precision</a>
-<a name="271"><span class="lineNum">     271 </span>            :    *</a>
-<a name="272"><span class="lineNum">     272 </span>            :    * @return const SimpleLogger&amp;</a>
-<a name="273"><span class="lineNum">     273 </span>            :    */</a>
-<a name="274"><span class="lineNum">     274 </span>            :   const SimpleLogger &amp;resetPrecision() const {</a>
-<a name="275"><span class="lineNum">     275 </span>            :     current_precision = default_precision;</a>
-<a name="276"><span class="lineNum">     276 </span>            :     return *this;</a>
-<a name="277"><span class="lineNum">     277 </span>            :   }</a>
-<a name="278"><span class="lineNum">     278 </span>            : </a>
-<a name="279"><span class="lineNum">     279 </span>            :   /**</a>
-<a name="280"><span class="lineNum">     280 </span>            :    * @brief static shortcut for log info.</a>
-<a name="281"><span class="lineNum">     281 </span>            :    * @remark thread safe</a>
-<a name="282"><span class="lineNum">     282 </span>            :    * @tparam Args</a>
-<a name="283"><span class="lineNum">     283 </span>            :    * @param args</a>
-<a name="284"><span class="lineNum">     284 </span>            :    * @return const SimpleLogger&amp;</a>
-<a name="285"><span class="lineNum">     285 </span>            :    */</a>
-<a name="286"><span class="lineNum">     286 </span>            :   template &lt;typename... Args&gt;</a>
-<a name="287"><span class="lineNum">     287 </span><span class="lineCov">         56 :   static const SimpleLogger &amp;LOG_INFO(Args &amp;&amp;...args) {</span></a>
-<a name="288"><span class="lineNum">     288 </span><span class="lineCov">         56 :     auto &amp;instance = getInstance();</span></a>
-<a name="289"><span class="lineNum">     289 </span><span class="lineCov">         56 :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</span></a>
-<a name="290"><span class="lineNum">     290 </span><span class="lineCov">        112 :     return instance.info(args...);</span></a>
-<a name="291"><span class="lineNum">     291 </span><span class="lineCov">         56 :   }</span></a>
-<a name="292"><span class="lineNum">     292 </span>            : </a>
-<a name="293"><span class="lineNum">     293 </span>            :   /**</a>
-<a name="294"><span class="lineNum">     294 </span>            :    * @brief static shortcut for log warning.</a>
-<a name="295"><span class="lineNum">     295 </span>            :    * @remark thread safe</a>
-<a name="296"><span class="lineNum">     296 </span>            :    * @tparam Args</a>
-<a name="297"><span class="lineNum">     297 </span>            :    * @param args</a>
-<a name="298"><span class="lineNum">     298 </span>            :    * @return const SimpleLogger&amp;</a>
-<a name="299"><span class="lineNum">     299 </span>            :    */</a>
-<a name="300"><span class="lineNum">     300 </span>            :   template &lt;typename... Args&gt;</a>
-<a name="301"><span class="lineNum">     301 </span>            :   static const SimpleLogger &amp;LOG_WARN(Args &amp;&amp;...args) {</a>
-<a name="302"><span class="lineNum">     302 </span>            :     auto &amp;instance = getInstance();</a>
-<a name="303"><span class="lineNum">     303 </span>            :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</a>
-<a name="304"><span class="lineNum">     304 </span>            :     return instance.warn(args...);</a>
-<a name="305"><span class="lineNum">     305 </span>            :   }</a>
-<a name="306"><span class="lineNum">     306 </span>            : </a>
-<a name="307"><span class="lineNum">     307 </span>            :   /**</a>
-<a name="308"><span class="lineNum">     308 </span>            :    * @brief static shortcut for log error.</a>
-<a name="309"><span class="lineNum">     309 </span>            :    * @remark thread safe</a>
-<a name="310"><span class="lineNum">     310 </span>            :    * @tparam Args</a>
-<a name="311"><span class="lineNum">     311 </span>            :    * @param args</a>
-<a name="312"><span class="lineNum">     312 </span>            :    * @return const SimpleLogger&amp;</a>
-<a name="313"><span class="lineNum">     313 </span>            :    */</a>
-<a name="314"><span class="lineNum">     314 </span>            :   template &lt;typename... Args&gt;</a>
-<a name="315"><span class="lineNum">     315 </span><span class="lineNoCov">          0 :   static const SimpleLogger &amp;LOG_ERROR(Args &amp;&amp;...args) {</span></a>
-<a name="316"><span class="lineNum">     316 </span><span class="lineNoCov">          0 :     auto &amp;instance = getInstance();</span></a>
-<a name="317"><span class="lineNum">     317 </span><span class="lineNoCov">          0 :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</span></a>
-<a name="318"><span class="lineNum">     318 </span><span class="lineNoCov">          0 :     return instance.error(args...);</span></a>
-<a name="319"><span class="lineNum">     319 </span><span class="lineNoCov">          0 :   }</span></a>
-<a name="320"><span class="lineNum">     320 </span>            : </a>
-<a name="321"><span class="lineNum">     321 </span>            :   /**</a>
-<a name="322"><span class="lineNum">     322 </span>            :    * @brief static shortcut for log debug.</a>
-<a name="323"><span class="lineNum">     323 </span>            :    * @remark thread safe</a>
-<a name="324"><span class="lineNum">     324 </span>            :    * @tparam Args</a>
-<a name="325"><span class="lineNum">     325 </span>            :    * @param args</a>
-<a name="326"><span class="lineNum">     326 </span>            :    * @return const SimpleLogger&amp;</a>
-<a name="327"><span class="lineNum">     327 </span>            :    */</a>
-<a name="328"><span class="lineNum">     328 </span>            :   template &lt;typename... Args&gt;</a>
-<a name="329"><span class="lineNum">     329 </span>            :   static const SimpleLogger &amp;LOG_DEBUG(Args &amp;&amp;...args) {</a>
-<a name="330"><span class="lineNum">     330 </span>            :     auto &amp;instance = getInstance();</a>
-<a name="331"><span class="lineNum">     331 </span>            :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</a>
-<a name="332"><span class="lineNum">     332 </span>            :     return instance.debug(args...);</a>
-<a name="333"><span class="lineNum">     333 </span>            :   }</a>
-<a name="334"><span class="lineNum">     334 </span>            : </a>
-<a name="335"><span class="lineNum">     335 </span>            : private:</a>
-<a name="336"><span class="lineNum">     336 </span><span class="lineCov">          1 :   SimpleLogger() = default;</span></a>
-<a name="337"><span class="lineNum">     337 </span>            :   std::streamsize default_precision = std::cout.precision();</a>
-<a name="338"><span class="lineNum">     338 </span>            :   mutable std::streamsize current_precision = std::cout.precision();</a>
-<a name="339"><span class="lineNum">     339 </span>            :   mutable std::mutex threadMutex_;</a>
-<a name="340"><span class="lineNum">     340 </span>            : </a>
-<a name="341"><span class="lineNum">     341 </span><span class="lineCov">         56 :   std::string get_timestamp() const {</span></a>
-<a name="342"><span class="lineNum">     342 </span><span class="lineCov">         56 :     auto now = std::chrono::system_clock::now();</span></a>
-<a name="343"><span class="lineNum">     343 </span><span class="lineCov">         56 :     auto now_c = std::chrono::system_clock::to_time_t(now);</span></a>
-<a name="344"><span class="lineNum">     344 </span><span class="lineCov">         56 :     std::tm now_tm{};</span></a>
-<a name="345"><span class="lineNum">     345 </span><span class="lineCov">         56 :     std::stringstream sst;</span></a>
-<a name="346"><span class="lineNum">     346 </span>            : #if defined(WIN32) || defined(_WIN32) ||                                       \</a>
-<a name="347"><span class="lineNum">     347 </span>            :     defined(__WIN32) &amp;&amp; !defined(__CYGWIN__)</a>
-<a name="348"><span class="lineNum">     348 </span>            :     localtime_s(&amp;now_tm, &amp;now_c);</a>
-<a name="349"><span class="lineNum">     349 </span>            : #else</a>
-<a name="350"><span class="lineNum">     350 </span><span class="lineCov">         56 :     localtime_r(&amp;now_c, &amp;now_tm);</span></a>
-<a name="351"><span class="lineNum">     351 </span>            : #endif</a>
-<a name="352"><span class="lineNum">     352 </span><span class="lineCov">         56 :     sst &lt;&lt; &quot;[&quot; &lt;&lt; std::put_time(&amp;now_tm, &quot;%F %T&quot;) &lt;&lt; &quot;] &quot;;</span></a>
-<a name="353"><span class="lineNum">     353 </span><span class="lineCov">        112 :     return sst.str();</span></a>
-<a name="354"><span class="lineNum">     354 </span><span class="lineCov">         56 :   }</span></a>
-<a name="355"><span class="lineNum">     355 </span>            : };</a>
-<a name="356"><span class="lineNum">     356 </span>            : } // namespace sipai</a>
+<a name="261"><span class="lineNum">     261 </span>            :    * @return precision</a>
+<a name="262"><span class="lineNum">     262 </span>            :    */</a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineNoCov">          0 :   const std::streamsize &amp;getPrecision() const { return current_precision; }</span></a>
+<a name="264"><span class="lineNum">     264 </span>            : </a>
+<a name="265"><span class="lineNum">     265 </span>            :   /**</a>
+<a name="266"><span class="lineNum">     266 </span>            :    * @brief Set the floating precision</a>
+<a name="267"><span class="lineNum">     267 </span>            :    *</a>
+<a name="268"><span class="lineNum">     268 </span>            :    * @param precision</a>
+<a name="269"><span class="lineNum">     269 </span>            :    * @return const SimpleLogger&amp;</a>
+<a name="270"><span class="lineNum">     270 </span>            :    */</a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineCov">          1 :   const SimpleLogger &amp;setPrecision(std::streamsize precision) const {</span></a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">          1 :     current_precision = precision;</span></a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">          1 :     return *this;</span></a>
+<a name="274"><span class="lineNum">     274 </span>            :   }</a>
+<a name="275"><span class="lineNum">     275 </span>            : </a>
+<a name="276"><span class="lineNum">     276 </span>            :   /**</a>
+<a name="277"><span class="lineNum">     277 </span>            :    * @brief Reset the floating precision</a>
+<a name="278"><span class="lineNum">     278 </span>            :    *</a>
+<a name="279"><span class="lineNum">     279 </span>            :    * @return const SimpleLogger&amp;</a>
+<a name="280"><span class="lineNum">     280 </span>            :    */</a>
+<a name="281"><span class="lineNum">     281 </span>            :   const SimpleLogger &amp;resetPrecision() const {</a>
+<a name="282"><span class="lineNum">     282 </span>            :     current_precision = default_precision;</a>
+<a name="283"><span class="lineNum">     283 </span>            :     return *this;</a>
+<a name="284"><span class="lineNum">     284 </span>            :   }</a>
+<a name="285"><span class="lineNum">     285 </span>            : </a>
+<a name="286"><span class="lineNum">     286 </span>            :   /**</a>
+<a name="287"><span class="lineNum">     287 </span>            :    * @brief static shortcut for log info.</a>
+<a name="288"><span class="lineNum">     288 </span>            :    * @remark thread safe</a>
+<a name="289"><span class="lineNum">     289 </span>            :    * @tparam Args</a>
+<a name="290"><span class="lineNum">     290 </span>            :    * @param args</a>
+<a name="291"><span class="lineNum">     291 </span>            :    * @return const SimpleLogger&amp;</a>
+<a name="292"><span class="lineNum">     292 </span>            :    */</a>
+<a name="293"><span class="lineNum">     293 </span>            :   template &lt;typename... Args&gt;</a>
+<a name="294"><span class="lineNum">     294 </span><span class="lineCov">         56 :   static const SimpleLogger &amp;LOG_INFO(Args &amp;&amp;...args) {</span></a>
+<a name="295"><span class="lineNum">     295 </span><span class="lineCov">         56 :     auto &amp;instance = getInstance();</span></a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">         56 :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</span></a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">        112 :     return instance.info(args...);</span></a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">         56 :   }</span></a>
+<a name="299"><span class="lineNum">     299 </span>            : </a>
+<a name="300"><span class="lineNum">     300 </span>            :   /**</a>
+<a name="301"><span class="lineNum">     301 </span>            :    * @brief static shortcut for log warning.</a>
+<a name="302"><span class="lineNum">     302 </span>            :    * @remark thread safe</a>
+<a name="303"><span class="lineNum">     303 </span>            :    * @tparam Args</a>
+<a name="304"><span class="lineNum">     304 </span>            :    * @param args</a>
+<a name="305"><span class="lineNum">     305 </span>            :    * @return const SimpleLogger&amp;</a>
+<a name="306"><span class="lineNum">     306 </span>            :    */</a>
+<a name="307"><span class="lineNum">     307 </span>            :   template &lt;typename... Args&gt;</a>
+<a name="308"><span class="lineNum">     308 </span>            :   static const SimpleLogger &amp;LOG_WARN(Args &amp;&amp;...args) {</a>
+<a name="309"><span class="lineNum">     309 </span>            :     auto &amp;instance = getInstance();</a>
+<a name="310"><span class="lineNum">     310 </span>            :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</a>
+<a name="311"><span class="lineNum">     311 </span>            :     return instance.warn(args...);</a>
+<a name="312"><span class="lineNum">     312 </span>            :   }</a>
+<a name="313"><span class="lineNum">     313 </span>            : </a>
+<a name="314"><span class="lineNum">     314 </span>            :   /**</a>
+<a name="315"><span class="lineNum">     315 </span>            :    * @brief static shortcut for log error.</a>
+<a name="316"><span class="lineNum">     316 </span>            :    * @remark thread safe</a>
+<a name="317"><span class="lineNum">     317 </span>            :    * @tparam Args</a>
+<a name="318"><span class="lineNum">     318 </span>            :    * @param args</a>
+<a name="319"><span class="lineNum">     319 </span>            :    * @return const SimpleLogger&amp;</a>
+<a name="320"><span class="lineNum">     320 </span>            :    */</a>
+<a name="321"><span class="lineNum">     321 </span>            :   template &lt;typename... Args&gt;</a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineNoCov">          0 :   static const SimpleLogger &amp;LOG_ERROR(Args &amp;&amp;...args) {</span></a>
+<a name="323"><span class="lineNum">     323 </span><span class="lineNoCov">          0 :     auto &amp;instance = getInstance();</span></a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineNoCov">          0 :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineNoCov">          0 :     return instance.error(args...);</span></a>
+<a name="326"><span class="lineNum">     326 </span><span class="lineNoCov">          0 :   }</span></a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<a name="328"><span class="lineNum">     328 </span>            :   /**</a>
+<a name="329"><span class="lineNum">     329 </span>            :    * @brief static shortcut for log debug.</a>
+<a name="330"><span class="lineNum">     330 </span>            :    * @remark thread safe</a>
+<a name="331"><span class="lineNum">     331 </span>            :    * @tparam Args</a>
+<a name="332"><span class="lineNum">     332 </span>            :    * @param args</a>
+<a name="333"><span class="lineNum">     333 </span>            :    * @return const SimpleLogger&amp;</a>
+<a name="334"><span class="lineNum">     334 </span>            :    */</a>
+<a name="335"><span class="lineNum">     335 </span>            :   template &lt;typename... Args&gt;</a>
+<a name="336"><span class="lineNum">     336 </span>            :   static const SimpleLogger &amp;LOG_DEBUG(Args &amp;&amp;...args) {</a>
+<a name="337"><span class="lineNum">     337 </span>            :     auto &amp;instance = getInstance();</a>
+<a name="338"><span class="lineNum">     338 </span>            :     std::scoped_lock&lt;std::mutex&gt; lock(instance.threadMutex_);</a>
+<a name="339"><span class="lineNum">     339 </span>            :     return instance.debug(args...);</a>
+<a name="340"><span class="lineNum">     340 </span>            :   }</a>
+<a name="341"><span class="lineNum">     341 </span>            : </a>
+<a name="342"><span class="lineNum">     342 </span>            : private:</a>
+<a name="343"><span class="lineNum">     343 </span><span class="lineCov">          1 :   SimpleLogger() = default;</span></a>
+<a name="344"><span class="lineNum">     344 </span>            :   std::streamsize default_precision = std::cout.precision();</a>
+<a name="345"><span class="lineNum">     345 </span>            :   mutable std::streamsize current_precision = std::cout.precision();</a>
+<a name="346"><span class="lineNum">     346 </span>            :   mutable std::mutex threadMutex_;</a>
+<a name="347"><span class="lineNum">     347 </span>            : </a>
+<a name="348"><span class="lineNum">     348 </span><span class="lineCov">         56 :   std::string get_timestamp() const {</span></a>
+<a name="349"><span class="lineNum">     349 </span><span class="lineCov">         56 :     auto now = std::chrono::system_clock::now();</span></a>
+<a name="350"><span class="lineNum">     350 </span><span class="lineCov">         56 :     auto now_c = std::chrono::system_clock::to_time_t(now);</span></a>
+<a name="351"><span class="lineNum">     351 </span><span class="lineCov">         56 :     std::tm now_tm{};</span></a>
+<a name="352"><span class="lineNum">     352 </span><span class="lineCov">         56 :     std::stringstream sst;</span></a>
+<a name="353"><span class="lineNum">     353 </span>            : #if defined(WIN32) || defined(_WIN32) ||                                       \</a>
+<a name="354"><span class="lineNum">     354 </span>            :     defined(__WIN32) &amp;&amp; !defined(__CYGWIN__)</a>
+<a name="355"><span class="lineNum">     355 </span>            :     localtime_s(&amp;now_tm, &amp;now_c);</a>
+<a name="356"><span class="lineNum">     356 </span>            : #else</a>
+<a name="357"><span class="lineNum">     357 </span><span class="lineCov">         56 :     localtime_r(&amp;now_c, &amp;now_tm);</span></a>
+<a name="358"><span class="lineNum">     358 </span>            : #endif</a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineCov">         56 :     sst &lt;&lt; &quot;[&quot; &lt;&lt; std::put_time(&amp;now_tm, &quot;%F %T&quot;) &lt;&lt; &quot;] &quot;;</span></a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">        112 :     return sst.str();</span></a>
+<a name="361"><span class="lineNum">     361 </span><span class="lineCov">         56 :   }</span></a>
+<a name="362"><span class="lineNum">     362 </span>            : };</a>
+<a name="363"><span class="lineNum">     363 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>

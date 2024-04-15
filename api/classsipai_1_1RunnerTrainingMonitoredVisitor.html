@@ -95,6 +95,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8">shouldContinueTraining</a> (int epoch, size_t epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
 <tr class="memdesc:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the training should continue based on the provided conditions.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8">More...</a><br /></td></tr>
 <tr class="separator:a974d3c256ff05573f2dd1db0f1a84bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8370822ddbe792bf428f0a00ff4b00d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a8370822ddbe792bf428f0a00ff4b00d0">adaptLearningRate</a> (float &amp;learningRate, const float &amp;validationLoss, const float &amp;previousValidationLoss) const</td></tr>
+<tr class="memdesc:a8370822ddbe792bf428f0a00ff4b00d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adaptive Learning Rate.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a8370822ddbe792bf428f0a00ff4b00d0">More...</a><br /></td></tr>
+<tr class="separator:a8370822ddbe792bf428f0a00ff4b00d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a158a5a6de8d9773c45d4af6fbc29237c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a158a5a6de8d9773c45d4af6fbc29237c">logTrainingProgress</a> (int epoch, float trainingLoss, float validationLoss) const</td></tr>
 <tr class="memdesc:a158a5a6de8d9773c45d4af6fbc29237c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs the training progress for the current epoch.  <a href="classsipai_1_1RunnerTrainingMonitoredVisitor.html#a158a5a6de8d9773c45d4af6fbc29237c">More...</a><br /></td></tr>
 <tr class="separator:a158a5a6de8d9773c45d4af6fbc29237c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -106,6 +109,50 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9eff828476354487d390af23b47516f0 inherit pub_methods_classsipai_1_1RunnerVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8370822ddbe792bf428f0a00ff4b00d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8370822ddbe792bf428f0a00ff4b00d0">&#9670;&nbsp;</a></span>adaptLearningRate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RunnerTrainingMonitoredVisitor::adaptLearningRate </td>
+          <td>(</td>
+          <td class="paramtype">float &amp;&#160;</td>
+          <td class="paramname"><em>learningRate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>validationLoss</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>previousValidationLoss</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adaptive Learning Rate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">learningRate</td><td></td></tr>
+    <tr><td class="paramname">validationLoss</td><td></td></tr>
+    <tr><td class="paramname">previousValidationLoss</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ac6710a346337314025325fc67efd2d33"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac6710a346337314025325fc67efd2d33">&#9670;&nbsp;</a></span>computeLoss()</h2>
 

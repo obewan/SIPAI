@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['max_5fepochs_543',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
-  ['max_5fepochs_5fwithout_5fimprovement_544',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5',1,'sipai::AppParams']]],
-  ['max_5fweights_545',['max_weights',['../classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9',1,'sipai::NeuralNetwork']]],
-  ['mode_5fmap_546',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]]
+  ['max_5fepochs_554',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
+  ['max_5fepochs_5fwithout_5fimprovement_555',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5',1,'sipai::AppParams']]],
+  ['max_5fweights_556',['max_weights',['../classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9',1,'sipai::NeuralNetwork']]],
+  ['mode_5fmap_557',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]]
 ];
