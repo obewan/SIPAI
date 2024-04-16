@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">115</td>
-            <td class="headerCovTableEntry">149</td>
-            <td class="headerCovTableEntryMed">77.2 %</td>
+            <td class="headerCovTableEntry">116</td>
+            <td class="headerCovTableEntry">150</td>
+            <td class="headerCovTableEntryMed">77.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-15 19:25:05</td>
+            <td class="headerValue">2024-04-16 10:45:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">7</td>
@@ -208,148 +208,149 @@
 <a name="146"><span class="lineNum">     146 </span><span class="lineCov">          1 :   const auto &amp;learning_rate_adaptive_factor =</span></a>
 <a name="147"><span class="lineNum">     147 </span>            :       manager.network_params.adaptive_learning_rate_factor;</a>
 <a name="148"><span class="lineNum">     148 </span>            : </a>
-<a name="149"><span class="lineNum">     149 </span><span class="lineCov">          1 :   float previous_learning_rate = learningRate;</span></a>
-<a name="150"><span class="lineNum">     150 </span>            : </a>
-<a name="151"><span class="lineNum">     151 </span><span class="lineCov">          1 :   if (validationLoss &gt; previousValidationLoss &amp;&amp;</span></a>
-<a name="152"><span class="lineNum">     152 </span><span class="lineNoCov">          0 :       learningRate &gt; learning_rate_min) {</span></a>
-<a name="153"><span class="lineNum">     153 </span>            :     // this will decrease learningRate (0.001 * 0.5 = 0.0005)</a>
-<a name="154"><span class="lineNum">     154 </span><span class="lineNoCov">          0 :     learningRate *= learning_rate_adaptive_factor;</span></a>
-<a name="155"><span class="lineNum">     155 </span><span class="lineCov">          1 :   } else if (validationLoss &lt; previousValidationLoss &amp;&amp;</span></a>
-<a name="156"><span class="lineNum">     156 </span><span class="lineCov">          1 :              learningRate &lt; learning_rate_max) {</span></a>
-<a name="157"><span class="lineNum">     157 </span>            :     // this will increase learningRate (0.001 / 0.5 = 0.002)</a>
-<a name="158"><span class="lineNum">     158 </span><span class="lineCov">          1 :     learningRate /= learning_rate_adaptive_factor;</span></a>
-<a name="159"><span class="lineNum">     159 </span>            :   }</a>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">          1 :   learningRate = std::clamp(learningRate, learning_rate_min, learning_rate_max);</span></a>
-<a name="161"><span class="lineNum">     161 </span>            : </a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          1 :   if (appParams.verbose &amp;&amp; learningRate != previous_learning_rate) {</span></a>
-<a name="163"><span class="lineNum">     163 </span><span class="lineNoCov">          0 :     const auto current_precision = SimpleLogger::getInstance().getPrecision();</span></a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineNoCov">          0 :     SimpleLogger::getInstance()</span></a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 :         .setPrecision(6)</span></a>
-<a name="166"><span class="lineNum">     166 </span><span class="lineNoCov">          0 :         .LOG_INFO(&quot;Learning rate &quot;, previous_learning_rate, &quot; adjusted to &quot;,</span></a>
-<a name="167"><span class="lineNum">     167 </span>            :                   learningRate)</a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineNoCov">          0 :         .setPrecision(current_precision);</span></a>
-<a name="169"><span class="lineNum">     169 </span>            :   }</a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          1 : }</span></a>
-<a name="171"><span class="lineNum">     171 </span>            : </a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          1 : void RunnerTrainingMonitoredVisitor::saveNetwork(</span></a>
-<a name="173"><span class="lineNum">     173 </span>            :     bool &amp;hasLastEpochBeenSaved) const {</a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineCov">          1 :   std::scoped_lock&lt;std::mutex&gt; lock(threadMutex_);</span></a>
-<a name="175"><span class="lineNum">     175 </span>            :   try {</a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineCov">          1 :     if (!hasLastEpochBeenSaved) {</span></a>
-<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          1 :       Manager::getInstance().exportNetwork();</span></a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          1 :       hasLastEpochBeenSaved = true;</span></a>
-<a name="179"><span class="lineNum">     179 </span>            :     }</a>
-<a name="180"><span class="lineNum">     180 </span><span class="lineNoCov">          0 :   } catch (std::exception &amp;ex) {</span></a>
-<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :     SimpleLogger::LOG_INFO(&quot;Saving the neural network error: &quot;, ex.what());</span></a>
-<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :   }</span></a>
-<a name="183"><span class="lineNum">     183 </span><span class="lineCov">          1 : }</span></a>
-<a name="184"><span class="lineNum">     184 </span>            : </a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         20 : float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,</span></a>
-<a name="186"><span class="lineNum">     186 </span>            :                                                   const ImageParts &amp;inputImage,</a>
-<a name="187"><span class="lineNum">     187 </span>            :                                                   const ImageParts &amp;targetImage,</a>
-<a name="188"><span class="lineNum">     188 </span>            :                                                   bool isTraining,</a>
-<a name="189"><span class="lineNum">     189 </span>            :                                                   bool isLossFrequency) const {</a>
-<a name="190"><span class="lineNum">     190 </span><span class="lineCov">         20 :   auto &amp;manager = Manager::getInstance();</span></a>
-<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         20 :   if (inputImage.size() != targetImage.size()) {</span></a>
-<a name="192"><span class="lineNum">     192 </span><span class="lineNoCov">          0 :     throw ImageHelperException(</span></a>
-<a name="193"><span class="lineNum">     193 </span><span class="lineNoCov">          0 :         &quot;internal exception: input and target parts have different sizes.&quot;);</span></a>
-<a name="194"><span class="lineNum">     194 </span>            :   }</a>
-<a name="195"><span class="lineNum">     195 </span>            : </a>
-<a name="196"><span class="lineNum">     196 </span>            :   // Initialize the loss for the current image to 0</a>
-<a name="197"><span class="lineNum">     197 </span><span class="lineCov">         20 :   float partsLoss = 0.0f;</span></a>
-<a name="198"><span class="lineNum">     198 </span>            : </a>
-<a name="199"><span class="lineNum">     199 </span>            :   // Initialize a counter to keep track of the number of parts for which the</a>
-<a name="200"><span class="lineNum">     200 </span>            :   // loss is computed</a>
-<a name="201"><span class="lineNum">     201 </span><span class="lineCov">         20 :   size_t partsLossComputed = 0;</span></a>
-<a name="202"><span class="lineNum">     202 </span>            : </a>
-<a name="203"><span class="lineNum">     203 </span>            :   // Loop over all parts of the current image</a>
-<a name="204"><span class="lineNum">     204 </span><span class="lineCov">         40 :   for (size_t i = 0; i &lt; inputImage.size(); i++) {</span></a>
-<a name="205"><span class="lineNum">     205 </span>            :     // Get the input and target parts</a>
-<a name="206"><span class="lineNum">     206 </span><span class="lineCov">         20 :     const auto &amp;inputPart = inputImage.at(i);</span></a>
-<a name="207"><span class="lineNum">     207 </span><span class="lineCov">         20 :     const auto &amp;targetPart = targetImage.at(i);</span></a>
-<a name="208"><span class="lineNum">     208 </span>            : </a>
-<a name="209"><span class="lineNum">     209 </span>            :     // Perform forward propagation</a>
-<a name="210"><span class="lineNum">     210 </span>            :     const auto &amp;outputData = manager.network-&gt;forwardPropagation(</a>
-<a name="211"><span class="lineNum">     211 </span><span class="lineCov">         20 :         inputPart-&gt;data, manager.app_params.enable_parallel);</span></a>
-<a name="212"><span class="lineNum">     212 </span>            : </a>
-<a name="213"><span class="lineNum">     213 </span>            :     // If the loss should be computed for the current image, compute the loss</a>
-<a name="214"><span class="lineNum">     214 </span>            :     // for the current part</a>
-<a name="215"><span class="lineNum">     215 </span><span class="lineCov">         20 :     if (isLossFrequency) {</span></a>
-<a name="216"><span class="lineNum">     216 </span><span class="lineCov">         12 :       partsLoss += imageHelper_.computeLoss(outputData, targetPart-&gt;data);</span></a>
-<a name="217"><span class="lineNum">     217 </span><span class="lineCov">         12 :       partsLossComputed++;</span></a>
-<a name="218"><span class="lineNum">     218 </span>            :     }</a>
-<a name="219"><span class="lineNum">     219 </span>            : </a>
-<a name="220"><span class="lineNum">     220 </span>            :     // If backward propagation and weight update should be performed, perform</a>
-<a name="221"><span class="lineNum">     221 </span>            :     // them</a>
-<a name="222"><span class="lineNum">     222 </span><span class="lineCov">         20 :     if (isTraining) {</span></a>
-<a name="223"><span class="lineNum">     223 </span><span class="lineCov">         28 :       manager.network-&gt;backwardPropagation(targetPart-&gt;data,</span></a>
-<a name="224"><span class="lineNum">     224 </span><span class="lineCov">         14 :                                            manager.app_params.enable_parallel);</span></a>
-<a name="225"><span class="lineNum">     225 </span><span class="lineCov">         14 :       manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
-<a name="226"><span class="lineNum">     226 </span><span class="lineCov">         14 :                                      manager.app_params.enable_parallel);</span></a>
-<a name="227"><span class="lineNum">     227 </span>            :     }</a>
-<a name="228"><span class="lineNum">     228 </span><span class="lineCov">         20 :   }</span></a>
-<a name="229"><span class="lineNum">     229 </span>            : </a>
-<a name="230"><span class="lineNum">     230 </span><span class="lineCov">         20 :   if (partsLossComputed == 0) {</span></a>
-<a name="231"><span class="lineNum">     231 </span><span class="lineCov">          8 :     return 0;</span></a>
-<a name="232"><span class="lineNum">     232 </span>            :   }</a>
-<a name="233"><span class="lineNum">     233 </span><span class="lineCov">         12 :   return (partsLoss / static_cast&lt;float&gt;(partsLossComputed));</span></a>
-<a name="234"><span class="lineNum">     234 </span>            : }</a>
-<a name="235"><span class="lineNum">     235 </span>            : </a>
-<a name="236"><span class="lineNum">     236 </span><span class="lineCov">          4 : float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,</span></a>
-<a name="237"><span class="lineNum">     237 </span>            :                                                   bool isTraining) const {</a>
-<a name="238"><span class="lineNum">     238 </span>            : </a>
-<a name="239"><span class="lineNum">     239 </span>            :   // Initialize the total loss to 0</a>
-<a name="240"><span class="lineNum">     240 </span><span class="lineCov">          4 :   float loss = 0.0f;</span></a>
-<a name="241"><span class="lineNum">     241 </span><span class="lineCov">          4 :   size_t lossComputed = 0;</span></a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineCov">          4 :   size_t counter = 0;</span></a>
-<a name="243"><span class="lineNum">     243 </span><span class="lineCov">          4 :   bool isLossFrequency = false;</span></a>
-<a name="244"><span class="lineNum">     244 </span><span class="lineCov">          4 :   auto &amp;trainingDataFactory = TrainingDataFactory::getInstance();</span></a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineCov">          4 :   trainingDataFactory.resetCounters();</span></a>
-<a name="246"><span class="lineNum">     246 </span><span class="lineCov">          4 :   const auto &amp;app_params = Manager::getConstInstance().app_params;</span></a>
-<a name="247"><span class="lineNum">     247 </span>            : </a>
-<a name="248"><span class="lineNum">     248 </span>            :   // Compute the frequency at which the loss should be computed</a>
-<a name="249"><span class="lineNum">     249 </span>            :   size_t lossFrequency =</a>
-<a name="250"><span class="lineNum">     250 </span><span class="lineCov">          4 :       std::max(static_cast&lt;size_t&gt;(std::sqrt(</span></a>
-<a name="251"><span class="lineNum">     251 </span><span class="lineCov">          2 :                    isTraining ? trainingDataFactory.trainingSize()</span></a>
-<a name="252"><span class="lineNum">     252 </span><span class="lineCov">          2 :                               : trainingDataFactory.validationSize())),</span></a>
-<a name="253"><span class="lineNum">     253 </span><span class="lineCov">          8 :                (size_t)1);</span></a>
-<a name="254"><span class="lineNum">     254 </span>            : </a>
-<a name="255"><span class="lineNum">     255 </span>            :   // Loop over all images</a>
-<a name="256"><span class="lineNum">     256 </span>            :   while (auto imagePartsPair = isTraining</a>
-<a name="257"><span class="lineNum">     257 </span><span class="lineCov">         24 :                                    ? trainingDataFactory.nextTraining()</span></a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineCov">         24 :                                    : trainingDataFactory.nextValidation()) {</span></a>
-<a name="259"><span class="lineNum">     259 </span><span class="lineCov">         20 :     counter++;</span></a>
-<a name="260"><span class="lineNum">     260 </span><span class="lineCov">         20 :     if (app_params.verbose) {</span></a>
-<a name="261"><span class="lineNum">     261 </span><span class="lineNoCov">          0 :       SimpleLogger::LOG_INFO(&quot;Epoch: &quot;, epoch + 1,</span></a>
-<a name="262"><span class="lineNum">     262 </span><span class="lineNoCov">          0 :                              isTraining ? &quot;, training: &quot; : &quot;, validation: &quot;,</span></a>
-<a name="263"><span class="lineNum">     263 </span>            :                              &quot;image &quot;, counter, &quot;/&quot;,</a>
-<a name="264"><span class="lineNum">     264 </span><span class="lineNoCov">          0 :                              isTraining ? trainingDataFactory.trainingSize()</span></a>
-<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 :                                         : trainingDataFactory.validationSize(),</span></a>
-<a name="266"><span class="lineNum">     266 </span>            :                              &quot;...&quot;);</a>
-<a name="267"><span class="lineNum">     267 </span>            :     }</a>
-<a name="268"><span class="lineNum">     268 </span>            : </a>
-<a name="269"><span class="lineNum">     269 </span>            :     // Check if the loss should be computed for the current image</a>
-<a name="270"><span class="lineNum">     270 </span><span class="lineCov">         20 :     isLossFrequency = counter % lossFrequency == 0 ? true : false;</span></a>
-<a name="271"><span class="lineNum">     271 </span>            : </a>
-<a name="272"><span class="lineNum">     272 </span>            :     // Compute the image parts loss</a>
-<a name="273"><span class="lineNum">     273 </span><span class="lineCov">         20 :     const auto &amp;[inputImageParts, targetImageParts] = *imagePartsPair;</span></a>
-<a name="274"><span class="lineNum">     274 </span><span class="lineCov">         20 :     float imageLoss = computeLoss(epoch, inputImageParts, targetImageParts,</span></a>
-<a name="275"><span class="lineNum">     275 </span>            :                                   isTraining, isLossFrequency);</a>
-<a name="276"><span class="lineNum">     276 </span>            : </a>
-<a name="277"><span class="lineNum">     277 </span>            :     // If the loss was computed for the current image, add the average loss for</a>
-<a name="278"><span class="lineNum">     278 </span>            :     // the current image to the total loss</a>
-<a name="279"><span class="lineNum">     279 </span><span class="lineCov">         20 :     if (isLossFrequency) {</span></a>
-<a name="280"><span class="lineNum">     280 </span><span class="lineCov">         12 :       loss += imageLoss;</span></a>
-<a name="281"><span class="lineNum">     281 </span><span class="lineCov">         12 :       lossComputed++;</span></a>
-<a name="282"><span class="lineNum">     282 </span>            :     }</a>
-<a name="283"><span class="lineNum">     283 </span><span class="lineCov">         20 :   }</span></a>
-<a name="284"><span class="lineNum">     284 </span>            : </a>
-<a name="285"><span class="lineNum">     285 </span>            :   // Return the average loss over all images for which the loss was computed</a>
-<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          4 :   if (lossComputed == 0) {</span></a>
-<a name="287"><span class="lineNum">     287 </span><span class="lineNoCov">          0 :     return 0;</span></a>
-<a name="288"><span class="lineNum">     288 </span>            :   }</a>
-<a name="289"><span class="lineNum">     289 </span><span class="lineCov">          4 :   return (loss / static_cast&lt;float&gt;(lossComputed));</span></a>
-<a name="290"><span class="lineNum">     290 </span>            : }</a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">          1 :   const float previous_learning_rate = learningRate;</span></a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">          1 :   const float increase_slower_factor = 1.5f;</span></a>
+<a name="151"><span class="lineNum">     151 </span>            : </a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineCov">          1 :   if (validationLoss &gt; previousValidationLoss &amp;&amp;</span></a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineNoCov">          0 :       learningRate &gt; learning_rate_min) {</span></a>
+<a name="154"><span class="lineNum">     154 </span>            :     // this will decrease learningRate (0.001 * 0.5 = 0.0005)</a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineNoCov">          0 :     learningRate *= learning_rate_adaptive_factor;</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">          1 :   } else if (validationLoss &lt; previousValidationLoss &amp;&amp;</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">          1 :              learningRate &lt; learning_rate_max) {</span></a>
+<a name="158"><span class="lineNum">     158 </span>            :     // this will increase learningRate but slower (0.001 / (0.5 * 1.5) = 0.0013)</a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">          1 :     learningRate /= (learning_rate_adaptive_factor * increase_slower_factor);</span></a>
+<a name="160"><span class="lineNum">     160 </span>            :   }</a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          1 :   learningRate = std::clamp(learningRate, learning_rate_min, learning_rate_max);</span></a>
+<a name="162"><span class="lineNum">     162 </span>            : </a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          1 :   if (appParams.verbose &amp;&amp; learningRate != previous_learning_rate) {</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineNoCov">          0 :     const auto current_precision = SimpleLogger::getInstance().getPrecision();</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 :     SimpleLogger::getInstance()</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineNoCov">          0 :         .setPrecision(6)</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineNoCov">          0 :         .info(&quot;Learning rate &quot;, previous_learning_rate, &quot; adjusted to &quot;,</span></a>
+<a name="168"><span class="lineNum">     168 </span>            :               learningRate)</a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineNoCov">          0 :         .setPrecision(current_precision);</span></a>
+<a name="170"><span class="lineNum">     170 </span>            :   }</a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          1 : }</span></a>
+<a name="172"><span class="lineNum">     172 </span>            : </a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">          1 : void RunnerTrainingMonitoredVisitor::saveNetwork(</span></a>
+<a name="174"><span class="lineNum">     174 </span>            :     bool &amp;hasLastEpochBeenSaved) const {</a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          1 :   std::scoped_lock&lt;std::mutex&gt; lock(threadMutex_);</span></a>
+<a name="176"><span class="lineNum">     176 </span>            :   try {</a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          1 :     if (!hasLastEpochBeenSaved) {</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          1 :       Manager::getInstance().exportNetwork();</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">          1 :       hasLastEpochBeenSaved = true;</span></a>
+<a name="180"><span class="lineNum">     180 </span>            :     }</a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :   } catch (std::exception &amp;ex) {</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :     SimpleLogger::LOG_INFO(&quot;Saving the neural network error: &quot;, ex.what());</span></a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineNoCov">          0 :   }</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">          1 : }</span></a>
+<a name="185"><span class="lineNum">     185 </span>            : </a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">         20 : float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,</span></a>
+<a name="187"><span class="lineNum">     187 </span>            :                                                   const ImageParts &amp;inputImage,</a>
+<a name="188"><span class="lineNum">     188 </span>            :                                                   const ImageParts &amp;targetImage,</a>
+<a name="189"><span class="lineNum">     189 </span>            :                                                   bool isTraining,</a>
+<a name="190"><span class="lineNum">     190 </span>            :                                                   bool isLossFrequency) const {</a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         20 :   auto &amp;manager = Manager::getInstance();</span></a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">         20 :   if (inputImage.size() != targetImage.size()) {</span></a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineNoCov">          0 :     throw ImageHelperException(</span></a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 :         &quot;internal exception: input and target parts have different sizes.&quot;);</span></a>
+<a name="195"><span class="lineNum">     195 </span>            :   }</a>
+<a name="196"><span class="lineNum">     196 </span>            : </a>
+<a name="197"><span class="lineNum">     197 </span>            :   // Initialize the loss for the current image to 0</a>
+<a name="198"><span class="lineNum">     198 </span><span class="lineCov">         20 :   float partsLoss = 0.0f;</span></a>
+<a name="199"><span class="lineNum">     199 </span>            : </a>
+<a name="200"><span class="lineNum">     200 </span>            :   // Initialize a counter to keep track of the number of parts for which the</a>
+<a name="201"><span class="lineNum">     201 </span>            :   // loss is computed</a>
+<a name="202"><span class="lineNum">     202 </span><span class="lineCov">         20 :   size_t partsLossComputed = 0;</span></a>
+<a name="203"><span class="lineNum">     203 </span>            : </a>
+<a name="204"><span class="lineNum">     204 </span>            :   // Loop over all parts of the current image</a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineCov">         40 :   for (size_t i = 0; i &lt; inputImage.size(); i++) {</span></a>
+<a name="206"><span class="lineNum">     206 </span>            :     // Get the input and target parts</a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineCov">         20 :     const auto &amp;inputPart = inputImage.at(i);</span></a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineCov">         20 :     const auto &amp;targetPart = targetImage.at(i);</span></a>
+<a name="209"><span class="lineNum">     209 </span>            : </a>
+<a name="210"><span class="lineNum">     210 </span>            :     // Perform forward propagation</a>
+<a name="211"><span class="lineNum">     211 </span>            :     const auto &amp;outputData = manager.network-&gt;forwardPropagation(</a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">         20 :         inputPart-&gt;data, manager.app_params.enable_parallel);</span></a>
+<a name="213"><span class="lineNum">     213 </span>            : </a>
+<a name="214"><span class="lineNum">     214 </span>            :     // If the loss should be computed for the current image, compute the loss</a>
+<a name="215"><span class="lineNum">     215 </span>            :     // for the current part</a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineCov">         20 :     if (isLossFrequency) {</span></a>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">         12 :       partsLoss += imageHelper_.computeLoss(outputData, targetPart-&gt;data);</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">         12 :       partsLossComputed++;</span></a>
+<a name="219"><span class="lineNum">     219 </span>            :     }</a>
+<a name="220"><span class="lineNum">     220 </span>            : </a>
+<a name="221"><span class="lineNum">     221 </span>            :     // If backward propagation and weight update should be performed, perform</a>
+<a name="222"><span class="lineNum">     222 </span>            :     // them</a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">         20 :     if (isTraining) {</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineCov">         28 :       manager.network-&gt;backwardPropagation(targetPart-&gt;data,</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineCov">         14 :                                            manager.app_params.enable_parallel);</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">         14 :       manager.network-&gt;updateWeights(manager.network_params.learning_rate,</span></a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineCov">         14 :                                      manager.app_params.enable_parallel);</span></a>
+<a name="228"><span class="lineNum">     228 </span>            :     }</a>
+<a name="229"><span class="lineNum">     229 </span><span class="lineCov">         20 :   }</span></a>
+<a name="230"><span class="lineNum">     230 </span>            : </a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">         20 :   if (partsLossComputed == 0) {</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">          8 :     return 0;</span></a>
+<a name="233"><span class="lineNum">     233 </span>            :   }</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">         12 :   return (partsLoss / static_cast&lt;float&gt;(partsLossComputed));</span></a>
+<a name="235"><span class="lineNum">     235 </span>            : }</a>
+<a name="236"><span class="lineNum">     236 </span>            : </a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineCov">          4 : float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,</span></a>
+<a name="238"><span class="lineNum">     238 </span>            :                                                   bool isTraining) const {</a>
+<a name="239"><span class="lineNum">     239 </span>            : </a>
+<a name="240"><span class="lineNum">     240 </span>            :   // Initialize the total loss to 0</a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineCov">          4 :   float loss = 0.0f;</span></a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">          4 :   size_t lossComputed = 0;</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">          4 :   size_t counter = 0;</span></a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">          4 :   bool isLossFrequency = false;</span></a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">          4 :   auto &amp;trainingDataFactory = TrainingDataFactory::getInstance();</span></a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">          4 :   trainingDataFactory.resetCounters();</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">          4 :   const auto &amp;app_params = Manager::getConstInstance().app_params;</span></a>
+<a name="248"><span class="lineNum">     248 </span>            : </a>
+<a name="249"><span class="lineNum">     249 </span>            :   // Compute the frequency at which the loss should be computed</a>
+<a name="250"><span class="lineNum">     250 </span>            :   size_t lossFrequency =</a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">          4 :       std::max(static_cast&lt;size_t&gt;(std::sqrt(</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">          2 :                    isTraining ? trainingDataFactory.trainingSize()</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineCov">          2 :                               : trainingDataFactory.validationSize())),</span></a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">          8 :                (size_t)1);</span></a>
+<a name="255"><span class="lineNum">     255 </span>            : </a>
+<a name="256"><span class="lineNum">     256 </span>            :   // Loop over all images</a>
+<a name="257"><span class="lineNum">     257 </span>            :   while (auto imagePartsPair = isTraining</a>
+<a name="258"><span class="lineNum">     258 </span><span class="lineCov">         24 :                                    ? trainingDataFactory.nextTraining()</span></a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">         24 :                                    : trainingDataFactory.nextValidation()) {</span></a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineCov">         20 :     counter++;</span></a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineCov">         20 :     if (app_params.verbose) {</span></a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineNoCov">          0 :       SimpleLogger::LOG_INFO(&quot;Epoch: &quot;, epoch + 1,</span></a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineNoCov">          0 :                              isTraining ? &quot;, training: &quot; : &quot;, validation: &quot;,</span></a>
+<a name="264"><span class="lineNum">     264 </span>            :                              &quot;image &quot;, counter, &quot;/&quot;,</a>
+<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 :                              isTraining ? trainingDataFactory.trainingSize()</span></a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineNoCov">          0 :                                         : trainingDataFactory.validationSize(),</span></a>
+<a name="267"><span class="lineNum">     267 </span>            :                              &quot;...&quot;);</a>
+<a name="268"><span class="lineNum">     268 </span>            :     }</a>
+<a name="269"><span class="lineNum">     269 </span>            : </a>
+<a name="270"><span class="lineNum">     270 </span>            :     // Check if the loss should be computed for the current image</a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineCov">         20 :     isLossFrequency = counter % lossFrequency == 0 ? true : false;</span></a>
+<a name="272"><span class="lineNum">     272 </span>            : </a>
+<a name="273"><span class="lineNum">     273 </span>            :     // Compute the image parts loss</a>
+<a name="274"><span class="lineNum">     274 </span><span class="lineCov">         20 :     const auto &amp;[inputImageParts, targetImageParts] = *imagePartsPair;</span></a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineCov">         20 :     float imageLoss = computeLoss(epoch, inputImageParts, targetImageParts,</span></a>
+<a name="276"><span class="lineNum">     276 </span>            :                                   isTraining, isLossFrequency);</a>
+<a name="277"><span class="lineNum">     277 </span>            : </a>
+<a name="278"><span class="lineNum">     278 </span>            :     // If the loss was computed for the current image, add the average loss for</a>
+<a name="279"><span class="lineNum">     279 </span>            :     // the current image to the total loss</a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineCov">         20 :     if (isLossFrequency) {</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineCov">         12 :       loss += imageLoss;</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">         12 :       lossComputed++;</span></a>
+<a name="283"><span class="lineNum">     283 </span>            :     }</a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">         20 :   }</span></a>
+<a name="285"><span class="lineNum">     285 </span>            : </a>
+<a name="286"><span class="lineNum">     286 </span>            :   // Return the average loss over all images for which the loss was computed</a>
+<a name="287"><span class="lineNum">     287 </span><span class="lineCov">          4 :   if (lossComputed == 0) {</span></a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineNoCov">          0 :     return 0;</span></a>
+<a name="289"><span class="lineNum">     289 </span>            :   }</a>
+<a name="290"><span class="lineNum">     290 </span><span class="lineCov">          4 :   return (loss / static_cast&lt;float&gt;(lossComputed));</span></a>
+<a name="291"><span class="lineNum">     291 </span>            : }</a>
 </pre>
       </td>
     </tr>
