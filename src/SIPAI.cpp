@@ -245,8 +245,9 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
   app.add_option(
          "--alrf, --adaptive_learning_rate_factor",
          network_params.adaptive_learning_rate_factor,
-         "This factor determines the extent of learning rate adjustments "
-         "during an adaptive learning rate process. \nA larger factor results "
+         "This inverse factor determines the extent of learning rate "
+         "adjustments during an adaptive learning rate process. \nA smaller "
+         "factor (as divide by a lesser than one number) will results "
          "in more drastic changes to the learning rate, potentially leading to "
          "faster adaptation but also increased risk of instability.")
       ->default_val(network_params.adaptive_learning_rate_factor)

@@ -146,7 +146,8 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
   const auto &learning_rate_adaptive_factor =
       manager.network_params.adaptive_learning_rate_factor;
 
-  float previous_learning_rate = learningRate;
+  const float previous_learning_rate = learningRate;
+  const float increase_slower_factor = 1.5f;
 
   if (validationLoss > previousValidationLoss &&
       learningRate > learning_rate_min) {
@@ -154,8 +155,8 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
     learningRate *= learning_rate_adaptive_factor;
   } else if (validationLoss < previousValidationLoss &&
              learningRate < learning_rate_max) {
-    // this will increase learningRate (0.001 / 0.5 = 0.002)
-    learningRate /= learning_rate_adaptive_factor;
+    // this will increase learningRate but slower (0.001 / (0.5 * 1.5) = 0.0013)
+    learningRate /= (learning_rate_adaptive_factor * increase_slower_factor);
   }
   learningRate = std::clamp(learningRate, learning_rate_min, learning_rate_max);
 
@@ -163,8 +164,8 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
     const auto current_precision = SimpleLogger::getInstance().getPrecision();
     SimpleLogger::getInstance()
         .setPrecision(6)
-        .LOG_INFO("Learning rate ", previous_learning_rate, " adjusted to ",
-                  learningRate)
+        .info("Learning rate ", previous_learning_rate, " adjusted to ",
+              learningRate)
         .setPrecision(current_precision);
   }
 }
