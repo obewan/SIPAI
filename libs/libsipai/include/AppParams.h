@@ -26,8 +26,8 @@ struct AppParams {
   std::string network_to_import = "";
   std::string network_to_export = "";
   ERunMode run_mode = ERunMode::Enhancer;
-  float output_scale = 1.0;
-  float training_split_ratio = 0.7;
+  float output_scale = 1.0f;
+  float training_split_ratio = 0.7f;
   float learning_rate_max = 1.0f;
   float learning_rate_min = 0.00001f;
   int max_epochs = NO_MAX_EPOCHS;

@@ -127,8 +127,8 @@ struct RGBA {
    * @return cv::Vec4b
    */
   cv::Vec4b toVec4b() const {
-    return cv::Vec4b(value[2] * 255, value[1] * 255, value[0] * 255,
-                     value[3] * 255);
+    return cv::Vec4b((uchar)(value[2] * 255), (uchar)(value[1] * 255), (uchar)(value[0] * 255),
+                     (uchar)(value[3] * 255));
   }
 
   // Helper method to apply a lambda function to each component
