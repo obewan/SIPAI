@@ -15,7 +15,7 @@ endif()
 
 # Add OpenCV lib
 if(WIN32)
-    set(OpenCV_DIR "E:\\Programs\\OpenCV\\build")
+    set(OpenCV_DIR $ENV{OpenCV_BUILD})
 endif()
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
