@@ -57,8 +57,8 @@ void RunnerEnhancerVisitor::visit() const {
                         });
     imageHelper_.saveImage(app_params.output_file, outputParts,
                            app_params.image_split,
-                           outputSizeX * app_params.output_scale,
-                           outputSizeY * app_params.output_scale);
+                           (size_t)(outputSizeX * app_params.output_scale),
+                           (size_t)(outputSizeY * app_params.output_scale));
 
     SimpleLogger::LOG_INFO("Image enhancement done. Image output saved in ",
                            manager.app_params.output_file);

@@ -16,9 +16,14 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
+else() 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     # Add gprof 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")    
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")    
@@ -54,6 +59,9 @@ foreach(LIBRARY ${LIBRARIES})
 endforeach(LIBRARY)
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 
+if(WIN32)
+    target_sources(${PROJECT_NAME} PRIVATE version.rc)
+endif()
 
 enable_testing()
 add_subdirectory(test)

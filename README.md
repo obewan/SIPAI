@@ -19,6 +19,7 @@ Requirements for compiling the source code:
 
 - A C++20 compiler (like the GNU C++ `g++-12` on Linux or Visual Studio and its compiler on Windows)
 - The [OpenCV](https://opencv.org/get-started/) library (on Windows, check [how to update the system path for OpenCV](https://docs.opencv.org/4.x/d3/d52/tutorial_windows_install.html#tutorial_windows_install_path), you must also add an `OpenCV_BUILD` env variable that refer to the `opencv build` directory.)
+- The [Intel TBB](https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#onetbb) library
 - [CMake](https://cmake.org/)
 
 ---

@@ -103,11 +103,11 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
       // output sides, resulting in a total of 8 connections
       const float fanIn_fanOut = 8.0f;
       for (auto [dx, dy] : directions) {
-        int nx = pos_x + dx;
-        int ny = pos_y + dy;
+        int nx = (int)pos_x + dx;
+        int ny = (int)pos_y + dy;
         if (nx >= 0 && nx < (int)layer->size_x && ny >= 0 &&
             ny < (int)layer->size_y) {
-          int ni = ny * layer->size_x + nx;
+          int ni = ny * (int)layer->size_x + nx;
           Neuron &neighbor = layer->neurons[ni];
           // Add connection weight
           RGBA weight = isImported ? RGBA() : RGBA().random(fanIn_fanOut);

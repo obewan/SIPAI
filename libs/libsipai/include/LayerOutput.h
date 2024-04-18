@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <execution>
-#include <pstl/glue_execution_defs.h>
 #include <ranges>
 #include <stdexcept>
 #include <vector>

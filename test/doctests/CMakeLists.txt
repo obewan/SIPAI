@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread")
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread")
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     # Add coverage
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")    
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage")    
