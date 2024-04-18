@@ -36,9 +36,12 @@ struct NeuralNetworkParams {
   size_t hiddens_count = 1;
   float learning_rate = 0.005f;
   float adaptive_learning_rate_factor = 0.5f;
+  bool adaptive_learning_rate = false;
+  bool enable_adaptive_increase = false;
+  float error_min = -10.0f;
+  float error_max = 10.0f;
   float hidden_activation_alpha = 0.1f; // used for ELU and PReLU
   float output_activation_alpha = 0.1f; // used for ELU and PReLU
-  bool adaptive_learning_rate = false;
   EActivationFunction hidden_activation_function = EActivationFunction::LReLU;
   EActivationFunction output_activation_function = EActivationFunction::LReLU;
 };

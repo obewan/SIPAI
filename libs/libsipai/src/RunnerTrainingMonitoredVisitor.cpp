@@ -43,6 +43,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   auto &learning_rate = manager.network_params.learning_rate;
   const auto &adaptive_learning_rate =
       manager.network_params.adaptive_learning_rate;
+  const auto &enable_adaptive_increase =
+      manager.network_params.enable_adaptive_increase;
   auto &trainingDataFactory = TrainingDataFactory::getInstance();
 
   const auto start{std::chrono::steady_clock::now()}; // starting timer
@@ -80,8 +82,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
 
       // if Adaptive Learning Rate enabled, adapt the learning rate.
       if (adaptive_learning_rate && epoch > 1) {
-        adaptLearningRate(learning_rate, validationLoss,
-                          previousValidationLoss);
+        adaptLearningRate(learning_rate, validationLoss, previousValidationLoss,
+                          enable_adaptive_increase);
       }
 
       // check the epochs without improvement counter
@@ -136,7 +138,8 @@ void RunnerTrainingMonitoredVisitor::logTrainingProgress(
 
 void RunnerTrainingMonitoredVisitor::adaptLearningRate(
     float &learningRate, const float &validationLoss,
-    const float &previousValidationLoss) const {
+    const float &previousValidationLoss,
+    const bool &enable_adaptive_increase) const {
   std::scoped_lock<std::mutex> lock(threadMutex_);
 
   const auto &manager = Manager::getConstInstance();
@@ -153,7 +156,8 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
       learningRate > learning_rate_min) {
     // this will decrease learningRate (0.001 * 0.5 = 0.0005)
     learningRate *= learning_rate_adaptive_factor;
-  } else if (validationLoss < previousValidationLoss &&
+  } else if (enable_adaptive_increase &&
+             validationLoss < previousValidationLoss &&
              learningRate < learning_rate_max) {
     // this will increase learningRate but slower (0.001 / (0.5 * 1.5) = 0.0013)
     learningRate /= (learning_rate_adaptive_factor * increase_slower_factor);
@@ -188,11 +192,14 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
                                                   const ImageParts &targetImage,
                                                   bool isTraining,
                                                   bool isLossFrequency) const {
-  auto &manager = Manager::getInstance();
   if (inputImage.size() != targetImage.size()) {
     throw ImageHelperException(
         "internal exception: input and target parts have different sizes.");
   }
+
+  auto &manager = Manager::getInstance();
+  const auto &error_min = manager.network_params.error_min;
+  const auto &error_max = manager.network_params.error_max;
 
   // Initialize the loss for the current image to 0
   float partsLoss = 0.0f;
@@ -221,7 +228,8 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     // If backward propagation and weight update should be performed, perform
     // them
     if (isTraining) {
-      manager.network->backwardPropagation(targetPart->data,
+      manager.network->backwardPropagation(targetPart->data, error_min,
+                                           error_max,
                                            manager.app_params.enable_parallel);
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);
