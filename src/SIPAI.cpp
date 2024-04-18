@@ -237,21 +237,58 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       ->check(CLI::TypeValidator<float>());
   app.add_flag(
       "--alr, --adaptive_learning_rate", network_params.adaptive_learning_rate,
-      "This flag enables dynamic adjustment of the learning rate "
-      "based on the validation loss. \nWhen enabled, the learning rate "
-      "increases if the validation loss decreases, and decreases if "
-      "the validation loss increases, potentially improving the "
-      "efficiency and effectiveness of the learning process.");
+      "This flag enables the adaptive adjustment of the learning rate "
+      "based on the validation loss. "
+      "\nWhen enabled, the learning rate will decrease if the "
+      "validation loss increases. "
+      "\nThis dynamic adjustment can potentially improve the efficiency "
+      "and effectiveness of the learning process by preventing "
+      "overshooting of the optimal solution.");
+  app.add_flag(
+      "--alri, --adaptive_learning_rate_increase",
+      network_params.enable_adaptive_increase,
+      "This flag enables the adaptive increase of the learning rate when the "
+      "validation loss decreases. "
+      "\nThis dynamic adjustment can potentially speed up the learning process "
+      "when the model is improving. "
+      "\nNote: This option requires the 'adaptive_learning_rate' option to be "
+      "enabled, as it is a further enhancement of that feature.");
   app.add_option(
          "--alrf, --adaptive_learning_rate_factor",
          network_params.adaptive_learning_rate_factor,
-         "This inverse factor determines the extent of learning rate "
-         "adjustments during an adaptive learning rate process. \nA smaller "
-         "factor (as divide by a lesser than one number) will results "
-         "in more drastic changes to the learning rate, potentially leading to "
-         "faster adaptation but also increased risk of instability.")
+         "This option sets the factor by which the learning rate is adjusted "
+         "during the adaptive learning rate process. "
+         "\nIt inversely affects the magnitude of learning rate adjustments. "
+         "A smaller factor will result in larger changes to the learning rate, "
+         "potentially leading to faster adaptation. "
+         "\nHowever, be aware that a smaller factor can also increase the risk "
+         "of instability in the learning process, as it may cause the learning "
+         "rate to change too rapidly. "
+         "\nChoose a value that balances learning speed and stability.")
       ->default_val(network_params.adaptive_learning_rate_factor)
       ->check(CLI::Range(0.0001f, 1.0f))
+      ->check(CLI::TypeValidator<float>());
+  app.add_option(
+         "--temin, --training_error_min", network_params.error_min,
+         "Specifies the minimum error value during the backward propagation "
+         "phase of training. "
+         "\nSetting this to a very low value may cause the gradients to "
+         "explode, "
+         "leading to instability in the learning process. "
+         "\nChoose a value that balances learning efficiency and stability.")
+      ->default_val(network_params.error_min)
+      ->check(CLI::Range(-100000.0f, 0.0f))
+      ->check(CLI::TypeValidator<float>());
+  app.add_option(
+         "--temax, --training_error_max", network_params.error_max,
+         "Specifies the maximum error value during the backward propagation "
+         "phase of training. "
+         "\nSetting this to a very high value may cause the gradients to "
+         "vanish, "
+         "slowing down the learning process or causing it to get stuck. "
+         "\nChoose a value that balances learning efficiency and stability.")
+      ->default_val(network_params.error_max)
+      ->check(CLI::Range(0.0f, 100000.0f))
       ->check(CLI::TypeValidator<float>());
   app.add_option(
          "--haf,--hidden_activation_function",

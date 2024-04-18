@@ -64,9 +64,12 @@ public:
    * expected values.
    *
    * @param expectedValues The expected values for backward propagation.
+   * @param error_min error minimum
+   * @param error_max error maximum
    * @param enable_parallel enable parallelism (experimental)
    */
   void backwardPropagation(const std::vector<RGBA> &expectedValues,
+                           const float &error_min, const float &error_max,
                            bool enable_parallel = false);
 
   /**

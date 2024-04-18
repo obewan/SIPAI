@@ -66,6 +66,10 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
         json_model["parameters"]["adaptive_learning_rate"];
     networkParams.adaptive_learning_rate_factor =
         json_model["parameters"]["adaptive_learning_rate_factor"];
+    networkParams.enable_adaptive_increase =
+        json_model["parameters"]["enable_adaptive_increase"];
+    networkParams.error_min = json_model["parameters"]["error_min"];
+    networkParams.error_max = json_model["parameters"]["error_max"];
     networkParams.hidden_activation_alpha =
         json_model["parameters"]["hidden_activation_alpha"];
     networkParams.output_activation_alpha =
@@ -161,6 +165,10 @@ void NeuralNetworkImportExportJSON::exportModel(
       json(networkParams.adaptive_learning_rate);
   json_network["parameters"]["adaptive_learning_rate_factor"] =
       json(networkParams.adaptive_learning_rate_factor);
+  json_network["parameters"]["enable_adaptive_increase"] =
+      json(networkParams.enable_adaptive_increase);
+  json_network["parameters"]["error_min"] = json(networkParams.error_min);
+  json_network["parameters"]["error_max"] = json(networkParams.error_max);
   json_network["parameters"]["hidden_activation_alpha"] =
       json(networkParams.hidden_activation_alpha);
   json_network["parameters"]["output_activation_alpha"] =

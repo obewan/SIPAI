@@ -93,12 +93,12 @@ public:
    * @brief Performs backward propagation using the next layer.
    * @param enable_parallel enable parallelism (experimental)
    */
-  virtual void backwardPropagation(bool enable_parallel = false) {
+  virtual void backwardPropagation(const float &error_min,
+                                   const float &error_max,
+                                   bool enable_parallel = false) {
     if (nextLayer == nullptr) {
       return;
     }
-    float error_min = -1.0f;
-    float error_max = 1.0f;
 
     auto updateNeuron = [](Neuron &n, const size_t &pos, Layer *nextLayer,
                            const float &error_min, const float &error_max) {

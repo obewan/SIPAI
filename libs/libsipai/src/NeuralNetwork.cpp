@@ -24,13 +24,15 @@ NeuralNetwork::forwardPropagation(const std::vector<RGBA> &inputValues,
 }
 
 void NeuralNetwork::backwardPropagation(const std::vector<RGBA> &expectedValues,
+                                        const float &error_min,
+                                        const float &error_max,
                                         bool enable_parallel) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NeuralNetworkException("Invalid back layer type");
   }
   ((LayerOutput *)layers.back())->computeErrors(expectedValues);
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-    (*it)->backwardPropagation(enable_parallel);
+    (*it)->backwardPropagation(error_min, error_max, enable_parallel);
   }
 }
 

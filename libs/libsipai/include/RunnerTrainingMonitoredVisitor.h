@@ -48,9 +48,11 @@ public:
    * @param learningRate
    * @param validationLoss
    * @param previousValidationLoss
+   * @param enable_adaptive_increase
    */
   void adaptLearningRate(float &learningRate, const float &validationLoss,
-                         const float &previousValidationLoss) const;
+                         const float &previousValidationLoss,
+                         const bool &enable_adaptive_increase) const;
 
   /**
    * @brief Logs the training progress for the current epoch.

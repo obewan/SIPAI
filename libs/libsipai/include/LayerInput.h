@@ -28,7 +28,8 @@ public:
     // No need to implement for input layer
   }
 
-  void backwardPropagation(bool enable_parallel = false) override {
+  void backwardPropagation(const float &error_min, const float &error_max,
+                           bool enable_parallel = false) override {
     // No need to implement for input layer (no weights of input layer)
   }
 
