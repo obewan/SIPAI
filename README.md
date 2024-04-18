@@ -22,6 +22,8 @@ Requirements for compiling the source code:
 - The [Intel TBB](https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#onetbb) library
 - [CMake](https://cmake.org/)
 
+Also on Windows, be sure that the name of your images is encoded for your system (ASCII for example), or try to use Unicode UTF-8.
+
 ---
 
 ### Changelog
