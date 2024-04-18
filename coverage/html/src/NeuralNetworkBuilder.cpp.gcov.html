@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-18 12:30:36</td>
+            <td class="headerValue">2024-04-18 21:01:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">12</td>
@@ -165,11 +165,11 @@
 <a name="103"><span class="lineNum">     103 </span>            :       // output sides, resulting in a total of 8 connections</a>
 <a name="104"><span class="lineNum">     104 </span><span class="lineCov">        108 :       const float fanIn_fanOut = 8.0f;</span></a>
 <a name="105"><span class="lineNum">     105 </span><span class="lineCov">        540 :       for (auto [dx, dy] : directions) {</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">        432 :         int nx = pos_x + dx;</span></a>
-<a name="107"><span class="lineNum">     107 </span><span class="lineCov">        432 :         int ny = pos_y + dy;</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">        432 :         int nx = (int)pos_x + dx;</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">        432 :         int ny = (int)pos_y + dy;</span></a>
 <a name="108"><span class="lineNum">     108 </span><span class="lineCov">        432 :         if (nx &gt;= 0 &amp;&amp; nx &lt; (int)layer-&gt;size_x &amp;&amp; ny &gt;= 0 &amp;&amp;</span></a>
 <a name="109"><span class="lineNum">     109 </span><span class="lineCov">        315 :             ny &lt; (int)layer-&gt;size_y) {</span></a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">        270 :           int ni = ny * layer-&gt;size_x + nx;</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">        270 :           int ni = ny * (int)layer-&gt;size_x + nx;</span></a>
 <a name="111"><span class="lineNum">     111 </span><span class="lineCov">        270 :           Neuron &amp;neighbor = layer-&gt;neurons[ni];</span></a>
 <a name="112"><span class="lineNum">     112 </span>            :           // Add connection weight</a>
 <a name="113"><span class="lineNum">     113 </span><span class="lineCov">        270 :           RGBA weight = isImported ? RGBA() : RGBA().random(fanIn_fanOut);</span></a>

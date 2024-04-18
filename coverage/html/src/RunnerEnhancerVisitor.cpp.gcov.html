@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-18 12:30:36</td>
+            <td class="headerValue">2024-04-18 21:01:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -119,8 +119,8 @@
 <a name="57"><span class="lineNum">      57 </span><span class="lineCov">          1 :                         });</span></a>
 <a name="58"><span class="lineNum">      58 </span><span class="lineCov">          1 :     imageHelper_.saveImage(app_params.output_file, outputParts,</span></a>
 <a name="59"><span class="lineNum">      59 </span><span class="lineCov">          1 :                            app_params.image_split,</span></a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineCov">          1 :                            outputSizeX * app_params.output_scale,</span></a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          1 :                            outputSizeY * app_params.output_scale);</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">          1 :                            (size_t)(outputSizeX * app_params.output_scale),</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          1 :                            (size_t)(outputSizeY * app_params.output_scale));</span></a>
 <a name="62"><span class="lineNum">      62 </span>            : </a>
 <a name="63"><span class="lineNum">      63 </span><span class="lineCov">          1 :     SimpleLogger::LOG_INFO(&quot;Image enhancement done. Image output saved in &quot;,</span></a>
 <a name="64"><span class="lineNum">      64 </span><span class="lineCov">          1 :                            manager.app_params.output_file);</span></a>
