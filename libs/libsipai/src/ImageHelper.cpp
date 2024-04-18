@@ -22,7 +22,7 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
     cv::Size s = matPart.size();
 
     if (resize_x > 0 && resize_y > 0) {
-      cv::resize(matPart, matPart, cv::Size(resize_x, resize_y));
+      cv::resize(matPart, matPart, cv::Size((int)resize_x, (int)resize_y));
     } else {
       resize_x = s.width;
       resize_y = s.height;
@@ -50,8 +50,8 @@ ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
     // reduce the resolution of the input image
     cv::Size s = mat.size();
     if (reduce_factor != 0) {
-      float new_width = s.width * (1.0f / (float)reduce_factor);
-      float new_height = s.height * (1.0f / (float)reduce_factor);
+      int new_width = (int)(s.width * (1.0f / (float)reduce_factor));
+      int new_height = (int)(s.height * (1.0f / (float)reduce_factor));
       cv::resize(mat, mat, cv::Size(new_width, new_height));
     }
     // get the new size if any resize
@@ -59,7 +59,7 @@ ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
 
     // then resize to the layer resolution
     if (resize_x > 0 && resize_y > 0) {
-      cv::resize(mat, mat, cv::Size(resize_x, resize_y));
+      cv::resize(mat, mat, cv::Size((int)resize_x, (int)resize_y));
     } else {
       resize_x = s.width;
       resize_y = s.height;
@@ -84,8 +84,8 @@ std::vector<cv::Mat> ImageHelper::splitImage(const cv::Mat &inputImage,
   std::vector<cv::Mat> outputImages;
 
   // Calculate the size of each part in pixels
-  int partSizeX = (inputImage.cols + split - 1) / split;
-  int partSizeY = (inputImage.rows + split - 1) / split;
+  int partSizeX = (int)((inputImage.cols + split - 1) / split);
+  int partSizeY = (int)((inputImage.rows + split - 1) / split);
 
   // Calculate the number of splits in x and y directions
   int splitsX = (inputImage.cols + partSizeX - 1) / partSizeX;
@@ -131,10 +131,10 @@ void ImageHelper::saveImage(const std::string &imagePath,
                    [&](const std::unique_ptr<Image> &part) {
                      return convertToMat(*part);
                    });
-    auto mat = joinImages(mats, split, split);
+    auto mat = joinImages(mats, (int)split, (int)split);
 
     if (resize_x > 0 && resize_y > 0) {
-      cv::resize(mat, mat, cv::Size(resize_x, resize_y));
+      cv::resize(mat, mat, cv::Size((int)resize_x, (int)resize_y));
     }
     cv::imwrite(imagePath, mat);
   } catch (std::exception &ex) {
@@ -180,7 +180,7 @@ std::vector<RGBA> ImageHelper::convertToRGBAVector(const cv::Mat &mat) const {
 }
 
 cv::Mat ImageHelper::convertToMat(const Image &image) const {
-  cv::Mat dest(image.size_y, image.size_x, CV_8UC4);
+  cv::Mat dest((int)image.size_y, (int)image.size_x, CV_8UC4);
   auto destPtr = dest.begin<cv::Vec4b>();
 
   std::transform(image.data.begin(), image.data.end(), destPtr,
