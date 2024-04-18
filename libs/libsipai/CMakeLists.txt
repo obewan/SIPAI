@@ -14,6 +14,9 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif()
 
 # Add OpenCV lib
+if(WIN32)
+    set(OpenCV_DIR "E:\\Programs\\OpenCV\\build")
+endif()
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 

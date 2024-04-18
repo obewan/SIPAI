@@ -17,8 +17,8 @@ Project under construction...
 
 Requirements for compiling the source code:
 
-- A C++20 compiler (like the GNU C++ `g++-12` on Debian)
-- The [OpenCV](https://opencv.org/get-started/) library
+- A C++20 compiler (like the GNU C++ `g++-12` on Linux or Visual Studio and its compiler on Windows)
+- The [OpenCV](https://opencv.org/get-started/) library (on Windows, check [how to update the system path for OpenCV](https://docs.opencv.org/4.x/d3/d52/tutorial_windows_install.html#tutorial_windows_install_path).)
 - [CMake](https://cmake.org/)
 
 ---

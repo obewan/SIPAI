@@ -46,6 +46,7 @@ CMakeCache.txt
 
 # Others
 coverage/
+.vs
 .vscode
 .cache
 .codeql
