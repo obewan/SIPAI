@@ -6,7 +6,7 @@ var searchData=
   ['activationfunctions_2eh_3',['ActivationFunctions.h',['../ActivationFunctions_8h.html',1,'']]],
   ['adaptive_5flearning_5frate_4',['adaptive_learning_rate',['../structsipai_1_1NeuralNetworkParams.html#a05a77384b98ff2d11cce3a42aa3d4a5b',1,'sipai::NeuralNetworkParams']]],
   ['adaptive_5flearning_5frate_5ffactor_5',['adaptive_learning_rate_factor',['../structsipai_1_1NeuralNetworkParams.html#a562985289601591c2c943c62190a5d45',1,'sipai::NeuralNetworkParams']]],
-  ['adaptlearningrate_6',['adaptLearningRate',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#a8370822ddbe792bf428f0a00ff4b00d0',1,'sipai::RunnerTrainingMonitoredVisitor']]],
+  ['adaptlearningrate_6',['adaptLearningRate',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#a26ca7798953ae06db7b3d39f5b21e241',1,'sipai::RunnerTrainingMonitoredVisitor']]],
   ['addlayers_7',['addLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a5fabf5a39071cb7bfda642d261acf682',1,'sipai::NeuralNetworkBuilder']]],
   ['addneighbors_8',['addNeighbors',['../classsipai_1_1NeuralNetworkBuilder.html#a155910cf51b0212e87a4830f3f50ba82',1,'sipai::NeuralNetworkBuilder']]],
   ['app_5fparams_9',['app_params',['../classsipai_1_1Manager.html#a04f60db76f56d7c2f8d62d15e7b436db',1,'sipai::Manager']]],

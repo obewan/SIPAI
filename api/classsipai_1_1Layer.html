@@ -99,9 +99,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a37256432ea22c3040bcd0099a874849b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a37256432ea22c3040bcd0099a874849b">forwardPropagation</a> (bool enable_parallel=false)</td></tr>
 <tr class="memdesc:a37256432ea22c3040bcd0099a874849b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1Layer.html#a37256432ea22c3040bcd0099a874849b">More...</a><br /></td></tr>
 <tr class="separator:a37256432ea22c3040bcd0099a874849b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a615a4068e689b84e521d14ef82213bf2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a615a4068e689b84e521d14ef82213bf2">backwardPropagation</a> (bool enable_parallel=false)</td></tr>
-<tr class="memdesc:a615a4068e689b84e521d14ef82213bf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1Layer.html#a615a4068e689b84e521d14ef82213bf2">More...</a><br /></td></tr>
-<tr class="separator:a615a4068e689b84e521d14ef82213bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a384d36ef5f7bc5aa42fb34fa0046cf42"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a384d36ef5f7bc5aa42fb34fa0046cf42">backwardPropagation</a> (const float &amp;error_min, const float &amp;error_max, bool enable_parallel=false)</td></tr>
+<tr class="memdesc:a384d36ef5f7bc5aa42fb34fa0046cf42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1Layer.html#a384d36ef5f7bc5aa42fb34fa0046cf42">More...</a><br /></td></tr>
+<tr class="separator:a384d36ef5f7bc5aa42fb34fa0046cf42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52719eb9730d1d166494f18dc8eb54e2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a52719eb9730d1d166494f18dc8eb54e2">updateWeights</a> (float learningRate, bool enable_parallel=false)</td></tr>
 <tr class="memdesc:a52719eb9730d1d166494f18dc8eb54e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in this layer using the previous layer and a learning rate.  <a href="classsipai_1_1Layer.html#a52719eb9730d1d166494f18dc8eb54e2">More...</a><br /></td></tr>
 <tr class="separator:a52719eb9730d1d166494f18dc8eb54e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,8 +198,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a615a4068e689b84e521d14ef82213bf2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a615a4068e689b84e521d14ef82213bf2">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
+<a id="a384d36ef5f7bc5aa42fb34fa0046cf42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a384d36ef5f7bc5aa42fb34fa0046cf42">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -210,9 +210,25 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void sipai::Layer::backwardPropagation </td>
           <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>enable_parallel</em> = <code>false</code></td><td>)</td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>error_min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>error_max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enable_parallel</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -230,7 +246,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#a4f459ce4ca7929764a7fc1d1f42e1264">sipai::LayerInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classsipai_1_1LayerInput.html#ace9b7d9649a980c2bd1333496658c5da">sipai::LayerInput</a>.</p>
 
 </div>
 </div>

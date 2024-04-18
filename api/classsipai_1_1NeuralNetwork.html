@@ -97,9 +97,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac567231970204a1d88a3fbf900be8380"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#ac567231970204a1d88a3fbf900be8380">forwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;inputValues, bool enable_parallel=false)</td></tr>
 <tr class="memdesc:ac567231970204a1d88a3fbf900be8380"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation on the network using the given input values.  <a href="classsipai_1_1NeuralNetwork.html#ac567231970204a1d88a3fbf900be8380">More...</a><br /></td></tr>
 <tr class="separator:ac567231970204a1d88a3fbf900be8380"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c95db103b8bc3c86f7cf06452a8bca2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a4c95db103b8bc3c86f7cf06452a8bca2">backwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;expectedValues, bool enable_parallel=false)</td></tr>
-<tr class="memdesc:a4c95db103b8bc3c86f7cf06452a8bca2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation on the network using the given expected values.  <a href="classsipai_1_1NeuralNetwork.html#a4c95db103b8bc3c86f7cf06452a8bca2">More...</a><br /></td></tr>
-<tr class="separator:a4c95db103b8bc3c86f7cf06452a8bca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01c98350f8859948fecc459d7fdfe5ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a01c98350f8859948fecc459d7fdfe5ee">backwardPropagation</a> (const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;expectedValues, const float &amp;error_min, const float &amp;error_max, bool enable_parallel=false)</td></tr>
+<tr class="memdesc:a01c98350f8859948fecc459d7fdfe5ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation on the network using the given expected values.  <a href="classsipai_1_1NeuralNetwork.html#a01c98350f8859948fecc459d7fdfe5ee">More...</a><br /></td></tr>
+<tr class="separator:a01c98350f8859948fecc459d7fdfe5ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43c2acc8114864e9c6cf50eb746093bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a43c2acc8114864e9c6cf50eb746093bb">updateWeights</a> (float learning_rate, bool enable_parallel)</td></tr>
 <tr class="memdesc:a43c2acc8114864e9c6cf50eb746093bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in the network using the learning rate.  <a href="classsipai_1_1NeuralNetwork.html#a43c2acc8114864e9c6cf50eb746093bb">More...</a><br /></td></tr>
 <tr class="separator:a43c2acc8114864e9c6cf50eb746093bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -221,8 +221,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4c95db103b8bc3c86f7cf06452a8bca2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4c95db103b8bc3c86f7cf06452a8bca2">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
+<a id="a01c98350f8859948fecc459d7fdfe5ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01c98350f8859948fecc459d7fdfe5ee">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -232,6 +232,18 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="structsipai_1_1RGBA.html">RGBA</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>expectedValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>error_min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float &amp;&#160;</td>
+          <td class="paramname"><em>error_max</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -251,6 +263,8 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">expectedValues</td><td>The expected values for backward propagation. </td></tr>
+    <tr><td class="paramname">error_min</td><td>error minimum </td></tr>
+    <tr><td class="paramname">error_max</td><td>error maximum </td></tr>
     <tr><td class="paramname">enable_parallel</td><td>enable parallelism (experimental) </td></tr>
   </table>
   </dd>
