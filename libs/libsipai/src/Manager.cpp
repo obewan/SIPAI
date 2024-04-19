@@ -7,14 +7,102 @@
 #include "TrainingDataFileReaderCSV.h"
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <numeric>
 #include <opencv2/core/types.hpp>
 #include <vector>
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_core.h>
 
 using namespace sipai;
 
 std::unique_ptr<Manager> Manager::instance_ = nullptr;
+
+void Manager::initializeVulkan() {
+  // Initialize Vulkan
+  app_params.vulkan = false;
+  VkApplicationInfo appInfo{};
+  appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+  appInfo.pApplicationName = "SIPAI";
+  appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+  appInfo.pEngineName = "No Engine";
+  appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+  appInfo.apiVersion = VK_API_VERSION_1_0;
+
+  VkInstanceCreateInfo createInfoInstance{};
+  createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+  createInfoInstance.pApplicationInfo = &appInfo;
+
+  if (vkCreateInstance(&createInfoInstance, nullptr, &vkInstance_) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("failed to create instance!");
+  }
+
+  // Create a device
+  uint32_t deviceCount = 0;
+  vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, nullptr);
+
+  if (deviceCount == 0) {
+    throw std::runtime_error("failed to find GPUs with Vulkan support!");
+  }
+
+  std::vector<VkPhysicalDevice> devices(deviceCount);
+  vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, devices.data());
+
+  for (const auto &device : devices) {
+    if (isDeviceSuitable(device)) {
+      vkPhysicalDevice_ = device;
+      break;
+    }
+  }
+
+  if (vkPhysicalDevice_ == VK_NULL_HANDLE) {
+    throw std::runtime_error("failed to find a suitable GPU!");
+  }
+
+  uint32_t queueFamilyCount = 0;
+  vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice_, &queueFamilyCount,
+                                           nullptr);
+
+  std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+  vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice_, &queueFamilyCount,
+                                           queueFamilies.data());
+
+  uint32_t queueFamilyIndex = 0;
+  int i = 0;
+  for (const auto &queueFamily : queueFamilies) {
+    if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+      queueFamilyIndex = i;
+      break;
+    }
+    i++;
+  }
+
+  VkDeviceQueueCreateInfo queueCreateInfo{};
+  queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+  queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+  queueCreateInfo.queueCount = 1;
+  float queuePriority = 1.0f;
+  queueCreateInfo.pQueuePriorities = &queuePriority;
+
+  VkPhysicalDeviceFeatures deviceFeatures{};
+  deviceFeatures.logicOp = VK_TRUE; // Enable logical operation feature
+  deviceFeatures.shaderFloat64 =
+      VK_TRUE; // Enable 64-bit floats in shader code feature
+
+  VkDeviceCreateInfo createInfoDevice{};
+  createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+  createInfoDevice.pQueueCreateInfos = &queueCreateInfo;
+  createInfoDevice.queueCreateInfoCount = 1;
+  createInfoDevice.pEnabledFeatures = &deviceFeatures;
+
+  if (vkCreateDevice(vkPhysicalDevice_, &createInfoDevice, nullptr,
+                     &vkDevice_) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create logical device!");
+  }
+  app_params.vulkan = true;
+}
 
 void Manager::createOrImportNetwork() {
   if (!network) {
@@ -100,3 +188,28 @@ void Manager::run() {
 }
 
 void Manager::runWithVisitor(const RunnerVisitor &visitor) { visitor.visit(); }
+
+bool Manager::isDeviceSuitable(const VkPhysicalDevice &device) {
+  VkPhysicalDeviceProperties deviceProperties;
+  VkPhysicalDeviceFeatures deviceFeatures;
+  vkGetPhysicalDeviceProperties(device, &deviceProperties);
+  vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+  // This feature indicates whether the physical device supports logical
+  // operations in the output color blending. Logical operations are used to
+  // combine color and/or alpha components of the source and destination
+  // fragments in ways other than traditional blending+
+  bool logicOpShaderSupported = deviceFeatures.logicOp;
+
+  // This feature indicates whether the physical device supports 64-bit floats
+  // (doubles) in shader code. If this feature is not enabled, you won’t be
+  // able to use 64-bit floats in your shaders.
+  bool anisotropicFilteringSupported = deviceFeatures.shaderFloat64;
+
+  return logicOpShaderSupported && anisotropicFilteringSupported;
+}
+
+void Manager::clearVulkan() {
+  vkDestroyDevice(vkDevice_, nullptr);
+  vkDestroyInstance(vkInstance_, nullptr);
+}

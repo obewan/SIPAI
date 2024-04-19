@@ -17,12 +17,60 @@
 #include <execution>
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 namespace sipai {
 class ImageHelper {
 public:
   /**
-   * @brief Reads an image from a specified path and returns it as Image parts
+   * @brief Reads an image from a specified path and returns it as Image
+   * parts, using Vulkan
+   *
+   * @param physicalDevice
+   * @param device
+   * @param imagePath
+   * @param split
+   * @param withPadding
+   * @param resize_x
+   * @param resize_y
+   */
+  void loadImageIntoMemoryVK(const VkPhysicalDevice &physicalDevice,
+                             const VkDevice &device,
+                             const std::string &imagePath, size_t split,
+                             bool withPadding, size_t resize_x = 0,
+                             size_t resize_y = 0) const;
+
+  /**
+   * @brief Create an image Buffer in memory
+   *
+   * @param physicalDevice
+   * @param device
+   * @param size
+   * @param usage
+   * @param properties
+   * @param buffer
+   * @param bufferMemory
+   */
+  void createBuffer(const VkPhysicalDevice &physicalDevice,
+                    const VkDevice &device, VkDeviceSize size,
+                    VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+                    VkBuffer &buffer, VkDeviceMemory &bufferMemory) const;
+
+  /**
+   * @brief Find memory type
+   *
+   * @param physicalDevice
+   * @param typeFilter
+   * @param properties
+   * @return uint32_t
+   */
+  uint32_t findMemoryType(const VkPhysicalDevice &physicalDevice,
+                          uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties) const;
+
+  /**
+   * @brief Reads an image from a specified path and returns it as Image
+   * parts
    *
    * @param imagePath The file path of the image to be loaded.
    * @param split The split factor.
