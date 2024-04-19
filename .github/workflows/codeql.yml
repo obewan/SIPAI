@@ -64,7 +64,7 @@ jobs:
       #  uses: github/codeql-action/autobuild@v3
 
       - name: Install dependencies
-        run: sudo apt-get install -y g++-12 libopencv-dev
+        run: sudo apt-get install -y g++-12 libopencv-dev libvulkan1 libvulkan-dev vulkan-tools
 
       - name: Build with C++20 support
         run: find . -name "*.cpp" -exec g++-12 -I./include -I./libs/libsipai/include -I./libs/libcsvparser/include -I./libs/libjson/include -I/usr/include/opencv4 -I./test/doctests/include -std=c++20 -c {} \;

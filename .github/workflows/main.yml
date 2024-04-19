@@ -12,7 +12,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-12 lcov libopencv-dev cmake gawk
+          sudo apt-get install -y g++-12 lcov libopencv-dev libvulkan1 libvulkan-dev vulkan-tools cmake gawk
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
@@ -32,7 +32,6 @@ jobs:
           lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
           lcov --gcov-tool /usr/bin/gcov-12 --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
           '/usr/include/*' '/usr/lib/*' \
-          '${{github.workspace}}/libs/libsmlp/src/SimpleHTTPServer.cpp' \
           '${{github.workspace}}/libs/libcsvparser/*' \
           '${{github.workspace}}/libs/libjson/*' \
           '${{github.workspace}}/test/*'           
