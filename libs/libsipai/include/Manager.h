@@ -18,8 +18,6 @@
 #include <cstddef>
 #include <memory>
 #include <mutex>
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_core.h>
 
 namespace sipai {
 class Manager {
@@ -34,7 +32,7 @@ public:
   }
   Manager(Manager const &) = delete;
   void operator=(Manager const &) = delete;
-  ~Manager() { clearVulkan(); }
+  ~Manager() = default;
 
   /**
    * @brief Application parameters.
@@ -50,12 +48,6 @@ public:
    * @brief The neural network.
    */
   std::unique_ptr<NeuralNetwork> network = nullptr;
-
-  /**
-   * @brief Initialize Vulkan.
-   *
-   */
-  void initializeVulkan();
 
   /**
    * @brief Network builder.
@@ -98,25 +90,11 @@ public:
     return app_params.title + " v" + app_params.version;
   }
 
-  const VkInstance &getVkInstance() { return vkInstance_; }
-
-  const VkPhysicalDevice &getVkPhysicalDevice() { return vkPhysicalDevice_; }
-
-  const VkDevice &getVkDevice() { return vkDevice_; }
-
 private:
   Manager() = default;
 
   static std::unique_ptr<Manager> instance_;
 
   RunnerVisitorFactory runnerVisitorFactory_;
-
-  bool isDeviceSuitable(const VkPhysicalDevice &device);
-
-  void clearVulkan();
-
-  VkInstance vkInstance_;
-  VkPhysicalDevice vkPhysicalDevice_ = VK_NULL_HANDLE;
-  VkDevice vkDevice_;
 };
 } // namespace sipai
