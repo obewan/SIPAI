@@ -2,18 +2,12 @@
 #include "AppParams.h"
 #include "Common.h"
 #include "NeuralNetwork.h"
-#include "NeuralNetworkBuilder.h"
 #include "SimpleLogger.h"
-#include "TrainingDataFileReaderCSV.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <numeric>
-#include <opencv2/core/types.hpp>
-#include <vector>
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_core.h>
 
 using namespace sipai;
 

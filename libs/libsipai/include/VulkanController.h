@@ -54,6 +54,13 @@ public:
                  size_t resize_x = 0, size_t resize_y = 0) const;
 
   /**
+   * @brief Load a GLSL shader
+   *
+   * @param path path of a GLSL file
+   */
+  std::vector<uint32_t> loadShader(const std::string &path);
+
+  /**
    * @brief Create an image Buffer in memory
    *
    * @param size
@@ -97,8 +104,10 @@ private:
 
   std::atomic<bool> isInitialized_ = false;
 
-  VkInstance vkInstance_;
+  VkInstance vkInstance_ = VK_NULL_HANDLE;
   VkPhysicalDevice vkPhysicalDevice_ = VK_NULL_HANDLE;
-  VkDevice vkLogicalDevice_;
+  VkDevice vkLogicalDevice_ = VK_NULL_HANDLE;
+
+  std::vector<uint32_t> forwardShader_;
 };
 } // namespace sipai

@@ -1,5 +1,7 @@
 #include "VulkanController.h"
 #include "Manager.h"
+#include <filesystem>
+#include <fstream>
 #include <opencv2/imgcodecs.hpp>
 
 using namespace sipai;
@@ -7,14 +9,13 @@ using namespace sipai;
 std::unique_ptr<VulkanController> VulkanController::instance_ = nullptr;
 
 void VulkanController::initialize() {
-  auto &app_params = Manager::getInstance().app_params;
   if (isInitialized_) {
-    app_params.vulkan = true;
     return;
   }
 
+  const auto &manager = Manager::getConstInstance();
+
   // Initialize Vulkan
-  app_params.vulkan = false;
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "SIPAI";
@@ -94,35 +95,8 @@ void VulkanController::initialize() {
                      &vkLogicalDevice_) != VK_SUCCESS) {
     throw std::runtime_error("failed to create logical device!");
   }
-  app_params.vulkan = true;
+  forwardShader_ = loadShader(manager.app_params.forwardShader);
   isInitialized_ = true;
-}
-
-void VulkanController::destroy() {
-  vkDestroyDevice(vkLogicalDevice_, nullptr);
-  vkDestroyInstance(vkInstance_, nullptr);
-  isInitialized_ = false;
-  Manager::getInstance().app_params.vulkan = false;
-}
-
-bool VulkanController::isDeviceSuitable(const VkPhysicalDevice &device) {
-  VkPhysicalDeviceProperties deviceProperties;
-  VkPhysicalDeviceFeatures deviceFeatures;
-  vkGetPhysicalDeviceProperties(device, &deviceProperties);
-  vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-
-  // This feature indicates whether the physical device supports logical
-  // operations in the output color blending. Logical operations are used to
-  // combine color and/or alpha components of the source and destination
-  // fragments in ways other than traditional blending+
-  bool logicOpShaderSupported = deviceFeatures.logicOp;
-
-  // This feature indicates whether the physical device supports 64-bit floats
-  // (doubles) in shader code. If this feature is not enabled, you won’t be
-  // able to use 64-bit floats in your shaders.
-  bool anisotropicFilteringSupported = deviceFeatures.shaderFloat64;
-
-  return logicOpShaderSupported && anisotropicFilteringSupported;
 }
 
 void VulkanController::loadImage(const std::string &imagePath, size_t split,
@@ -148,6 +122,29 @@ void VulkanController::loadImage(const std::string &imagePath, size_t split,
   vkMapMemory(vkLogicalDevice_, stagingBufferMemory, 0, imageSize, 0, &data);
   memcpy(data, img.data, (size_t)imageSize);
   vkUnmapMemory(vkLogicalDevice_, stagingBufferMemory);
+}
+
+std::vector<uint32_t> VulkanController::loadShader(const std::string &path) {
+  if (!std::filesystem::exists(path)) {
+    throw std::runtime_error("GLSL file does not exist: " + path);
+  }
+  // Use glslangValidator to compile the GLSL shader to SPIR-V
+  std::stringstream sst;
+  sst << "glslangValidator -V " << path << " -o shader.spv";
+  system(sst.str().c_str());
+
+  // Load the compiled SPIR-V into a std::vector<uint32_t>
+  std::ifstream file("shader.spv", std::ios::binary | std::ios::ate);
+  if (!file.good()) {
+    throw std::runtime_error("Failed to open SPIR-V file");
+  }
+  std::streamsize size = file.tellg();
+  file.seekg(0, std::ios::beg);
+  std::vector<uint32_t> compiledShaderCode(size / sizeof(uint32_t));
+  if (!file.read(reinterpret_cast<char *>(compiledShaderCode.data()), size)) {
+    throw std::runtime_error("Failed to read SPIR-V file");
+  }
+  return compiledShaderCode;
 }
 
 void VulkanController::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
@@ -196,4 +193,38 @@ VulkanController::findMemoryType(uint32_t typeFilter,
   }
 
   throw std::runtime_error("failed to find suitable memory type!");
+}
+
+bool VulkanController::isDeviceSuitable(const VkPhysicalDevice &device) {
+  VkPhysicalDeviceProperties deviceProperties;
+  VkPhysicalDeviceFeatures deviceFeatures;
+  vkGetPhysicalDeviceProperties(device, &deviceProperties);
+  vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+  // This feature indicates whether the physical device supports logical
+  // operations in the output color blending. Logical operations are used to
+  // combine color and/or alpha components of the source and destination
+  // fragments in ways other than traditional blending+
+  bool logicOpShaderSupported = deviceFeatures.logicOp;
+
+  // This feature indicates whether the physical device supports 64-bit floats
+  // (doubles) in shader code. If this feature is not enabled, you won’t be
+  // able to use 64-bit floats in your shaders.
+  bool anisotropicFilteringSupported = deviceFeatures.shaderFloat64;
+
+  return logicOpShaderSupported && anisotropicFilteringSupported;
+}
+
+void VulkanController::destroy() {
+  if (vkLogicalDevice_ != VK_NULL_HANDLE) {
+    vkDestroyDevice(vkLogicalDevice_, nullptr);
+    vkLogicalDevice_ = VK_NULL_HANDLE;
+  }
+  if (vkInstance_ != VK_NULL_HANDLE) {
+    vkDestroyInstance(vkInstance_, nullptr);
+    vkInstance_ = VK_NULL_HANDLE;
+  }
+  // No need to destroy the physical device, as managed by the instance
+  vkPhysicalDevice_ = VK_NULL_HANDLE;
+  isInitialized_ = false;
 }

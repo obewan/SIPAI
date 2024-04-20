@@ -1,0 +1,32 @@
+#version 450
+
+/**
+ * GLSL forward propagation compute shader for Vulkan, by Dams 
+ * Damien Balima (c) CC-BY-NC-SA-4.0 2024
+ */
+
+layout (local_size_x = 1) in;
+
+struct Neuron {
+    vec4 value;
+    vec4 weights;
+};
+
+layout (std430, binding = 0) buffer InputBuffer {
+    Neuron neurons[];
+} inputBuffer;
+
+layout (std430, binding = 1) buffer OutputBuffer {
+    vec4 values[];
+} outputBuffer;
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+    vec4 value = vec4(0.0);
+    for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
+        value += inputBuffer.neurons[i].value * inputBuffer.neurons[i].weights;
+    }
+    // Apply activation function (e.g., ReLU)
+    value = max(value, vec4(0.0));
+    outputBuffer.values[index] = value;
+}
