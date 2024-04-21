@@ -13,6 +13,7 @@
 #include <memory>
 #include <mutex>
 #include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_core.h>
 
 namespace sipai {
 class VulkanController {
@@ -58,7 +59,14 @@ public:
    *
    * @param path path of a GLSL file
    */
-  std::vector<uint32_t> loadShader(const std::string &path);
+  std::unique_ptr<std::vector<uint32_t>> loadShader(const std::string &path);
+
+  /**
+   * @brief Compute a shader
+   *
+   * @param computeShader
+   */
+  void computeShader(std::unique_ptr<std::vector<uint32_t>> &computeShader);
 
   /**
    * @brief Create an image Buffer in memory
@@ -72,6 +80,73 @@ public:
   void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                     VkMemoryPropertyFlags properties, VkBuffer &buffer,
                     VkDeviceMemory &bufferMemory) const;
+
+  /**
+   * @brief Create a Command Pool object
+   *
+   */
+  void createCommandPool();
+
+  /**
+   * @brief Create a Descriptor Set object
+   *
+   */
+  void createDescriptorSetLayout();
+
+  /**
+   * @brief Create a Descriptor Pool object
+   *
+   */
+  void createDescriptorPool();
+
+  /**
+   * @brief Create a Descriptor Set object
+   *
+   */
+  void createDescriptorSet();
+
+  /**
+   * @brief Create a Pipeline Layout object
+   *
+   */
+  void createPipelineLayout();
+
+  /**
+   * @brief Update a Descriptor Set
+   *
+   * @param buffer
+   */
+  void updateDescriptorSet(VkBuffer &buffer);
+
+  /**
+   * @brief Begins a single time command buffer.
+   *
+   * This function allocates a command buffer and starts it with the
+   * VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT flag.
+   *
+   * @param device The logical device that the command buffer will be created
+   * on.
+   * @param commandPool The command pool that the command buffer will be
+   * allocated from.
+   * @return The allocated and started command buffer.
+   */
+  VkCommandBuffer beginSingleTimeCommands(VkDevice device,
+                                          VkCommandPool commandPool);
+
+  /**
+   * @brief Ends a single time command buffer.
+   *
+   * This function ends the command buffer, submits it to the queue, and then
+   * frees it once the queue has finished executing it.
+   *
+   * @param device The logical device that the command buffer was created on.
+   * @param commandPool The command pool that the command buffer was allocated
+   * from.
+   * @param commandBuffer The command buffer to end and submit.
+   * @param queue The queue to submit the command buffer to.
+   */
+  void endSingleTimeCommands(VkDevice device, VkCommandPool commandPool,
+                             VkCommandBuffer commandBuffer, VkQueue queue);
 
   /**
    * @brief Find memory type
@@ -107,7 +182,15 @@ private:
   VkInstance vkInstance_ = VK_NULL_HANDLE;
   VkPhysicalDevice vkPhysicalDevice_ = VK_NULL_HANDLE;
   VkDevice vkLogicalDevice_ = VK_NULL_HANDLE;
+  VkCommandPool commandPool_ = VK_NULL_HANDLE;
+  VkDescriptorSetLayout descriptorSetLayout_ = VK_NULL_HANDLE;
+  VkDescriptorPool descriptorPool_ = VK_NULL_HANDLE;
+  VkDescriptorSet descriptorSet_ = VK_NULL_HANDLE;
+  VkPipelineLayout pipelineLayout_ = VK_NULL_HANDLE;
+  VkQueue queue_ = VK_NULL_HANDLE;
 
-  std::vector<uint32_t> forwardShader_;
+  unsigned int queueFamilyIndex_ = 0;
+
+  std::unique_ptr<std::vector<uint32_t>> forwardShader_;
 };
 } // namespace sipai

@@ -4,7 +4,7 @@
 
 using namespace sipai;
 
-// Ignore this test on Github, no vulkan device there.
+// Skip this test on Github, no vulkan device there.
 TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
