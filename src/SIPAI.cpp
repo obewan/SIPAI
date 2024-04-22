@@ -383,7 +383,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                "\nPlease note that enabling "
                "this flag will override the 'enable_parallel' setting, as the "
                "parallel processing will be handled by the Vulkan API instead "
-               "of the CPU.");
+               "of the CPU, except if Vulkan failed to initialize.");
   app.add_flag(
       "--par,--parallelism", app_params.enable_parallel,
       "Enables parallel processing for neural network computations. "

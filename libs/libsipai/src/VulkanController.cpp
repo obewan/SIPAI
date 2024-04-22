@@ -172,10 +172,13 @@ void VulkanController::computeShader(
   // Create shader module
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-  createInfo.codeSize = sizeof(computeShader);
-  createInfo.pCode = reinterpret_cast<const uint32_t *>(computeShader.get());
+  createInfo.codeSize = computeShader->size() * sizeof(uint32_t);
+  createInfo.pCode = computeShader->data();
   VkShaderModule shaderModule;
-  vkCreateShaderModule(logicalDevice_, &createInfo, nullptr, &shaderModule);
+  if (vkCreateShaderModule(logicalDevice_, &createInfo, nullptr,
+                           &shaderModule) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create shader module");
+  }
 
   // Create compute pipeline
   VkComputePipelineCreateInfo pipelineInfo{};
@@ -186,8 +189,10 @@ void VulkanController::computeShader(
   pipelineInfo.stage.module = shaderModule;
   pipelineInfo.stage.pName = "main";
   VkPipeline computePipeline;
-  vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
-                           nullptr, &computePipeline);
+  if (vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
+                               nullptr, &computePipeline) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create compute pipelines");
+  };
 
   // Create command buffer and record commands
   VkCommandBuffer commandBuffer =
