@@ -24,7 +24,8 @@ public:
   LayerInput(size_t size_x, size_t size_y)
       : Layer(LayerType::LayerInput, size_x, size_y) {}
 
-  void forwardPropagation(bool enable_parallel = false) override {
+  void forwardPropagation(bool enable_vulkan = false,
+                          bool enable_parallel = false) override {
     // No need to implement for input layer
   }
 

@@ -149,6 +149,7 @@ TEST_CASE("Testing the Manager class") {
     ap.run_mode = ERunMode::TrainingMonitored;
     ap.network_to_export = "tempNetwork.json";
     ap.network_to_import = "";
+    ap.enable_vulkan = false;
     std::string network_csv = "tempNetwork.csv";
 
     auto &np = manager.network_params;

@@ -3,9 +3,11 @@
 #include "Common.h"
 #include "NeuralNetwork.h"
 #include "SimpleLogger.h"
+#include "VulkanController.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <exception>
 #include <memory>
 #include <numeric>
 
@@ -80,8 +82,24 @@ void Manager::run() {
       "\nimages random loading: ", app_params.random_loading ? "true" : "false",
       "\nimages bulk loading: ", app_params.bulk_loading ? "true" : "false",
       "\npadding enabled: ", app_params.enable_padding ? "true" : "false",
-      "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false",
+      "\nvulkan enabled: ", app_params.enable_vulkan ? "true" : "false",
+      "\nparallelism enabled: ",
+      !app_params.enable_vulkan && app_params.enable_parallel ? "true"
+                                                              : "false",
       "\nverbose logs enabled: ", app_params.verbose ? "true" : "false");
+
+  if (app_params.enable_vulkan) {
+    SimpleLogger::LOG_INFO("Enabling Vulkan...");
+    try {
+      VulkanController::getInstance().initialize();
+    } catch (std::exception &ex) {
+      SimpleLogger::LOG_ERROR("Enabling Vulkan error: ", ex.what());
+      app_params.enable_vulkan = false;
+      SimpleLogger::LOG_INFO(
+          "Vulkan GPU acceleration disabled.",
+          app_params.enable_parallel ? " Using CPU parallelism instead." : "");
+    }
+  }
 
   // Run with visitor
   switch (app_params.run_mode) {

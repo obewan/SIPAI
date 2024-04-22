@@ -11,8 +11,10 @@
 #include "Common.h"
 #include "Image.h"
 #include "Layer.h"
+#include <algorithm>
 #include <atomic>
 #include <cstddef>
+#include <cstdint>
 
 namespace sipai {
 
@@ -52,11 +54,13 @@ public:
    * values.
    *
    * @param inputValues The input values for forward propagation.
+   * @param enable_vulkan enable vulkan GPU acceleration (experimental)
    * @param enable_parallel enable parallelism (experimental)
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
   std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues,
+                                       bool enable_vulkan = false,
                                        bool enable_parallel = false);
 
   /**
@@ -82,8 +86,22 @@ public:
   void updateWeights(float learning_rate, bool enable_parallel);
 
   /**
+   * @brief Return the maximum neurons count of any layer
+   *
+   * @return size_t
+   */
+  size_t max_neurons() {
+    auto max_layer = *std::max_element(
+        layers.begin(), layers.end(), [](const auto a, const auto b) {
+          return a->neurons.size() < b->neurons.size();
+        });
+    return max_layer->neurons.size();
+  }
+
+  /**
    * @brief max weights of all neurons, useful for csv export
    *
+   * Updated during neural network import or creation
    */
   size_t max_weights = 0;
 };

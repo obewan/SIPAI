@@ -9,6 +9,8 @@
  */
 #pragma once
 #include "Neuron.h"
+#include "VulkanController.h"
+#include "exception/NeuralNetworkException.h"
 #include <atomic>
 #include <cstddef>
 #include <execution>
@@ -48,7 +50,8 @@ public:
    * @brief Performs forward propagation using the previous layer.
    * @param enable_parallel enable parallelism (experimental)
    */
-  virtual void forwardPropagation(bool enable_parallel = false) {
+  virtual void forwardPropagation(bool enable_vulkan = false,
+                                  bool enable_parallel = false) {
     if (previousLayer == nullptr) {
       return;
     }
@@ -61,8 +64,19 @@ public:
       // Use activation function
       n.value = n.activationFunction(n.value);
     };
+    if (enable_vulkan) {
+      auto &vulkanController = VulkanController::getInstance();
+      if (!vulkanController.IsInitialized()) {
+        throw NeuralNetworkException("Vulkan controller is not initialized.");
+      }
+      // Prepare data for the shader
+      vulkanController.copyNeuronsDataToBuffer(neurons);
+      // Run the shader
+      vulkanController.computeShader(vulkanController.forwardShader, neurons);
+      // Get the results
+      vulkanController.copyBufferToNeuronsData(neurons);
 
-    if (enable_parallel) {
+    } else if (enable_parallel) {
       std::vector<std::jthread> threads;
       size_t num_threads =
           std::min((size_t)std::thread::hardware_concurrency(), neurons.size());

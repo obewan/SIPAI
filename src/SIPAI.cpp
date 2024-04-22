@@ -374,6 +374,16 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                "instead of loading and unloading them, resulting of training "
                "speed but at the cost of more memory,\n"
                "depending on the images total count and size.");
+  app.add_flag("--vul,--vulkan", app_params.enable_vulkan,
+               "Enables GPU acceleration by leveraging Vulkan for processing. "
+               "\nWhen enabled, it utilizes the GPU to speed up computations, "
+               "potentially "
+               "leading to significant performance improvements for "
+               "large-scale operations."
+               "\nPlease note that enabling "
+               "this flag will override the 'enable_parallel' setting, as the "
+               "parallel processing will be handled by the Vulkan API instead "
+               "of the CPU.");
   app.add_flag(
       "--par,--parallelism", app_params.enable_parallel,
       "Enables parallel processing for neural network computations. "

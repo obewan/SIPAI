@@ -38,7 +38,8 @@ void RunnerEnhancerVisitor::visit() const {
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
       const auto &outputData = manager.network->forwardPropagation(
-          inputPart->data, app_params.enable_parallel);
+          inputPart->data, app_params.enable_vulkan,
+          app_params.enable_parallel);
       outputParts.push_back(
           std::make_unique<Image>(outputData, network_params.output_size_x,
                                   network_params.output_size_y));

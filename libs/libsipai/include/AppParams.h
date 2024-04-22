@@ -38,7 +38,7 @@ struct AppParams {
   size_t training_reduce_factor = 4;
   bool random_loading = false;
   bool bulk_loading = false;
-  bool disable_vulkan = false;
+  bool enable_vulkan = false;
   bool enable_parallel = false;
   bool enable_padding = false;
   bool verbose = false;

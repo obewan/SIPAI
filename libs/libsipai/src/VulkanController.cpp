@@ -8,7 +8,8 @@
 
 using namespace sipai;
 
-std::unique_ptr<VulkanController> VulkanController::instance_ = nullptr;
+std::unique_ptr<VulkanController> VulkanController::controllerInstance_ =
+    nullptr;
 
 void VulkanController::initialize() {
   if (isInitialized_) {
@@ -16,6 +17,9 @@ void VulkanController::initialize() {
   }
 
   const auto &manager = Manager::getConstInstance();
+  if (!manager.network) {
+    return;
+  }
 
   // Initialize Vulkan
   VkApplicationInfo appInfo{};
@@ -47,22 +51,22 @@ void VulkanController::initialize() {
   vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, devices.data());
 
   for (const auto &device : devices) {
-    if (isDeviceSuitable(device)) {
-      vkPhysicalDevice_ = device;
+    if (_isDeviceSuitable(device)) {
+      physicalDevice_ = device;
       break;
     }
   }
 
-  if (vkPhysicalDevice_ == VK_NULL_HANDLE) {
+  if (physicalDevice_ == VK_NULL_HANDLE) {
     throw std::runtime_error("failed to find a suitable GPU!");
   }
 
   uint32_t queueFamilyCount = 0;
-  vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice_, &queueFamilyCount,
+  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
                                            nullptr);
 
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-  vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice_, &queueFamilyCount,
+  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
                                            queueFamilies.data());
 
   ;
@@ -93,19 +97,21 @@ void VulkanController::initialize() {
   createInfoDevice.queueCreateInfoCount = 1;
   createInfoDevice.pEnabledFeatures = &deviceFeatures;
 
-  if (vkCreateDevice(vkPhysicalDevice_, &createInfoDevice, nullptr,
-                     &vkLogicalDevice_) != VK_SUCCESS) {
+  if (vkCreateDevice(physicalDevice_, &createInfoDevice, nullptr,
+                     &logicalDevice_) != VK_SUCCESS) {
     throw std::runtime_error("failed to create logical device!");
   }
-  vkGetDeviceQueue(vkLogicalDevice_, queueFamilyIndex_, 0, &queue_);
+  vkGetDeviceQueue(logicalDevice_, queueFamilyIndex_, 0, &queue_);
 
-  forwardShader_ = loadShader(manager.app_params.forwardShader);
+  forwardShader = loadShader(manager.app_params.forwardShader);
 
-  createCommandPool();
-  createDescriptorSetLayout();
-  createDescriptorPool();
-  createDescriptorSet();
-  createPipelineLayout();
+  size_t max_size = manager.network->max_neurons();
+  _createCommandPool();
+  _createDescriptorSetLayout();
+  _createDescriptorPool(max_size);
+  _createDescriptorSet();
+  _createPipelineLayout();
+  _createNeuronsBuffers(max_size);
 
   isInitialized_ = true;
 }
@@ -130,9 +136,9 @@ void VulkanController::loadImage(const std::string &imagePath, size_t split,
 
   // Map the buffer memory and copy the image data
   void *data;
-  vkMapMemory(vkLogicalDevice_, stagingBufferMemory, 0, imageSize, 0, &data);
+  vkMapMemory(logicalDevice_, stagingBufferMemory, 0, imageSize, 0, &data);
   memcpy(data, img.data, (size_t)imageSize);
-  vkUnmapMemory(vkLogicalDevice_, stagingBufferMemory);
+  vkUnmapMemory(logicalDevice_, stagingBufferMemory);
 }
 
 std::unique_ptr<std::vector<uint32_t>>
@@ -161,15 +167,15 @@ VulkanController::loadShader(const std::string &path) {
 }
 
 void VulkanController::computeShader(
-    std::unique_ptr<std::vector<uint32_t>> &computeShader) {
-  std::vector<Neuron> neurons; // TODO: replace with a valid neurons vector
+    std::unique_ptr<std::vector<uint32_t>> &computeShader,
+    std::vector<Neuron> &neurons) {
   // Create shader module
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = sizeof(computeShader);
   createInfo.pCode = reinterpret_cast<const uint32_t *>(computeShader.get());
   VkShaderModule shaderModule;
-  vkCreateShaderModule(vkLogicalDevice_, &createInfo, nullptr, &shaderModule);
+  vkCreateShaderModule(logicalDevice_, &createInfo, nullptr, &shaderModule);
 
   // Create compute pipeline
   VkComputePipelineCreateInfo pipelineInfo{};
@@ -180,27 +186,64 @@ void VulkanController::computeShader(
   pipelineInfo.stage.module = shaderModule;
   pipelineInfo.stage.pName = "main";
   VkPipeline computePipeline;
-  vkCreateComputePipelines(vkLogicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
+  vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
                            nullptr, &computePipeline);
 
   // Create command buffer and record commands
   VkCommandBuffer commandBuffer =
-      beginSingleTimeCommands(vkLogicalDevice_, commandPool_);
+      _beginSingleTimeCommands(logicalDevice_, commandPool_);
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                     computePipeline);
+  // Bind the input buffer
+  VkDescriptorBufferInfo descriptorInputBufferInfo{};
+  descriptorInputBufferInfo.buffer = inputBuffer_;
+  descriptorInputBufferInfo.offset = 0;
+  descriptorInputBufferInfo.range = inputBufferInfo_.size;
+
+  VkWriteDescriptorSet writeInputDescriptorSet{};
+  writeInputDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeInputDescriptorSet.dstSet = descriptorSet_;
+  writeInputDescriptorSet.dstBinding = 0;
+  writeInputDescriptorSet.dstArrayElement = 0;
+  writeInputDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  writeInputDescriptorSet.descriptorCount = 1;
+  writeInputDescriptorSet.pBufferInfo = &descriptorInputBufferInfo;
+
+  // Bind the output buffer
+  VkDescriptorBufferInfo descriptorOutputBufferInfo{};
+  descriptorOutputBufferInfo.buffer = outputBuffer_;
+  descriptorOutputBufferInfo.offset = 0;
+  descriptorOutputBufferInfo.range = outputBufferInfo_.size;
+
+  VkWriteDescriptorSet writeOutputDescriptorSet{};
+  writeOutputDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeOutputDescriptorSet.dstSet = descriptorSet_;
+  writeOutputDescriptorSet.dstBinding = 1;
+  writeOutputDescriptorSet.dstArrayElement = 0;
+  writeOutputDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  writeOutputDescriptorSet.descriptorCount = 1;
+  writeOutputDescriptorSet.pBufferInfo = &descriptorOutputBufferInfo;
+
+  // Update the descriptor set
+  std::array<VkWriteDescriptorSet, 2> writeDescriptorSets = {
+      writeInputDescriptorSet, writeOutputDescriptorSet};
+  vkUpdateDescriptorSets(logicalDevice_,
+                         static_cast<uint32_t>(writeDescriptorSets.size()),
+                         writeDescriptorSets.data(), 0, nullptr);
+
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           pipelineLayout_, 0, 1, &descriptorSet_, 0, nullptr);
   vkCmdDispatch(commandBuffer, static_cast<uint32_t>(neurons.size()), 1, 1);
-  endSingleTimeCommands(vkLogicalDevice_, commandPool_, commandBuffer, queue_);
+  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 
   // Cleanup
-  vkDestroyShaderModule(vkLogicalDevice_, shaderModule, nullptr);
-  vkDestroyPipeline(vkLogicalDevice_, computePipeline, nullptr);
+  vkDestroyShaderModule(logicalDevice_, shaderModule, nullptr);
+  vkDestroyPipeline(logicalDevice_, computePipeline, nullptr);
 }
 
 VkCommandBuffer
-VulkanController::beginSingleTimeCommands(VkDevice device,
-                                          VkCommandPool commandPool) {
+VulkanController::_beginSingleTimeCommands(VkDevice device,
+                                           VkCommandPool commandPool) {
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -219,10 +262,10 @@ VulkanController::beginSingleTimeCommands(VkDevice device,
   return commandBuffer;
 }
 
-void VulkanController::endSingleTimeCommands(VkDevice device,
-                                             VkCommandPool commandPool,
-                                             VkCommandBuffer commandBuffer,
-                                             VkQueue queue) {
+void VulkanController::_endSingleTimeCommands(VkDevice device,
+                                              VkCommandPool commandPool,
+                                              VkCommandBuffer commandBuffer,
+                                              VkQueue queue) {
   vkEndCommandBuffer(commandBuffer);
 
   VkSubmitInfo submitInfo{};
@@ -240,35 +283,36 @@ void VulkanController::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                                     VkMemoryPropertyFlags properties,
                                     VkBuffer &buffer,
                                     VkDeviceMemory &bufferMemory) const {
+  // TODO: refactor, clean buffer and memory
   VkBufferCreateInfo bufferInfo{};
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size;
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  if (vkCreateBuffer(vkLogicalDevice_, &bufferInfo, nullptr, &buffer) !=
+  if (vkCreateBuffer(logicalDevice_, &bufferInfo, nullptr, &buffer) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to create buffer!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetBufferMemoryRequirements(vkLogicalDevice_, buffer, &memRequirements);
+  vkGetBufferMemoryRequirements(logicalDevice_, buffer, &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
   allocInfo.allocationSize = memRequirements.size;
   allocInfo.memoryTypeIndex =
-      findMemoryType(memRequirements.memoryTypeBits, properties);
+      _findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  if (vkAllocateMemory(vkLogicalDevice_, &allocInfo, nullptr, &bufferMemory) !=
+  if (vkAllocateMemory(logicalDevice_, &allocInfo, nullptr, &bufferMemory) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to allocate buffer memory!");
   }
 
-  vkBindBufferMemory(vkLogicalDevice_, buffer, bufferMemory, 0);
+  vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
 }
 
-void VulkanController::createCommandPool() {
+void VulkanController::_createCommandPool() {
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.queueFamilyIndex =
@@ -276,68 +320,142 @@ void VulkanController::createCommandPool() {
   poolInfo.flags =
       VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional flags
 
-  if (vkCreateCommandPool(vkLogicalDevice_, &poolInfo, nullptr,
-                          &commandPool_) != VK_SUCCESS) {
+  if (vkCreateCommandPool(logicalDevice_, &poolInfo, nullptr, &commandPool_) !=
+      VK_SUCCESS) {
     throw std::runtime_error("Failed to create command pool!");
   }
 }
 
-void VulkanController::createDescriptorSetLayout() {
-  VkDescriptorSetLayoutBinding layoutBinding{};
-  layoutBinding.binding = 0; // binding number
-  layoutBinding.descriptorType =
-      VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; // type of the bound descriptor(s)
-  layoutBinding.descriptorCount = 1;     // number of descriptors in the binding
-  layoutBinding.stageFlags =
+void VulkanController::_createDescriptorSetLayout() {
+  std::array<VkDescriptorSetLayoutBinding, 2> layoutBindings{};
+
+  // Input buffer binding
+  layoutBindings[0].binding = 0; // binding number
+  layoutBindings[0].descriptorType =
+      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
+  layoutBindings[0].descriptorCount = 1; // number of descriptors in the binding
+  layoutBindings[0].stageFlags =
+      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
+
+  // Output buffer binding
+  layoutBindings[1].binding = 1; // binding number
+  layoutBindings[1].descriptorType =
+      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
+  layoutBindings[1].descriptorCount = 1; // number of descriptors in the binding
+  layoutBindings[1].stageFlags =
       VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = 1; // number of bindings in the descriptor set
-  layoutInfo.pBindings = &layoutBinding; // array of bindings
+  layoutInfo.bindingCount = static_cast<uint32_t>(
+      layoutBindings.size()); // number of bindings in the descriptor set
+  layoutInfo.pBindings = layoutBindings.data(); // array of bindings
 
-  if (vkCreateDescriptorSetLayout(vkLogicalDevice_, &layoutInfo, nullptr,
+  if (vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo, nullptr,
                                   &descriptorSetLayout_) != VK_SUCCESS) {
     throw std::runtime_error("Failed to create descriptor set layout!");
   }
 }
 
-void VulkanController::createDescriptorPool() {
-  std::vector<Neuron> neurons; // TODO: replace with a valid neurons vector
+void VulkanController::_createDescriptorPool(size_t max_size) {
   VkDescriptorPoolSize poolSize{};
-  poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  poolSize.descriptorCount = static_cast<uint32_t>(neurons.size());
+  poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  poolSize.descriptorCount = static_cast<uint32_t>(max_size);
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
   poolInfo.poolSizeCount = 1;
   poolInfo.pPoolSizes = &poolSize;
-  poolInfo.maxSets = static_cast<uint32_t>(neurons.size());
+  poolInfo.maxSets = static_cast<uint32_t>(max_size);
 
-  if (vkCreateDescriptorPool(vkLogicalDevice_, &poolInfo, nullptr,
+  if (vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr,
                              &descriptorPool_) != VK_SUCCESS) {
     throw std::runtime_error("Failed to create descriptor pool!");
   }
 }
 
-void VulkanController::createDescriptorSet() {
+void VulkanController::_createDescriptorSet() {
   VkDescriptorSetAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
   allocInfo.descriptorPool = descriptorPool_;
   allocInfo.descriptorSetCount = 1;
   allocInfo.pSetLayouts = &descriptorSetLayout_;
 
-  if (vkAllocateDescriptorSets(vkLogicalDevice_, &allocInfo, &descriptorSet_) !=
+  if (vkAllocateDescriptorSets(logicalDevice_, &allocInfo, &descriptorSet_) !=
       VK_SUCCESS) {
     throw std::runtime_error("Failed to allocate descriptor set!");
   }
+}
+
+void VulkanController::_createNeuronsBuffers(size_t max_size) {
+  // Create Input buffer
+  _createNeuronsBuffer(sizeof(Neuron) * max_size, inputBufferInfo_,
+                       inputBuffer_, inputBufferMemory_);
+  // Create Ouput buffer
+  _createNeuronsBuffer(sizeof(RGBA) * max_size, outputBufferInfo_,
+                       outputBuffer_, outputBufferMemory_);
+}
+
+void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
+                                            VkBufferCreateInfo &bufferInfo,
+                                            VkBuffer &buffer,
+                                            VkDeviceMemory &bufferMemory) {
+
+  bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+  bufferInfo.size = size; // Size of the buffer in bytes
+  bufferInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // Buffer will be used
+                                                         // as a storage buffer
+  bufferInfo.sharingMode =
+      VK_SHARING_MODE_EXCLUSIVE; // Buffer will be used by one queue family at a
+                                 // time
+
+  if (vkCreateBuffer(logicalDevice_, &bufferInfo, nullptr, &buffer) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("Failed to create buffer!");
+  }
+
+  VkMemoryRequirements memRequirements;
+  vkGetBufferMemoryRequirements(logicalDevice_, buffer, &memRequirements);
+
+  // Allocate memory for the buffer
+  VkMemoryAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+  allocInfo.allocationSize = memRequirements.size;
+  allocInfo.memoryTypeIndex = _findMemoryType(
+      memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                                          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+  if (vkAllocateMemory(logicalDevice_, &allocInfo, nullptr, &bufferMemory) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("Failed to allocate buffer memory!");
+  }
+
+  vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
+}
+
+void VulkanController::copyNeuronsDataToBuffer(
+    const std::vector<Neuron> &neurons) {
+  void *data;
+  vkMapMemory(logicalDevice_, inputBufferMemory_, 0, inputBufferInfo_.size, 0,
+              &data);
+  memcpy(data, neurons.data(), (size_t)inputBufferInfo_.size);
+  vkUnmapMemory(logicalDevice_, inputBufferMemory_);
+}
+
+void VulkanController::copyBufferToNeuronsData(std::vector<Neuron> &neurons) {
+  void *data;
+  vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
+              &data);
+  memcpy(static_cast<void *>(neurons.data()), data,
+         (size_t)outputBufferInfo_.size);
+  vkUnmapMemory(logicalDevice_, outputBufferMemory_);
 }
 
 void VulkanController::updateDescriptorSet(VkBuffer &buffer) {
   VkDescriptorBufferInfo bufferInfo{};
   bufferInfo.buffer = buffer;
   bufferInfo.offset = 0;
-  bufferInfo.range = sizeof(RGBA);
+  bufferInfo.range = sizeof(RGBA); // TODO: CHECK THIS
 
   VkWriteDescriptorSet descriptorWrite{};
   descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -348,10 +466,10 @@ void VulkanController::updateDescriptorSet(VkBuffer &buffer) {
   descriptorWrite.descriptorCount = 1;
   descriptorWrite.pBufferInfo = &bufferInfo;
 
-  vkUpdateDescriptorSets(vkLogicalDevice_, 1, &descriptorWrite, 0, nullptr);
+  vkUpdateDescriptorSets(logicalDevice_, 1, &descriptorWrite, 0, nullptr);
 }
 
-void VulkanController::createPipelineLayout() {
+void VulkanController::_createPipelineLayout() {
   VkDescriptorSetLayout setLayouts[] = {descriptorSetLayout_};
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -360,17 +478,17 @@ void VulkanController::createPipelineLayout() {
   pipelineLayoutInfo.pushConstantRangeCount = 0;    // Optional
   pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-  if (vkCreatePipelineLayout(vkLogicalDevice_, &pipelineLayoutInfo, nullptr,
+  if (vkCreatePipelineLayout(logicalDevice_, &pipelineLayoutInfo, nullptr,
                              &pipelineLayout_) != VK_SUCCESS) {
     throw std::runtime_error("Failed to create pipeline layout!");
   }
 }
 
 uint32_t
-VulkanController::findMemoryType(uint32_t typeFilter,
-                                 VkMemoryPropertyFlags properties) const {
+VulkanController::_findMemoryType(uint32_t typeFilter,
+                                  VkMemoryPropertyFlags properties) const {
   VkPhysicalDeviceMemoryProperties memProperties;
-  vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice_, &memProperties);
+  vkGetPhysicalDeviceMemoryProperties(physicalDevice_, &memProperties);
 
   for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
     if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags &
@@ -382,7 +500,7 @@ VulkanController::findMemoryType(uint32_t typeFilter,
   throw std::runtime_error("failed to find suitable memory type!");
 }
 
-bool VulkanController::isDeviceSuitable(const VkPhysicalDevice &device) {
+bool VulkanController::_isDeviceSuitable(const VkPhysicalDevice &device) {
   VkPhysicalDeviceProperties deviceProperties;
   VkPhysicalDeviceFeatures deviceFeatures;
   vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -404,34 +522,47 @@ bool VulkanController::isDeviceSuitable(const VkPhysicalDevice &device) {
 
 void VulkanController::destroy() {
 
+  if (inputBuffer_ != VK_NULL_HANDLE) {
+    vkFreeMemory(logicalDevice_, inputBufferMemory_, nullptr);
+    vkDestroyBuffer(logicalDevice_, inputBuffer_, nullptr);
+    inputBufferMemory_ = VK_NULL_HANDLE;
+    inputBuffer_ = VK_NULL_HANDLE;
+  }
+  if (outputBuffer_ != VK_NULL_HANDLE) {
+    vkFreeMemory(logicalDevice_, outputBufferMemory_, nullptr);
+    vkDestroyBuffer(logicalDevice_, outputBuffer_, nullptr);
+    outputBufferMemory_ = VK_NULL_HANDLE;
+    outputBuffer_ = VK_NULL_HANDLE;
+  }
   if (descriptorPool_ != VK_NULL_HANDLE) {
-    vkDestroyDescriptorPool(vkLogicalDevice_, descriptorPool_, nullptr);
+    vkDestroyDescriptorPool(logicalDevice_, descriptorPool_, nullptr);
     descriptorPool_ = VK_NULL_HANDLE;
     // descriptor set is destroyed with the descriptor pool
     descriptorSet_ = VK_NULL_HANDLE;
   }
   if (pipelineLayout_ != VK_NULL_HANDLE) {
-    vkDestroyPipelineLayout(vkLogicalDevice_, pipelineLayout_, nullptr);
+    vkDestroyPipelineLayout(logicalDevice_, pipelineLayout_, nullptr);
     pipelineLayout_ = VK_NULL_HANDLE;
   }
   if (descriptorSetLayout_ != VK_NULL_HANDLE) {
-    vkDestroyDescriptorSetLayout(vkLogicalDevice_, descriptorSetLayout_,
-                                 nullptr);
+    vkDestroyDescriptorSetLayout(logicalDevice_, descriptorSetLayout_, nullptr);
     descriptorSetLayout_ = VK_NULL_HANDLE;
   }
   if (commandPool_ != VK_NULL_HANDLE) {
-    vkDestroyCommandPool(vkLogicalDevice_, commandPool_, nullptr);
+    vkDestroyCommandPool(logicalDevice_, commandPool_, nullptr);
     commandPool_ = VK_NULL_HANDLE;
   }
-  if (vkLogicalDevice_ != VK_NULL_HANDLE) {
-    vkDestroyDevice(vkLogicalDevice_, nullptr);
-    vkLogicalDevice_ = VK_NULL_HANDLE;
+  if (logicalDevice_ != VK_NULL_HANDLE) {
+    vkDestroyDevice(logicalDevice_, nullptr);
+    logicalDevice_ = VK_NULL_HANDLE;
+    // queue is destroyed with the logical device
+    queue_ = VK_NULL_HANDLE;
   }
   if (vkInstance_ != VK_NULL_HANDLE) {
     vkDestroyInstance(vkInstance_, nullptr);
     vkInstance_ = VK_NULL_HANDLE;
     // physical device is destroyed with the instance
-    vkPhysicalDevice_ = VK_NULL_HANDLE;
+    physicalDevice_ = VK_NULL_HANDLE;
   }
   isInitialized_ = false;
 }

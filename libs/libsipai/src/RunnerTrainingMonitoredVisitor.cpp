@@ -216,7 +216,8 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
 
     // Perform forward propagation
     const auto &outputData = manager.network->forwardPropagation(
-        inputPart->data, manager.app_params.enable_parallel);
+        inputPart->data, manager.app_params.enable_vulkan,
+        manager.app_params.enable_parallel);
 
     // If the loss should be computed for the current image, compute the loss
     // for the current part

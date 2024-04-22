@@ -9,9 +9,11 @@
  */
 #pragma once
 
+#include "Neuron.h"
 #include <atomic>
 #include <memory>
 #include <mutex>
+#include <vector>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
 
@@ -21,8 +23,8 @@ public:
   static VulkanController &getInstance() {
     static std::once_flag initInstanceFlag;
     std::call_once(initInstanceFlag,
-                   [] { instance_.reset(new VulkanController); });
-    return *instance_;
+                   [] { controllerInstance_.reset(new VulkanController); });
+    return *controllerInstance_;
   }
   static const VulkanController &getConstInstance() {
     return const_cast<const VulkanController &>(getInstance());
@@ -37,9 +39,9 @@ public:
 
   const VkInstance &getVkInstance() { return vkInstance_; }
 
-  const VkPhysicalDevice &getVkPhysicalDevice() { return vkPhysicalDevice_; }
+  const VkPhysicalDevice &getVkPhysicalDevice() { return physicalDevice_; }
 
-  const VkDevice &getVkDevice() { return vkLogicalDevice_; }
+  const VkDevice &getVkDevice() { return logicalDevice_; }
 
   /**
    * @brief Reads an image from a specified path and returns it as Image
@@ -65,8 +67,10 @@ public:
    * @brief Compute a shader
    *
    * @param computeShader
+   * @param neurons
    */
-  void computeShader(std::unique_ptr<std::vector<uint32_t>> &computeShader);
+  void computeShader(std::unique_ptr<std::vector<uint32_t>> &computeShader,
+                     std::vector<Neuron> &neurons);
 
   /**
    * @brief Create an image Buffer in memory
@@ -82,36 +86,6 @@ public:
                     VkDeviceMemory &bufferMemory) const;
 
   /**
-   * @brief Create a Command Pool object
-   *
-   */
-  void createCommandPool();
-
-  /**
-   * @brief Create a Descriptor Set object
-   *
-   */
-  void createDescriptorSetLayout();
-
-  /**
-   * @brief Create a Descriptor Pool object
-   *
-   */
-  void createDescriptorPool();
-
-  /**
-   * @brief Create a Descriptor Set object
-   *
-   */
-  void createDescriptorSet();
-
-  /**
-   * @brief Create a Pipeline Layout object
-   *
-   */
-  void createPipelineLayout();
-
-  /**
    * @brief Update a Descriptor Set
    *
    * @param buffer
@@ -119,53 +93,18 @@ public:
   void updateDescriptorSet(VkBuffer &buffer);
 
   /**
-   * @brief Begins a single time command buffer.
+   * @brief Copy Neurons data to buffer
    *
-   * This function allocates a command buffer and starts it with the
-   * VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT flag.
-   *
-   * @param device The logical device that the command buffer will be created
-   * on.
-   * @param commandPool The command pool that the command buffer will be
-   * allocated from.
-   * @return The allocated and started command buffer.
+   * @param neurons
    */
-  VkCommandBuffer beginSingleTimeCommands(VkDevice device,
-                                          VkCommandPool commandPool);
+  void copyNeuronsDataToBuffer(const std::vector<Neuron> &neurons);
 
   /**
-   * @brief Ends a single time command buffer.
+   * @brief Copy buffer to Neurons data
    *
-   * This function ends the command buffer, submits it to the queue, and then
-   * frees it once the queue has finished executing it.
-   *
-   * @param device The logical device that the command buffer was created on.
-   * @param commandPool The command pool that the command buffer was allocated
-   * from.
-   * @param commandBuffer The command buffer to end and submit.
-   * @param queue The queue to submit the command buffer to.
+   * @param neurons
    */
-  void endSingleTimeCommands(VkDevice device, VkCommandPool commandPool,
-                             VkCommandBuffer commandBuffer, VkQueue queue);
-
-  /**
-   * @brief Find memory type
-   *
-   * @param typeFilter
-   * @param properties
-   * @return uint32_t
-   */
-  uint32_t findMemoryType(uint32_t typeFilter,
-                          VkMemoryPropertyFlags properties) const;
-
-  /**
-   * @brief Check if a physical device has some required features
-   *
-   * @param device
-   * @return true
-   * @return false
-   */
-  bool isDeviceSuitable(const VkPhysicalDevice &device);
+  void copyBufferToNeuronsData(std::vector<Neuron> &neurons);
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -173,24 +112,50 @@ public:
    */
   void destroy();
 
+  /**
+   * @brief compiled forward shader
+   *
+   */
+  std::unique_ptr<std::vector<uint32_t>> forwardShader;
+
 private:
   VulkanController() = default;
-  static std::unique_ptr<VulkanController> instance_;
+  static std::unique_ptr<VulkanController> controllerInstance_;
 
   std::atomic<bool> isInitialized_ = false;
+  unsigned int queueFamilyIndex_ = 0;
 
   VkInstance vkInstance_ = VK_NULL_HANDLE;
-  VkPhysicalDevice vkPhysicalDevice_ = VK_NULL_HANDLE;
-  VkDevice vkLogicalDevice_ = VK_NULL_HANDLE;
+  VkPhysicalDevice physicalDevice_ = VK_NULL_HANDLE;
+  VkDevice logicalDevice_ = VK_NULL_HANDLE;
   VkCommandPool commandPool_ = VK_NULL_HANDLE;
   VkDescriptorSetLayout descriptorSetLayout_ = VK_NULL_HANDLE;
   VkDescriptorPool descriptorPool_ = VK_NULL_HANDLE;
   VkDescriptorSet descriptorSet_ = VK_NULL_HANDLE;
   VkPipelineLayout pipelineLayout_ = VK_NULL_HANDLE;
   VkQueue queue_ = VK_NULL_HANDLE;
+  VkBuffer inputBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory inputBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo inputBufferInfo_{};
+  VkBuffer outputBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo outputBufferInfo_{};
 
-  unsigned int queueFamilyIndex_ = 0;
+  VkCommandBuffer _beginSingleTimeCommands(VkDevice device,
+                                           VkCommandPool commandPool);
+  uint32_t _findMemoryType(uint32_t typeFilter,
+                           VkMemoryPropertyFlags properties) const;
 
-  std::unique_ptr<std::vector<uint32_t>> forwardShader_;
+  bool _isDeviceSuitable(const VkPhysicalDevice &device);
+  void _createCommandPool();
+  void _createPipelineLayout();
+  void _createDescriptorSet();
+  void _createDescriptorSetLayout();
+  void _createDescriptorPool(size_t max_size);
+  void _createNeuronsBuffers(size_t max_size);
+  void _createNeuronsBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
+                            VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+  void _endSingleTimeCommands(VkDevice device, VkCommandPool commandPool,
+                              VkCommandBuffer commandBuffer, VkQueue queue);
 };
 } // namespace sipai
