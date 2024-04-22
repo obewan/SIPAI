@@ -8,6 +8,7 @@
  *
  */
 #pragma once
+#include "ActivationFunctions.h"
 #include "Neuron.h"
 #include "VulkanController.h"
 #include "exception/NeuralNetworkException.h"
@@ -43,6 +44,8 @@ public:
   Layer *nextLayer = nullptr;
   size_t size_x = 0;
   size_t size_y = 0;
+  EActivationFunction activationFunction;
+  float activationFunctionAlpha;
 
   const std::string UndefinedLayer = "UndefinedLayer";
 
@@ -64,7 +67,7 @@ public:
       // Use activation function
       n.value = n.activationFunction(n.value);
     };
-    
+
     if (enable_vulkan) {
       auto &vulkanController = VulkanController::getInstance();
       if (!vulkanController.IsInitialized()) {
@@ -73,6 +76,8 @@ public:
       // Prepare data for the shader
       vulkanController.copyNeuronsDataToInputBuffer(previousLayer->neurons);
       vulkanController.copyNeuronsDataToCurrentBuffer(neurons);
+      vulkanController.copyActivationFunctionToActivationFunctionBuffer(
+          activationFunction, activationFunctionAlpha);
       // Run the shader
       vulkanController.computeShader(vulkanController.forwardShader, neurons);
       // Get the results

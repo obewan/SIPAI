@@ -18,9 +18,16 @@
 namespace sipai {
 /**
  * @brief Activation Function enum.
- *
+ * Beware the int values are used in the Vulkan GLSL shader
  */
-enum class EActivationFunction { ELU, LReLU, PReLU, ReLU, Sigmoid, Tanh };
+enum class EActivationFunction {
+  ELU = 0,
+  LReLU = 1,
+  PReLU = 2,
+  ReLU = 3,
+  Sigmoid = 4,
+  Tanh = 5
+};
 
 const std::map<std::string, EActivationFunction, std::less<>> activation_map{
     {"ELU", EActivationFunction::ELU},

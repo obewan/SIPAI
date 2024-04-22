@@ -6,7 +6,17 @@
  */
 
 layout (local_size_x = 1) in;
-const int WEIGHTS_SIZE = 1000;
+
+const int WEIGHTS_SIZE = 10000;
+
+const int ELU = 0;
+const int LReLU = 1;
+const int PReLU = 2;
+const int ReLU = 3;
+const int Sigmoid = 4;
+const int Tanh = 5;
+
+
 
 struct RGBA {
     vec4 value;
@@ -29,13 +39,45 @@ layout (std430, binding = 2) buffer CurrentBuffer {
     Neuron neurons[];
 } currentBuffer;
 
+layout (std430, binding = 3) buffer ActivationFunction {
+    int function;
+    float alpha;
+} activationFunction;
+
+
 void main() {
-    uint index = gl_GlobalInvocationID.x;
+    uint index = gl_GlobalInvocationID.x;    
     vec4 value = vec4(0.0);
     for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
         value += inputBuffer.neurons[i].value.value * currentBuffer.neurons[index].weights[i].value;
     }
-    // Apply activation function (e.g., ReLU clamped)
-    value = min(max(value, vec4(0.0)), vec4(1.0));
+    
+    switch (activationFunction.function) {
+        case ELU:        
+            bvec4 mask = greaterThanEqual(value, vec4(0.0));
+            value = mix(vec4(activationFunction.alpha) * (exp(value) - vec4(1.0)), value, mask);
+            value = clamp(value, vec4(0.0), vec4(1.0));
+        break;
+        case LReLU: 
+            value = clamp(0.01*value, vec4(0.0), vec4(1.0));
+        break;
+        case PReLU:
+            value = max(activationFunction.alpha * value, value);
+            value = clamp(value, vec4(0.0), vec4(1.0));
+        break;
+        case ReLU: 
+            value = clamp(value, vec4(0.0), vec4(1.0));            
+        break;
+        case Sigmoid:
+            value = 1.0 / (1.0 + exp(-value));
+            value = clamp(value, vec4(0.0), vec4(1.0));
+        break;
+        case Tanh: // shifted tanh [-1,1] to [0,1]
+            value = (tanh(value)/2.0) + 0.5;
+        break;
+        default:
+            value = clamp(value, vec4(0.0), vec4(1.0));            
+        break;
+    }
     outputBuffer.values[index] = value;
 }

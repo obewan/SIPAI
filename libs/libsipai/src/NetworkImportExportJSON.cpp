@@ -94,9 +94,13 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
         break;
       case LayerType::LayerHidden:
         layer = new LayerHidden();
+        layer->activationFunction = networkParams.hidden_activation_function;
+        layer->activationFunctionAlpha = networkParams.hidden_activation_alpha;
         break;
       case LayerType::LayerOutput:
         layer = new LayerOutput();
+        layer->activationFunction = networkParams.output_activation_function;
+        layer->activationFunctionAlpha = networkParams.output_activation_alpha;
         break;
       default:
         throw ImportExportException("Layer type not recognized");

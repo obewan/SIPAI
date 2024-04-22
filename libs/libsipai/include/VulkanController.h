@@ -75,6 +75,15 @@ public:
   void copyOutputBufferToNeuronsData(std::vector<Neuron> &neurons);
 
   /**
+   * @brief Copy Activation Function
+   *
+   * @param activationFunction
+   * @param alpha
+   */
+  void copyActivationFunctionToActivationFunctionBuffer(
+      const EActivationFunction &activationFunction, float alpha);
+
+  /**
    * @brief Destroy the device instance, cleaning ressources
    *
    */
@@ -111,6 +120,9 @@ private:
   VkBuffer currentBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory currentBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo currentBufferInfo_{};
+  VkBuffer activationFunctionBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory activationFunctionBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo activationFunctionBufferInfo_{};
 
   VkCommandBuffer _beginSingleTimeCommands(VkDevice device,
                                            VkCommandPool commandPool);

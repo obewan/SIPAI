@@ -63,6 +63,10 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
     auto hiddenLayer = new LayerHidden(network_params_.hidden_size_x,
                                        network_params_.hidden_size_y);
     hiddenLayer->neurons.resize(hiddenLayer->size_x * hiddenLayer->size_y);
+    hiddenLayer->activationFunction =
+        network_params_.hidden_activation_function;
+    hiddenLayer->activationFunctionAlpha =
+        network_params_.hidden_activation_alpha;
     network_->layers.push_back(hiddenLayer);
   }
 
@@ -70,6 +74,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   auto outputLayer = new LayerOutput(network_params_.output_size_x,
                                      network_params_.output_size_y);
   outputLayer->neurons.resize(outputLayer->size_x * outputLayer->size_y);
+  outputLayer->activationFunction = network_params_.output_activation_function;
+  outputLayer->activationFunctionAlpha =
+      network_params_.output_activation_alpha;
   network_->layers.push_back(outputLayer);
   return *this;
 }

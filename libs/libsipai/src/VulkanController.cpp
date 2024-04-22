@@ -1,4 +1,5 @@
 #include "VulkanController.h"
+#include "ActivationFunctions.h"
 #include "Manager.h"
 #include <algorithm>
 #include <filesystem>
@@ -206,7 +207,7 @@ void VulkanController::computeShader(
   writeOutputDescriptorSet.descriptorCount = 1;
   writeOutputDescriptorSet.pBufferInfo = &descriptorOutputBufferInfo;
 
-  // Bind the weights buffer
+  // Bind the current buffer
   VkDescriptorBufferInfo descriptorCurrentBufferInfo{};
   descriptorCurrentBufferInfo.buffer = currentBuffer_;
   descriptorCurrentBufferInfo.offset = 0;
@@ -220,10 +221,24 @@ void VulkanController::computeShader(
   writeCurrentDescriptorSet.descriptorCount = 1;
   writeCurrentDescriptorSet.pBufferInfo = &descriptorCurrentBufferInfo;
 
+  // Bind the activation function buffer
+  VkDescriptorBufferInfo descriptorAFBufferInfo{};
+  descriptorAFBufferInfo.buffer = activationFunctionBuffer_;
+  descriptorAFBufferInfo.offset = 0;
+  descriptorAFBufferInfo.range = activationFunctionBufferInfo_.size;
+  VkWriteDescriptorSet writeAFDescriptorSet{};
+  writeAFDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeAFDescriptorSet.dstSet = descriptorSet_;
+  writeAFDescriptorSet.dstBinding = 3;
+  writeAFDescriptorSet.dstArrayElement = 0;
+  writeAFDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  writeAFDescriptorSet.descriptorCount = 1;
+  writeAFDescriptorSet.pBufferInfo = &descriptorAFBufferInfo;
+
   // Update the descriptor set
-  std::array<VkWriteDescriptorSet, 3> writeDescriptorSets = {
+  std::array<VkWriteDescriptorSet, 4> writeDescriptorSets = {
       writeInputDescriptorSet, writeOutputDescriptorSet,
-      writeCurrentDescriptorSet};
+      writeCurrentDescriptorSet, writeAFDescriptorSet};
   vkUpdateDescriptorSets(logicalDevice_,
                          static_cast<uint32_t>(writeDescriptorSets.size()),
                          writeDescriptorSets.data(), 0, nullptr);
@@ -291,7 +306,7 @@ void VulkanController::_createCommandPool() {
 }
 
 void VulkanController::_createDescriptorSetLayout() {
-  std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
+  std::array<VkDescriptorSetLayoutBinding, 4> layoutBindings{};
 
   // Input buffer binding
   layoutBindings[0].binding = 0; // binding number
@@ -315,6 +330,14 @@ void VulkanController::_createDescriptorSetLayout() {
       VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
   layoutBindings[2].descriptorCount = 1; // number of descriptors in the binding
   layoutBindings[2].stageFlags =
+      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
+
+  // ActivationFunction buffer binding
+  layoutBindings[3].binding = 3; // binding number
+  layoutBindings[3].descriptorType =
+      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
+  layoutBindings[3].descriptorCount = 1; // number of descriptors in the binding
+  layoutBindings[3].stageFlags =
       VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
@@ -369,6 +392,10 @@ void VulkanController::_createNeuronsBuffers(size_t max_size) {
   // Create Current buffer
   _createNeuronsBuffer(sizeof(Neuron) * max_size, currentBufferInfo_,
                        currentBuffer_, currentBufferMemory_);
+  // Create Activation buffer
+  _createNeuronsBuffer(sizeof(int) + sizeof(float),
+                       activationFunctionBufferInfo_, activationFunctionBuffer_,
+                       activationFunctionBufferMemory_);
 }
 
 void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
@@ -426,6 +453,21 @@ void VulkanController::copyNeuronsDataToCurrentBuffer(
   vkUnmapMemory(logicalDevice_, currentBufferMemory_);
 }
 
+void VulkanController::copyActivationFunctionToActivationFunctionBuffer(
+    const EActivationFunction &activationFunction, float alpha) {
+  struct GLSLActivationFunction {
+    int value;
+    float alpha;
+  } glslActivationFunction;
+  glslActivationFunction.value = (int)activationFunction;
+  glslActivationFunction.alpha = alpha;
+  void *data;
+  vkMapMemory(logicalDevice_, activationFunctionBufferMemory_, 0,
+              activationFunctionBufferInfo_.size, 0, &data);
+  memcpy(data, &glslActivationFunction, sizeof(glslActivationFunction));
+  vkUnmapMemory(logicalDevice_, activationFunctionBufferMemory_);
+}
+
 void VulkanController::copyOutputBufferToNeuronsData(
     std::vector<Neuron> &neurons) {
   // Copy the OutputBuffer data directly into the value field of the neurons
@@ -434,9 +476,6 @@ void VulkanController::copyOutputBufferToNeuronsData(
               &data);
   auto *bufferData = static_cast<std::array<float, 4> *>(data);
 
-  // for (size_t i = 0; i < neurons.size(); ++i) {
-  //   neurons[i].value.value = bufferData[i];
-  // }
   std::transform(bufferData, bufferData + neurons.size(), neurons.begin(),
                  neurons.begin(),
                  [](const std::array<float, 4> &bufferValue, Neuron &neuron) {
@@ -517,6 +556,12 @@ void VulkanController::destroy() {
     vkDestroyBuffer(logicalDevice_, currentBuffer_, nullptr);
     currentBufferMemory_ = VK_NULL_HANDLE;
     currentBuffer_ = VK_NULL_HANDLE;
+  }
+  if (activationFunctionBuffer_ != VK_NULL_HANDLE) {
+    vkFreeMemory(logicalDevice_, activationFunctionBufferMemory_, nullptr);
+    vkDestroyBuffer(logicalDevice_, activationFunctionBuffer_, nullptr);
+    activationFunctionBufferMemory_ = VK_NULL_HANDLE;
+    activationFunctionBuffer_ = VK_NULL_HANDLE;
   }
   if (descriptorPool_ != VK_NULL_HANDLE) {
     vkDestroyDescriptorPool(logicalDevice_, descriptorPool_, nullptr);
