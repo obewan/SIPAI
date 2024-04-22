@@ -152,7 +152,7 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
   const float previous_learning_rate = learningRate;
   const float increase_slower_factor = 1.5f;
 
-  if (validationLoss > previousValidationLoss &&
+  if (validationLoss >= previousValidationLoss &&
       learningRate > learning_rate_min) {
     // this will decrease learningRate (0.001 * 0.5 = 0.0005)
     learningRate *= learning_rate_adaptive_factor;

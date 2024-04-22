@@ -73,15 +73,31 @@ public:
       if (!vulkanController.IsInitialized()) {
         throw NeuralNetworkException("Vulkan controller is not initialized.");
       }
+      // Copy fence (semaphore)
+      VkFenceCreateInfo fenceInfo{};
+      fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+      VkFence copyFence;
+      vkCreateFence(vulkanController.getDevice(), &fenceInfo, nullptr,
+                    &copyFence);
+
       // Prepare data for the shader
       vulkanController.copyNeuronsDataToInputBuffer(previousLayer->neurons);
       vulkanController.copyNeuronsDataToCurrentBuffer(neurons);
       vulkanController.copyActivationFunctionToActivationFunctionBuffer(
           activationFunction, activationFunctionAlpha);
+
+      // Wait for the copy operations to complete
+      vkWaitForFences(vulkanController.getDevice(), 1, &copyFence, VK_TRUE,
+                      UINT64_MAX);
+
       // Run the shader
       vulkanController.computeShader(vulkanController.forwardShader, neurons);
+
       // Get the results
       vulkanController.copyOutputBufferToNeuronsData(neurons);
+
+      // Cleaning
+      vkDestroyFence(vulkanController.getDevice(), copyFence, nullptr);
 
     } else if (enable_parallel) {
       std::vector<std::jthread> threads;

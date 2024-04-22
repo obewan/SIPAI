@@ -246,6 +246,7 @@ void VulkanController::computeShader(
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           pipelineLayout_, 0, 1, &descriptorSet_, 0, nullptr);
   vkCmdDispatch(commandBuffer, static_cast<uint32_t>(neurons.size()), 1, 1);
+
   _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 
   // Cleanup
@@ -280,15 +281,24 @@ void VulkanController::_endSingleTimeCommands(VkDevice device,
                                               VkQueue queue) {
   vkEndCommandBuffer(commandBuffer);
 
+  // Create a fence (Semaphore)
+  VkFenceCreateInfo fenceInfo{};
+  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+  VkFence computeFence;
+  vkCreateFence(device, &fenceInfo, nullptr, &computeFence);
+
   VkSubmitInfo submitInfo{};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-
   vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
-  vkQueueWaitIdle(queue);
 
+  // Wait for the fence to signal that the GPU has finished
+  vkWaitForFences(device, 1, &computeFence, VK_TRUE, UINT64_MAX);
+
+  // Cleaning
   vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+  vkDestroyFence(device, computeFence, nullptr);
 }
 
 void VulkanController::_createCommandPool() {

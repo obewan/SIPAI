@@ -95,6 +95,8 @@ public:
    */
   std::unique_ptr<std::vector<uint32_t>> forwardShader;
 
+  VkDevice &getDevice() { return logicalDevice_; }
+
 private:
   VulkanController() = default;
   static std::unique_ptr<VulkanController> controllerInstance_;
