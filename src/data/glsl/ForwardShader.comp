@@ -6,10 +6,15 @@
  */
 
 layout (local_size_x = 1) in;
+const int WEIGHTS_SIZE = 1000;
+
+struct RGBA {
+    vec4 value;
+};
 
 struct Neuron {
-    vec4 value;
-    vec4 weights;
+    RGBA value;
+    RGBA weights[WEIGHTS_SIZE];
 };
 
 layout (std430, binding = 0) buffer InputBuffer {
@@ -20,13 +25,17 @@ layout (std430, binding = 1) buffer OutputBuffer {
     vec4 values[];
 } outputBuffer;
 
+layout (std430, binding = 2) buffer CurrentBuffer {
+    Neuron neurons[];
+} currentBuffer;
+
 void main() {
     uint index = gl_GlobalInvocationID.x;
     vec4 value = vec4(0.0);
     for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
-        value += inputBuffer.neurons[i].value * inputBuffer.neurons[i].weights;
+        value += inputBuffer.neurons[i].value.value * currentBuffer.neurons[index].weights[i].value;
     }
-    // Apply activation function (e.g., ReLU)
-    value = max(value, vec4(0.0));
+    // Apply activation function (e.g., ReLU clamped)
+    value = min(max(value, vec4(0.0)), vec4(1.0));
     outputBuffer.values[index] = value;
 }

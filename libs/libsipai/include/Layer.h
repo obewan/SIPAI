@@ -64,17 +64,19 @@ public:
       // Use activation function
       n.value = n.activationFunction(n.value);
     };
+    
     if (enable_vulkan) {
       auto &vulkanController = VulkanController::getInstance();
       if (!vulkanController.IsInitialized()) {
         throw NeuralNetworkException("Vulkan controller is not initialized.");
       }
       // Prepare data for the shader
-      vulkanController.copyNeuronsDataToBuffer(neurons);
+      vulkanController.copyNeuronsDataToInputBuffer(previousLayer->neurons);
+      vulkanController.copyNeuronsDataToCurrentBuffer(neurons);
       // Run the shader
       vulkanController.computeShader(vulkanController.forwardShader, neurons);
       // Get the results
-      vulkanController.copyBufferToNeuronsData(neurons);
+      vulkanController.copyOutputBufferToNeuronsData(neurons);
 
     } else if (enable_parallel) {
       std::vector<std::jthread> threads;

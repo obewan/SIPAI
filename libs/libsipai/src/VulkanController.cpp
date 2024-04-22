@@ -1,5 +1,6 @@
 #include "VulkanController.h"
 #include "Manager.h"
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -116,31 +117,6 @@ void VulkanController::initialize() {
   isInitialized_ = true;
 }
 
-void VulkanController::loadImage(const std::string &imagePath, size_t split,
-                                 bool withPadding, size_t resize_x,
-                                 size_t resize_y) const {
-  // Load image using OpenCV
-  cv::Mat img = cv::imread(imagePath, cv::IMREAD_COLOR);
-
-  // Convert image data to RGBA (if not already)
-  cv::cvtColor(img, img, cv::COLOR_BGR2RGBA);
-
-  // Create a Vulkan buffer and copy the image data into it
-  VkDeviceSize imageSize = img.total() * img.elemSize();
-  VkBuffer stagingBuffer;
-  VkDeviceMemory stagingBufferMemory;
-  createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                   VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-               stagingBuffer, stagingBufferMemory);
-
-  // Map the buffer memory and copy the image data
-  void *data;
-  vkMapMemory(logicalDevice_, stagingBufferMemory, 0, imageSize, 0, &data);
-  memcpy(data, img.data, (size_t)imageSize);
-  vkUnmapMemory(logicalDevice_, stagingBufferMemory);
-}
-
 std::unique_ptr<std::vector<uint32_t>>
 VulkanController::loadShader(const std::string &path) {
   if (!std::filesystem::exists(path)) {
@@ -188,6 +164,9 @@ void VulkanController::computeShader(
   pipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
   pipelineInfo.stage.module = shaderModule;
   pipelineInfo.stage.pName = "main";
+  pipelineInfo.layout = pipelineLayout_;
+  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+  pipelineInfo.basePipelineIndex = 0;
   VkPipeline computePipeline;
   if (vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
                                nullptr, &computePipeline) != VK_SUCCESS) {
@@ -204,7 +183,6 @@ void VulkanController::computeShader(
   descriptorInputBufferInfo.buffer = inputBuffer_;
   descriptorInputBufferInfo.offset = 0;
   descriptorInputBufferInfo.range = inputBufferInfo_.size;
-
   VkWriteDescriptorSet writeInputDescriptorSet{};
   writeInputDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
   writeInputDescriptorSet.dstSet = descriptorSet_;
@@ -219,7 +197,6 @@ void VulkanController::computeShader(
   descriptorOutputBufferInfo.buffer = outputBuffer_;
   descriptorOutputBufferInfo.offset = 0;
   descriptorOutputBufferInfo.range = outputBufferInfo_.size;
-
   VkWriteDescriptorSet writeOutputDescriptorSet{};
   writeOutputDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
   writeOutputDescriptorSet.dstSet = descriptorSet_;
@@ -229,9 +206,24 @@ void VulkanController::computeShader(
   writeOutputDescriptorSet.descriptorCount = 1;
   writeOutputDescriptorSet.pBufferInfo = &descriptorOutputBufferInfo;
 
+  // Bind the weights buffer
+  VkDescriptorBufferInfo descriptorCurrentBufferInfo{};
+  descriptorCurrentBufferInfo.buffer = currentBuffer_;
+  descriptorCurrentBufferInfo.offset = 0;
+  descriptorCurrentBufferInfo.range = currentBufferInfo_.size;
+  VkWriteDescriptorSet writeCurrentDescriptorSet{};
+  writeCurrentDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeCurrentDescriptorSet.dstSet = descriptorSet_;
+  writeCurrentDescriptorSet.dstBinding = 2;
+  writeCurrentDescriptorSet.dstArrayElement = 0;
+  writeCurrentDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  writeCurrentDescriptorSet.descriptorCount = 1;
+  writeCurrentDescriptorSet.pBufferInfo = &descriptorCurrentBufferInfo;
+
   // Update the descriptor set
-  std::array<VkWriteDescriptorSet, 2> writeDescriptorSets = {
-      writeInputDescriptorSet, writeOutputDescriptorSet};
+  std::array<VkWriteDescriptorSet, 3> writeDescriptorSets = {
+      writeInputDescriptorSet, writeOutputDescriptorSet,
+      writeCurrentDescriptorSet};
   vkUpdateDescriptorSets(logicalDevice_,
                          static_cast<uint32_t>(writeDescriptorSets.size()),
                          writeDescriptorSets.data(), 0, nullptr);
@@ -284,39 +276,6 @@ void VulkanController::_endSingleTimeCommands(VkDevice device,
   vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
 
-void VulkanController::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                                    VkMemoryPropertyFlags properties,
-                                    VkBuffer &buffer,
-                                    VkDeviceMemory &bufferMemory) const {
-  // TODO: refactor, clean buffer and memory
-  VkBufferCreateInfo bufferInfo{};
-  bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-  bufferInfo.size = size;
-  bufferInfo.usage = usage;
-  bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-  if (vkCreateBuffer(logicalDevice_, &bufferInfo, nullptr, &buffer) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("failed to create buffer!");
-  }
-
-  VkMemoryRequirements memRequirements;
-  vkGetBufferMemoryRequirements(logicalDevice_, buffer, &memRequirements);
-
-  VkMemoryAllocateInfo allocInfo{};
-  allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-  allocInfo.allocationSize = memRequirements.size;
-  allocInfo.memoryTypeIndex =
-      _findMemoryType(memRequirements.memoryTypeBits, properties);
-
-  if (vkAllocateMemory(logicalDevice_, &allocInfo, nullptr, &bufferMemory) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("failed to allocate buffer memory!");
-  }
-
-  vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
-}
-
 void VulkanController::_createCommandPool() {
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -332,7 +291,7 @@ void VulkanController::_createCommandPool() {
 }
 
 void VulkanController::_createDescriptorSetLayout() {
-  std::array<VkDescriptorSetLayoutBinding, 2> layoutBindings{};
+  std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
 
   // Input buffer binding
   layoutBindings[0].binding = 0; // binding number
@@ -348,6 +307,14 @@ void VulkanController::_createDescriptorSetLayout() {
       VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
   layoutBindings[1].descriptorCount = 1; // number of descriptors in the binding
   layoutBindings[1].stageFlags =
+      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
+
+  // Current buffer binding
+  layoutBindings[2].binding = 2; // binding number
+  layoutBindings[2].descriptorType =
+      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
+  layoutBindings[2].descriptorCount = 1; // number of descriptors in the binding
+  layoutBindings[2].stageFlags =
       VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
@@ -399,6 +366,9 @@ void VulkanController::_createNeuronsBuffers(size_t max_size) {
   // Create Ouput buffer
   _createNeuronsBuffer(sizeof(RGBA) * max_size, outputBufferInfo_,
                        outputBuffer_, outputBufferMemory_);
+  // Create Current buffer
+  _createNeuronsBuffer(sizeof(Neuron) * max_size, currentBufferInfo_,
+                       currentBuffer_, currentBufferMemory_);
 }
 
 void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
@@ -438,7 +408,7 @@ void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
   vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
 }
 
-void VulkanController::copyNeuronsDataToBuffer(
+void VulkanController::copyNeuronsDataToInputBuffer(
     const std::vector<Neuron> &neurons) {
   void *data;
   vkMapMemory(logicalDevice_, inputBufferMemory_, 0, inputBufferInfo_.size, 0,
@@ -447,31 +417,34 @@ void VulkanController::copyNeuronsDataToBuffer(
   vkUnmapMemory(logicalDevice_, inputBufferMemory_);
 }
 
-void VulkanController::copyBufferToNeuronsData(std::vector<Neuron> &neurons) {
+void VulkanController::copyNeuronsDataToCurrentBuffer(
+    const std::vector<Neuron> &neurons) {
+  void *data;
+  vkMapMemory(logicalDevice_, currentBufferMemory_, 0, currentBufferInfo_.size,
+              0, &data);
+  memcpy(data, neurons.data(), (size_t)currentBufferInfo_.size);
+  vkUnmapMemory(logicalDevice_, currentBufferMemory_);
+}
+
+void VulkanController::copyOutputBufferToNeuronsData(
+    std::vector<Neuron> &neurons) {
+  // Copy the OutputBuffer data directly into the value field of the neurons
   void *data;
   vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
               &data);
-  memcpy(static_cast<void *>(neurons.data()), data,
-         (size_t)outputBufferInfo_.size);
+  auto *bufferData = static_cast<std::array<float, 4> *>(data);
+
+  // for (size_t i = 0; i < neurons.size(); ++i) {
+  //   neurons[i].value.value = bufferData[i];
+  // }
+  std::transform(bufferData, bufferData + neurons.size(), neurons.begin(),
+                 neurons.begin(),
+                 [](const std::array<float, 4> &bufferValue, Neuron &neuron) {
+                   neuron.value.value = bufferValue;
+                   return neuron;
+                 });
+
   vkUnmapMemory(logicalDevice_, outputBufferMemory_);
-}
-
-void VulkanController::updateDescriptorSet(VkBuffer &buffer) {
-  VkDescriptorBufferInfo bufferInfo{};
-  bufferInfo.buffer = buffer;
-  bufferInfo.offset = 0;
-  bufferInfo.range = sizeof(RGBA); // TODO: CHECK THIS
-
-  VkWriteDescriptorSet descriptorWrite{};
-  descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  descriptorWrite.dstSet = descriptorSet_;
-  descriptorWrite.dstBinding = 0;
-  descriptorWrite.dstArrayElement = 0;
-  descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  descriptorWrite.descriptorCount = 1;
-  descriptorWrite.pBufferInfo = &bufferInfo;
-
-  vkUpdateDescriptorSets(logicalDevice_, 1, &descriptorWrite, 0, nullptr);
 }
 
 void VulkanController::_createPipelineLayout() {
@@ -520,9 +493,9 @@ bool VulkanController::_isDeviceSuitable(const VkPhysicalDevice &device) {
   // This feature indicates whether the physical device supports 64-bit floats
   // (doubles) in shader code. If this feature is not enabled, you won’t be
   // able to use 64-bit floats in your shaders.
-  bool anisotropicFilteringSupported = deviceFeatures.shaderFloat64;
+  bool float64Supported = deviceFeatures.shaderFloat64;
 
-  return logicOpShaderSupported && anisotropicFilteringSupported;
+  return logicOpShaderSupported && float64Supported;
 }
 
 void VulkanController::destroy() {
@@ -538,6 +511,12 @@ void VulkanController::destroy() {
     vkDestroyBuffer(logicalDevice_, outputBuffer_, nullptr);
     outputBufferMemory_ = VK_NULL_HANDLE;
     outputBuffer_ = VK_NULL_HANDLE;
+  }
+  if (currentBuffer_ != VK_NULL_HANDLE) {
+    vkFreeMemory(logicalDevice_, currentBufferMemory_, nullptr);
+    vkDestroyBuffer(logicalDevice_, currentBuffer_, nullptr);
+    currentBufferMemory_ = VK_NULL_HANDLE;
+    currentBuffer_ = VK_NULL_HANDLE;
   }
   if (descriptorPool_ != VK_NULL_HANDLE) {
     vkDestroyDescriptorPool(logicalDevice_, descriptorPool_, nullptr);

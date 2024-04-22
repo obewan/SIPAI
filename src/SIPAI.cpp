@@ -381,7 +381,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                "leading to significant performance improvements for "
                "large-scale operations."
                "\nPlease note that enabling "
-               "this flag will override the 'enable_parallel' setting, as the "
+               "this flag will override the 'parallelism' setting, as the "
                "parallel processing will be handled by the Vulkan API instead "
                "of the CPU, except if Vulkan failed to initialize.");
   app.add_flag(

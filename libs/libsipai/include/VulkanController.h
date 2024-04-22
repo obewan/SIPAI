@@ -37,25 +37,6 @@ public:
 
   const bool IsInitialized() { return isInitialized_.load(); }
 
-  const VkInstance &getVkInstance() { return vkInstance_; }
-
-  const VkPhysicalDevice &getVkPhysicalDevice() { return physicalDevice_; }
-
-  const VkDevice &getVkDevice() { return logicalDevice_; }
-
-  /**
-   * @brief Reads an image from a specified path and returns it as Image
-   * parts, using Vulkan
-   *
-   * @param imagePath
-   * @param split
-   * @param withPadding
-   * @param resize_x
-   * @param resize_y
-   */
-  void loadImage(const std::string &imagePath, size_t split, bool withPadding,
-                 size_t resize_x = 0, size_t resize_y = 0) const;
-
   /**
    * @brief Load a GLSL shader
    *
@@ -73,38 +54,25 @@ public:
                      std::vector<Neuron> &neurons);
 
   /**
-   * @brief Create an image Buffer in memory
-   *
-   * @param size
-   * @param usage
-   * @param properties
-   * @param buffer
-   * @param bufferMemory
-   */
-  void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                    VkMemoryPropertyFlags properties, VkBuffer &buffer,
-                    VkDeviceMemory &bufferMemory) const;
-
-  /**
-   * @brief Update a Descriptor Set
-   *
-   * @param buffer
-   */
-  void updateDescriptorSet(VkBuffer &buffer);
-
-  /**
-   * @brief Copy Neurons data to buffer
+   * @brief Copy Neurons data to input buffer
    *
    * @param neurons
    */
-  void copyNeuronsDataToBuffer(const std::vector<Neuron> &neurons);
+  void copyNeuronsDataToInputBuffer(const std::vector<Neuron> &neurons);
 
   /**
-   * @brief Copy buffer to Neurons data
+   * @brief Copy Neuron data to current buffer
    *
    * @param neurons
    */
-  void copyBufferToNeuronsData(std::vector<Neuron> &neurons);
+  void copyNeuronsDataToCurrentBuffer(const std::vector<Neuron> &neurons);
+
+  /**
+   * @brief Copy output buffer to Neurons data
+   *
+   * @param neurons
+   */
+  void copyOutputBufferToNeuronsData(std::vector<Neuron> &neurons);
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -140,6 +108,9 @@ private:
   VkBuffer outputBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo outputBufferInfo_{};
+  VkBuffer currentBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentBufferInfo_{};
 
   VkCommandBuffer _beginSingleTimeCommands(VkDevice device,
                                            VkCommandPool commandPool);

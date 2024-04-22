@@ -30,15 +30,9 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
 
   CHECK_NOTHROW(vulkanController.initialize());
   CHECK(vulkanController.IsInitialized());
-  CHECK(vulkanController.getVkInstance() != VK_NULL_HANDLE);
-  CHECK(vulkanController.getVkDevice() != VK_NULL_HANDLE);
-  CHECK(vulkanController.getVkPhysicalDevice() != VK_NULL_HANDLE);
-
+  
   vulkanController.destroy();
   CHECK_FALSE(vulkanController.IsInitialized());
-  CHECK(vulkanController.getVkInstance() == VK_NULL_HANDLE);
-  CHECK(vulkanController.getVkDevice() == VK_NULL_HANDLE);
-  CHECK(vulkanController.getVkPhysicalDevice() == VK_NULL_HANDLE);
-
+  
   manager.network.reset();
 }
