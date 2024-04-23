@@ -33,6 +33,11 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
+  struct GLSLActivationFunction {
+    int value;
+    float alpha;
+  };
+
   void initialize();
 
   const bool IsInitialized() { return isInitialized_.load(); }

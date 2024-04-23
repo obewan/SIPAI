@@ -1,11 +1,13 @@
 #include "VulkanController.h"
 #include "ActivationFunctions.h"
 #include "Manager.h"
+#include "SimpleLogger.h"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <memory>
 #include <opencv2/imgcodecs.hpp>
+#include <stdexcept>
 #include <vulkan/vulkan_core.h>
 
 using namespace sipai;
@@ -291,7 +293,7 @@ void VulkanController::_endSingleTimeCommands(VkDevice device,
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-  vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+  vkQueueSubmit(queue, 1, &submitInfo, computeFence);
 
   // Wait for the fence to signal that the GPU has finished
   vkWaitForFences(device, 1, &computeFence, VK_TRUE, UINT64_MAX);
@@ -403,7 +405,7 @@ void VulkanController::_createNeuronsBuffers(size_t max_size) {
   _createNeuronsBuffer(sizeof(Neuron) * max_size, currentBufferInfo_,
                        currentBuffer_, currentBufferMemory_);
   // Create Activation buffer
-  _createNeuronsBuffer(sizeof(int) + sizeof(float),
+  _createNeuronsBuffer(sizeof(GLSLActivationFunction),
                        activationFunctionBufferInfo_, activationFunctionBuffer_,
                        activationFunctionBufferMemory_);
 }
@@ -447,53 +449,59 @@ void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
 
 void VulkanController::copyNeuronsDataToInputBuffer(
     const std::vector<Neuron> &neurons) {
+  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
   void *data;
   vkMapMemory(logicalDevice_, inputBufferMemory_, 0, inputBufferInfo_.size, 0,
               &data);
   memcpy(data, neurons.data(), (size_t)inputBufferInfo_.size);
   vkUnmapMemory(logicalDevice_, inputBufferMemory_);
+  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 }
 
 void VulkanController::copyNeuronsDataToCurrentBuffer(
     const std::vector<Neuron> &neurons) {
+  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
   void *data;
   vkMapMemory(logicalDevice_, currentBufferMemory_, 0, currentBufferInfo_.size,
               0, &data);
   memcpy(data, neurons.data(), (size_t)currentBufferInfo_.size);
   vkUnmapMemory(logicalDevice_, currentBufferMemory_);
+  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 }
 
 void VulkanController::copyActivationFunctionToActivationFunctionBuffer(
     const EActivationFunction &activationFunction, float alpha) {
-  struct GLSLActivationFunction {
-    int value;
-    float alpha;
-  } glslActivationFunction;
-  glslActivationFunction.value = (int)activationFunction;
-  glslActivationFunction.alpha = alpha;
+  GLSLActivationFunction glslActivationFunction{
+      .value = (int)activationFunction, .alpha = alpha};
+  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
   void *data;
   vkMapMemory(logicalDevice_, activationFunctionBufferMemory_, 0,
               activationFunctionBufferInfo_.size, 0, &data);
-  memcpy(data, &glslActivationFunction, sizeof(glslActivationFunction));
+  memcpy(data, &glslActivationFunction, sizeof(GLSLActivationFunction));
   vkUnmapMemory(logicalDevice_, activationFunctionBufferMemory_);
+  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 }
 
+// Copy the OutputBuffer data directly into the value field of the neurons
 void VulkanController::copyOutputBufferToNeuronsData(
     std::vector<Neuron> &neurons) {
-  // Copy the OutputBuffer data directly into the value field of the neurons
+  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
   void *data;
   vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
               &data);
-  auto *bufferData = static_cast<std::array<float, 4> *>(data);
-
-  std::transform(bufferData, bufferData + neurons.size(), neurons.begin(),
-                 neurons.begin(),
-                 [](const std::array<float, 4> &bufferValue, Neuron &neuron) {
-                   neuron.value.value = bufferValue;
-                   return neuron;
-                 });
-
+  const auto &bufferData = static_cast<std::array<float, 4> *>(data);
+  for (size_t i = 0; i < neurons.size(); i++) {
+    neurons[i].value.value = bufferData[i];
+  }
+  // TEST:
+  if (std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
+        return neuron.value.value ==
+               std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
+      })) {
+    SimpleLogger::LOG_DEBUG("Warning: all values are zero");
+  }
   vkUnmapMemory(logicalDevice_, outputBufferMemory_);
+  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 }
 
 void VulkanController::_createPipelineLayout() {

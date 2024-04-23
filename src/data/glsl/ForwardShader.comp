@@ -5,9 +5,9 @@
  * Damien Balima (c) CC-BY-NC-SA-4.0 2024
  */
 
-layout (local_size_x = 1) in;
+layout (local_size_x = 200) in;
 
-const int WEIGHTS_SIZE = 10000;
+const int WEIGHTS_SIZE = 2000;
 
 const int ELU = 0;
 const int LReLU = 1;
