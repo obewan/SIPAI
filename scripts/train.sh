@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # script to test the TrainingMonitored on a release, for local testing
-res_i=40
-res_h=40
+res_i=50
+res_h=50
 res_o=50
 hl=1
 algo="PRELU"
-lr=0.001
+lr=0.0001
 alrf=0.5
 split=4
 factor=4

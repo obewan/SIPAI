@@ -73,10 +73,11 @@ void VulkanController::initialize() {
   vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
                                            queueFamilies.data());
 
-  ;
-  int i = 0;
+  // Get the family queue (use VK_QUEUE_GRAPHICS_BIT in addition for graphics
+  // operations)
+  unsigned int i = 0;
   for (const auto &queueFamily : queueFamilies) {
-    if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+    if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
       queueFamilyIndex_ = i;
       break;
     }
@@ -534,6 +535,11 @@ bool VulkanController::_isDeviceSuitable(const VkPhysicalDevice &device) {
   // (doubles) in shader code. If this feature is not enabled, you won’t be
   // able to use 64-bit floats in your shaders.
   bool float64Supported = deviceFeatures.shaderFloat64;
+
+  // bool isGPU =
+  //     deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
+  //     deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU
+  //     || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU;
 
   return logicOpShaderSupported && float64Supported;
 }
