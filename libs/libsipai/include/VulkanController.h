@@ -13,6 +13,7 @@
 #include <atomic>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <vector>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
@@ -136,7 +137,6 @@ private:
   uint32_t _findMemoryType(uint32_t typeFilter,
                            VkMemoryPropertyFlags properties) const;
 
-  bool _isDeviceSuitable(const VkPhysicalDevice &device);
   void _createCommandPool();
   void _createPipelineLayout();
   void _createDescriptorSet();
@@ -147,5 +147,7 @@ private:
                             VkBuffer &buffer, VkDeviceMemory &bufferMemory);
   void _endSingleTimeCommands(VkDevice device, VkCommandPool commandPool,
                               VkCommandBuffer commandBuffer, VkQueue queue);
+  std::optional<unsigned int> _pickQueueFamily();
+  std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 };
 } // namespace sipai

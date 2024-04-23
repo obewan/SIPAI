@@ -44,45 +44,17 @@ void VulkanController::initialize() {
   }
 
   // Create a device
-  uint32_t deviceCount = 0;
-  vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, nullptr);
-
-  if (deviceCount == 0) {
-    throw std::runtime_error("failed to find GPUs with Vulkan support!");
-  }
-
-  std::vector<VkPhysicalDevice> devices(deviceCount);
-  vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, devices.data());
-
-  for (const auto &device : devices) {
-    if (_isDeviceSuitable(device)) {
-      physicalDevice_ = device;
-      break;
-    }
-  }
-
-  if (physicalDevice_ == VK_NULL_HANDLE) {
+  auto physicalDevice = _pickPhysicalDevice();
+  if (!physicalDevice.has_value()) {
     throw std::runtime_error("failed to find a suitable GPU!");
   }
+  physicalDevice_ = physicalDevice.value();
 
-  uint32_t queueFamilyCount = 0;
-  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
-                                           nullptr);
-
-  std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
-                                           queueFamilies.data());
-
-  // Get the family queue (use VK_QUEUE_GRAPHICS_BIT in addition for graphics
-  // operations)
-  unsigned int i = 0;
-  for (const auto &queueFamily : queueFamilies) {
-    if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
-      queueFamilyIndex_ = i;
-      break;
-    }
-    i++;
+  auto queueFamilyIndex = _pickQueueFamily();
+  if (!queueFamilyIndex.has_value()) {
+    throw std::runtime_error("failed to find GPUs with Vulkan queue support!");
   }
+  queueFamilyIndex_ = queueFamilyIndex.value();
 
   VkDeviceQueueCreateInfo queueCreateInfo{};
   queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -519,29 +491,78 @@ VulkanController::_findMemoryType(uint32_t typeFilter,
   throw std::runtime_error("failed to find suitable memory type!");
 }
 
-bool VulkanController::_isDeviceSuitable(const VkPhysicalDevice &device) {
-  VkPhysicalDeviceProperties deviceProperties;
-  VkPhysicalDeviceFeatures deviceFeatures;
-  vkGetPhysicalDeviceProperties(device, &deviceProperties);
-  vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+std::optional<unsigned int> VulkanController::_pickQueueFamily() {
+  uint32_t queueFamilyCount = 0;
+  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
+                                           nullptr);
+  if (queueFamilyCount == 0) {
+    throw std::runtime_error("failed to find GPUs with Vulkan queue support!");
+  }
+  std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
+                                           queueFamilies.data());
+  unsigned int i = 0;
+  for (const auto &queueFamily : queueFamilies) {
+    if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
+      return i;
+    }
+    i++;
+  }
+  return std::nullopt;
+}
 
-  // This feature indicates whether the physical device supports logical
-  // operations in the output color blending. Logical operations are used to
-  // combine color and/or alpha components of the source and destination
-  // fragments in ways other than traditional blending+
-  bool logicOpShaderSupported = deviceFeatures.logicOp;
+std::optional<VkPhysicalDevice> VulkanController::_pickPhysicalDevice() {
+  auto getDeviceSuitableScore = [](const VkPhysicalDevice &device) {
+    int score = 0;
+    VkPhysicalDeviceProperties deviceProperties;
+    VkPhysicalDeviceFeatures deviceFeatures;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+    // This feature indicates whether the physical device supports logical
+    // operations in the output color blending. Logical operations are used to
+    // combine color and/or alpha components of the source and destination
+    // fragments in ways other than traditional blending+
+    if (deviceFeatures.logicOp) {
+      score++;
+    }
+    // This feature indicates whether the physical device supports 64-bit floats
+    // (doubles) in shader code. If this feature is not enabled, you won’t be
+    // able to use 64-bit floats in your shaders.
+    if (deviceFeatures.shaderFloat64) {
+      score++;
+    }
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+      score += 3;
+    }
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) {
+      score += 2;
+    }
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU) {
+      score += 1;
+    }
+    return score;
+  };
 
-  // This feature indicates whether the physical device supports 64-bit floats
-  // (doubles) in shader code. If this feature is not enabled, you won’t be
-  // able to use 64-bit floats in your shaders.
-  bool float64Supported = deviceFeatures.shaderFloat64;
+  uint32_t deviceCount = 0;
+  vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, nullptr);
+  if (deviceCount == 0) {
+    throw std::runtime_error("failed to find GPUs with Vulkan support!");
+  }
 
-  // bool isGPU =
-  //     deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
-  //     deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU
-  //     || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU;
+  std::vector<VkPhysicalDevice> devices(deviceCount);
+  vkEnumeratePhysicalDevices(vkInstance_, &deviceCount, devices.data());
 
-  return logicOpShaderSupported && float64Supported;
+  std::vector<std::pair<VkPhysicalDevice, int>> scores;
+  for (const auto &device : devices) {
+    scores.emplace_back(device, getDeviceSuitableScore(device));
+  }
+  auto betterDevice = std::max_element(
+      scores.begin(), scores.end(),
+      [](auto &score1, auto &score2) { return score1.second > score2.second; });
+  if (betterDevice == scores.end() || betterDevice->second == 0) {
+    return std::nullopt; // No suitable GPU found
+  }
+  return betterDevice->first;
 }
 
 void VulkanController::destroy() {
