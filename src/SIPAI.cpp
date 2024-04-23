@@ -399,6 +399,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                "Enables verbose logs. Can be useful during long epoch "
                "treatment, to check it is not pending.");
   app.add_flag("-v,--version", version, "Show current version.");
+  // TODO: add a Debug log enable flag
 }
 
 void SIPAI::run() { Manager::getInstance().run(); }

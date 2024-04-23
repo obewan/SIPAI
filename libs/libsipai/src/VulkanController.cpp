@@ -148,6 +148,7 @@ VulkanController::loadShader(const std::string &path) {
 void VulkanController::computeShader(
     std::unique_ptr<std::vector<uint32_t>> &computeShader,
     std::vector<Neuron> &neurons) {
+
   // Create shader module
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -181,6 +182,8 @@ void VulkanController::computeShader(
       _beginSingleTimeCommands(logicalDevice_, commandPool_);
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                     computePipeline);
+
+  // Note: beware refactoring those following bindings
   // Bind the input buffer
   VkDescriptorBufferInfo descriptorInputBufferInfo{};
   descriptorInputBufferInfo.buffer = inputBuffer_;
@@ -320,37 +323,17 @@ void VulkanController::_createCommandPool() {
 void VulkanController::_createDescriptorSetLayout() {
   std::array<VkDescriptorSetLayoutBinding, 4> layoutBindings{};
 
-  // Input buffer binding
-  layoutBindings[0].binding = 0; // binding number
-  layoutBindings[0].descriptorType =
-      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
-  layoutBindings[0].descriptorCount = 1; // number of descriptors in the binding
-  layoutBindings[0].stageFlags =
-      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
-
-  // Output buffer binding
-  layoutBindings[1].binding = 1; // binding number
-  layoutBindings[1].descriptorType =
-      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
-  layoutBindings[1].descriptorCount = 1; // number of descriptors in the binding
-  layoutBindings[1].stageFlags =
-      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
-
-  // Current buffer binding
-  layoutBindings[2].binding = 2; // binding number
-  layoutBindings[2].descriptorType =
-      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
-  layoutBindings[2].descriptorCount = 1; // number of descriptors in the binding
-  layoutBindings[2].stageFlags =
-      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
-
-  // ActivationFunction buffer binding
-  layoutBindings[3].binding = 3; // binding number
-  layoutBindings[3].descriptorType =
-      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
-  layoutBindings[3].descriptorCount = 1; // number of descriptors in the binding
-  layoutBindings[3].stageFlags =
-      VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the binding
+  // Buffer layout binding
+  for (size_t i = 0; i < layoutBindings.size(); i++) {
+    layoutBindings[i].binding = (unsigned int)i; // binding number
+    layoutBindings[i].descriptorType =
+        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
+    layoutBindings[i].descriptorCount =
+        1; // number of descriptors in the binding
+    layoutBindings[i].stageFlags =
+        VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the
+                                     // binding
+  }
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -493,13 +476,13 @@ void VulkanController::copyOutputBufferToNeuronsData(
   for (size_t i = 0; i < neurons.size(); i++) {
     neurons[i].value.value = bufferData[i];
   }
-  // TEST:
-  if (std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
-        return neuron.value.value ==
-               std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
-      })) {
-    SimpleLogger::LOG_DEBUG("Warning: all values are zero");
-  }
+  // TODO: TEST
+  // if (std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
+  //       return neuron.value.value ==
+  //              std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
+  //     })) {
+  //   SimpleLogger::LOG_DEBUG("Warning: all values are zero");
+  // }
   vkUnmapMemory(logicalDevice_, outputBufferMemory_);
   _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 }
@@ -556,31 +539,19 @@ bool VulkanController::_isDeviceSuitable(const VkPhysicalDevice &device) {
 }
 
 void VulkanController::destroy() {
+  auto freeBuffer = [this](VkBuffer &buffer, VkDeviceMemory &memory) {
+    if (buffer != VK_NULL_HANDLE) {
+      vkFreeMemory(logicalDevice_, memory, nullptr);
+      vkDestroyBuffer(logicalDevice_, buffer, nullptr);
+      memory = VK_NULL_HANDLE;
+      buffer = VK_NULL_HANDLE;
+    }
+  };
 
-  if (inputBuffer_ != VK_NULL_HANDLE) {
-    vkFreeMemory(logicalDevice_, inputBufferMemory_, nullptr);
-    vkDestroyBuffer(logicalDevice_, inputBuffer_, nullptr);
-    inputBufferMemory_ = VK_NULL_HANDLE;
-    inputBuffer_ = VK_NULL_HANDLE;
-  }
-  if (outputBuffer_ != VK_NULL_HANDLE) {
-    vkFreeMemory(logicalDevice_, outputBufferMemory_, nullptr);
-    vkDestroyBuffer(logicalDevice_, outputBuffer_, nullptr);
-    outputBufferMemory_ = VK_NULL_HANDLE;
-    outputBuffer_ = VK_NULL_HANDLE;
-  }
-  if (currentBuffer_ != VK_NULL_HANDLE) {
-    vkFreeMemory(logicalDevice_, currentBufferMemory_, nullptr);
-    vkDestroyBuffer(logicalDevice_, currentBuffer_, nullptr);
-    currentBufferMemory_ = VK_NULL_HANDLE;
-    currentBuffer_ = VK_NULL_HANDLE;
-  }
-  if (activationFunctionBuffer_ != VK_NULL_HANDLE) {
-    vkFreeMemory(logicalDevice_, activationFunctionBufferMemory_, nullptr);
-    vkDestroyBuffer(logicalDevice_, activationFunctionBuffer_, nullptr);
-    activationFunctionBufferMemory_ = VK_NULL_HANDLE;
-    activationFunctionBuffer_ = VK_NULL_HANDLE;
-  }
+  freeBuffer(inputBuffer_, inputBufferMemory_);
+  freeBuffer(outputBuffer_, outputBufferMemory_);
+  freeBuffer(currentBuffer_, currentBufferMemory_);
+  freeBuffer(activationFunctionBuffer_, activationFunctionBufferMemory_);
   if (descriptorPool_ != VK_NULL_HANDLE) {
     vkDestroyDescriptorPool(logicalDevice_, descriptorPool_, nullptr);
     descriptorPool_ = VK_NULL_HANDLE;
