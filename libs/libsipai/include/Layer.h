@@ -73,15 +73,15 @@ public:
       if (!vulkanController.IsInitialized()) {
         throw NeuralNetworkException("Vulkan controller is not initialized.");
       }
-    
 
       // Prepare data for the shader
+      vulkanController.copyNeuronsWeightsToWeightsBuffer(
+          neurons); // before others for weights index
       vulkanController.copyNeuronsDataToInputBuffer(previousLayer->neurons);
       vulkanController.copyNeuronsDataToCurrentBuffer(neurons);
       vulkanController.copyActivationFunctionToActivationFunctionBuffer(
           activationFunction, activationFunctionAlpha);
 
-    
       // Run the shader
       vulkanController.computeShader(vulkanController.forwardShader, neurons);
 

@@ -90,6 +90,13 @@ public:
       const EActivationFunction &activationFunction, float alpha);
 
   /**
+   * @brief Copy Neuron weights to weights buffer
+   *
+   * @param neurons
+   */
+  void copyNeuronsWeightsToWeightsBuffer(const std::vector<Neuron> &neurons);
+
+  /**
    * @brief Destroy the device instance, cleaning ressources
    *
    */
@@ -119,18 +126,26 @@ private:
   VkDescriptorSet descriptorSet_ = VK_NULL_HANDLE;
   VkPipelineLayout pipelineLayout_ = VK_NULL_HANDLE;
   VkQueue queue_ = VK_NULL_HANDLE;
+
   VkBuffer inputBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory inputBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo inputBufferInfo_{};
+
   VkBuffer outputBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo outputBufferInfo_{};
+
   VkBuffer currentBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory currentBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo currentBufferInfo_{};
+
   VkBuffer activationFunctionBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory activationFunctionBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo activationFunctionBufferInfo_{};
+
+  VkBuffer weightsBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory weightsBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo weightsBufferInfo_{};
 
   VkCommandBuffer _beginSingleTimeCommands(VkDevice device,
                                            VkCommandPool commandPool);

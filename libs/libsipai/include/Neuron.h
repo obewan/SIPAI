@@ -33,6 +33,9 @@ public:
   // The weights of the neuron
   std::vector<RGBA> weights;
 
+  // Weights index to use with Vulkan
+  mutable size_t weightsIndex = 0;
+
   // The value of the neuron
   RGBA value = {0.0, 0.0, 0.0, 0.0};
 

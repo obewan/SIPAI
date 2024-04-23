@@ -12,6 +12,8 @@
 
 using namespace sipai;
 
+const size_t totalBuffers = 5;
+
 std::unique_ptr<VulkanController> VulkanController::controllerInstance_ =
     nullptr;
 
@@ -213,10 +215,25 @@ void VulkanController::computeShader(
   writeAFDescriptorSet.descriptorCount = 1;
   writeAFDescriptorSet.pBufferInfo = &descriptorAFBufferInfo;
 
+  // Bind the weights buffer
+  VkDescriptorBufferInfo descriptorWeightsBufferInfo{};
+  descriptorWeightsBufferInfo.buffer = weightsBuffer_;
+  descriptorWeightsBufferInfo.offset = 0;
+  descriptorWeightsBufferInfo.range = weightsBufferInfo_.size;
+  VkWriteDescriptorSet writeWeightsDescriptorSet{};
+  writeWeightsDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  writeWeightsDescriptorSet.dstSet = descriptorSet_;
+  writeWeightsDescriptorSet.dstBinding = 4;
+  writeWeightsDescriptorSet.dstArrayElement = 0;
+  writeWeightsDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  writeWeightsDescriptorSet.descriptorCount = 1;
+  writeWeightsDescriptorSet.pBufferInfo = &descriptorWeightsBufferInfo;
+
   // Update the descriptor set
-  std::array<VkWriteDescriptorSet, 4> writeDescriptorSets = {
+  std::array<VkWriteDescriptorSet, totalBuffers> writeDescriptorSets = {
       writeInputDescriptorSet, writeOutputDescriptorSet,
-      writeCurrentDescriptorSet, writeAFDescriptorSet};
+      writeCurrentDescriptorSet, writeAFDescriptorSet,
+      writeWeightsDescriptorSet};
   vkUpdateDescriptorSets(logicalDevice_,
                          static_cast<uint32_t>(writeDescriptorSets.size()),
                          writeDescriptorSets.data(), 0, nullptr);
@@ -240,16 +257,12 @@ VulkanController::_beginSingleTimeCommands(VkDevice device,
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandPool = commandPool;
   allocInfo.commandBufferCount = 1;
-
   VkCommandBuffer commandBuffer;
   vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
   beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
   vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
   return commandBuffer;
 }
 
@@ -258,22 +271,18 @@ void VulkanController::_endSingleTimeCommands(VkDevice device,
                                               VkCommandBuffer commandBuffer,
                                               VkQueue queue) {
   vkEndCommandBuffer(commandBuffer);
-
   // Create a fence (Semaphore)
   VkFenceCreateInfo fenceInfo{};
   fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
   VkFence computeFence;
   vkCreateFence(device, &fenceInfo, nullptr, &computeFence);
-
   VkSubmitInfo submitInfo{};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
   vkQueueSubmit(queue, 1, &submitInfo, computeFence);
-
   // Wait for the fence to signal that the GPU has finished
   vkWaitForFences(device, 1, &computeFence, VK_TRUE, UINT64_MAX);
-
   // Cleaning
   vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
   vkDestroyFence(device, computeFence, nullptr);
@@ -294,8 +303,7 @@ void VulkanController::_createCommandPool() {
 }
 
 void VulkanController::_createDescriptorSetLayout() {
-  std::array<VkDescriptorSetLayoutBinding, 4> layoutBindings{};
-
+  std::array<VkDescriptorSetLayoutBinding, totalBuffers> layoutBindings{};
   // Buffer layout binding
   for (size_t i = 0; i < layoutBindings.size(); i++) {
     layoutBindings[i].binding = (unsigned int)i; // binding number
@@ -307,13 +315,11 @@ void VulkanController::_createDescriptorSetLayout() {
         VK_SHADER_STAGE_COMPUTE_BIT; // shader stages that can access the
                                      // binding
   }
-
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
   layoutInfo.bindingCount = static_cast<uint32_t>(
       layoutBindings.size()); // number of bindings in the descriptor set
   layoutInfo.pBindings = layoutBindings.data(); // array of bindings
-
   if (vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo, nullptr,
                                   &descriptorSetLayout_) != VK_SUCCESS) {
     throw std::runtime_error("Failed to create descriptor set layout!");
@@ -324,13 +330,11 @@ void VulkanController::_createDescriptorPool(size_t max_size) {
   VkDescriptorPoolSize poolSize{};
   poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
   poolSize.descriptorCount = static_cast<uint32_t>(max_size);
-
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
   poolInfo.poolSizeCount = 1;
   poolInfo.pPoolSizes = &poolSize;
   poolInfo.maxSets = static_cast<uint32_t>(max_size);
-
   if (vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr,
                              &descriptorPool_) != VK_SUCCESS) {
     throw std::runtime_error("Failed to create descriptor pool!");
@@ -343,7 +347,6 @@ void VulkanController::_createDescriptorSet() {
   allocInfo.descriptorPool = descriptorPool_;
   allocInfo.descriptorSetCount = 1;
   allocInfo.pSetLayouts = &descriptorSetLayout_;
-
   if (vkAllocateDescriptorSets(logicalDevice_, &allocInfo, &descriptorSet_) !=
       VK_SUCCESS) {
     throw std::runtime_error("Failed to allocate descriptor set!");
@@ -364,13 +367,17 @@ void VulkanController::_createNeuronsBuffers(size_t max_size) {
   _createNeuronsBuffer(sizeof(GLSLActivationFunction),
                        activationFunctionBufferInfo_, activationFunctionBuffer_,
                        activationFunctionBufferMemory_);
+  // Create Weights buffer
+  const auto &max_weights = Manager::getConstInstance().network->max_weights;
+  _createNeuronsBuffer(sizeof(RGBA) * max_size * max_weights,
+                       weightsBufferInfo_, weightsBuffer_,
+                       weightsBufferMemory_);
 }
 
 void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
                                             VkBufferCreateInfo &bufferInfo,
                                             VkBuffer &buffer,
                                             VkDeviceMemory &bufferMemory) {
-
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size; // Size of the buffer in bytes
   bufferInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // Buffer will be used
@@ -378,15 +385,12 @@ void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
   bufferInfo.sharingMode =
       VK_SHARING_MODE_EXCLUSIVE; // Buffer will be used by one queue family at a
                                  // time
-
   if (vkCreateBuffer(logicalDevice_, &bufferInfo, nullptr, &buffer) !=
       VK_SUCCESS) {
     throw std::runtime_error("Failed to create buffer!");
   }
-
   VkMemoryRequirements memRequirements;
   vkGetBufferMemoryRequirements(logicalDevice_, buffer, &memRequirements);
-
   // Allocate memory for the buffer
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -394,12 +398,10 @@ void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
   allocInfo.memoryTypeIndex = _findMemoryType(
       memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                                           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
   if (vkAllocateMemory(logicalDevice_, &allocInfo, nullptr, &bufferMemory) !=
       VK_SUCCESS) {
     throw std::runtime_error("Failed to allocate buffer memory!");
   }
-
   vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
 }
 
@@ -435,6 +437,29 @@ void VulkanController::copyActivationFunctionToActivationFunctionBuffer(
               activationFunctionBufferInfo_.size, 0, &data);
   memcpy(data, &glslActivationFunction, sizeof(GLSLActivationFunction));
   vkUnmapMemory(logicalDevice_, activationFunctionBufferMemory_);
+  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+}
+
+void VulkanController::copyNeuronsWeightsToWeightsBuffer(
+    const std::vector<Neuron> &neurons) {
+  VkCommandBuffer commandBuffer =
+      _beginSingleTimeCommands(logicalDevice_, commandPool_);
+  // flatten the all the weights vectors
+  std::unique_ptr<std::vector<RGBA>> flatWeights =
+      std::make_unique<std::vector<RGBA>>();
+  for (size_t i = 0; i < neurons.size(); ++i) {
+    const Neuron &neuron = neurons[i];
+    neuron.weightsIndex =
+        flatWeights->size(); // index where the neuron's weights start in the
+                             // flatWeights vector
+    flatWeights->insert(flatWeights->end(), neuron.weights.begin(),
+                        neuron.weights.end());
+  }
+  void *data;
+  vkMapMemory(logicalDevice_, weightsBufferMemory_, 0, weightsBufferInfo_.size,
+              0, &data);
+  memcpy(data, flatWeights->data(), flatWeights->size() * sizeof(RGBA));
+  vkUnmapMemory(logicalDevice_, weightsBufferMemory_);
   _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
 }
 
@@ -558,7 +583,7 @@ std::optional<VkPhysicalDevice> VulkanController::_pickPhysicalDevice() {
   }
   auto betterDevice = std::max_element(
       scores.begin(), scores.end(),
-      [](auto &score1, auto &score2) { return score1.second > score2.second; });
+      [](auto &score1, auto &score2) { return score1.second < score2.second; });
   if (betterDevice == scores.end() || betterDevice->second == 0) {
     return std::nullopt; // No suitable GPU found
   }
@@ -579,6 +604,8 @@ void VulkanController::destroy() {
   freeBuffer(outputBuffer_, outputBufferMemory_);
   freeBuffer(currentBuffer_, currentBufferMemory_);
   freeBuffer(activationFunctionBuffer_, activationFunctionBufferMemory_);
+  freeBuffer(weightsBuffer_, weightsBufferMemory_);
+
   if (descriptorPool_ != VK_NULL_HANDLE) {
     vkDestroyDescriptorPool(logicalDevice_, descriptorPool_, nullptr);
     descriptorPool_ = VK_NULL_HANDLE;

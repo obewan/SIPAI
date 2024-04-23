@@ -5,9 +5,9 @@
  * Damien Balima (c) CC-BY-NC-SA-4.0 2024
  */
 
-layout (local_size_x = 200) in;
+// One workgroup thread per neuron, one local thread per workgroup
+layout (local_size_x = 1) in;
 
-const int WEIGHTS_SIZE = 2000;
 
 const int ELU = 0;
 const int LReLU = 1;
@@ -24,7 +24,7 @@ struct RGBA {
 
 struct Neuron {
     RGBA value;
-    RGBA weights[WEIGHTS_SIZE];
+    int weightsIndex;
 };
 
 layout (std430, binding = 0) buffer InputBuffer {
@@ -44,15 +44,12 @@ layout (std430, binding = 3) buffer ActivationFunction {
     float alpha;
 } activationFunction;
 
+layout (std430, binding = 4) buffer Weights {
+    RGBA values[];
+} weights;
 
-void main() {
-    uint index = gl_GlobalInvocationID.x;    
-    vec4 value = vec4(0.0);
-    for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
-        value += inputBuffer.neurons[i].value.value * currentBuffer.neurons[index].weights[i].value;
-    }
-    
-    switch (activationFunction.function) {
+vec4 activateFunction(vec4 value){
+   switch (activationFunction.function) {
         case ELU:        
             bvec4 mask = greaterThanEqual(value, vec4(0.0));
             value = mix(vec4(activationFunction.alpha) * (exp(value) - vec4(1.0)), value, mask);
@@ -79,5 +76,22 @@ void main() {
             value = clamp(value, vec4(0.0), vec4(1.0));            
         break;
     }
-    outputBuffer.values[index] = value;
+    return value;
+}
+
+void main() {
+    // Get the index of the neuron (one workgroup thread per neuron)
+    uint index = gl_GlobalInvocationID.x;    
+    vec4 value = vec4(0.0);
+    // Get the index of the neuron weights in the flatten all neurons weights vector of current layer
+    uint weightsIndex = currentBuffer.neurons[index].weightsIndex;
+
+    // Calculate forward propagation using previous layer (inputBuffer) and weights of those connections with the neuron
+    for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
+        value += (inputBuffer.neurons[i].value.value * weights.values[weightsIndex + i].value);
+    }
+    value = activateFunction(value); 
+
+    // Put the results in the outputBuffer
+    outputBuffer.values[index] = value;    
 }
