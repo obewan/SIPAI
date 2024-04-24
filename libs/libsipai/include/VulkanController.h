@@ -53,91 +53,23 @@ public:
   void forwardPropagation(Layer *previousLayer, Layer *currentLayer);
 
   /**
-   * @brief Start to record a command for the command queue
-   *
-   * @return VkCommandBuffer
-   */
-  VkCommandBuffer commandStart() { return _beginSingleTimeCommands(); }
-
-  /**
-   * @brief End the record of a command and submit it to the command queue
-   *
-   * @param commandBuffer
-   */
-  void commandEnd(VkCommandBuffer &commandBuffer) {
-    _endSingleTimeCommands(commandBuffer);
-  }
-
-  /**
-   * @brief Load a GLSL shader
-   *
-   * @param path path of a GLSL file
-   */
-  std::unique_ptr<std::vector<uint32_t>> loadShader(const std::string &path);
-
-  /**
-   * @brief Compute a shader
-   *
-   * @param computeShader
-   * @param neurons
-   */
-  void computeShader(std::unique_ptr<std::vector<uint32_t>> &computeShader,
-                     std::vector<Neuron> &neurons);
-
-  /**
-   * @brief Copy Neurons data to input buffer
-   *
-   * @param neurons
-   */
-  void copyNeuronsDataToInputBuffer(const std::vector<Neuron> &neurons);
-
-  /**
-   * @brief Copy Neuron data to current buffer
-   *
-   * @param neurons
-   */
-  void copyNeuronsDataToCurrentBuffer(const std::vector<Neuron> &neurons);
-
-  /**
-   * @brief Copy output buffer to Neurons data
-   *
-   * @param neurons
-   */
-  void copyOutputBufferToNeuronsData(std::vector<Neuron> &neurons);
-
-  /**
-   * @brief Copy Activation Function
-   *
-   * @param activationFunction
-   * @param alpha
-   */
-  void copyActivationFunctionToActivationFunctionBuffer(
-      const EActivationFunction &activationFunction, float alpha);
-
-  /**
-   * @brief Copy Neuron weights to weights buffer
-   *
-   * @param neurons
-   */
-  void copyNeuronsWeightsToWeightsBuffer(const std::vector<Neuron> &neurons);
-
-  /**
    * @brief Destroy the device instance, cleaning ressources
    *
    */
   void destroy();
 
   /**
-   * @brief compiled forward shader
+   * @brief Get the Logical Device
    *
+   * @return VkDevice&
    */
-  std::unique_ptr<std::vector<uint32_t>> forwardShader;
-
   VkDevice &getDevice() { return logicalDevice_; }
 
 private:
   VulkanController() = default;
   static std::unique_ptr<VulkanController> controllerInstance_;
+
+  std::unique_ptr<std::vector<uint32_t>> forwardShader_;
 
   std::atomic<bool> isInitialized_ = false;
   unsigned int queueFamilyIndex_ = 0;
@@ -181,9 +113,22 @@ private:
 
   std::vector<VkCommandBuffer> commandBufferPool_;
 
-  VkCommandBuffer _beginSingleTimeCommands();
   uint32_t _findMemoryType(uint32_t typeFilter,
                            VkMemoryPropertyFlags properties) const;
+
+  VkCommandBuffer _beginSingleTimeCommands();
+  void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
+  std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
+  void _computeShader(std::unique_ptr<std::vector<uint32_t>> &computeShader,
+                      std::vector<Neuron> &neurons);
+
+  void _copyNeuronsDataToInputBuffer(const std::vector<Neuron> &neurons);
+  void _copyNeuronsDataToCurrentBuffer(const std::vector<Neuron> &neurons);
+  void _copyOutputBufferToNeuronsData(std::vector<Neuron> &neurons);
+  void _copyActivationFunctionToActivationFunctionBuffer(
+      const EActivationFunction &activationFunction, float alpha);
+  void _copyNeuronsWeightsToWeightsBuffer(const std::vector<Neuron> &neurons);
 
   void _createCommandPool();
   void _createCommandBufferPool();
@@ -196,7 +141,6 @@ private:
   void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
   void _createDataMapping();
-  void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 };

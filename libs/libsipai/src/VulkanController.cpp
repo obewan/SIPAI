@@ -83,7 +83,7 @@ void VulkanController::initialize() {
   }
   vkGetDeviceQueue(logicalDevice_, queueFamilyIndex_, 0, &queue_);
 
-  forwardShader = loadShader(manager.app_params.forwardShader);
+  forwardShader_ = _loadShader(manager.app_params.forwardShader);
 
   size_t max_size = manager.network->max_neurons();
   _createCommandPool();
@@ -106,29 +106,29 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
   }
 
   // Prepare data for the shader
-  auto commandBuffer = commandStart();
-  copyNeuronsWeightsToWeightsBuffer(
+  auto commandBuffer = _beginSingleTimeCommands();
+  _copyNeuronsWeightsToWeightsBuffer(
       currentLayer->neurons); // before others for weights index
-  copyNeuronsDataToInputBuffer(previousLayer->neurons);
-  copyActivationFunctionToActivationFunctionBuffer(
+  _copyNeuronsDataToInputBuffer(previousLayer->neurons);
+  _copyActivationFunctionToActivationFunctionBuffer(
       currentLayer->activationFunction, currentLayer->activationFunctionAlpha);
-  commandEnd(commandBuffer);
+  _endSingleTimeCommands(commandBuffer);
 
-  commandBuffer = commandStart();
-  copyNeuronsDataToCurrentBuffer(currentLayer->neurons);
-  commandEnd(commandBuffer);
+  commandBuffer = _beginSingleTimeCommands();
+  _copyNeuronsDataToCurrentBuffer(currentLayer->neurons);
+  _endSingleTimeCommands(commandBuffer);
 
   // Run the shader
-  computeShader(forwardShader, currentLayer->neurons);
+  _computeShader(forwardShader_, currentLayer->neurons);
 
   // Get the results
-  commandBuffer = commandStart();
-  copyOutputBufferToNeuronsData(currentLayer->neurons);
-  commandEnd(commandBuffer);
+  commandBuffer = _beginSingleTimeCommands();
+  _copyOutputBufferToNeuronsData(currentLayer->neurons);
+  _endSingleTimeCommands(commandBuffer);
 }
 
 std::unique_ptr<std::vector<uint32_t>>
-VulkanController::loadShader(const std::string &path) {
+VulkanController::_loadShader(const std::string &path) {
   if (!std::filesystem::exists(path)) {
     throw std::runtime_error("GLSL file does not exist: " + path);
   }
@@ -152,7 +152,7 @@ VulkanController::loadShader(const std::string &path) {
   return compiledShaderCode;
 }
 
-void VulkanController::computeShader(
+void VulkanController::_computeShader(
     std::unique_ptr<std::vector<uint32_t>> &computeShader,
     std::vector<Neuron> &neurons) {
 
@@ -260,11 +260,9 @@ void VulkanController::computeShader(
   VkCommandBuffer commandBuffer = _beginSingleTimeCommands();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                     computePipeline);
-
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           pipelineLayout_, 0, 1, &descriptorSet_, 0, nullptr);
   vkCmdDispatch(commandBuffer, static_cast<uint32_t>(neurons.size()), 1, 1);
-
   _endSingleTimeCommands(commandBuffer);
 
   // Cleanup
@@ -451,19 +449,19 @@ void VulkanController::_createDataMapping() {
               &outputData_);
 }
 
-void VulkanController::copyNeuronsDataToInputBuffer(
+void VulkanController::_copyNeuronsDataToInputBuffer(
     const std::vector<Neuron> &neurons) {
   memset(inputData_, 0, (size_t)inputBufferInfo_.size);
   memcpy(inputData_, neurons.data(), neurons.size() * sizeof(Neuron));
 }
 
-void VulkanController::copyNeuronsDataToCurrentBuffer(
+void VulkanController::_copyNeuronsDataToCurrentBuffer(
     const std::vector<Neuron> &neurons) {
   memset(currentData_, 0, (size_t)currentBufferInfo_.size);
   memcpy(currentData_, neurons.data(), neurons.size() * sizeof(Neuron));
 }
 
-void VulkanController::copyActivationFunctionToActivationFunctionBuffer(
+void VulkanController::_copyActivationFunctionToActivationFunctionBuffer(
     const EActivationFunction &activationFunction, float alpha) {
   GLSLActivationFunction glslActivationFunction{
       .value = (int)activationFunction, .alpha = alpha};
@@ -474,7 +472,7 @@ void VulkanController::copyActivationFunctionToActivationFunctionBuffer(
 }
 
 // Flatten the all the weights vectors
-void VulkanController::copyNeuronsWeightsToWeightsBuffer(
+void VulkanController::_copyNeuronsWeightsToWeightsBuffer(
     const std::vector<Neuron> &neurons) {
   size_t totalWeightsSize =
       std::accumulate(neurons.begin(), neurons.end(), 0ull,
@@ -495,7 +493,7 @@ void VulkanController::copyNeuronsWeightsToWeightsBuffer(
 }
 
 // Copy the OutputBuffer data directly into the value field of the neurons
-void VulkanController::copyOutputBufferToNeuronsData(
+void VulkanController::_copyOutputBufferToNeuronsData(
     std::vector<Neuron> &neurons) {
   const auto &bufferData = static_cast<std::array<float, 4> *>(outputData_);
   for (size_t i = 0; i < neurons.size(); i++) {

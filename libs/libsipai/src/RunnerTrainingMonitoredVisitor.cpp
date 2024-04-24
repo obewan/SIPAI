@@ -16,6 +16,7 @@
 using namespace sipai;
 
 volatile std::sig_atomic_t stopTraining = false;
+volatile std::sig_atomic_t stopTrainingNow = false;
 
 void signalHandler(int signal) {
   if (signal == SIGINT) {
@@ -26,10 +27,10 @@ void signalHandler(int signal) {
           "immediately without saving.");
       stopTraining = true;
     } else {
-      SimpleLogger::LOG_INFO(
-          "Received another interrupt signal (CTRL+C). "
-          "Forcing quitting immedialty without saving progress.");
-      std::exit(EXIT_SUCCESS); // Terminate the program immediately
+      SimpleLogger::LOG_INFO("Received another interrupt signal (CTRL+C). "
+                             "Forcing quitting immedialty without saving "
+                             "progress. Please wait for cleaning...");
+      stopTrainingNow = true;
     }
   }
 }
@@ -64,6 +65,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   try {
     // Reset the stopTraining flag
     stopTraining = false;
+    stopTrainingNow = false;
 
     // Set up signal handler
     std::signal(SIGINT, signalHandler);
@@ -73,10 +75,17 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
-    while (!stopTraining &&
+    while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
       float trainingLoss = computeLoss(epoch, true);
+      if (stopTrainingNow) {
+        break;
+      }
+
       float validationLoss = computeLoss(epoch, false);
+      if (stopTrainingNow) {
+        break;
+      }
 
       logTrainingProgress(epoch, trainingLoss, validationLoss);
 
@@ -100,14 +109,15 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       previousTrainingLoss = trainingLoss;
       previousValidationLoss = validationLoss;
 
-      if (epoch % appParams.epoch_autosave == 0) {
+      if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
         saveNetwork(hasLastEpochBeenSaved);
       }
     }
 
     SimpleLogger::LOG_INFO("Exiting training...");
-    saveNetwork(hasLastEpochBeenSaved);
-
+    if (!stopTrainingNow) {
+      saveNetwork(hasLastEpochBeenSaved);
+    }
     // Show elapsed time
     const auto end{std::chrono::steady_clock::now()};
     const std::chrono::duration elapsed_seconds =
@@ -213,6 +223,10 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
 
   // Loop over all parts of the current image
   for (size_t i = 0; i < inputImage.size(); i++) {
+    if (stopTrainingNow) {
+      break;
+    }
+
     // Get the input and target parts
     const auto &inputPart = inputImage.at(i);
     const auto &targetPart = targetImage.at(i);
@@ -225,6 +239,10 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     const auto &outputData = manager.network->forwardPropagation(
         inputPart->data, manager.app_params.enable_vulkan,
         manager.app_params.enable_parallel);
+
+    if (stopTrainingNow) {
+      break;
+    }
 
     // If the loss should be computed for the current image, compute the loss
     // for the current part
@@ -239,6 +257,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
       partsLoss += partLoss;
       partsLossComputed++;
     }
+    if (stopTrainingNow) {
+      break;
+    }
 
     // If backward propagation and weight update should be performed, perform
     // them
@@ -250,6 +271,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
       manager.network->backwardPropagation(targetPart->data, error_min,
                                            error_max,
                                            manager.app_params.enable_parallel);
+      if (stopTrainingNow) {
+        break;
+      }
 
       if (manager.app_params.verbose_debug) {
         SimpleLogger::LOG_DEBUG("weights update part ", i + 1, "/",
@@ -257,6 +281,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
       }
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);
+      if (stopTrainingNow) {
+        break;
+      }
     }
   }
 
@@ -289,6 +316,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
   while (auto imagePartsPair = isTraining
                                    ? trainingDataFactory.nextTraining()
                                    : trainingDataFactory.nextValidation()) {
+    if (stopTrainingNow) {
+      break;
+    }
     counter++;
     if (app_params.verbose) {
       SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
@@ -306,6 +336,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     const auto &[inputImageParts, targetImageParts] = *imagePartsPair;
     float imageLoss = computeLoss(epoch, inputImageParts, targetImageParts,
                                   isTraining, isLossFrequency);
+    if (stopTrainingNow) {
+      break;
+    }
 
     // If the loss was computed for the current image, add the average loss for
     // the current image to the total loss
