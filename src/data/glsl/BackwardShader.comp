@@ -1,0 +1,112 @@
+#version 450
+
+/**
+ * GLSL backward propagation compute shader for Vulkan, by Dams 
+ * Damien Balima (c) CC-BY-NC-SA-4.0 2024
+ */
+
+// One workgroup thread per neuron, one local thread per workgroup
+layout (local_size_x = 1) in;
+
+// can adjust error_min and error_max here according your settings
+const float error_min = -100.0;
+const float error_max = 100.0;
+
+// Enum mapping, do not change
+const int ELU = 0;
+const int LReLU = 1;
+const int PReLU = 2;
+const int ReLU = 3;
+const int Sigmoid = 4;
+const int Tanh = 5;
+
+struct RGBA {
+    vec4 value;
+};
+
+struct Neuron {
+    RGBA value;
+    RGBA error;
+    uint weightsIndex;
+    uint neighborsIndex;
+    uint neighborsSize;
+};
+
+// will contains next layer neurons
+layout (std430, binding = 0) buffer InputBuffer {
+    Neuron neurons[];
+} inputBuffer;
+
+// will contains current layer neurons updated errors
+layout (std430, binding = 1) buffer OutputBuffer {
+    vec4 errors[];
+} outputBuffer;
+
+// will contains current layer neurons
+layout (std430, binding = 2) buffer CurrentBuffer {
+    Neuron neurons[];
+} currentBuffer;
+
+// will contains current layer activation function
+layout (std430, binding = 3) buffer ActivationFunction {
+    int function;
+    float alpha;
+} activationFunction;
+
+// will contains next layer flatten neurons weights (indexed)
+layout (std430, binding = 4) buffer Weights {
+    RGBA values[];
+} weights;
+
+// will contains current layer flatten neurons neighbors (indexed)
+layout (std430, binding = 5) buffer NeighborsErrors  {  
+    RGBA errors[];
+} neighborsErrors;
+
+layout (std430, binding = 6) buffer NeighborsWeights {    
+    RGBA weights[];
+} neighborsWeights;
+
+vec4 derivativeFunction(vec4 value){
+   switch (activationFunction.function) {
+        case ELU:                 
+        break;
+        case LReLU:             
+        break;
+        case PReLU:            
+        break;
+        case ReLU:             
+        break;
+        case Sigmoid:            
+        break;
+        case Tanh:             
+        break;
+        default:            
+        break;
+    }
+    return value;
+}
+
+void main() {
+    // Get the index of the neuron (one workgroup thread per neuron)
+    uint index = gl_GlobalInvocationID.x;   
+    vec4 error = vec4(0.0);
+    
+    // Calculate backward propagation using next layer (inputBuffer), their weights and current neuron neightbors.
+    for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
+        uint weightsIndex = inputBuffer.neurons[i].weightsIndex;
+        error += (inputBuffer.neurons[i].error.value * weights.values[weightsIndex + index].value);
+    }
+    
+    Neuron neuron = currentBuffer.neurons[index];
+    uint neighborsIndex = neuron.neighborsIndex;    
+    for (uint i = 0; i < neuron.neighborsSize; i++){
+        error += (neighborsErrors.errors[neighborsIndex + i].value * neighborsWeights.weights[neighborsIndex + i].value);
+    }
+
+    error = error * derivativeFunction(neuron.value.value);
+    error = clamp(error, error_min, error_max); 
+
+   // Put the results in the outputBuffer
+    outputBuffer.errors[index] = error;   
+}

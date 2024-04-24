@@ -13,7 +13,8 @@
 
 using namespace sipai;
 
-const size_t totalBuffers = 5;
+constexpr size_t BUFFER_COUNT = 5;
+constexpr size_t COMMAND_POOL_SIZE = 10;
 
 std::unique_ptr<VulkanController> VulkanController::controllerInstance_ =
     nullptr;
@@ -225,7 +226,7 @@ void VulkanController::_createCommandBufferPool() {
 }
 
 void VulkanController::_createDescriptorSetLayout() {
-  std::array<VkDescriptorSetLayoutBinding, totalBuffers> layoutBindings{};
+  std::array<VkDescriptorSetLayoutBinding, BUFFER_COUNT> layoutBindings{};
   // Buffer layout binding
   for (size_t i = 0; i < layoutBindings.size(); i++) {
     layoutBindings[i].binding = (unsigned int)i; // binding number
@@ -549,7 +550,7 @@ void VulkanController::_bindBuffers() {
       .pBufferInfo = &descriptorWeightsBufferInfo};
 
   // Update the descriptor set
-  std::array<VkWriteDescriptorSet, totalBuffers> writeDescriptorSets = {
+  std::array<VkWriteDescriptorSet, BUFFER_COUNT> writeDescriptorSets = {
       writeInputDescriptorSet, writeOutputDescriptorSet,
       writeCurrentDescriptorSet, writeAFDescriptorSet,
       writeWeightsDescriptorSet};

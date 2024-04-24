@@ -8,7 +8,7 @@
 // One workgroup thread per neuron, one local thread per workgroup
 layout (local_size_x = 1) in;
 
-
+// Enum mapping, do not change
 const int ELU = 0;
 const int LReLU = 1;
 const int PReLU = 2;
@@ -16,34 +16,37 @@ const int ReLU = 3;
 const int Sigmoid = 4;
 const int Tanh = 5;
 
-
-
 struct RGBA {
     vec4 value;
 };
 
 struct Neuron {
     RGBA value;
-    int weightsIndex;
+    uint weightsIndex;
 };
 
+// will contains previous layer neurons here
 layout (std430, binding = 0) buffer InputBuffer {
     Neuron neurons[];
 } inputBuffer;
 
+// will contains current layer neurons updated values
 layout (std430, binding = 1) buffer OutputBuffer {
     vec4 values[];
 } outputBuffer;
 
+// will contains current layer neurons
 layout (std430, binding = 2) buffer CurrentBuffer {
     Neuron neurons[];
 } currentBuffer;
 
+// will contains current layer activation function
 layout (std430, binding = 3) buffer ActivationFunction {
     int function;
     float alpha;
 } activationFunction;
 
+// will contains current layer flatten neurons weights (indexed)
 layout (std430, binding = 4) buffer Weights {
     RGBA values[];
 } weights;

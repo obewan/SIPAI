@@ -73,7 +73,6 @@ private:
 
   std::atomic<bool> isInitialized_ = false;
   unsigned int queueFamilyIndex_ = 0;
-  size_t COMMAND_POOL_SIZE = 10;
 
   VkInstance vkInstance_ = VK_NULL_HANDLE;
   VkPhysicalDevice physicalDevice_ = VK_NULL_HANDLE;
