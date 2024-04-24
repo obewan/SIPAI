@@ -89,7 +89,8 @@ void Manager::run() {
       "\npadding enabled: ", app_params.enable_padding ? "true" : "false",
       "\nvulkan enabled: ", app_params.enable_vulkan ? "true" : "false",
       "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false",
-      "\nverbose logs enabled: ", app_params.verbose ? "true" : "false");
+      "\nverbose logs enabled: ", app_params.verbose ? "true" : "false",
+      "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false");
 
   if (app_params.enable_vulkan) {
     SimpleLogger::LOG_INFO("Enabling Vulkan...");

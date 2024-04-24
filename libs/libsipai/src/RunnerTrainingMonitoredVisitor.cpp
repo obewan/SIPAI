@@ -51,6 +51,9 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
+  if (appParams.verbose_debug) {
+    SimpleLogger::LOG_DEBUG("Loading images data...");
+  }
   trainingDataFactory.loadData();
   if (!trainingDataFactory.isLoaded() ||
       trainingDataFactory.trainingSize() == 0) {
@@ -215,6 +218,10 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     const auto &targetPart = targetImage.at(i);
 
     // Perform forward propagation
+    if (manager.app_params.verbose_debug) {
+      SimpleLogger::LOG_DEBUG("forward propagation part ", i + 1, "/",
+                              inputImage.size(), "...");
+    }
     const auto &outputData = manager.network->forwardPropagation(
         inputPart->data, manager.app_params.enable_vulkan,
         manager.app_params.enable_parallel);
@@ -222,16 +229,32 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     // If the loss should be computed for the current image, compute the loss
     // for the current part
     if (isLossFrequency) {
-      partsLoss += imageHelper_.computeLoss(outputData, targetPart->data);
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("loss computation...");
+      }
+      float partLoss = imageHelper_.computeLoss(outputData, targetPart->data);
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("part loss: ", partLoss * 100.0f, "%");
+      }
+      partsLoss += partLoss;
       partsLossComputed++;
     }
 
     // If backward propagation and weight update should be performed, perform
     // them
     if (isTraining) {
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
+                                inputImage.size(), "...");
+      }
       manager.network->backwardPropagation(targetPart->data, error_min,
                                            error_max,
                                            manager.app_params.enable_parallel);
+
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("weights update part ", i + 1, "/",
+                                inputImage.size(), "...");
+      }
       manager.network->updateWeights(manager.network_params.learning_rate,
                                      manager.app_params.enable_parallel);
     }

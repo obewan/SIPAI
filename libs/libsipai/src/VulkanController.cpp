@@ -1,6 +1,7 @@
 #include "VulkanController.h"
 #include "ActivationFunctions.h"
 #include "Manager.h"
+#include "Neuron.h"
 #include "SimpleLogger.h"
 #include <algorithm>
 #include <filesystem>
@@ -86,13 +87,44 @@ void VulkanController::initialize() {
 
   size_t max_size = manager.network->max_neurons();
   _createCommandPool();
+  _createCommandBufferPool();
   _createDescriptorSetLayout();
   _createDescriptorPool(max_size);
   _createDescriptorSet();
   _createPipelineLayout();
-  _createNeuronsBuffers(max_size);
+  _createFence();
+  _createBuffers(max_size);
+  _createDataMapping();
 
   isInitialized_ = true;
+}
+
+void VulkanController::forwardPropagation(Layer *previousLayer,
+                                          Layer *currentLayer) {
+  if (!IsInitialized()) {
+    throw NeuralNetworkException("Vulkan controller is not initialized.");
+  }
+
+  // Prepare data for the shader
+  auto commandBuffer = commandStart();
+  copyNeuronsWeightsToWeightsBuffer(
+      currentLayer->neurons); // before others for weights index
+  copyNeuronsDataToInputBuffer(previousLayer->neurons);
+  copyActivationFunctionToActivationFunctionBuffer(
+      currentLayer->activationFunction, currentLayer->activationFunctionAlpha);
+  commandEnd(commandBuffer);
+
+  commandBuffer = commandStart();
+  copyNeuronsDataToCurrentBuffer(currentLayer->neurons);
+  commandEnd(commandBuffer);
+
+  // Run the shader
+  computeShader(forwardShader, currentLayer->neurons);
+
+  // Get the results
+  commandBuffer = commandStart();
+  copyOutputBufferToNeuronsData(currentLayer->neurons);
+  commandEnd(commandBuffer);
 }
 
 std::unique_ptr<std::vector<uint32_t>>
@@ -152,82 +184,68 @@ void VulkanController::computeShader(
     throw std::runtime_error("Failed to create compute pipelines");
   };
 
-  // Create command buffer and record commands
-  VkCommandBuffer commandBuffer =
-      _beginSingleTimeCommands(logicalDevice_, commandPool_);
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                    computePipeline);
-
   // Note: beware refactoring those following bindings
   // Bind the input buffer
-  VkDescriptorBufferInfo descriptorInputBufferInfo{};
-  descriptorInputBufferInfo.buffer = inputBuffer_;
-  descriptorInputBufferInfo.offset = 0;
-  descriptorInputBufferInfo.range = inputBufferInfo_.size;
-  VkWriteDescriptorSet writeInputDescriptorSet{};
-  writeInputDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  writeInputDescriptorSet.dstSet = descriptorSet_;
-  writeInputDescriptorSet.dstBinding = 0;
-  writeInputDescriptorSet.dstArrayElement = 0;
-  writeInputDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  writeInputDescriptorSet.descriptorCount = 1;
-  writeInputDescriptorSet.pBufferInfo = &descriptorInputBufferInfo;
+  VkDescriptorBufferInfo descriptorInputBufferInfo{
+      .buffer = inputBuffer_, .offset = 0, .range = inputBufferInfo_.size};
+  VkWriteDescriptorSet writeInputDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 0,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorInputBufferInfo};
 
   // Bind the output buffer
-  VkDescriptorBufferInfo descriptorOutputBufferInfo{};
-  descriptorOutputBufferInfo.buffer = outputBuffer_;
-  descriptorOutputBufferInfo.offset = 0;
-  descriptorOutputBufferInfo.range = outputBufferInfo_.size;
-  VkWriteDescriptorSet writeOutputDescriptorSet{};
-  writeOutputDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  writeOutputDescriptorSet.dstSet = descriptorSet_;
-  writeOutputDescriptorSet.dstBinding = 1;
-  writeOutputDescriptorSet.dstArrayElement = 0;
-  writeOutputDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  writeOutputDescriptorSet.descriptorCount = 1;
-  writeOutputDescriptorSet.pBufferInfo = &descriptorOutputBufferInfo;
+  VkDescriptorBufferInfo descriptorOutputBufferInfo{
+      .buffer = outputBuffer_, .offset = 0, .range = outputBufferInfo_.size};
+  VkWriteDescriptorSet writeOutputDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 1,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorOutputBufferInfo};
 
   // Bind the current buffer
-  VkDescriptorBufferInfo descriptorCurrentBufferInfo{};
-  descriptorCurrentBufferInfo.buffer = currentBuffer_;
-  descriptorCurrentBufferInfo.offset = 0;
-  descriptorCurrentBufferInfo.range = currentBufferInfo_.size;
-  VkWriteDescriptorSet writeCurrentDescriptorSet{};
-  writeCurrentDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  writeCurrentDescriptorSet.dstSet = descriptorSet_;
-  writeCurrentDescriptorSet.dstBinding = 2;
-  writeCurrentDescriptorSet.dstArrayElement = 0;
-  writeCurrentDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  writeCurrentDescriptorSet.descriptorCount = 1;
-  writeCurrentDescriptorSet.pBufferInfo = &descriptorCurrentBufferInfo;
+  VkDescriptorBufferInfo descriptorCurrentBufferInfo{
+      .buffer = currentBuffer_, .offset = 0, .range = currentBufferInfo_.size};
+  VkWriteDescriptorSet writeCurrentDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 2,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorCurrentBufferInfo};
 
   // Bind the activation function buffer
-  VkDescriptorBufferInfo descriptorAFBufferInfo{};
-  descriptorAFBufferInfo.buffer = activationFunctionBuffer_;
-  descriptorAFBufferInfo.offset = 0;
-  descriptorAFBufferInfo.range = activationFunctionBufferInfo_.size;
-  VkWriteDescriptorSet writeAFDescriptorSet{};
-  writeAFDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  writeAFDescriptorSet.dstSet = descriptorSet_;
-  writeAFDescriptorSet.dstBinding = 3;
-  writeAFDescriptorSet.dstArrayElement = 0;
-  writeAFDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  writeAFDescriptorSet.descriptorCount = 1;
-  writeAFDescriptorSet.pBufferInfo = &descriptorAFBufferInfo;
+  VkDescriptorBufferInfo descriptorAFBufferInfo{
+      .buffer = activationFunctionBuffer_,
+      .offset = 0,
+      .range = activationFunctionBufferInfo_.size};
+  VkWriteDescriptorSet writeAFDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 3,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorAFBufferInfo};
 
   // Bind the weights buffer
-  VkDescriptorBufferInfo descriptorWeightsBufferInfo{};
-  descriptorWeightsBufferInfo.buffer = weightsBuffer_;
-  descriptorWeightsBufferInfo.offset = 0;
-  descriptorWeightsBufferInfo.range = weightsBufferInfo_.size;
-  VkWriteDescriptorSet writeWeightsDescriptorSet{};
-  writeWeightsDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  writeWeightsDescriptorSet.dstSet = descriptorSet_;
-  writeWeightsDescriptorSet.dstBinding = 4;
-  writeWeightsDescriptorSet.dstArrayElement = 0;
-  writeWeightsDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  writeWeightsDescriptorSet.descriptorCount = 1;
-  writeWeightsDescriptorSet.pBufferInfo = &descriptorWeightsBufferInfo;
+  VkDescriptorBufferInfo descriptorWeightsBufferInfo{
+      .buffer = weightsBuffer_, .offset = 0, .range = weightsBufferInfo_.size};
+  VkWriteDescriptorSet writeWeightsDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 4,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorWeightsBufferInfo};
 
   // Update the descriptor set
   std::array<VkWriteDescriptorSet, totalBuffers> writeDescriptorSets = {
@@ -238,54 +256,51 @@ void VulkanController::computeShader(
                          static_cast<uint32_t>(writeDescriptorSets.size()),
                          writeDescriptorSets.data(), 0, nullptr);
 
+  // Create command buffer and record commands
+  VkCommandBuffer commandBuffer = _beginSingleTimeCommands();
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                    computePipeline);
+
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           pipelineLayout_, 0, 1, &descriptorSet_, 0, nullptr);
   vkCmdDispatch(commandBuffer, static_cast<uint32_t>(neurons.size()), 1, 1);
 
-  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+  _endSingleTimeCommands(commandBuffer);
 
   // Cleanup
   vkDestroyShaderModule(logicalDevice_, shaderModule, nullptr);
   vkDestroyPipeline(logicalDevice_, computePipeline, nullptr);
 }
 
-VkCommandBuffer
-VulkanController::_beginSingleTimeCommands(VkDevice device,
-                                           VkCommandPool commandPool) {
-  VkCommandBufferAllocateInfo allocInfo{};
-  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandPool = commandPool;
-  allocInfo.commandBufferCount = 1;
-  VkCommandBuffer commandBuffer;
-  vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
+  // Take a command buffer from the pool
+  VkCommandBuffer commandBuffer = commandBufferPool_.back();
+  commandBufferPool_.pop_back();
+
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
   beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+  // Starts recording the command
   vkBeginCommandBuffer(commandBuffer, &beginInfo);
   return commandBuffer;
 }
 
-void VulkanController::_endSingleTimeCommands(VkDevice device,
-                                              VkCommandPool commandPool,
-                                              VkCommandBuffer commandBuffer,
-                                              VkQueue queue) {
+void VulkanController::_endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+  // Ends recording the command
   vkEndCommandBuffer(commandBuffer);
-  // Create a fence (Semaphore)
-  VkFenceCreateInfo fenceInfo{};
-  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-  VkFence computeFence;
-  vkCreateFence(device, &fenceInfo, nullptr, &computeFence);
+  // Reset the fence
+  vkResetFences(logicalDevice_, 1, &computeFence_);
+  // Submit the command to the queue
   VkSubmitInfo submitInfo{};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-  vkQueueSubmit(queue, 1, &submitInfo, computeFence);
+  vkQueueSubmit(queue_, 1, &submitInfo, computeFence_);
   // Wait for the fence to signal that the GPU has finished
-  vkWaitForFences(device, 1, &computeFence, VK_TRUE, UINT64_MAX);
-  // Cleaning
-  vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
-  vkDestroyFence(device, computeFence, nullptr);
+  vkWaitForFences(logicalDevice_, 1, &computeFence_, VK_TRUE, UINT64_MAX);
+
+  vkResetCommandBuffer(commandBuffer, 0);
+  commandBufferPool_.push_back(commandBuffer);
 }
 
 void VulkanController::_createCommandPool() {
@@ -300,6 +315,20 @@ void VulkanController::_createCommandPool() {
       VK_SUCCESS) {
     throw std::runtime_error("Failed to create command pool!");
   }
+}
+
+void VulkanController::_createCommandBufferPool() {
+  VkCommandBufferAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  allocInfo.commandPool = commandPool_;
+  allocInfo.commandBufferCount = COMMAND_POOL_SIZE;
+  std::vector<VkCommandBuffer> commandBuffers(COMMAND_POOL_SIZE);
+  if (vkAllocateCommandBuffers(logicalDevice_, &allocInfo,
+                               commandBuffers.data()) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to allocate command buffers!");
+  }
+  commandBufferPool_ = std::move(commandBuffers);
 }
 
 void VulkanController::_createDescriptorSetLayout() {
@@ -353,31 +382,35 @@ void VulkanController::_createDescriptorSet() {
   }
 }
 
-void VulkanController::_createNeuronsBuffers(size_t max_size) {
-  // Create Input buffer
-  _createNeuronsBuffer(sizeof(Neuron) * max_size, inputBufferInfo_,
-                       inputBuffer_, inputBufferMemory_);
-  // Create Ouput buffer
-  _createNeuronsBuffer(sizeof(RGBA) * max_size, outputBufferInfo_,
-                       outputBuffer_, outputBufferMemory_);
-  // Create Current buffer
-  _createNeuronsBuffer(sizeof(Neuron) * max_size, currentBufferInfo_,
-                       currentBuffer_, currentBufferMemory_);
-  // Create Activation buffer
-  _createNeuronsBuffer(sizeof(GLSLActivationFunction),
-                       activationFunctionBufferInfo_, activationFunctionBuffer_,
-                       activationFunctionBufferMemory_);
-  // Create Weights buffer
-  const auto &max_weights = Manager::getConstInstance().network->max_weights;
-  _createNeuronsBuffer(sizeof(RGBA) * max_size * max_weights,
-                       weightsBufferInfo_, weightsBuffer_,
-                       weightsBufferMemory_);
+void VulkanController::_createFence() {
+  VkFenceCreateInfo fenceInfo{};
+  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+  vkCreateFence(logicalDevice_, &fenceInfo, nullptr, &computeFence_);
 }
 
-void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
-                                            VkBufferCreateInfo &bufferInfo,
-                                            VkBuffer &buffer,
-                                            VkDeviceMemory &bufferMemory) {
+void VulkanController::_createBuffers(size_t max_size) {
+  // Create Input buffer
+  _createBuffer(sizeof(Neuron) * max_size, inputBufferInfo_, inputBuffer_,
+                inputBufferMemory_);
+  // Create Ouput buffer
+  _createBuffer(sizeof(RGBA) * max_size, outputBufferInfo_, outputBuffer_,
+                outputBufferMemory_);
+  // Create Current buffer
+  _createBuffer(sizeof(Neuron) * max_size, currentBufferInfo_, currentBuffer_,
+                currentBufferMemory_);
+  // Create Activation buffer
+  _createBuffer(sizeof(GLSLActivationFunction), activationFunctionBufferInfo_,
+                activationFunctionBuffer_, activationFunctionBufferMemory_);
+  // Create Weights buffer
+  const auto &max_weights = Manager::getConstInstance().network->max_weights;
+  _createBuffer(sizeof(RGBA) * max_size * max_weights, weightsBufferInfo_,
+                weightsBuffer_, weightsBufferMemory_);
+}
+
+void VulkanController::_createBuffer(VkDeviceSize size,
+                                     VkBufferCreateInfo &bufferInfo,
+                                     VkBuffer &buffer,
+                                     VkDeviceMemory &bufferMemory) {
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size; // Size of the buffer in bytes
   bufferInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // Buffer will be used
@@ -405,84 +438,77 @@ void VulkanController::_createNeuronsBuffer(VkDeviceSize size,
   vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
 }
 
+void VulkanController::_createDataMapping() {
+  vkMapMemory(logicalDevice_, inputBufferMemory_, 0, inputBufferInfo_.size, 0,
+              &inputData_);
+  vkMapMemory(logicalDevice_, currentBufferMemory_, 0, currentBufferInfo_.size,
+              0, &currentData_);
+  vkMapMemory(logicalDevice_, activationFunctionBufferMemory_, 0,
+              activationFunctionBufferInfo_.size, 0, &activationFunctionData_);
+  vkMapMemory(logicalDevice_, weightsBufferMemory_, 0, weightsBufferInfo_.size,
+              0, &weightsData_);
+  vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
+              &outputData_);
+}
+
 void VulkanController::copyNeuronsDataToInputBuffer(
     const std::vector<Neuron> &neurons) {
-  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
-  void *data;
-  vkMapMemory(logicalDevice_, inputBufferMemory_, 0, inputBufferInfo_.size, 0,
-              &data);
-  memcpy(data, neurons.data(), (size_t)inputBufferInfo_.size);
-  vkUnmapMemory(logicalDevice_, inputBufferMemory_);
-  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+  memset(inputData_, 0, (size_t)inputBufferInfo_.size);
+  memcpy(inputData_, neurons.data(), neurons.size() * sizeof(Neuron));
 }
 
 void VulkanController::copyNeuronsDataToCurrentBuffer(
     const std::vector<Neuron> &neurons) {
-  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
-  void *data;
-  vkMapMemory(logicalDevice_, currentBufferMemory_, 0, currentBufferInfo_.size,
-              0, &data);
-  memcpy(data, neurons.data(), (size_t)currentBufferInfo_.size);
-  vkUnmapMemory(logicalDevice_, currentBufferMemory_);
-  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+  memset(currentData_, 0, (size_t)currentBufferInfo_.size);
+  memcpy(currentData_, neurons.data(), neurons.size() * sizeof(Neuron));
 }
 
 void VulkanController::copyActivationFunctionToActivationFunctionBuffer(
     const EActivationFunction &activationFunction, float alpha) {
   GLSLActivationFunction glslActivationFunction{
       .value = (int)activationFunction, .alpha = alpha};
-  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
-  void *data;
-  vkMapMemory(logicalDevice_, activationFunctionBufferMemory_, 0,
-              activationFunctionBufferInfo_.size, 0, &data);
-  memcpy(data, &glslActivationFunction, sizeof(GLSLActivationFunction));
-  vkUnmapMemory(logicalDevice_, activationFunctionBufferMemory_);
-  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+  memset(activationFunctionData_, 0,
+         (size_t)activationFunctionBufferInfo_.size);
+  memcpy(activationFunctionData_, &glslActivationFunction,
+         sizeof(GLSLActivationFunction));
 }
 
+// Flatten the all the weights vectors
 void VulkanController::copyNeuronsWeightsToWeightsBuffer(
     const std::vector<Neuron> &neurons) {
-  VkCommandBuffer commandBuffer =
-      _beginSingleTimeCommands(logicalDevice_, commandPool_);
-  // flatten the all the weights vectors
-  std::unique_ptr<std::vector<RGBA>> flatWeights =
-      std::make_unique<std::vector<RGBA>>();
-  for (size_t i = 0; i < neurons.size(); ++i) {
-    const Neuron &neuron = neurons[i];
-    neuron.weightsIndex =
-        flatWeights->size(); // index where the neuron's weights start in the
-                             // flatWeights vector
-    flatWeights->insert(flatWeights->end(), neuron.weights.begin(),
-                        neuron.weights.end());
+  size_t totalWeightsSize =
+      std::accumulate(neurons.begin(), neurons.end(), 0ull,
+                      [](size_t sum, const Neuron &neuron) {
+                        return sum + neuron.weights.size();
+                      });
+  std::vector<RGBA> flatWeights;
+  flatWeights.reserve(totalWeightsSize);
+  size_t weightsIndex = 0;
+  for (auto &neuron : neurons) {
+    neuron.weightsIndex = weightsIndex;
+    flatWeights.insert(flatWeights.end(), neuron.weights.begin(),
+                       neuron.weights.end());
+    weightsIndex += neuron.weights.size();
   }
-  void *data;
-  vkMapMemory(logicalDevice_, weightsBufferMemory_, 0, weightsBufferInfo_.size,
-              0, &data);
-  memcpy(data, flatWeights->data(), flatWeights->size() * sizeof(RGBA));
-  vkUnmapMemory(logicalDevice_, weightsBufferMemory_);
-  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+  memset(weightsData_, 0, (size_t)weightsBufferInfo_.size);
+  memcpy(weightsData_, flatWeights.data(), flatWeights.size() * sizeof(RGBA));
 }
 
 // Copy the OutputBuffer data directly into the value field of the neurons
 void VulkanController::copyOutputBufferToNeuronsData(
     std::vector<Neuron> &neurons) {
-  auto commandBuffer = _beginSingleTimeCommands(logicalDevice_, commandPool_);
-  void *data;
-  vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
-              &data);
-  const auto &bufferData = static_cast<std::array<float, 4> *>(data);
+  const auto &bufferData = static_cast<std::array<float, 4> *>(outputData_);
   for (size_t i = 0; i < neurons.size(); i++) {
     neurons[i].value.value = bufferData[i];
   }
-  // TODO: TEST
-  // if (std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
-  //       return neuron.value.value ==
-  //              std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
-  //     })) {
-  //   SimpleLogger::LOG_DEBUG("Warning: all values are zero");
-  // }
-  vkUnmapMemory(logicalDevice_, outputBufferMemory_);
-  _endSingleTimeCommands(logicalDevice_, commandPool_, commandBuffer, queue_);
+  const auto &app_params = Manager::getConstInstance().app_params;
+  if (app_params.verbose_debug &&
+      std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
+        return neuron.value.value ==
+               std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
+      })) {
+    SimpleLogger::LOG_DEBUG("Warning: all neurons values are zero.");
+  }
 }
 
 void VulkanController::_createPipelineLayout() {
@@ -593,6 +619,7 @@ std::optional<VkPhysicalDevice> VulkanController::_pickPhysicalDevice() {
 void VulkanController::destroy() {
   auto freeBuffer = [this](VkBuffer &buffer, VkDeviceMemory &memory) {
     if (buffer != VK_NULL_HANDLE) {
+      vkUnmapMemory(logicalDevice_, memory);
       vkFreeMemory(logicalDevice_, memory, nullptr);
       vkDestroyBuffer(logicalDevice_, buffer, nullptr);
       memory = VK_NULL_HANDLE;
@@ -606,6 +633,13 @@ void VulkanController::destroy() {
   freeBuffer(activationFunctionBuffer_, activationFunctionBufferMemory_);
   freeBuffer(weightsBuffer_, weightsBufferMemory_);
 
+  for (auto &commmandBuffer : commandBufferPool_) {
+    vkFreeCommandBuffers(logicalDevice_, commandPool_, 1, &commmandBuffer);
+  }
+  if (computeFence_ != VK_NULL_HANDLE) {
+    vkDestroyFence(logicalDevice_, computeFence_, nullptr);
+    computeFence_ = VK_NULL_HANDLE;
+  }
   if (descriptorPool_ != VK_NULL_HANDLE) {
     vkDestroyDescriptorPool(logicalDevice_, descriptorPool_, nullptr);
     descriptorPool_ = VK_NULL_HANDLE;

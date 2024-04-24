@@ -95,6 +95,31 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
     return std::string();
   };
 
+  // Single hyphen
+  app.add_option(
+         "-m, --mode", app_params.run_mode,
+         "Select the running mode:\n  - Enhancer:This mode uses an "
+         "input image to generate its enhanced image (default).\n    The "
+         "enhancer mode requires a neural network that has been imported and "
+         "trained for enhancement (be sure that the model has good testing "
+         "results).\n  - Testing: Test an imported neural network without "
+         "training.\n  - Training: Train the neural network without "
+         "testing.\n "
+         " - TrainingMonitored: Train and test at each epoch while monitoring "
+         "the progress. Be aware that this is slower and will use more "
+         "memory.")
+      ->default_val(app_params.run_mode)
+      ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
+  app.add_flag("-v,--version", version, "Show current version.");
+  app.add_flag("-V,--verbose", app_params.verbose,
+               "Enables verbose logs. Can be useful during long epoch "
+               "treatment, to check it is not pending.");
+  app.add_flag(
+      "-D, --verbose_debug", app_params.verbose_debug,
+      "Enables verbose debug-level logs. Can be used with verbose logs for "
+      "even more detailed logs, but at the cost of some performance.");
+
+  // Double hyphen
   app.add_option(
          "--in,--import_network", app_params.network_to_import,
          "Import a neural network model instead of creating a new one. This "
@@ -351,20 +376,6 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       "it adds extra pixels to the image that are not part of the original "
       "content.\nThese extra pixels are filled with a default color (black in "
       "this case).");
-  app.add_option(
-         "-m, --mode", app_params.run_mode,
-         "Select the running mode:\n  - Enhancer:This mode uses an "
-         "input image to generate its enhanced image (default).\n    The "
-         "enhancer mode requires a neural network that has been imported and "
-         "trained for enhancement (be sure that the model has good testing "
-         "results).\n  - Testing: Test an imported neural network without "
-         "training.\n  - Training: Train the neural network without "
-         "testing.\n "
-         " - TrainingMonitored: Train and test at each epoch while monitoring "
-         "the progress. Be aware that this is slower and will use more "
-         "memory.")
-      ->default_val(app_params.run_mode)
-      ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
   app.add_flag(
       "--rl,--random_loading", app_params.random_loading,
       "This flag will activate a random loading of all images, for a better "
@@ -395,11 +406,6 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       "especially for smaller tasks or on systems with limited resources. "
       "Use this flag judiciously and benchmark your application to determine "
       "its impact.");
-  app.add_flag("-V,--verbose", app_params.verbose,
-               "Enables verbose logs. Can be useful during long epoch "
-               "treatment, to check it is not pending.");
-  app.add_flag("-v,--version", version, "Show current version.");
-  // TODO: add a Debug log enable flag
 }
 
 void SIPAI::run() { Manager::getInstance().run(); }

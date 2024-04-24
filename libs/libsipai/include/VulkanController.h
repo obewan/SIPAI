@@ -9,6 +9,7 @@
  */
 #pragma once
 
+#include "Layer.h"
 #include "Neuron.h"
 #include <atomic>
 #include <memory>
@@ -42,6 +43,30 @@ public:
   void initialize();
 
   const bool IsInitialized() { return isInitialized_.load(); }
+
+  /**
+   * @brief Vulkan Forward Propagation
+   *
+   * @param previousLayer
+   * @param currentLayer
+   */
+  void forwardPropagation(Layer *previousLayer, Layer *currentLayer);
+
+  /**
+   * @brief Start to record a command for the command queue
+   *
+   * @return VkCommandBuffer
+   */
+  VkCommandBuffer commandStart() { return _beginSingleTimeCommands(); }
+
+  /**
+   * @brief End the record of a command and submit it to the command queue
+   *
+   * @param commandBuffer
+   */
+  void commandEnd(VkCommandBuffer &commandBuffer) {
+    _endSingleTimeCommands(commandBuffer);
+  }
 
   /**
    * @brief Load a GLSL shader
@@ -116,6 +141,7 @@ private:
 
   std::atomic<bool> isInitialized_ = false;
   unsigned int queueFamilyIndex_ = 0;
+  size_t COMMAND_POOL_SIZE = 10;
 
   VkInstance vkInstance_ = VK_NULL_HANDLE;
   VkPhysicalDevice physicalDevice_ = VK_NULL_HANDLE;
@@ -126,42 +152,51 @@ private:
   VkDescriptorSet descriptorSet_ = VK_NULL_HANDLE;
   VkPipelineLayout pipelineLayout_ = VK_NULL_HANDLE;
   VkQueue queue_ = VK_NULL_HANDLE;
+  VkFence computeFence_ = VK_NULL_HANDLE;
 
   VkBuffer inputBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory inputBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo inputBufferInfo_{};
+  void *inputData_ = nullptr;
 
   VkBuffer outputBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo outputBufferInfo_{};
+  void *outputData_ = nullptr;
 
   VkBuffer currentBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory currentBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo currentBufferInfo_{};
+  void *currentData_ = nullptr;
 
   VkBuffer activationFunctionBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory activationFunctionBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo activationFunctionBufferInfo_{};
+  void *activationFunctionData_ = nullptr;
 
   VkBuffer weightsBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory weightsBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo weightsBufferInfo_{};
+  void *weightsData_ = nullptr;
 
-  VkCommandBuffer _beginSingleTimeCommands(VkDevice device,
-                                           VkCommandPool commandPool);
+  std::vector<VkCommandBuffer> commandBufferPool_;
+
+  VkCommandBuffer _beginSingleTimeCommands();
   uint32_t _findMemoryType(uint32_t typeFilter,
                            VkMemoryPropertyFlags properties) const;
 
   void _createCommandPool();
+  void _createCommandBufferPool();
   void _createPipelineLayout();
   void _createDescriptorSet();
   void _createDescriptorSetLayout();
+  void _createFence();
   void _createDescriptorPool(size_t max_size);
-  void _createNeuronsBuffers(size_t max_size);
-  void _createNeuronsBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
-                            VkBuffer &buffer, VkDeviceMemory &bufferMemory);
-  void _endSingleTimeCommands(VkDevice device, VkCommandPool commandPool,
-                              VkCommandBuffer commandBuffer, VkQueue queue);
+  void _createBuffers(size_t max_size);
+  void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
+                     VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+  void _createDataMapping();
+  void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 };
