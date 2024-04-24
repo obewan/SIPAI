@@ -112,6 +112,8 @@ private:
   void *weightsData_ = nullptr;
 
   std::vector<VkCommandBuffer> commandBufferPool_;
+  VkShaderModule forwardShaderModule_ = VK_NULL_HANDLE;
+  VkPipeline forwardComputePipeline_ = VK_NULL_HANDLE;
 
   uint32_t _findMemoryType(uint32_t typeFilter,
                            VkMemoryPropertyFlags properties) const;
@@ -120,8 +122,7 @@ private:
   void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
   std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
-  void _computeShader(std::unique_ptr<std::vector<uint32_t>> &computeShader,
-                      std::vector<Neuron> &neurons);
+  void _computeShader(std::vector<Neuron> &neurons);
 
   void _copyNeuronsDataToInputBuffer(const std::vector<Neuron> &neurons);
   void _copyNeuronsDataToCurrentBuffer(const std::vector<Neuron> &neurons);
@@ -141,6 +142,10 @@ private:
   void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
   void _createDataMapping();
+  void _createForwardShaderModule();
+  void _createForwardComputePipeline();
+  void _bindBuffers();
+
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 };

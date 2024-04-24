@@ -95,6 +95,9 @@ void VulkanController::initialize() {
   _createFence();
   _createBuffers(max_size);
   _createDataMapping();
+  _createForwardShaderModule();
+  _createForwardComputePipeline();
+  _bindBuffers();
 
   isInitialized_ = true;
 }
@@ -119,7 +122,7 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
   _endSingleTimeCommands(commandBuffer);
 
   // Run the shader
-  _computeShader(forwardShader_, currentLayer->neurons);
+  _computeShader(currentLayer->neurons);
 
   // Get the results
   commandBuffer = _beginSingleTimeCommands();
@@ -152,122 +155,14 @@ VulkanController::_loadShader(const std::string &path) {
   return compiledShaderCode;
 }
 
-void VulkanController::_computeShader(
-    std::unique_ptr<std::vector<uint32_t>> &computeShader,
-    std::vector<Neuron> &neurons) {
-
-  // Create shader module
-  VkShaderModuleCreateInfo createInfo{};
-  createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-  createInfo.codeSize = computeShader->size() * sizeof(uint32_t);
-  createInfo.pCode = computeShader->data();
-  VkShaderModule shaderModule;
-  if (vkCreateShaderModule(logicalDevice_, &createInfo, nullptr,
-                           &shaderModule) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create shader module");
-  }
-
-  // Create compute pipeline
-  VkComputePipelineCreateInfo pipelineInfo{};
-  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  pipelineInfo.stage.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  pipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  pipelineInfo.stage.module = shaderModule;
-  pipelineInfo.stage.pName = "main";
-  pipelineInfo.layout = pipelineLayout_;
-  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-  pipelineInfo.basePipelineIndex = 0;
-  VkPipeline computePipeline;
-  if (vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
-                               nullptr, &computePipeline) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create compute pipelines");
-  };
-
-  // Note: beware refactoring those following bindings
-  // Bind the input buffer
-  VkDescriptorBufferInfo descriptorInputBufferInfo{
-      .buffer = inputBuffer_, .offset = 0, .range = inputBufferInfo_.size};
-  VkWriteDescriptorSet writeInputDescriptorSet{
-      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      .dstSet = descriptorSet_,
-      .dstBinding = 0,
-      .dstArrayElement = 0,
-      .descriptorCount = 1,
-      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-      .pBufferInfo = &descriptorInputBufferInfo};
-
-  // Bind the output buffer
-  VkDescriptorBufferInfo descriptorOutputBufferInfo{
-      .buffer = outputBuffer_, .offset = 0, .range = outputBufferInfo_.size};
-  VkWriteDescriptorSet writeOutputDescriptorSet{
-      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      .dstSet = descriptorSet_,
-      .dstBinding = 1,
-      .dstArrayElement = 0,
-      .descriptorCount = 1,
-      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-      .pBufferInfo = &descriptorOutputBufferInfo};
-
-  // Bind the current buffer
-  VkDescriptorBufferInfo descriptorCurrentBufferInfo{
-      .buffer = currentBuffer_, .offset = 0, .range = currentBufferInfo_.size};
-  VkWriteDescriptorSet writeCurrentDescriptorSet{
-      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      .dstSet = descriptorSet_,
-      .dstBinding = 2,
-      .dstArrayElement = 0,
-      .descriptorCount = 1,
-      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-      .pBufferInfo = &descriptorCurrentBufferInfo};
-
-  // Bind the activation function buffer
-  VkDescriptorBufferInfo descriptorAFBufferInfo{
-      .buffer = activationFunctionBuffer_,
-      .offset = 0,
-      .range = activationFunctionBufferInfo_.size};
-  VkWriteDescriptorSet writeAFDescriptorSet{
-      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      .dstSet = descriptorSet_,
-      .dstBinding = 3,
-      .dstArrayElement = 0,
-      .descriptorCount = 1,
-      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-      .pBufferInfo = &descriptorAFBufferInfo};
-
-  // Bind the weights buffer
-  VkDescriptorBufferInfo descriptorWeightsBufferInfo{
-      .buffer = weightsBuffer_, .offset = 0, .range = weightsBufferInfo_.size};
-  VkWriteDescriptorSet writeWeightsDescriptorSet{
-      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      .dstSet = descriptorSet_,
-      .dstBinding = 4,
-      .dstArrayElement = 0,
-      .descriptorCount = 1,
-      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-      .pBufferInfo = &descriptorWeightsBufferInfo};
-
-  // Update the descriptor set
-  std::array<VkWriteDescriptorSet, totalBuffers> writeDescriptorSets = {
-      writeInputDescriptorSet, writeOutputDescriptorSet,
-      writeCurrentDescriptorSet, writeAFDescriptorSet,
-      writeWeightsDescriptorSet};
-  vkUpdateDescriptorSets(logicalDevice_,
-                         static_cast<uint32_t>(writeDescriptorSets.size()),
-                         writeDescriptorSets.data(), 0, nullptr);
-
-  // Create command buffer and record commands
+void VulkanController::_computeShader(std::vector<Neuron> &neurons) {
   VkCommandBuffer commandBuffer = _beginSingleTimeCommands();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                    computePipeline);
+                    forwardComputePipeline_);
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           pipelineLayout_, 0, 1, &descriptorSet_, 0, nullptr);
   vkCmdDispatch(commandBuffer, static_cast<uint32_t>(neurons.size()), 1, 1);
   _endSingleTimeCommands(commandBuffer);
-
-  // Cleanup
-  vkDestroyShaderModule(logicalDevice_, shaderModule, nullptr);
-  vkDestroyPipeline(logicalDevice_, computePipeline, nullptr);
 }
 
 VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
@@ -560,6 +455,109 @@ std::optional<unsigned int> VulkanController::_pickQueueFamily() {
   return std::nullopt;
 }
 
+void VulkanController::_createForwardShaderModule() {
+  VkShaderModuleCreateInfo createInfo{};
+  createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+  createInfo.codeSize = forwardShader_->size() * sizeof(uint32_t);
+  createInfo.pCode = forwardShader_->data();
+  if (vkCreateShaderModule(logicalDevice_, &createInfo, nullptr,
+                           &forwardShaderModule_) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create shader module");
+  }
+}
+
+void VulkanController::_createForwardComputePipeline() {
+  VkComputePipelineCreateInfo pipelineInfo{};
+  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  pipelineInfo.stage.sType =
+      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  pipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  pipelineInfo.stage.module = forwardShaderModule_;
+  pipelineInfo.stage.pName = "main";
+  pipelineInfo.layout = pipelineLayout_;
+  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+  pipelineInfo.basePipelineIndex = 0;
+  if (vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1, &pipelineInfo,
+                               nullptr,
+                               &forwardComputePipeline_) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create compute pipelines");
+  };
+}
+
+void VulkanController::_bindBuffers() {
+
+  // Bind the input buffer
+  VkDescriptorBufferInfo descriptorInputBufferInfo{
+      .buffer = inputBuffer_, .offset = 0, .range = inputBufferInfo_.size};
+  VkWriteDescriptorSet writeInputDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 0,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorInputBufferInfo};
+
+  // Bind the output buffer
+  VkDescriptorBufferInfo descriptorOutputBufferInfo{
+      .buffer = outputBuffer_, .offset = 0, .range = outputBufferInfo_.size};
+  VkWriteDescriptorSet writeOutputDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 1,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorOutputBufferInfo};
+
+  // Bind the current buffer
+  VkDescriptorBufferInfo descriptorCurrentBufferInfo{
+      .buffer = currentBuffer_, .offset = 0, .range = currentBufferInfo_.size};
+  VkWriteDescriptorSet writeCurrentDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 2,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorCurrentBufferInfo};
+
+  // Bind the activation function buffer
+  VkDescriptorBufferInfo descriptorAFBufferInfo{
+      .buffer = activationFunctionBuffer_,
+      .offset = 0,
+      .range = activationFunctionBufferInfo_.size};
+  VkWriteDescriptorSet writeAFDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 3,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorAFBufferInfo};
+
+  // Bind the weights buffer
+  VkDescriptorBufferInfo descriptorWeightsBufferInfo{
+      .buffer = weightsBuffer_, .offset = 0, .range = weightsBufferInfo_.size};
+  VkWriteDescriptorSet writeWeightsDescriptorSet{
+      .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+      .dstSet = descriptorSet_,
+      .dstBinding = 4,
+      .dstArrayElement = 0,
+      .descriptorCount = 1,
+      .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+      .pBufferInfo = &descriptorWeightsBufferInfo};
+
+  // Update the descriptor set
+  std::array<VkWriteDescriptorSet, totalBuffers> writeDescriptorSets = {
+      writeInputDescriptorSet, writeOutputDescriptorSet,
+      writeCurrentDescriptorSet, writeAFDescriptorSet,
+      writeWeightsDescriptorSet};
+  vkUpdateDescriptorSets(logicalDevice_,
+                         static_cast<uint32_t>(writeDescriptorSets.size()),
+                         writeDescriptorSets.data(), 0, nullptr);
+}
+
 std::optional<VkPhysicalDevice> VulkanController::_pickPhysicalDevice() {
   auto getDeviceSuitableScore = [](const VkPhysicalDevice &device) {
     int score = 0;
@@ -624,6 +622,15 @@ void VulkanController::destroy() {
       buffer = VK_NULL_HANDLE;
     }
   };
+
+  if (forwardShaderModule_ != VK_NULL_HANDLE) {
+    vkDestroyShaderModule(logicalDevice_, forwardShaderModule_, nullptr);
+    forwardShaderModule_ = VK_NULL_HANDLE;
+  }
+  if (forwardComputePipeline_ != VK_NULL_HANDLE) {
+    vkDestroyPipeline(logicalDevice_, forwardComputePipeline_, nullptr);
+    forwardComputePipeline_ = VK_NULL_HANDLE;
+  }
 
   freeBuffer(inputBuffer_, inputBufferMemory_);
   freeBuffer(outputBuffer_, outputBufferMemory_);
