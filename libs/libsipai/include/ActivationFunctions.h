@@ -112,7 +112,7 @@ inline auto leakyRelu = [](const RGBA &rgba) {
 };
 
 inline auto leakyReluDerivative = [](const RGBA &rgba) {
-  return rgba.apply([](float v) { return std::max(0.01f, std::min(1.0f, v)); });
+  return rgba.apply([](float v) { return std::clamp(v, 0.01f, 1.0f); });
 };
 
 /**

@@ -68,18 +68,29 @@ layout (std430, binding = 6) buffer NeighborsWeights {
 } neighborsWeights;
 
 vec4 derivativeFunction(vec4 value){
-   switch (activationFunction.function) {
-        case ELU:                 
+    bvec4 mask;
+    switch (activationFunction.function) {
+        case ELU:          
+            mask = greaterThanEqual(value, vec4(0.0));
+            value = mix(vec4(1.0), vec4(activationFunction.alpha) * exp(value), mask);       
         break;
-        case LReLU:             
+        case LReLU:    
+            value = clamp(value, vec4(0.01), vec4(1.0));         
         break;
         case PReLU:            
+            mask = greaterThanEqual(value, vec4(0.0));
+            value = mix(vec4(1.0), vec4(activationFunction.alpha), mask);       
         break;
         case ReLU:             
+            mask = greaterThanEqual(value, vec4(0.0));
+            value = mix(vec4(1.0), vec4(0.0), mask);       
         break;
-        case Sigmoid:            
+        case Sigmoid:    
+            value *= (1-value);        
         break;
-        case Tanh:             
+        case Tanh: // shifted tanh [-1,1] to [0,1]    
+            value = (tanh(value)/2.0) + 0.5;       
+            value = 1 - value * value;
         break;
         default:            
         break;
