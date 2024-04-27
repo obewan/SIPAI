@@ -4,15 +4,18 @@ on: [push]
 
 jobs:
   build:
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+      - uses: Dovyski/setup-opencv-action@v1.1
+        with:
+          opencv-version: "4.6.0"
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-12 lcov libopencv-dev libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
+          sudo apt-get install -y g++-12 lcov libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
