@@ -110,11 +110,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
 
             cv::Vec4f weight;
             if (isImported) {
-              weight = cv::Vec4f::zeros();
+              weight = cv::Vec4f(cv::Vec4f::zeros());
             } else {
-              cv::Matx41f temp = cv::Matx41f::randn(0.0, 1.0);
-              weight =
-                  cv::Vec4f(temp.val[0], temp.val[1], temp.val[2], temp.val[3]);
+              weight = cv::Vec4f::randn(0.0, 1.0);
             }
 
             neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
