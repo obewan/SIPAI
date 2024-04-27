@@ -12,6 +12,11 @@ jobs:
         with:
           opencv-version: "4.6.0"
 
+      - name: Import GPG public keys
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 40976EAF437D05B5
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 3B4FE6ACC0B21F32
+
       - name: Install dependencies
         run: |
           sudo apt-get update
