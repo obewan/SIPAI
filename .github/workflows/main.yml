@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: debian-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -12,7 +12,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-12 lcov libopencv-dev=4.6.0 libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
+          sudo apt-get install -y g++-12 lcov libopencv-dev libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
