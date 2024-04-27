@@ -108,8 +108,15 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
               ny < static_cast<int>(layer->size_y)) {
             Neuron &neighbor = layer->neurons[ny][nx];
 
-            cv::Vec4f weight =
-                isImported ? cv::Vec4f::zeros() : cv::Vec4f::randn(0.0, 1.0);
+            cv::Vec4f weight;
+            if (isImported) {
+              weight = cv::Vec4f::zeros();
+            } else {
+              cv::Matx41f temp = cv::Matx41f::randn(0.0, 1.0);
+              weight =
+                  cv::Vec4f(temp.val[0], temp.val[1], temp.val[2], temp.val[3]);
+            }
+
             neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
           }
         }
