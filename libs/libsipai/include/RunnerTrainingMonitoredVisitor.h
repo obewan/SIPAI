@@ -9,7 +9,6 @@
  */
 #pragma once
 #include "Common.h"
-#include "Image.h"
 #include "ImageHelper.h"
 #include "RunnerVisitor.h"
 #include <memory>

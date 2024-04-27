@@ -108,27 +108,28 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
   if (!IsInitialized()) {
     throw NeuralNetworkException("Vulkan controller is not initialized.");
   }
+  // TODO: refactor
+  // // Prepare data for the shader
+  // auto commandBuffer = _beginSingleTimeCommands();
+  // _copyNeuronsWeightsToWeightsBuffer(
+  //     currentLayer->neurons); // before others for weights index
+  // _copyNeuronsDataToInputBuffer(previousLayer->neurons);
+  // _copyActivationFunctionToActivationFunctionBuffer(
+  //     currentLayer->activationFunction,
+  //     currentLayer->activationFunctionAlpha);
+  // _endSingleTimeCommands(commandBuffer);
 
-  // Prepare data for the shader
-  auto commandBuffer = _beginSingleTimeCommands();
-  _copyNeuronsWeightsToWeightsBuffer(
-      currentLayer->neurons); // before others for weights index
-  _copyNeuronsDataToInputBuffer(previousLayer->neurons);
-  _copyActivationFunctionToActivationFunctionBuffer(
-      currentLayer->activationFunction, currentLayer->activationFunctionAlpha);
-  _endSingleTimeCommands(commandBuffer);
+  // commandBuffer = _beginSingleTimeCommands();
+  // _copyNeuronsDataToCurrentBuffer(currentLayer->neurons);
+  // _endSingleTimeCommands(commandBuffer);
 
-  commandBuffer = _beginSingleTimeCommands();
-  _copyNeuronsDataToCurrentBuffer(currentLayer->neurons);
-  _endSingleTimeCommands(commandBuffer);
+  // // Run the shader
+  // _computeShader(currentLayer->neurons);
 
-  // Run the shader
-  _computeShader(currentLayer->neurons);
-
-  // Get the results
-  commandBuffer = _beginSingleTimeCommands();
-  _copyOutputBufferToNeuronsData(currentLayer->neurons);
-  _endSingleTimeCommands(commandBuffer);
+  // // Get the results
+  // commandBuffer = _beginSingleTimeCommands();
+  // _copyOutputBufferToNeuronsData(currentLayer->neurons);
+  // _endSingleTimeCommands(commandBuffer);
 }
 
 std::unique_ptr<std::vector<uint32_t>>
@@ -283,22 +284,26 @@ void VulkanController::_createFence() {
 }
 
 void VulkanController::_createBuffers(size_t max_size) {
-  // Create Input buffer
-  _createBuffer(sizeof(Neuron) * max_size, inputBufferInfo_, inputBuffer_,
-                inputBufferMemory_);
-  // Create Ouput buffer
-  _createBuffer(sizeof(RGBA) * max_size, outputBufferInfo_, outputBuffer_,
-                outputBufferMemory_);
-  // Create Current buffer
-  _createBuffer(sizeof(Neuron) * max_size, currentBufferInfo_, currentBuffer_,
-                currentBufferMemory_);
-  // Create Activation buffer
-  _createBuffer(sizeof(GLSLActivationFunction), activationFunctionBufferInfo_,
-                activationFunctionBuffer_, activationFunctionBufferMemory_);
-  // Create Weights buffer
-  const auto &max_weights = Manager::getConstInstance().network->max_weights;
-  _createBuffer(sizeof(RGBA) * max_size * max_weights, weightsBufferInfo_,
-                weightsBuffer_, weightsBufferMemory_);
+  // TODO: refactor
+  //  // Create Input buffer
+  //  _createBuffer(sizeof(Neuron) * max_size, inputBufferInfo_, inputBuffer_,
+  //                inputBufferMemory_);
+  //  // Create Ouput buffer
+  //  _createBuffer(sizeof(RGBA) * max_size, outputBufferInfo_, outputBuffer_,
+  //                outputBufferMemory_);
+  //  // Create Current buffer
+  //  _createBuffer(sizeof(Neuron) * max_size, currentBufferInfo_,
+  //  currentBuffer_,
+  //                currentBufferMemory_);
+  //  // Create Activation buffer
+  //  _createBuffer(sizeof(GLSLActivationFunction),
+  //  activationFunctionBufferInfo_,
+  //                activationFunctionBuffer_, activationFunctionBufferMemory_);
+  //  // Create Weights buffer
+  //  const auto &max_weights =
+  //  Manager::getConstInstance().network->max_weights;
+  //  _createBuffer(sizeof(RGBA) * max_size * max_weights, weightsBufferInfo_,
+  //                weightsBuffer_, weightsBufferMemory_);
 }
 
 void VulkanController::_createBuffer(VkDeviceSize size,
@@ -370,39 +375,42 @@ void VulkanController::_copyActivationFunctionToActivationFunctionBuffer(
 // Flatten the all the weights vectors
 void VulkanController::_copyNeuronsWeightsToWeightsBuffer(
     const std::vector<Neuron> &neurons) {
-  size_t totalWeightsSize =
-      std::accumulate(neurons.begin(), neurons.end(), 0ull,
-                      [](size_t sum, const Neuron &neuron) {
-                        return sum + neuron.weights.size();
-                      });
-  std::vector<RGBA> flatWeights;
-  flatWeights.reserve(totalWeightsSize);
-  size_t weightsIndex = 0;
-  for (auto &neuron : neurons) {
-    neuron.weightsIndex = weightsIndex;
-    flatWeights.insert(flatWeights.end(), neuron.weights.begin(),
-                       neuron.weights.end());
-    weightsIndex += neuron.weights.size();
-  }
-  memset(weightsData_, 0, (size_t)weightsBufferInfo_.size);
-  memcpy(weightsData_, flatWeights.data(), flatWeights.size() * sizeof(RGBA));
+  // TODO: refactor
+  // size_t totalWeightsSize =
+  //     std::accumulate(neurons.begin(), neurons.end(), 0ull,
+  //                     [](size_t sum, const Neuron &neuron) {
+  //                       return sum + neuron.weights.size();
+  //                     });
+  // std::vector<RGBA> flatWeights;
+  // flatWeights.reserve(totalWeightsSize);
+  // size_t weightsIndex = 0;
+  // for (auto &neuron : neurons) {
+  //   neuron.weightsIndex = weightsIndex;
+  //   flatWeights.insert(flatWeights.end(), neuron.weights.begin(),
+  //                      neuron.weights.end());
+  //   weightsIndex += neuron.weights.size();
+  // }
+  // memset(weightsData_, 0, (size_t)weightsBufferInfo_.size);
+  // memcpy(weightsData_, flatWeights.data(), flatWeights.size() *
+  // sizeof(RGBA));
 }
 
 // Copy the OutputBuffer data directly into the value field of the neurons
 void VulkanController::_copyOutputBufferToNeuronsData(
     std::vector<Neuron> &neurons) {
-  const auto &bufferData = static_cast<std::array<float, 4> *>(outputData_);
-  for (size_t i = 0; i < neurons.size(); i++) {
-    neurons[i].value.value = bufferData[i];
-  }
-  const auto &app_params = Manager::getConstInstance().app_params;
-  if (app_params.verbose_debug &&
-      std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
-        return neuron.value.value ==
-               std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
-      })) {
-    SimpleLogger::LOG_DEBUG("Warning: all neurons values are zero.");
-  }
+  // TODO: refactor
+  // const auto &bufferData = static_cast<std::array<float, 4> *>(outputData_);
+  // for (size_t i = 0; i < neurons.size(); i++) {
+  //   neurons[i].value.value = bufferData[i];
+  // }
+  // const auto &app_params = Manager::getConstInstance().app_params;
+  // if (app_params.verbose_debug &&
+  //     std::all_of(neurons.begin(), neurons.end(), [](const auto &neuron) {
+  //       return neuron.value.value ==
+  //              std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f};
+  //     })) {
+  //   SimpleLogger::LOG_DEBUG("Warning: all neurons values are zero.");
+  // }
 }
 
 void VulkanController::_createPipelineLayout() {

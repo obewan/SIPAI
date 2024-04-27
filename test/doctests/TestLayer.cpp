@@ -10,8 +10,7 @@ using namespace sipai;
 TEST_CASE("Testing Layer") {
   SUBCASE("Test updateWeights") {
     auto &manager = Manager::getInstance();
-    bool disable_parallel = false;
-    bool enable_parallel = true;
+    bool enable_parallel = false;
     manager.network.reset();
     manager.network_params = {
         .input_size_x = 2,
@@ -22,35 +21,54 @@ TEST_CASE("Testing Layer") {
         .output_size_y = 3,
         .hiddens_count = 2,
     };
+    manager.network_params.learning_rate = 0.5;
     manager.app_params.network_to_import = "";
     manager.createOrImportNetwork();
     auto &outputLayer = manager.network->layers.back();
     CHECK(outputLayer->layerType == LayerType::LayerOutput);
-    auto w1 = outputLayer->neurons.back().weights;
+    CHECK(outputLayer->neurons.size() > 0);
+    CHECK(outputLayer->neurons.back().size() > 0);
+    CHECK(outputLayer->previousLayer != nullptr);
+    cv::randu(outputLayer->previousLayer->values, 0, 1);
 
-    for (auto &n : outputLayer->neurons) {
-      n.error = {0.1, 0.2, 0.1, 0.3};
-    }
-    for (auto &n : outputLayer->previousLayer->neurons) {
-      n.value = {0.1, 0.1, 0.5, 0.2};
-    }
-    CHECK_NOTHROW(outputLayer->updateWeights(
-        manager.network_params.learning_rate, disable_parallel));
-    auto w2 = outputLayer->neurons.back().weights;
-    CHECK_FALSE(std::equal(w1.begin(), w1.end(), w2.begin()));
+    // get the weights before update
+    auto w1 = outputLayer->neurons.back().back().weights.clone();
 
-    for (auto &n : outputLayer->neurons) {
-      n.error = {0.6, 0.1, -0.1, -0.3};
-    }
-    for (auto &n : outputLayer->previousLayer->neurons) {
-      n.value = {0.7, 0.1, 0.1, 0.2};
-    }
+    outputLayer->errors =
+        cv::Mat(3, 3, CV_32FC4, cv::Vec4f{1.5, 3.2, 2.1, 5.3});
+    outputLayer->previousLayer->errors =
+        cv::Mat(3, 2, CV_32FC4, cv::Vec4f{5.1, 1.1, -5.5, 2.2});
     CHECK_NOTHROW(outputLayer->updateWeights(
         manager.network_params.learning_rate, enable_parallel));
-    auto w3 = outputLayer->neurons.back().weights;
-    CHECK_FALSE(std::equal(w1.begin(), w1.end(), w3.begin()));
-    CHECK_FALSE(std::equal(w2.begin(), w2.end(), w3.begin()));
 
+    // get the weights after update
+    auto w2 = outputLayer->neurons.back().back().weights.clone();
+
+    CHECK(w1.type() == w2.type());
+    CHECK(w1.size() == w2.size());
+
+    std::cout << "weights before:\n" << w1 << std::endl;
+    std::cout << "weights after:\n" << w2 << std::endl;
+
+    bool isEq = true;
+    for (int y = 0; y < w1.rows; ++y) {
+      for (int x = 0; x < w1.cols; ++x) {
+        for (int c = 0; c < 4; ++c) {
+          if (std::abs(w1.at<cv::Vec4f>(y, x)[c] - w2.at<cv::Vec4f>(y, x)[c]) >=
+              std::numeric_limits<float>::epsilon()) {
+            isEq = false;
+            break;
+          }
+        }
+        if (!isEq) {
+          break;
+        }
+      }
+      if (!isEq) {
+        break;
+      }
+    }
+    CHECK(isEq == false);
     manager.network.reset();
   }
 }

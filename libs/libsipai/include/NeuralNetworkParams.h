@@ -34,7 +34,7 @@ struct NeuralNetworkParams {
   size_t output_size_x = 64;
   size_t output_size_y = 64;
   size_t hiddens_count = 1;
-  float learning_rate = 0.005f;
+  float learning_rate = 0.01f;
   float adaptive_learning_rate_factor = 0.5f;
   bool adaptive_learning_rate = false;
   bool enable_adaptive_increase = false;

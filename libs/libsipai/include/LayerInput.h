@@ -39,13 +39,11 @@ public:
     // No need to implement for input layer (no weights of input layer)
   }
 
-  void setInputValues(const std::vector<RGBA> &inputValues) {
-    if (inputValues.size() != neurons.size()) {
+  void setInputValues(const cv::Mat &inputValues) {
+    if (inputValues.total() != total()) {
       throw std::invalid_argument("Invalid input values size");
     }
-    for (size_t i = 0; i < neurons.size(); i++) {
-      neurons.at(i).value = inputValues.at(i);
-    }
+    values = inputValues;
   }
 };
 } // namespace sipai

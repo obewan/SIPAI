@@ -6,11 +6,11 @@
 #include "LayerOutput.h"
 #include "Manager.h"
 #include "NeuralNetworkImportExportFacade.h"
-#include "RGBA.h"
 #include "SimpleLogger.h"
 #include "exception/NeuralNetworkException.h"
 #include <cstddef>
 #include <filesystem>
+#include <opencv2/core/matx.hpp>
 
 using namespace sipai;
 
@@ -55,15 +55,13 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   // Add Input Layer
   auto inputLayer = new LayerInput(network_params_.input_size_x,
                                    network_params_.input_size_y);
-  inputLayer->neurons.resize(inputLayer->size_x * inputLayer->size_y);
   network_->layers.push_back(inputLayer);
 
   // Add Hidden Layers
   for (size_t i = 0; i < network_params_.hiddens_count; ++i) {
     auto hiddenLayer = new LayerHidden(network_params_.hidden_size_x,
                                        network_params_.hidden_size_y);
-    hiddenLayer->neurons.resize(hiddenLayer->size_x * hiddenLayer->size_y);
-    hiddenLayer->activationFunction =
+    hiddenLayer->eactivationFunction =
         network_params_.hidden_activation_function;
     hiddenLayer->activationFunctionAlpha =
         network_params_.hidden_activation_alpha;
@@ -73,8 +71,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   // Add Output Layer
   auto outputLayer = new LayerOutput(network_params_.output_size_x,
                                      network_params_.output_size_y);
-  outputLayer->neurons.resize(outputLayer->size_x * outputLayer->size_y);
-  outputLayer->activationFunction = network_params_.output_activation_function;
+  outputLayer->eactivationFunction = network_params_.output_activation_function;
   outputLayer->activationFunctionAlpha =
       network_params_.output_activation_alpha;
   network_->layers.push_back(outputLayer);
@@ -99,26 +96,22 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
     if (layer->layerType == LayerType::LayerInput) {
       continue;
     }
-    for (auto &neuron : layer->neurons) {
-      size_t pos = &neuron - &layer->neurons[0];
-      // Compute the coordinates of the neuron in the 2D grid
-      size_t pos_x = pos % layer->size_x;
-      size_t pos_y = pos / layer->size_x;
+    for (auto &rows : layer->neurons) {
+      for (auto &neuron : rows) {
+        size_t pos_x = neuron.index_x;
+        size_t pos_y = neuron.index_y;
+        for (auto [dx, dy] : directions) {
+          int nx = static_cast<int>(pos_x) + dx;
+          int ny = static_cast<int>(pos_y) + dy;
 
-      // Add a neighbor connection
-      // fanIn_fanOut: 4 components of the RGBA struct for both the input and
-      // output sides, resulting in a total of 8 connections
-      const float fanIn_fanOut = 8.0f;
-      for (auto [dx, dy] : directions) {
-        int nx = (int)pos_x + dx;
-        int ny = (int)pos_y + dy;
-        if (nx >= 0 && nx < (int)layer->size_x && ny >= 0 &&
-            ny < (int)layer->size_y) {
-          int ni = ny * (int)layer->size_x + nx;
-          Neuron &neighbor = layer->neurons[ni];
-          // Add connection weight
-          RGBA weight = isImported ? RGBA() : RGBA().random(fanIn_fanOut);
-          neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
+          if (nx >= 0 && nx < static_cast<int>(layer->size_x) && ny >= 0 &&
+              ny < static_cast<int>(layer->size_y)) {
+            Neuron &neighbor = layer->neurons[ny][nx];
+
+            cv::Vec4f weight =
+                isImported ? cv::Vec4f() : cv::Vec4f::randn(0.0, 1.0);
+            neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
+          }
         }
       }
     }
@@ -166,11 +159,14 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
   network_->max_weights = 0;
   for (auto layer : network_->layers) {
     if (layer->previousLayer != nullptr) {
-      for (auto &n : layer->neurons) {
-        size_t new_size = layer->previousLayer->neurons.size();
-        n.initWeights(new_size);
-        if (new_size > network_->max_weights) {
-          network_->max_weights = new_size;
+      for (auto &rows : layer->neurons) {
+        for (auto &n : rows) {
+          n.initWeights(layer->previousLayer->size_x,
+                        layer->previousLayer->size_y);
+          size_t new_size = layer->previousLayer->total();
+          if (new_size > network_->max_weights) {
+            network_->max_weights = new_size;
+          }
         }
       }
     }

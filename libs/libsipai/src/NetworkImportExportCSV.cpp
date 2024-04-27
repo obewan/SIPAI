@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <exception>
 #include <fstream>
+#include <opencv2/opencv.hpp>
 #include <optional>
 #include <string>
 
@@ -51,38 +52,39 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
     auto neuron_index = static_cast<size_t>(fields[1].value_or(0));
     std::optional<size_t> neighboors_count = fields[2];
 
-    std::vector<RGBA> weights;
-    for (size_t pos = 3; pos + 3 < fields.size(); pos += 4) {
-      auto r = fields[pos];
-      auto g = fields[pos + 1];
-      auto b = fields[pos + 2];
-      auto a = fields[pos + 3];
-      if (r && g && b && a) {
-        weights.emplace_back(*r, *g, *b, *a);
-      }
-    }
+    // TODO: Update for refactoring
+    //  cv::Mat weights;
+    //  for (size_t pos = 3; pos + 3 < fields.size(); pos += 4) {
+    //    auto r = fields[pos];
+    //    auto g = fields[pos + 1];
+    //    auto b = fields[pos + 2];
+    //    auto a = fields[pos + 3];
+    //    if (r && g && b && a) {
+    //      weights.emplace_back(*r, *g, *b, *a);
+    //    }
+    //  }
 
-    if (!neighboors_count) {
-      // add the neuron weights
-      network->layers.at(layer_index)
-          ->neurons.at(neuron_index)
-          .weights.swap(weights);
-    } else if (!weights.empty()) {
-      // add the neighboors and their weights
-      auto &connections =
-          network->layers.at(layer_index)->neurons.at(neuron_index).neighbors;
-      if (connections.size() != weights.size()) {
-        throw ImportExportException("CSV parsing error at line (" +
-                                    std::to_string(current_line_number) +
-                                    "): invalid column numbers");
-      }
-      std::transform(connections.begin(), connections.end(), weights.begin(),
-                     connections.begin(),
-                     [](NeuronConnection &connection, const RGBA &weight) {
-                       connection.weight = weight;
-                       return connection;
-                     });
-    }
+    // if (!neighboors_count) {
+    //   // add the neuron weights
+    //   network->layers.at(layer_index)
+    //       ->neurons.at(neuron_index)
+    //       .weights.swap(weights);
+    // } else if (!weights.empty()) {
+    //   // add the neighboors and their weights
+    //   auto &connections =
+    //       network->layers.at(layer_index)->neurons.at(neuron_index).neighbors;
+    //   if (connections.size() != weights.size()) {
+    //     throw ImportExportException("CSV parsing error at line (" +
+    //                                 std::to_string(current_line_number) +
+    //                                 "): invalid column numbers");
+    //   }
+    //   std::transform(connections.begin(), connections.end(), weights.begin(),
+    //                  connections.begin(),
+    //                  [](NeuronConnection &connection, const RGBA &weight) {
+    //                    connection.weight = weight;
+    //                    return connection;
+    //                  });
+    // }
   }
 }
 
@@ -94,24 +96,25 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
   std::ofstream file(filename);
 
   // Write the data
-  size_t max_weights = network->max_weights;
-  for (size_t layer_index = 0; layer_index < network->layers.size();
-       layer_index++) {
-    const auto &layer = network->layers.at(layer_index);
-    if (layer->layerType == LayerType::LayerInput) {
-      // no weights for Input Layer, as it will be input data weights
-      continue;
-    }
-    for (size_t neuron_index = 0; neuron_index < layer->neurons.size();
-         neuron_index++) {
-      const auto &neuron = layer->neurons.at(neuron_index);
-      // Write the neuron weights, empty 3rd neighbors column then
-      file << layer_index << "," << neuron_index << ",,"
-           << neuron.toStringCsv(max_weights) << "\n";
-      // Write the neighbors connections weights
-      file << layer_index << "," << neuron_index << ","
-           << neuron.neighbors.size() << ","
-           << neuron.toNeighborsStringCsv(max_weights) << "\n";
-    }
-  }
+  // TODO: update for refactoring
+  // size_t max_weights = network->max_weights;
+  // for (size_t layer_index = 0; layer_index < network->layers.size();
+  //      layer_index++) {
+  //   const auto &layer = network->layers.at(layer_index);
+  //   if (layer->layerType == LayerType::LayerInput) {
+  //     // no weights for Input Layer, as it will be input data weights
+  //     continue;
+  //   }
+  //   for (size_t neuron_index = 0; neuron_index < layer->neurons.size();
+  //        neuron_index++) {
+  //     const auto &neuron = layer->neurons.at(neuron_index);
+  //     // Write the neuron weights, empty 3rd neighbors column then
+  //     file << layer_index << "," << neuron_index << ",,"
+  //          << neuron.toStringCsv(max_weights) << "\n";
+  //     // Write the neighbors connections weights
+  //     file << layer_index << "," << neuron_index << ","
+  //          << neuron.neighbors.size() << ","
+  //          << neuron.toNeighborsStringCsv(max_weights) << "\n";
+  //   }
+  // }
 }

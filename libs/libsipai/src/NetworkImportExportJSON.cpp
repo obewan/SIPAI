@@ -94,12 +94,12 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
         break;
       case LayerType::LayerHidden:
         layer = new LayerHidden();
-        layer->activationFunction = networkParams.hidden_activation_function;
+        layer->eactivationFunction = networkParams.hidden_activation_function;
         layer->activationFunctionAlpha = networkParams.hidden_activation_alpha;
         break;
       case LayerType::LayerOutput:
         layer = new LayerOutput();
-        layer->activationFunction = networkParams.output_activation_function;
+        layer->eactivationFunction = networkParams.output_activation_function;
         layer->activationFunctionAlpha = networkParams.output_activation_alpha;
         break;
       default:
@@ -109,7 +109,8 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
       layer->size_y = (size_t)json_layer["size_y"];
 
       // Add neurons and their neighbors without their weights
-      layer->neurons = std::vector<Neuron>((size_t)json_layer["neurons"]);
+      // TODO: update for refactoring
+      // layer->neurons = std::vector<Neuron>((size_t)json_layer["neurons"]);
 
       // Add the layer to the network.
       network->layers.push_back(layer);
