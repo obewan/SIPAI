@@ -109,7 +109,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
             Neuron &neighbor = layer->neurons[ny][nx];
 
             cv::Vec4f weight =
-                isImported ? cv::Vec4f::all(0.0) : cv::Vec4f::randn(0.0, 1.0);
+                isImported ? cv::Vec4f::zeros() : cv::Vec4f::randn(0.0, 1.0);
             neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
           }
         }
