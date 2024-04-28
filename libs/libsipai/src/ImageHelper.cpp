@@ -80,7 +80,9 @@ ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
     if (reduce_factor != 0) {
       int new_width = (int)(s.width * (1.0f / (float)reduce_factor));
       int new_height = (int)(s.height * (1.0f / (float)reduce_factor));
-      cv::resize(inputPart, inputPart, cv::Size(new_width, new_height));
+      if (new_height > 0 && new_height > 0) {
+        cv::resize(inputPart, inputPart, cv::Size(new_width, new_height));
+      }
     }
 
     // then resize to the layer resolution

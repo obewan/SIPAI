@@ -9,11 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Import GPG public keys
-        run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 40976EAF437D05B5
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 3B4FE6ACC0B21F32
-
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -21,10 +16,19 @@ jobs:
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
-      - uses: Dovyski/setup-opencv-action@v1.1
+      - name: Cache OpenCV
+        id: opencv-cache
+        uses: actions/cache@v2
         with:
-          opencv-version: 4.6.0
-          install-deps: false
+          path: ./opencv-install
+          key: ${{ runner.os }}-opencv-cache
+
+      - name: Install OpenCV
+        uses: rayandrews/with-opencv-action@v1
+        with:
+          dir: ./opencv-install
+          cached: ${{ steps.opencv-cache.outputs.cache-hit }}
+          opencv-version: "4.6.0"
 
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug

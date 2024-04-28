@@ -14,6 +14,67 @@
 
 using namespace sipai;
 
+void NeuralNetworkImportExportJSON::exportModel(
+    const std::unique_ptr<NeuralNetwork> &network,
+    const NeuralNetworkParams &networkParams,
+    const AppParams &appParams) const {
+  using json = nlohmann::json;
+  json json_network;
+
+  // Serialize the version
+  json_network["version"] = appParams.version;
+
+  // Serialize the layers to JSON.
+  for (auto layer : network->layers) {
+    json json_layer = {{"type", layer->getLayerTypeStr()},
+                       {"size_x", layer->size_x},
+                       {"size_y", layer->size_y},
+                       {"neurons", layer->neurons.size()}};
+    json_network["layers"].push_back(json_layer);
+  }
+
+  // max weights info
+  json_network["max_weights"] = network->max_weights;
+
+  // Serialize the parameters to JSON.
+  json_network["parameters"]["input_size_x"] = json(networkParams.input_size_x);
+  json_network["parameters"]["input_size_y"] = json(networkParams.input_size_y);
+  json_network["parameters"]["hidden_size_x"] =
+      json(networkParams.hidden_size_x);
+  json_network["parameters"]["hidden_size_y"] =
+      json(networkParams.hidden_size_y);
+  json_network["parameters"]["output_size_x"] =
+      json(networkParams.output_size_x);
+  json_network["parameters"]["output_size_y"] =
+      json(networkParams.output_size_y);
+  json_network["parameters"]["hiddens_count"] =
+      json(networkParams.hiddens_count);
+  json_network["parameters"]["learning_rate"] =
+      json(networkParams.learning_rate);
+  json_network["parameters"]["adaptive_learning_rate"] =
+      json(networkParams.adaptive_learning_rate);
+  json_network["parameters"]["adaptive_learning_rate_factor"] =
+      json(networkParams.adaptive_learning_rate_factor);
+  json_network["parameters"]["enable_adaptive_increase"] =
+      json(networkParams.enable_adaptive_increase);
+  json_network["parameters"]["error_min"] = json(networkParams.error_min);
+  json_network["parameters"]["error_max"] = json(networkParams.error_max);
+  json_network["parameters"]["hidden_activation_alpha"] =
+      json(networkParams.hidden_activation_alpha);
+  json_network["parameters"]["output_activation_alpha"] =
+      json(networkParams.output_activation_alpha);
+  json_network["parameters"]["hidden_activation_function"] =
+      json(networkParams.hidden_activation_function);
+  json_network["parameters"]["output_activation_function"] =
+      json(networkParams.output_activation_function);
+
+  // Write the JSON object to the file.
+  // The 4 argument specifies the indentation level of the resulting string.
+  std::ofstream file(appParams.network_to_export);
+  file << json_network.dump(2);
+  file.close();
+}
+
 std::unique_ptr<NeuralNetwork>
 NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
                                            NeuralNetworkParams &networkParams) {
@@ -90,27 +151,24 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
       Layer *layer = nullptr;
       switch (layer_type) {
       case LayerType::LayerInput:
-        layer = new LayerInput();
+        layer = new LayerInput((size_t)json_layer["size_x"],
+                               (size_t)json_layer["size_y"]);
         break;
       case LayerType::LayerHidden:
-        layer = new LayerHidden();
+        layer = new LayerHidden((size_t)json_layer["size_x"],
+                                (size_t)json_layer["size_y"]);
         layer->eactivationFunction = networkParams.hidden_activation_function;
         layer->activationFunctionAlpha = networkParams.hidden_activation_alpha;
         break;
       case LayerType::LayerOutput:
-        layer = new LayerOutput();
+        layer = new LayerOutput((size_t)json_layer["size_x"],
+                                (size_t)json_layer["size_y"]);
         layer->eactivationFunction = networkParams.output_activation_function;
         layer->activationFunctionAlpha = networkParams.output_activation_alpha;
         break;
       default:
         throw ImportExportException("Layer type not recognized");
       }
-      layer->size_x = (size_t)json_layer["size_x"];
-      layer->size_y = (size_t)json_layer["size_y"];
-
-      // Add neurons and their neighbors without their weights
-      // TODO: update for refactoring
-      // layer->neurons = std::vector<Neuron>((size_t)json_layer["neurons"]);
 
       // Add the layer to the network.
       network->layers.push_back(layer);
@@ -127,65 +185,4 @@ NeuralNetworkImportExportJSON::importModel(const AppParams &appParams,
   } catch (const nlohmann::json::parse_error &e) {
     throw ImportExportException("Json parsing error: " + std::string(e.what()));
   }
-}
-
-void NeuralNetworkImportExportJSON::exportModel(
-    const std::unique_ptr<NeuralNetwork> &network,
-    const NeuralNetworkParams &networkParams,
-    const AppParams &appParams) const {
-  using json = nlohmann::json;
-  json json_network;
-
-  // Serialize the version
-  json_network["version"] = appParams.version;
-
-  // Serialize the layers to JSON.
-  for (auto layer : network->layers) {
-    json json_layer = {{"type", layer->getLayerTypeStr()},
-                       {"size_x", layer->size_x},
-                       {"size_y", layer->size_y},
-                       {"neurons", layer->neurons.size()}};
-    json_network["layers"].push_back(json_layer);
-  }
-
-  // max weights info
-  json_network["max_weights"] = network->max_weights;
-
-  // Serialize the parameters to JSON.
-  json_network["parameters"]["input_size_x"] = json(networkParams.input_size_x);
-  json_network["parameters"]["input_size_y"] = json(networkParams.input_size_y);
-  json_network["parameters"]["hidden_size_x"] =
-      json(networkParams.hidden_size_x);
-  json_network["parameters"]["hidden_size_y"] =
-      json(networkParams.hidden_size_y);
-  json_network["parameters"]["output_size_x"] =
-      json(networkParams.output_size_x);
-  json_network["parameters"]["output_size_y"] =
-      json(networkParams.output_size_y);
-  json_network["parameters"]["hiddens_count"] =
-      json(networkParams.hiddens_count);
-  json_network["parameters"]["learning_rate"] =
-      json(networkParams.learning_rate);
-  json_network["parameters"]["adaptive_learning_rate"] =
-      json(networkParams.adaptive_learning_rate);
-  json_network["parameters"]["adaptive_learning_rate_factor"] =
-      json(networkParams.adaptive_learning_rate_factor);
-  json_network["parameters"]["enable_adaptive_increase"] =
-      json(networkParams.enable_adaptive_increase);
-  json_network["parameters"]["error_min"] = json(networkParams.error_min);
-  json_network["parameters"]["error_max"] = json(networkParams.error_max);
-  json_network["parameters"]["hidden_activation_alpha"] =
-      json(networkParams.hidden_activation_alpha);
-  json_network["parameters"]["output_activation_alpha"] =
-      json(networkParams.output_activation_alpha);
-  json_network["parameters"]["hidden_activation_function"] =
-      json(networkParams.hidden_activation_function);
-  json_network["parameters"]["output_activation_function"] =
-      json(networkParams.output_activation_function);
-
-  // Write the JSON object to the file.
-  // The 4 argument specifies the indentation level of the resulting string.
-  std::ofstream file(appParams.network_to_export);
-  file << json_network.dump(2);
-  file.close();
 }

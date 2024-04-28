@@ -61,8 +61,6 @@ TEST_CASE("Testing the Manager class") {
     manager.network.reset();
   }
 
-  //  TODO: TEST SKIPPED DURING REFACTORING
-  /*
   SUBCASE("Test import/export network") {
     const float eps = 1e-6f; // epsilon for float testing
     auto &manager = Manager::getInstance();
@@ -130,9 +128,8 @@ TEST_CASE("Testing the Manager class") {
     std::filesystem::remove(network_csv);
     manager.network.reset();
   }
-  */
 
-  SUBCASE("Testing runWithVisitor") {
+  SUBCASE("Testing runWithVisitor call") {
     auto &manager = Manager::getInstance();
     manager.app_params.training_data_file = "images-test1.csv";
     MockRunnerVisitor visitor;
@@ -142,12 +139,13 @@ TEST_CASE("Testing the Manager class") {
     CHECK(visitor.visitCalled == true);
   }
 
-  SUBCASE("Testing run") {
+  SUBCASE("Testing run data file") {
     auto &manager = Manager::getInstance();
     manager.network.reset();
 
     auto &ap = manager.app_params;
     ap.training_data_file = "images-test1.csv";
+    ap.training_data_folder = "";
     ap.max_epochs = 2;
     ap.run_mode = ERunMode::TrainingMonitored;
     ap.network_to_export = "tempNetwork.json";
@@ -171,6 +169,44 @@ TEST_CASE("Testing the Manager class") {
       std::filesystem::remove(network_csv);
     }
     CHECK(std::filesystem::exists(ap.training_data_file));
+    CHECK_NOTHROW(manager.run());
+    CHECK(std::filesystem::exists(ap.network_to_export));
+    CHECK(std::filesystem::exists(network_csv));
+    std::filesystem::remove(ap.network_to_export);
+    std::filesystem::remove(network_csv);
+    manager.network.reset();
+  }
+
+  SUBCASE("Testing run data folder") {
+    auto &manager = Manager::getInstance();
+    manager.network.reset();
+
+    auto &ap = manager.app_params;
+    ap.training_data_file = "";
+    ap.training_data_folder = "../data/images/target/";
+    ap.max_epochs = 2;
+    ap.run_mode = ERunMode::TrainingMonitored;
+    ap.network_to_export = "tempNetwork.json";
+    ap.network_to_import = "";
+    ap.enable_vulkan = false;
+    std::string network_csv = "tempNetwork.csv";
+
+    auto &np = manager.network_params;
+    np.input_size_x = 2;
+    np.input_size_y = 2;
+    np.hidden_size_x = 3;
+    np.hidden_size_y = 2;
+    np.output_size_x = 3;
+    np.output_size_y = 3;
+    np.hiddens_count = 1;
+
+    if (std::filesystem::exists(ap.network_to_export)) {
+      std::filesystem::remove(ap.network_to_export);
+    }
+    if (std::filesystem::exists(network_csv)) {
+      std::filesystem::remove(network_csv);
+    }
+    CHECK(std::filesystem::exists(ap.training_data_folder));
     CHECK_NOTHROW(manager.run());
     CHECK(std::filesystem::exists(ap.network_to_export));
     CHECK(std::filesystem::exists(network_csv));
