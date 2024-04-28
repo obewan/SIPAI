@@ -16,6 +16,10 @@ jobs:
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
 
+      - name: Import GPG public keys
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 3B4FE6ACC0B21F32
+
       - name: Cache OpenCV
         id: opencv-cache
         uses: actions/cache@v2
