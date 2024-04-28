@@ -31,6 +31,7 @@ jobs:
         uses: rayandrews/with-opencv-action@v1
         with:
           dir: ./opencv-install
+          install-deps: false
           cached: ${{ steps.opencv-cache.outputs.cache-hit }}
           opencv-version: "4.6.0"
 
