@@ -40,8 +40,7 @@ class Layer {
 public:
   explicit Layer(LayerType layerType, size_t size_x = 0, size_t size_y = 0)
       : layerType(layerType), size_x(size_x), size_y(size_y) {
-    neurons =
-        std::vector<std::vector<Neuron>>(size_y, std::vector<Neuron>(size_x));
+    neurons = NeuronMat(size_y, std::vector<Neuron>(size_x));
     for (size_t row = 0; row < size_y; ++row) {
       for (size_t col = 0; col < size_x; ++col) {
         neurons[row][col].index_x = col;
@@ -110,7 +109,7 @@ public:
    * @param index
    * @return std::pair<size_t, size_t>
    */
-  std::pair<size_t, size_t> getPos(const size_t &index) const {    
+  std::pair<size_t, size_t> getPos(const size_t &index) const {
     if (index >= total()) {
       throw std::out_of_range("Index out of range");
     }

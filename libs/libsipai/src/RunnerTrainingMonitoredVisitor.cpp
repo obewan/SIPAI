@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <exception>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 
@@ -87,7 +88,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
         break;
       }
 
-      logTrainingProgress(epoch, trainingLoss, validationLoss);
+      logTrainingProgress(epoch, trainingLoss, validationLoss,
+                          previousTrainingLoss, previousValidationLoss);
 
       hasLastEpochBeenSaved = false;
       epoch++;
@@ -143,10 +145,20 @@ bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
 }
 
 void RunnerTrainingMonitoredVisitor::logTrainingProgress(
-    int epoch, float trainingLoss, float validationLoss) const {
-  SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
-                         ", Train Loss: ", trainingLoss * 100.0f,
-                         "%, Validation Loss: ", validationLoss * 100.0f, "%");
+    const int &epoch, const float &trainingLoss, const float &validationLoss,
+    const float &previousTrainingLoss,
+    const float &previousValidationLoss) const {
+  std::stringstream delta;
+  if (epoch > 0) {
+    float dtl = trainingLoss - previousTrainingLoss;
+    float dvl = validationLoss - previousValidationLoss;
+    delta.precision(2);
+    delta << " [" << (dtl > 0 ? "+" : "") << dtl * 100.0f << "%";
+    delta << "," << (dvl > 0 ? "+" : "") << dvl * 100.0f << "%]";
+  }
+  SimpleLogger::LOG_INFO(
+      "Epoch: ", epoch + 1, ", Train Loss: ", trainingLoss * 100.0f,
+      "%, Validation Loss: ", validationLoss * 100.0f, "%", delta.str());
 }
 
 void RunnerTrainingMonitoredVisitor::adaptLearningRate(

@@ -16,21 +16,21 @@ std::unique_ptr<TrainingDataFactory> TrainingDataFactory::instance_ = nullptr;
 ImagePartsPair *TrainingDataFactory::next(
     std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
     std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
-    std::vector<std::string> &dataTargetPaths, size_t &currentIndex) {
+    std::vector<std::string> &dataTargetPaths, std::atomic<size_t> &currentIndex) {
 
   const auto &manager = Manager::getConstInstance();
   const auto &app_params = manager.app_params;
   const auto &network_params = manager.network_params;
 
-  size_t dataSize = isDataFolder ? dataTargetPaths.size() : dataPaths.size();
+  size_t dataSize = isDataFolder_ ? dataTargetPaths.size() : dataPaths.size();
   if (currentIndex >= dataSize) {
     // No more training data
     return nullptr;
   }
 
   const std::string &inputPath =
-      isDataFolder ? "" : dataPaths[currentIndex]->first;
-  const std::string &targetPath = isDataFolder
+      isDataFolder_ ? "" : dataPaths[currentIndex]->first;
+  const std::string &targetPath = isDataFolder_
                                       ? dataTargetPaths[currentIndex]
                                       : dataPaths[currentIndex]->second;
 
@@ -48,7 +48,7 @@ ImagePartsPair *TrainingDataFactory::next(
     // if it is a folder of target images, the input image will be generate,
     // else it will load the provided input image
     auto inputImageParts =
-        isDataFolder
+        isDataFolder_
             ? imageHelper_.generateInputImage(
                   targetImageParts, app_params.training_reduce_factor,
                   network_params.input_size_x, network_params.input_size_y)
@@ -72,21 +72,21 @@ ImagePartsPair *TrainingDataFactory::next(
 
 ImagePartsPair *TrainingDataFactory::nextTraining() {
   return next(dataTrainingPaths_, dataTrainingBulk_, dataTrainingTargetPaths_,
-              currentTrainingIndex);
+              currentTrainingIndex_);
 }
 
-ImagePartsPair *TrainingDataFactory::nextValidation() {
+ImagePartsPair *TrainingDataFactory::nextValidation()  {
   return next(dataValidationPaths_, dataValidationBulk_,
-              dataValidationTargetPaths_, currentValidationIndex);
+              dataValidationTargetPaths_, currentValidationIndex_);
 }
 
 size_t TrainingDataFactory::trainingSize() {
-  return isDataFolder ? dataTrainingTargetPaths_.size()
-                      : dataTrainingPaths_.size();
+  return isDataFolder_ ? dataTrainingTargetPaths_.size()
+                       : dataTrainingPaths_.size();
 }
 size_t TrainingDataFactory::validationSize() {
-  return isDataFolder ? dataValidationTargetPaths_.size()
-                      : dataValidationPaths_.size();
+  return isDataFolder_ ? dataValidationTargetPaths_.size()
+                       : dataValidationPaths_.size();
 }
 
 void TrainingDataFactory::loadData() {
@@ -120,7 +120,7 @@ void TrainingDataFactory::loadDataPaths() {
   splitDataPairPaths(dataPaths, app_params.training_split_ratio,
                      app_params.random_loading);
 
-  isDataFolder = false;
+  isDataFolder_ = false;
   isLoaded_ = true;
 }
 
@@ -147,7 +147,7 @@ void TrainingDataFactory::loadDataFolder() {
   splitDataTargetPaths(dataTargetPaths, app_params.training_split_ratio,
                        app_params.random_loading);
 
-  isDataFolder = true;
+  isDataFolder_ = true;
   isLoaded_ = true;
 }
 
@@ -155,8 +155,8 @@ void TrainingDataFactory::resetCounters() {
   resetTraining();
   resetValidation();
 }
-void TrainingDataFactory::resetTraining() { currentTrainingIndex = 0; }
-void TrainingDataFactory::resetValidation() { currentValidationIndex = 0; }
+void TrainingDataFactory::resetTraining() { currentTrainingIndex_ = 0; }
+void TrainingDataFactory::resetValidation() { currentValidationIndex_ = 0; }
 
 void TrainingDataFactory::splitDataPairPaths(
     std::vector<std::unique_ptr<ImagePathPair>> &data, float split_ratio,

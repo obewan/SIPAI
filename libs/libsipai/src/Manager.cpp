@@ -44,11 +44,6 @@ void Manager::run() {
   // Initialize network
   createOrImportNetwork();
 
-  const bool enable_parallel_orig = app_params.enable_parallel;
-  if (app_params.enable_vulkan) {
-    app_params.enable_parallel = false;
-  }
-
   SimpleLogger::LOG_INFO(
       "Parameters: ", "\nmode: ", getRunModeStr(app_params.run_mode),
       "\nauto-save every ", app_params.epoch_autosave, " epochs",
@@ -99,12 +94,7 @@ void Manager::run() {
     } catch (std::exception &ex) {
       SimpleLogger::LOG_ERROR("Enabling Vulkan error: ", ex.what());
       app_params.enable_vulkan = false;
-      SimpleLogger::LOG_INFO(
-          "Vulkan GPU acceleration disabled.",
-          enable_parallel_orig ? " Using CPU parallelism instead." : "");
-      if (enable_parallel_orig) {
-        app_params.enable_parallel = true;
-      }
+      SimpleLogger::LOG_INFO("Vulkan GPU acceleration disabled.");
     }
   }
 
