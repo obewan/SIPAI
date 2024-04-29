@@ -249,8 +249,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
                               inputImage.size(), "...");
     }
     const auto &outputData = manager.network->forwardPropagation(
-        *inputPart, manager.app_params.enable_vulkan,
-        manager.app_params.enable_parallel);
+        *inputPart, manager.app_params.enable_vulkan);
 
     if (stopTrainingNow) {
       break;
@@ -280,8 +279,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
         SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
                                 inputImage.size(), "...");
       }
-      manager.network->backwardPropagation(*targetPart, error_min, error_max,
-                                           manager.app_params.enable_parallel);
+      manager.network->backwardPropagation(*targetPart, error_min, error_max);
       if (stopTrainingNow) {
         break;
       }
@@ -290,8 +288,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
         SimpleLogger::LOG_DEBUG("weights update part ", i + 1, "/",
                                 inputImage.size(), "...");
       }
-      manager.network->updateWeights(manager.network_params.learning_rate,
-                                     manager.app_params.enable_parallel);
+      manager.network->updateWeights(manager.network_params.learning_rate);
       if (stopTrainingNow) {
         break;
       }

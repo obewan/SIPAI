@@ -104,7 +104,13 @@ std::vector<cv::Mat> ImageHelper::splitImage(const cv::Mat &inputImage,
   if (split == 0) {
     throw ImageHelperException("internal exception: split 0.");
   }
+
   std::vector<cv::Mat> outputImages;
+
+  if (split == 1) {
+    outputImages.push_back(inputImage);
+    return outputImages;
+  }
 
   // Calculate the size of each part in pixels
   int partSizeX = (int)((inputImage.cols + split - 1) / split);

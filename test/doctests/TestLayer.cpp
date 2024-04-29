@@ -10,7 +10,6 @@ using namespace sipai;
 TEST_CASE("Testing Layer") {
   SUBCASE("Test updateWeights") {
     auto &manager = Manager::getInstance();
-    bool enable_parallel = false;
     manager.network.reset();
     manager.network_params = {
         .input_size_x = 2,
@@ -38,8 +37,8 @@ TEST_CASE("Testing Layer") {
         cv::Mat(3, 3, CV_32FC4, cv::Vec4f{1.5, 3.2, 2.1, 5.3});
     outputLayer->previousLayer->errors =
         cv::Mat(3, 2, CV_32FC4, cv::Vec4f{5.1, 1.1, -5.5, 2.2});
-    CHECK_NOTHROW(outputLayer->updateWeights(
-        manager.network_params.learning_rate, enable_parallel));
+    CHECK_NOTHROW(
+        outputLayer->updateWeights(manager.network_params.learning_rate));
 
     // get the weights after update
     auto w2 = outputLayer->neurons.back().back().weights.clone();

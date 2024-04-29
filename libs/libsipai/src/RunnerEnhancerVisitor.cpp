@@ -38,30 +38,26 @@ void RunnerEnhancerVisitor::visit() const {
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
       const auto &outputData = manager.network->forwardPropagation(
-          *inputPart, app_params.enable_vulkan, app_params.enable_parallel);
+          *inputPart, app_params.enable_vulkan);
       outputParts.push_back(std::make_unique<cv::Mat>(outputData));
     }
 
     // Save the output image parts as a single image
     // TODO: update outputSizeX and outputSizeY with original image part sizes
-    // size_t outputSizeX =
-    //     std::accumulate(outputParts.begin(), outputParts.end(), 0,
-    //                     [](size_t total, const std::unique_ptr<cv::Mat> &im)
-    //                     {
-    //                       return total + im->size().width;
-    //                     });
-    // size_t outputSizeY =
-    //     std::accumulate(outputParts.begin(), outputParts.end(), 0,
-    //                     [](size_t total, const std::unique_ptr<cv::Mat> &im)
-    //                     {
-    //                       return total + im->size().height;
-    //                     });
-    // imageHelper_.saveImage(app_params.output_file, outputParts,
-    //                        app_params.image_split,
-    //                        (size_t)(outputSizeX * app_params.output_scale),
-    //                        (size_t)(outputSizeY * app_params.output_scale));
+    size_t outputSizeX =
+        std::accumulate(outputParts.begin(), outputParts.end(), 0,
+                        [](size_t total, const std::unique_ptr<cv::Mat> &im) {
+                          return total + im->size().width;
+                        });
+    size_t outputSizeY =
+        std::accumulate(outputParts.begin(), outputParts.end(), 0,
+                        [](size_t total, const std::unique_ptr<cv::Mat> &im) {
+                          return total + im->size().height;
+                        });
     imageHelper_.saveImage(app_params.output_file, outputParts,
-                           app_params.image_split);
+                           app_params.image_split,
+                           (size_t)(outputSizeX * app_params.output_scale),
+                           (size_t)(outputSizeY * app_params.output_scale));
 
     SimpleLogger::LOG_INFO("Image enhancement done. Image output saved in ",
                            manager.app_params.output_file);

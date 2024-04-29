@@ -7,7 +7,7 @@
 
 using namespace sipai;
 
-void Layer::forwardPropagation(bool enable_vulkan, bool enable_parallel) {
+void Layer::forwardPropagation(bool enable_vulkan) {
   if (previousLayer == nullptr) {
     return;
   }
@@ -16,8 +16,6 @@ void Layer::forwardPropagation(bool enable_vulkan, bool enable_parallel) {
     VulkanController::getInstance().forwardPropagation(previousLayer, this);
     return;
   }
-
-  cv::setNumThreads(enable_parallel ? std::thread::hardware_concurrency() : 0);
 
   for (size_t y = 0; y < neurons.size(); ++y) {
     for (size_t x = 0; x < neurons[y].size(); ++x) {
@@ -33,13 +31,11 @@ void Layer::forwardPropagation(bool enable_vulkan, bool enable_parallel) {
   }
 }
 
-void Layer::backwardPropagation(const float &error_min, const float &error_max,
-                                bool enable_parallel) {
+void Layer::backwardPropagation(const float &error_min,
+                                const float &error_max) {
   if (nextLayer == nullptr) {
     return;
   }
-
-  cv::setNumThreads(enable_parallel ? std::thread::hardware_concurrency() : 0);
 
   for (size_t y = 0; y < neurons.size(); ++y) {
     for (size_t x = 0; x < neurons[y].size(); ++x) {
@@ -72,12 +68,10 @@ void Layer::backwardPropagation(const float &error_min, const float &error_max,
   }
 }
 
-void Layer::updateWeights(float learningRate, bool enable_parallel) {
+void Layer::updateWeights(float learningRate) {
   if (previousLayer == nullptr) {
     return;
   }
-
-  cv::setNumThreads(enable_parallel ? std::thread::hardware_concurrency() : 0);
 
   for (size_t y = 0; y < neurons.size(); ++y) {
     for (size_t x = 0; x < neurons[y].size(); ++x) {

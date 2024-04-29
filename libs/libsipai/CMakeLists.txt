@@ -23,7 +23,7 @@ endif()
 if(WIN32)
     set(OpenCV_DIR $ENV{OpenCV_BUILD})
 endif()
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.6.0 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Add Intel TBB lib

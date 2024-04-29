@@ -8,8 +8,7 @@
 using namespace sipai;
 
 cv::Mat NeuralNetwork::forwardPropagation(const cv::Mat &inputValues,
-                                          bool enable_vulkan,
-                                          bool enable_parallel) {
+                                          bool enable_vulkan) {
   if (layers.front()->layerType != LayerType::LayerInput) {
     throw NeuralNetworkException("Invalid front layer type");
   }
@@ -18,26 +17,25 @@ cv::Mat NeuralNetwork::forwardPropagation(const cv::Mat &inputValues,
   }
   ((LayerInput *)layers.front())->setInputValues(inputValues);
   for (auto &layer : layers) {
-    layer->forwardPropagation(enable_vulkan, enable_parallel);
+    layer->forwardPropagation(enable_vulkan);
   }
   return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
 void NeuralNetwork::backwardPropagation(const cv::Mat &expectedValues,
                                         const float &error_min,
-                                        const float &error_max,
-                                        bool enable_parallel) {
+                                        const float &error_max) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
     throw NeuralNetworkException("Invalid back layer type");
   }
   ((LayerOutput *)layers.back())->computeErrors(expectedValues);
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-    (*it)->backwardPropagation(error_min, error_max, enable_parallel);
+    (*it)->backwardPropagation(error_min, error_max);
   }
 }
 
-void NeuralNetwork::updateWeights(float learning_rate, bool enable_parallel) {
+void NeuralNetwork::updateWeights(float learning_rate) {
   for (auto &layer : layers) {
-    layer->updateWeights(learning_rate, enable_parallel);
+    layer->updateWeights(learning_rate);
   }
 }

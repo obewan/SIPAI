@@ -397,15 +397,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                "of the CPU, except if Vulkan failed to initialize.");
   app.add_flag(
       "--par,--parallelism", app_params.enable_parallel,
-      "Enables parallel processing for neural network computations. "
-      "While this can potentially improve performance by utilizing multiple "
-      "cores,\n"
-      "it's important to note that it may not always lead to speedup.\n"
-      "The overhead of managing multiple threads can sometimes outweigh the "
-      "benefits,\n"
-      "especially for smaller tasks or on systems with limited resources. "
-      "Use this flag judiciously and benchmark your application to determine "
-      "its impact.");
+      "Enables CPU parallel processing for neural network computations. ");
 }
 
 void SIPAI::run() { Manager::getInstance().run(); }

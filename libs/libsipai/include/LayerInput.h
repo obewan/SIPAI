@@ -24,18 +24,16 @@ public:
   LayerInput(size_t size_x, size_t size_y)
       : Layer(LayerType::LayerInput, size_x, size_y) {}
 
-  void forwardPropagation(bool enable_vulkan = false,
-                          bool enable_parallel = false) override {
+  void forwardPropagation(bool enable_vulkan = false) override {
     // No need to implement for input layer
   }
 
-  void backwardPropagation(const float &error_min, const float &error_max,
-                           bool enable_parallel = false) override {
+  void backwardPropagation(const float &error_min,
+                           const float &error_max) override {
     // No need to implement for input layer (no weights of input layer)
   }
 
-  void updateWeights(float learningRate,
-                     bool enable_parallel = false) override {
+  void updateWeights(float learningRate) override {
     // No need to implement for input layer (no weights of input layer)
   }
 

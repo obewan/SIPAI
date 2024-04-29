@@ -64,7 +64,22 @@ jobs:
       #  uses: github/codeql-action/autobuild@v3
 
       - name: Install dependencies
-        run: sudo apt-get install -y g++-12 libopencv-dev libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools
+        run: sudo apt-get install -y g++-12 libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools
+
+      - name: Cache OpenCV
+        id: opencv-cache
+        uses: actions/cache@v2
+        with:
+          path: ./opencv-install
+          key: ${{ runner.os }}-opencv-cache
+
+      - name: Install OpenCV
+        uses: rayandrews/with-opencv-action@v1
+        with:
+          dir: ./opencv-install
+          install-deps: false
+          cached: ${{ steps.opencv-cache.outputs.cache-hit }}
+          opencv-version: "4.6.0"
 
       - name: Build with C++20 support
         run: find . -name "*.cpp" -exec g++-12 -I./include -I./libs/libsipai/include -I./libs/libcsvparser/include -I./libs/libjson/include -I/usr/include/opencv4 -I./test/doctests/include -std=c++20 -c {} \;

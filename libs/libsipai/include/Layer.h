@@ -152,26 +152,21 @@ public:
 
   /**
    * @brief Performs forward propagation using the previous layer.
-   * @param enable_parallel enable parallelism (experimental)
    */
-  virtual void forwardPropagation(bool enable_vulkan = false,
-                                  bool enable_parallel = false);
+  virtual void forwardPropagation(bool enable_vulkan = false);
 
   /**
    * @brief Performs backward propagation using the next layer.
-   * @param enable_parallel enable parallelism (experimental)
    */
   virtual void backwardPropagation(const float &error_min,
-                                   const float &error_max,
-                                   bool enable_parallel = false);
+                                   const float &error_max);
   /**
    * @brief Updates the weights of the neurons in this layer using the
    * previous layer and a learning rate.
    *
    * @param learningRate The learning rate to use when updating weights.
-   * @param enable_parallel enable parallelism (experimental)
    */
-  virtual void updateWeights(float learningRate, bool enable_parallel = false);
+  virtual void updateWeights(float learningRate);
 
   const std::string getLayerTypeStr() const {
     for (const auto &[key, mLayerType] : layer_map) {

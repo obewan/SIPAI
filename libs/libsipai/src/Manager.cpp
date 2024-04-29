@@ -44,6 +44,7 @@ void Manager::run() {
   // Initialize network
   createOrImportNetwork();
 
+  // Log parameters
   SimpleLogger::LOG_INFO(
       "Parameters: ", "\nmode: ", getRunModeStr(app_params.run_mode),
       "\nauto-save every ", app_params.epoch_autosave, " epochs",
@@ -76,17 +77,35 @@ void Manager::run() {
       "\noutput activation function: ",
       getActivationStr(network_params.output_activation_function),
       "\noutput activation alpha: ", network_params.output_activation_alpha,
-      "\nimage split: ", app_params.image_split,
       "\ninput reduce factor: ", app_params.training_reduce_factor,
       "\noutput scale: ", app_params.output_scale,
+      "\nimage split: ", app_params.image_split,
       "\nimages random loading: ", app_params.random_loading ? "true" : "false",
       "\nimages bulk loading: ", app_params.bulk_loading ? "true" : "false",
-      "\npadding enabled: ", app_params.enable_padding ? "true" : "false",
-      "\nvulkan enabled: ", app_params.enable_vulkan ? "true" : "false",
-      "\nparallelism enabled: ", app_params.enable_parallel ? "true" : "false",
+      "\nimages padding enabled: ",
+      app_params.enable_padding ? "true" : "false",
+      "\nCPU parallelism enabled: ",
+      app_params.enable_parallel ? "true" : "false",
+      "\nGPU Vulkan enabled: ", app_params.enable_vulkan ? "true" : "false",
       "\nverbose logs enabled: ", app_params.verbose ? "true" : "false",
       "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false");
 
+  // Enabling CPU parallelism
+  if (app_params.enable_parallel) {
+    SimpleLogger::LOG_INFO("Enabling CPU parallelism...");
+    try {
+      cv::setNumThreads(std::thread::hardware_concurrency());
+    } catch (std::exception &ex) {
+      SimpleLogger::LOG_ERROR("Enabling CPU parallelism error: ", ex.what());
+      cv::setNumThreads(0);
+      app_params.enable_parallel = false;
+      SimpleLogger::LOG_INFO("CPU threads parallelism disabled.");
+    }
+  } else {
+    cv::setNumThreads(0);
+  }
+
+  // Enabling GPU Vulkan
   if (app_params.enable_vulkan) {
     SimpleLogger::LOG_INFO("Enabling Vulkan...");
     try {
