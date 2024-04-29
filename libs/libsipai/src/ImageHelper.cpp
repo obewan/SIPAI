@@ -29,7 +29,7 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   } else if (mat.channels() == 3) {
     cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
   } else if (mat.channels() == 4) {
-    cv::cvtColor(mat, mat, cv::COLOR_BGRA2BGR);
+    cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGR);
   }
 
   // If the image has only 3 channels (BGR), create and merge an alpha channel
@@ -42,17 +42,16 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   }
 
   // Convert to floating-point range [0, 1] with 4 channels
-  cv::Mat floatMat;
-  mat.convertTo(floatMat, CV_32FC4, 1.0 / 255.0);
-  if (floatMat.channels() != 4) {
+  mat.convertTo(mat, CV_32FC4, 1.0 / 255.0);
+  if (mat.channels() != 4) {
     throw std::runtime_error("incorrect image channels");
   }
 
-  // cv::imshow("Original Image", mat);
-  // cv::waitKey(0);
+  // cv::imshow("Original Image step 3", mat);
+  // cv::waitKey(1000 * 60 * 2);
 
   ImageParts imagesParts;
-  auto matParts = splitImage(floatMat, split, withPadding);
+  auto matParts = splitImage(mat, split, withPadding);
   for (auto &matPart : matParts) {
     if (resize_x > 0 && resize_y > 0) {
       cv::resize(matPart, matPart, cv::Size((int)resize_x, (int)resize_y));
@@ -158,16 +157,36 @@ void ImageHelper::saveImage(const std::string &imagePath,
 
     auto mat = joinImages(imageParts, (int)split, (int)split);
 
+    if (mat.empty()) {
+      throw ImageHelperException("Image data is empty.");
+    }
+
     if (resize_x > 0 && resize_y > 0) {
       cv::resize(mat, mat, cv::Size((int)resize_x, (int)resize_y));
     }
 
     // convert back the [0,1] float range image to 255 pixel values
-    cv::Mat ucharMat;
-    mat.convertTo(ucharMat, CV_8UC(mat.channels()), 255.0);
+    // TODO: check the original image rtype, CV_8U used temporary
+    mat.convertTo(mat, CV_8U, 255.0);
+
+    // TODO: check the original file channel, and use RGBA if it had a proper
+    // one, like cv::cvtColor(mat, mat, cv::COLOR_BGRA2RGBA);
+    cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB); // will reduce to 3 channels
+
+    if (mat.empty()) {
+      throw ImageHelperException("Image data is empty.");
+    }
 
     // write the image
-    cv::imwrite(imagePath, mat);
+    // std::vector<int> params;
+    // params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+    // params.push_back(9); // Compression level
+    // if (!cv::imwrite(imagePath, mat, params)) {
+    if (!cv::imwrite(imagePath, mat)) {
+      throw ImageHelperException("Error saving image: " + imagePath);
+    }
+  } catch (ImageHelperException &ihe) {
+    throw ihe;
   } catch (std::exception &ex) {
     throw ImageHelperException(ex.what());
   }
