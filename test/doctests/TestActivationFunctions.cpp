@@ -7,6 +7,7 @@
 #include "exception/NeuralNetworkException.h"
 #include <cstddef>
 #include <memory>
+#include <opencv2/core/matx.hpp>
 
 using namespace sipai;
 
@@ -14,10 +15,6 @@ TEST_CASE("Testing the Activation Functions") {
 
   auto network = std::make_unique<NeuralNetwork>();
   auto hlayer = new LayerHidden();
-  Neuron n1;
-  Neuron n2;
-  hlayer->neurons.push_back(n1);
-  hlayer->neurons.push_back(n2);
   network->layers.push_back(hlayer);
   NeuralNetworkBuilder builder;
   builder.with(network);
@@ -34,112 +31,112 @@ TEST_CASE("Testing the Activation Functions") {
   };
   hasActivationFunctions hasAF;
 
-  auto testELU = [&eps](const Neuron &neu) {
-    CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value ==
-          RGBA{1.0, 1.0, 1.0, 1.0}.value);
-    CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(0) ==
+  auto testELU = [&eps](const Layer &lay) {
+    CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}) ==
+          cv::Vec4f{1.0, 1.0, 1.0, 1.0});
+    CHECK(lay.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f})[0] ==
           doctest::Approx(0).epsilon(eps));
-    CHECK(neu.activationFunction({0.0f, 0.0f, 0.0f, 0.0f}).value ==
-          RGBA{0.0f, 0.0f, 0.0f, 0.0f}.value);
-    CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}).value ==
-          RGBA{1.0, 1.0, 1.0, 1.0}.value);
-    CHECK(neu.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})
-              .value.at(0) == doctest::Approx(0.0367879f).epsilon(eps));
+    CHECK(lay.activationFunction({0.0f, 0.0f, 0.0f, 0.0f}) ==
+          cv::Vec4f{0.0f, 0.0f, 0.0f, 0.0f});
+    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}) ==
+          cv::Vec4f{1.0, 1.0, 1.0, 1.0});
+    CHECK(lay.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})[0] ==
+          doctest::Approx(0.0367879f).epsilon(eps));
   };
 
-  auto testLReLU = [&eps](const Neuron &neu) {
-    RGBA input{1.0f, 1.0f, 1.0f, 1.0f};
-    RGBA expected{0.01f, 0.01f, 0.01f, 0.01f};
-    const auto output = neu.activationFunction(input).value;
+  auto testLReLU = [&eps](const Layer &lay) {
+    cv::Vec4f input{1.0f, 1.0f, 1.0f, 1.0f};
+    cv::Vec4f expected{0.01f, 0.01f, 0.01f, 0.01f};
+    const auto output = lay.activationFunction(input);
     for (size_t i = 0; i < 4; ++i) {
-      CHECK(output[i] == doctest::Approx(expected.value[i]).epsilon(eps));
+      CHECK(output[i] == doctest::Approx(expected[i]).epsilon(eps));
     }
-    CHECK(neu.activationFunction({-0.5f, -0.5f, -0.5f, -0.5f}).value.at(0) ==
+    CHECK(lay.activationFunction({-0.5f, -0.5f, -0.5f, -0.5f})[0] ==
           doctest::Approx(0.f).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}).value ==
-          RGBA{1.0, 1.0, 1.0, 1.0}.value);
-    CHECK(neu.activationFunctionDerivative({-0.5f, -0.5f, -0.5f, -0.5f})
-              .value.at(0) == doctest::Approx(0.01f).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}) ==
+          cv::Vec4f{1.0, 1.0, 1.0, 1.0});
+    CHECK(lay.activationFunctionDerivative({-0.5f, -0.5f, -0.5f, -0.5f})[0] ==
+          doctest::Approx(0.01f).epsilon(eps));
   };
 
-  auto testPReLU = [&eps, &alpha](const Neuron &neu) {
-    CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value ==
-          RGBA{1.0f, 1.0f, 1.0f, 1.0f}.value);
-    CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(1) ==
+  auto testPReLU = [&eps, &alpha](const Layer &lay) {
+    CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}) ==
+          cv::Vec4f{1.0f, 1.0f, 1.0f, 1.0f});
+    CHECK(lay.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f})[1] ==
           doctest::Approx(0.f).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}).value ==
-          RGBA{1.0, 1.0, 1.0, 1.0}.value);
-    CHECK(neu.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})
-              .value.at(1) == doctest::Approx(alpha).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}) ==
+          cv::Vec4f{1.0, 1.0, 1.0, 1.0});
+    CHECK(lay.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})[1] ==
+          doctest::Approx(alpha).epsilon(eps));
   };
 
-  auto testReLU = [&eps](const Neuron &neu) {
-    CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value.at(2) ==
+  auto testReLU = [&eps](const Layer &lay) {
+    CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f})[2] ==
           doctest::Approx(1.0f).epsilon(eps));
-    CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(3) ==
+    CHECK(lay.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f})[3] ==
           doctest::Approx(0.0f).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})
-              .value.at(1) == doctest::Approx(1.0f).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})
-              .value.at(0) == doctest::Approx(0.0f).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})[1] ==
+          doctest::Approx(1.0f).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})[0] ==
+          doctest::Approx(0.0f).epsilon(eps));
   };
 
-  auto testSigm = [&eps](const Neuron &neu) {
-    CHECK(neu.activationFunction({0.0f, 0.0f, 0.0f, 0.0f}).value.at(0) ==
+  auto testSigm = [&eps](const Layer &lay) {
+    CHECK(lay.activationFunction({0.0f, 0.0f, 0.0f, 0.0f})[0] ==
           doctest::Approx(0.5f).epsilon(eps));
-    CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value.at(1) ==
+    CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f})[1] ==
           doctest::Approx(0.731059f).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({0.0f, 0.0f, 0.0f, 0.0f})
-              .value.at(2) == doctest::Approx(0.25f).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})
-              .value.at(3) == doctest::Approx(0.196612f).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({0.0f, 0.0f, 0.0f, 0.0f})[2] ==
+          doctest::Approx(0.25f).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})[3] ==
+          doctest::Approx(0.196612f).epsilon(eps));
   };
 
-  auto testTanh = [&eps](const Neuron &neu) {
-    CHECK(neu.activationFunction({0.0f, 0.0f, 0.0f, 0.0f}).value.at(0) ==
+  auto testTanh = [&eps](const Layer &lay) {
+    CHECK(lay.activationFunction({0.0f, 0.0f, 0.0f, 0.0f})[0] ==
           doctest::Approx(0.5).epsilon(eps));
-    CHECK(neu.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}).value.at(1) ==
+    CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f})[1] ==
           doctest::Approx(0.880797).epsilon(eps));
-    CHECK(neu.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f}).value.at(2) ==
+    CHECK(lay.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f})[2] ==
           doctest::Approx(0.119203).epsilon(eps));
-    RGBA input{0.0f, 0.0f, 0.0f, 0.0f};
-    RGBA expected{0.75f, 0.75f, 0.75f, 0.75f};
-    const auto output = neu.activationFunctionDerivative(input).value;
+    cv::Vec4f input{0.0f, 0.0f, 0.0f, 0.0f};
+    cv::Vec4f expected{0.75f, 0.75f, 0.75f, 0.75f};
+    const auto output = lay.activationFunctionDerivative(input);
     for (size_t i = 0; i < 4; ++i) {
-      CHECK(output[i] == doctest::Approx(expected.value[i]).epsilon(eps));
+      CHECK(output[i] == doctest::Approx(expected[i]).epsilon(eps));
     }
-    CHECK(neu.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})
-              .value.at(3) == doctest::Approx(0.224196).epsilon(eps));
-    CHECK(neu.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})
-              .value.at(0) == doctest::Approx(0.985791).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})[3] ==
+          doctest::Approx(0.224196).epsilon(eps));
+    CHECK(lay.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})[0] ==
+          doctest::Approx(0.985791).epsilon(eps));
   };
 
   auto testActivationFunction =
       [&hasAF, testELU, testLReLU, testPReLU, testReLU, testSigm,
-       testTanh](const Neuron &neu, const EActivationFunction &activ) {
+       testTanh](const Layer &lay, const EActivationFunction &activ) {
         switch (activ) {
         case EActivationFunction::ELU:
-          testELU(neu);
+          testELU(lay);
           hasAF.hasElu = true;
           break;
         case EActivationFunction::LReLU:
-          testLReLU(neu);
+          testLReLU(lay);
           hasAF.hasLRelu = true;
           break;
         case EActivationFunction::PReLU:
-          testPReLU(neu);
+          testPReLU(lay);
           hasAF.hasPRelu = true;
           break;
         case EActivationFunction::ReLU:
-          testReLU(neu);
+          testReLU(lay);
           hasAF.hasRelu = true;
           break;
         case EActivationFunction::Sigmoid:
-          testSigm(neu);
+          testSigm(lay);
           hasAF.hasSigm = true;
           break;
         case EActivationFunction::Tanh:
-          testTanh(neu);
+          testTanh(lay);
           hasAF.hasTanh = true;
           break;
         default:
@@ -156,9 +153,7 @@ TEST_CASE("Testing the Activation Functions") {
     };
     builder.with(networkParams);
     CHECK_NOTHROW(builder.setActivationFunction());
-    for (const auto &neu : hlayer->neurons) {
-      testActivationFunction(neu, activ);
-    }
+    testActivationFunction(*hlayer, activ);
   }
   CHECK((hasAF.hasElu && hasAF.hasLRelu && hasAF.hasPRelu && hasAF.hasRelu &&
          hasAF.hasSigm && hasAF.hasTanh) == true);

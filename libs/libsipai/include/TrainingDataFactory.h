@@ -11,6 +11,7 @@
 #include "Common.h"
 #include "ImageHelper.h"
 #include "TrainingDataFileReaderCSV.h"
+#include <atomic>
 #include <cstddef>
 #include <memory>
 #include <mutex>
@@ -111,7 +112,7 @@ private:
   ImagePartsPair *next(std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
                        std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
                        std::vector<std::string> &dataTargetPaths,
-                       size_t &currentIndex);
+                       std::atomic<size_t> &currentIndex);
 
   void splitDataPairPaths(std::vector<std::unique_ptr<ImagePathPair>> &data,
                           float split_ratio, bool withRandom = false);
@@ -135,9 +136,9 @@ private:
 
   TrainingDataFileReaderCSV trainingDatafileReaderCSV_;
   ImageHelper imageHelper_;
-  bool isLoaded_ = false;
-  bool isDataFolder = false;
-  size_t currentTrainingIndex = 0;
-  size_t currentValidationIndex = 0;
+  std::atomic<bool> isLoaded_ = false;
+  std::atomic<bool> isDataFolder_ = false;
+  std::atomic<size_t> currentTrainingIndex_ = 0;
+  std::atomic<size_t> currentValidationIndex_ = 0;
 };
 } // namespace sipai

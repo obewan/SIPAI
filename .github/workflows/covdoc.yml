@@ -19,9 +19,24 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen g++-12 lcov libopencv-dev libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
+          sudo apt-get install -y doxygen g++-12 lcov libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
           echo "CC=gcc-12" >> $GITHUB_ENV
           echo "CXX=g++-12" >> $GITHUB_ENV
+
+      - name: Cache OpenCV
+        id: opencv-cache
+        uses: actions/cache@v2
+        with:
+          path: ./opencv-install
+          key: ${{ runner.os }}-opencv-cache
+
+      - name: Install OpenCV
+        uses: rayandrews/with-opencv-action@v1
+        with:
+          dir: ./opencv-install
+          install-deps: false
+          cached: ${{ steps.opencv-cache.outputs.cache-hit }}
+          opencv-version: "4.6.0"
 
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug

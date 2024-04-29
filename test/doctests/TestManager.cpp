@@ -47,16 +47,16 @@ TEST_CASE("Testing the Manager class") {
     CHECK(network->layers.back()->layerType == LayerType::LayerOutput);
 
     const auto &inputLayer = network->layers.front();
-    CHECK(inputLayer->neurons.size() == (np.input_size_x * np.input_size_y));
-    CHECK(inputLayer->neurons.at(0).neighbors.size() == 0);
+    CHECK(inputLayer->total() == (np.input_size_x * np.input_size_y));
+    CHECK(inputLayer->neurons.at(0).at(0).neighbors.size() == 0);
 
     const auto &hiddenLayer = network->layers.at(1);
-    CHECK(hiddenLayer->neurons.size() == (np.hidden_size_x * np.hidden_size_y));
-    CHECK(hiddenLayer->neurons.at(0).neighbors.size() == 2);
+    CHECK(hiddenLayer->total() == (np.hidden_size_x * np.hidden_size_y));
+    CHECK(hiddenLayer->neurons.at(0).at(0).neighbors.size() == 2);
 
     const auto &outputLayer = network->layers.back();
-    CHECK(outputLayer->neurons.size() == (np.output_size_x * np.output_size_y));
-    CHECK(outputLayer->neurons.at(0).neighbors.size() == 2);
+    CHECK(outputLayer->total() == (np.output_size_x * np.output_size_y));
+    CHECK(outputLayer->neurons.at(0).at(0).neighbors.size() == 2);
 
     manager.network.reset();
   }
@@ -118,18 +118,18 @@ TEST_CASE("Testing the Manager class") {
     CHECK(nn->layers.front()->layerType == LayerType::LayerInput);
     CHECK(nn->layers.at(1)->layerType == LayerType::LayerHidden);
     CHECK(nn->layers.back()->layerType == LayerType::LayerOutput);
-    CHECK(nn->layers.front()->neurons.size() == 4);
-    CHECK(nn->layers.at(1)->neurons.size() == 6);
-    CHECK(nn->layers.back()->neurons.size() == 9);
-    CHECK(nn->layers.front()->neurons.at(0).neighbors.size() == 0);
-    CHECK(nn->layers.back()->neurons.at(0).neighbors.size() == 2);
+    CHECK(nn->layers.front()->total() == 4);
+    CHECK(nn->layers.at(1)->total() == 6);
+    CHECK(nn->layers.back()->total() == 9);
+    CHECK(nn->layers.front()->neurons.at(0).at(0).neighbors.size() == 0);
+    CHECK(nn->layers.back()->neurons.at(0).at(0).neighbors.size() == 2);
 
     std::filesystem::remove(ap.network_to_export);
     std::filesystem::remove(network_csv);
     manager.network.reset();
   }
 
-  SUBCASE("Testing runWithVisitor") {
+  SUBCASE("Testing runWithVisitor call") {
     auto &manager = Manager::getInstance();
     manager.app_params.training_data_file = "images-test1.csv";
     MockRunnerVisitor visitor;
@@ -139,12 +139,13 @@ TEST_CASE("Testing the Manager class") {
     CHECK(visitor.visitCalled == true);
   }
 
-  SUBCASE("Testing run") {
+  SUBCASE("Testing run data file") {
     auto &manager = Manager::getInstance();
     manager.network.reset();
 
     auto &ap = manager.app_params;
     ap.training_data_file = "images-test1.csv";
+    ap.training_data_folder = "";
     ap.max_epochs = 2;
     ap.run_mode = ERunMode::TrainingMonitored;
     ap.network_to_export = "tempNetwork.json";
@@ -168,6 +169,44 @@ TEST_CASE("Testing the Manager class") {
       std::filesystem::remove(network_csv);
     }
     CHECK(std::filesystem::exists(ap.training_data_file));
+    CHECK_NOTHROW(manager.run());
+    CHECK(std::filesystem::exists(ap.network_to_export));
+    CHECK(std::filesystem::exists(network_csv));
+    std::filesystem::remove(ap.network_to_export);
+    std::filesystem::remove(network_csv);
+    manager.network.reset();
+  }
+
+  SUBCASE("Testing run data folder") {
+    auto &manager = Manager::getInstance();
+    manager.network.reset();
+
+    auto &ap = manager.app_params;
+    ap.training_data_file = "";
+    ap.training_data_folder = "../data/images/target/";
+    ap.max_epochs = 2;
+    ap.run_mode = ERunMode::TrainingMonitored;
+    ap.network_to_export = "tempNetwork.json";
+    ap.network_to_import = "";
+    ap.enable_vulkan = false;
+    std::string network_csv = "tempNetwork.csv";
+
+    auto &np = manager.network_params;
+    np.input_size_x = 2;
+    np.input_size_y = 2;
+    np.hidden_size_x = 3;
+    np.hidden_size_y = 2;
+    np.output_size_x = 3;
+    np.output_size_y = 3;
+    np.hiddens_count = 1;
+
+    if (std::filesystem::exists(ap.network_to_export)) {
+      std::filesystem::remove(ap.network_to_export);
+    }
+    if (std::filesystem::exists(network_csv)) {
+      std::filesystem::remove(network_csv);
+    }
+    CHECK(std::filesystem::exists(ap.training_data_folder));
     CHECK_NOTHROW(manager.run());
     CHECK(std::filesystem::exists(ap.network_to_export));
     CHECK(std::filesystem::exists(network_csv));

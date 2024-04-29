@@ -24,28 +24,24 @@ public:
   LayerInput(size_t size_x, size_t size_y)
       : Layer(LayerType::LayerInput, size_x, size_y) {}
 
-  void forwardPropagation(bool enable_vulkan = false,
-                          bool enable_parallel = false) override {
+  void forwardPropagation(bool enable_vulkan = false) override {
     // No need to implement for input layer
   }
 
-  void backwardPropagation(const float &error_min, const float &error_max,
-                           bool enable_parallel = false) override {
+  void backwardPropagation(const float &error_min,
+                           const float &error_max) override {
     // No need to implement for input layer (no weights of input layer)
   }
 
-  void updateWeights(float learningRate,
-                     bool enable_parallel = false) override {
+  void updateWeights(float learningRate) override {
     // No need to implement for input layer (no weights of input layer)
   }
 
-  void setInputValues(const std::vector<RGBA> &inputValues) {
-    if (inputValues.size() != neurons.size()) {
+  void setInputValues(const cv::Mat &inputValues) {
+    if (inputValues.total() != total()) {
       throw std::invalid_argument("Invalid input values size");
     }
-    for (size_t i = 0; i < neurons.size(); i++) {
-      neurons.at(i).value = inputValues.at(i);
-    }
+    values = inputValues;
   }
 };
 } // namespace sipai

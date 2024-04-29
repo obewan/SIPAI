@@ -10,7 +10,6 @@
 #pragma once
 
 #include "Common.h"
-#include "Image.h"
 #include "exception/ImageHelperException.h"
 #include <cstddef>
 #include <exception>
@@ -82,25 +81,7 @@ public:
    * @param splitsY
    * @return cv::Mat
    */
-  cv::Mat joinImages(const std::vector<cv::Mat> &images, int splitsX,
-                     int splitsY) const;
-
-  /**
-   * @brief Converts an OpenCV Mat image into a vector of RGBA values.
-   *
-   * @param image The OpenCV Mat image to be converted.
-   * @return std::vector<RGBA> The converted image as a vector of RGBA
-   * values.
-   */
-  std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) const;
-
-  /**
-   * @brief Converts a vector of RGBA values into an OpenCV Mat image.
-   *
-   * @param image The vector of RGBA values to be converted.
-   * @return cv::Mat The converted image as an OpenCV Mat.
-   */
-  cv::Mat convertToMat(const Image &image) const;
+  cv::Mat joinImages(const ImageParts &images, int splitsX, int splitsY) const;
 
   /**
    * @brief Computes the loss between the output image
@@ -111,7 +92,9 @@ public:
    *
    * @return The computed loss.
    */
-  float computeLoss(const std::vector<RGBA> &outputData,
-                    const std::vector<RGBA> &targetData) const;
+  float computeLoss(const cv::Mat &outputData, const cv::Mat &targetData) const;
+
+private:
+  cv::Mat convertToFloatMat(const cv::Mat &mat) const;
 };
 } // namespace sipai

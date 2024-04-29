@@ -1,143 +1,100 @@
 #include "Layer.h"
 #include "VulkanController.h"
+#include <algorithm>
+#include <cmath>
+#include <opencv2/core/hal/interface.h>
+#include <stdexcept>
 
 using namespace sipai;
 
-void Layer::forwardPropagation(bool enable_vulkan, bool enable_parallel) {
+void Layer::forwardPropagation(bool enable_vulkan) {
   if (previousLayer == nullptr) {
     return;
   }
 
-  auto updateNeuron = [](Neuron &n, Layer *previousLayer) {
-    n.value = {0.0, 0.0, 0.0, 0.0};
-    for (size_t i = 0; i < previousLayer->neurons.size(); i++) {
-      n.value += previousLayer->neurons[i].value * n.weights[i];
-    }
-    // Use activation function
-    n.value = n.activationFunction(n.value);
-  };
-
   if (enable_vulkan) {
     VulkanController::getInstance().forwardPropagation(previousLayer, this);
+    return;
+  }
 
-  } else if (enable_parallel) {
-    std::vector<std::jthread> threads;
-    size_t num_threads =
-        std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
-    std::atomic<size_t> current_index = 0; // atomicity between threads
-    for (size_t i = 0; i < num_threads; ++i) {
-      threads.emplace_back([this, &updateNeuron, &current_index]() {
-        while (true) {
-          size_t index = current_index.fetch_add(1);
-          if (index >= neurons.size()) {
-            break;
-          }
-          updateNeuron(neurons[index], previousLayer);
-        }
-      });
-    }
-    for (auto &thread : threads) {
-      thread.join();
-    }
-
-  } else {
-    for (auto &n : neurons) {
-      updateNeuron(n, previousLayer);
+  for (size_t y = 0; y < neurons.size(); ++y) {
+    for (size_t x = 0; x < neurons[y].size(); ++x) {
+      Neuron &currentNeuron = neurons[y][x];
+      // Compute matrix multiplication between previous layer values
+      // and current neuron weights
+      cv::Mat dotProduct = previousLayer->values.mul(currentNeuron.weights);
+      // Convert the result matrix to a single value by summing all elements
+      float result = cv::sum(dotProduct)[0];
+      // Update the neuron value using the activation function
+      values.at<cv::Vec4f>(x, y) = activationFunction(result);
     }
   }
 }
 
-void Layer::backwardPropagation(const float &error_min, const float &error_max,
-                                bool enable_parallel) {
+void Layer::backwardPropagation(const float &error_min,
+                                const float &error_max) {
   if (nextLayer == nullptr) {
     return;
   }
 
-  auto updateNeuron = [](Neuron &n, const size_t &pos, Layer *nextLayer,
-                         const float &error_min, const float &error_max) {
-    RGBA error = {0.0, 0.0, 0.0, 0.0};
-    for (Neuron &nn : nextLayer->neurons) {
-      error += nn.weights[pos] * nn.error;
-    }
-    // Consider errors of adjacent neurons
-    for (NeuronConnection &conn : n.neighbors) {
-      error += conn.neuron->error * conn.weight;
-    }
-    // Use the derivative of the activation function
-    n.error = (error * n.activationFunctionDerivative(n.value))
-                  .clamp(error_min, error_max);
-  };
+  for (size_t y = 0; y < neurons.size(); ++y) {
+    for (size_t x = 0; x < neurons[y].size(); ++x) {
+      Neuron &currentNeuron = neurons[y][x];
+      cv::Vec4f error(0.0f);
+      const cv::Mat nextLayerErrors = nextLayer->errors;
 
-  if (enable_parallel) {
-    std::vector<std::jthread> threads;
-    size_t num_threads =
-        std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
-    std::atomic<size_t> current_index = 0; // atomicity between threads
-    for (size_t i = 0; i < num_threads; ++i) {
-      threads.emplace_back([this, &updateNeuron, &current_index, error_min,
-                            error_max]() {
-        while (true) {
-          size_t index = current_index.fetch_add(1);
-          if (index >= neurons.size()) {
-            break;
-          }
-          updateNeuron(neurons[index], index, nextLayer, error_min, error_max);
+      // Add next layer neurons error ponderated with weights for this neuron
+      for (const auto &nextLayerNeuronRow : nextLayer->neurons) {
+        for (const auto &nextLayerNeuron : nextLayerNeuronRow) {
+          const cv::Vec4f currentError = nextLayerErrors.at<cv::Vec4f>(
+              nextLayerNeuron.index_x, nextLayerNeuron.index_y);
+          const cv::Vec4f weight = nextLayerNeuron.weights.at<cv::Vec4f>(x, y);
+          error += currentError.mul(weight);
         }
-      });
-    }
-    for (auto &thread : threads) {
-      thread.join();
-    }
+      }
+      // Consider errors of adjacent neurons
+      for (const NeuronConnection &conn : currentNeuron.neighbors) {
+        error += conn.weight.mul(
+            errors.at<cv::Vec4f>(conn.neuron->index_x, conn.neuron->index_y));
+      }
+      // Use the derivative of the activation function
+      const cv::Vec4f activationDerivative =
+          activationFunctionDerivative(values.at<cv::Vec4f>(x, y));
+      const cv::Vec4f clampedError =
+          sipai::clamp4f(activationDerivative.mul(error), error_min, error_max);
 
-  } else {
-    for (size_t index = 0; index < neurons.size(); ++index) {
-      updateNeuron(neurons[index], index, nextLayer, error_min, error_max);
+      errors.at<cv::Vec4f>(x, y) = clampedError;
     }
   }
 }
 
-void Layer::updateWeights(float learningRate, bool enable_parallel) {
+void Layer::updateWeights(float learningRate) {
   if (previousLayer == nullptr) {
     return;
   }
 
-  auto updateNeuron = [](Neuron &n, Layer *previousLayer,
-                         const float &learningRate) {
-    const auto learningRateError = learningRate * n.error;
-    // Update weights based on neurons in the previous layer
-    for (size_t k = 0; k < n.weights.size(); ++k) {
-      n.weights[k] -= previousLayer->neurons[k].value * learningRateError;
-    }
-    // Update weights based on neighboring neurons
-    for (NeuronConnection &conn : n.neighbors) {
-      conn.weight -= conn.neuron->value * learningRateError;
-    }
-  };
+  for (size_t y = 0; y < neurons.size(); ++y) {
+    for (size_t x = 0; x < neurons[y].size(); ++x) {
+      Neuron &neuron = neurons[y][x];
 
-  if (enable_parallel) {
-    std::vector<std::jthread> threads;
-    size_t num_threads =
-        std::min((size_t)std::thread::hardware_concurrency(), neurons.size());
-    std::atomic<size_t> current_index = 0; // atomicity between threads
-    for (size_t i = 0; i < num_threads; ++i) {
-      threads.emplace_back(
-          [this, &updateNeuron, &current_index, learningRate]() {
-            while (true) {
-              size_t index = current_index.fetch_add(1);
-              if (index >= neurons.size()) {
-                break;
-              }
-              updateNeuron(neurons[index], previousLayer, learningRate);
-            }
-          });
-    }
-    for (auto &thread : threads) {
-      thread.join();
-    }
+      // Get the error of current neuron, mult by the learningRate
+      const cv::Vec4f learningRateError =
+          errors.at<cv::Vec4f>(x, y) * learningRate;
 
-  } else {
-    for (auto &n : neurons) {
-      updateNeuron(n, previousLayer, learningRate);
+      // Create a matrix with dimensions of neuron weights
+      // and previous learningRateError
+      cv::Mat learningRateErrorMat(neuron.weights.size(), neuron.weights.type(),
+                                   learningRateError);
+
+      // Update neuron weights that are connections weights with previous layers
+      neuron.weights -= previousLayer->values.mul(learningRateErrorMat);
+
+      // Update weights based on neighboring neurons
+      for (NeuronConnection &conn : neuron.neighbors) {
+        conn.weight -=
+            values.at<cv::Vec4f>(conn.neuron->index_x, conn.neuron->index_y)
+                .mul(learningRateError);
+      }
     }
   }
 }

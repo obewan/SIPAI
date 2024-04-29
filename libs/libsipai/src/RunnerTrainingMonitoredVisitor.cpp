@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <exception>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 
@@ -87,7 +88,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
         break;
       }
 
-      logTrainingProgress(epoch, trainingLoss, validationLoss);
+      logTrainingProgress(epoch, trainingLoss, validationLoss,
+                          previousTrainingLoss, previousValidationLoss);
 
       hasLastEpochBeenSaved = false;
       epoch++;
@@ -110,6 +112,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       previousValidationLoss = validationLoss;
 
       if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
+        // TODO: an option to save the best validation rate network (if not
+        // saved)
         saveNetwork(hasLastEpochBeenSaved);
       }
     }
@@ -143,10 +147,20 @@ bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
 }
 
 void RunnerTrainingMonitoredVisitor::logTrainingProgress(
-    int epoch, float trainingLoss, float validationLoss) const {
-  SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
-                         ", Train Loss: ", trainingLoss * 100.0f,
-                         "%, Validation Loss: ", validationLoss * 100.0f, "%");
+    const int &epoch, const float &trainingLoss, const float &validationLoss,
+    const float &previousTrainingLoss,
+    const float &previousValidationLoss) const {
+  std::stringstream delta;
+  if (epoch > 0) {
+    float dtl = trainingLoss - previousTrainingLoss;
+    float dvl = validationLoss - previousValidationLoss;
+    delta.precision(2);
+    delta << " [" << (dtl > 0 ? "+" : "") << dtl * 100.0f << "%";
+    delta << "," << (dvl > 0 ? "+" : "") << dvl * 100.0f << "%]";
+  }
+  SimpleLogger::LOG_INFO(
+      "Epoch: ", epoch + 1, ", Train Loss: ", trainingLoss * 100.0f,
+      "%, Validation Loss: ", validationLoss * 100.0f, "%", delta.str());
 }
 
 void RunnerTrainingMonitoredVisitor::adaptLearningRate(
@@ -237,8 +251,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
                               inputImage.size(), "...");
     }
     const auto &outputData = manager.network->forwardPropagation(
-        inputPart->data, manager.app_params.enable_vulkan,
-        manager.app_params.enable_parallel);
+        *inputPart, manager.app_params.enable_vulkan);
 
     if (stopTrainingNow) {
       break;
@@ -250,7 +263,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
       if (manager.app_params.verbose_debug) {
         SimpleLogger::LOG_DEBUG("loss computation...");
       }
-      float partLoss = imageHelper_.computeLoss(outputData, targetPart->data);
+      float partLoss = imageHelper_.computeLoss(outputData, *targetPart);
       if (manager.app_params.verbose_debug) {
         SimpleLogger::LOG_DEBUG("part loss: ", partLoss * 100.0f, "%");
       }
@@ -268,9 +281,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
         SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
                                 inputImage.size(), "...");
       }
-      manager.network->backwardPropagation(targetPart->data, error_min,
-                                           error_max,
-                                           manager.app_params.enable_parallel);
+      manager.network->backwardPropagation(*targetPart, error_min, error_max);
       if (stopTrainingNow) {
         break;
       }
@@ -279,8 +290,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
         SimpleLogger::LOG_DEBUG("weights update part ", i + 1, "/",
                                 inputImage.size(), "...");
       }
-      manager.network->updateWeights(manager.network_params.learning_rate,
-                                     manager.app_params.enable_parallel);
+      manager.network->updateWeights(manager.network_params.learning_rate);
       if (stopTrainingNow) {
         break;
       }

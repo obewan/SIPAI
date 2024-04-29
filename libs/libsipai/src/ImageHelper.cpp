@@ -1,6 +1,10 @@
 #include "ImageHelper.h"
+#include "Common.h"
 #include "exception/ImageHelperException.h"
+#include <opencv2/core/matx.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <stdexcept>
+#include <string>
 
 using namespace sipai;
 
@@ -10,27 +14,49 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   if (split == 0) {
     throw ImageHelperException("internal exception: split 0.");
   }
-  cv::Mat mat = cv::imread(imagePath, cv::IMREAD_COLOR);
+
+  // Load the image
+  cv::Mat mat =
+      cv::imread(imagePath, cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
   if (mat.empty()) {
     throw ImageHelperException("Could not open or find the image: " +
                                imagePath);
   }
 
+  // Ensure the image is in BGR format
+  if (mat.channels() == 1) {
+    cv::cvtColor(mat, mat, cv::COLOR_GRAY2BGRA);
+  } else if (mat.channels() == 3) {
+    cv::cvtColor(mat, mat, cv::COLOR_RGB2BGRA);
+  } else if (mat.channels() == 4) {
+    cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
+  }
+
+  // If the image has only 3 channels (BGR), create and merge an alpha channel
+  if (mat.channels() == 3) {
+    cv::Mat alphaMat(mat.size(), CV_8UC1, cv::Scalar(255));
+    std::vector<cv::Mat> channels{mat, alphaMat};
+    cv::Mat bgraMat;
+    cv::merge(channels, bgraMat);
+    mat = bgraMat;
+  }
+
+  // Convert to floating-point range [0, 1] with 4 channels
+  mat.convertTo(mat, CV_32FC4, 1.0 / 255.0);
+  if (mat.channels() != 4) {
+    throw std::runtime_error("incorrect image channels");
+  }
+
+  // cv::imshow("Original Image step 3", mat);
+  // cv::waitKey(1000 * 60 * 2);
+
   ImageParts imagesParts;
   auto matParts = splitImage(mat, split, withPadding);
   for (auto &matPart : matParts) {
-    cv::Size s = matPart.size();
-
     if (resize_x > 0 && resize_y > 0) {
       cv::resize(matPart, matPart, cv::Size((int)resize_x, (int)resize_y));
-    } else {
-      resize_x = s.width;
-      resize_y = s.height;
     }
-
-    const auto &data = convertToRGBAVector(matPart);
-    auto image =
-        std::make_unique<Image>(data, resize_x, resize_y, s.width, s.height);
+    auto image = std::make_unique<cv::Mat>(matPart);
     imagesParts.push_back(std::move(image));
   }
 
@@ -44,31 +70,27 @@ ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
                                            size_t resize_x,
                                            size_t resize_y) const {
   ImageParts imagesParts;
-  for (auto &imagePart : targetImage) {
-    auto mat = convertToMat(*imagePart);
+  for (auto &targetPart : targetImage) {
+    // clone of the Target image to the Input image
+    cv::Mat inputPart = targetPart->clone();
 
     // reduce the resolution of the input image
-    cv::Size s = mat.size();
+    cv::Size s = inputPart.size();
     if (reduce_factor != 0) {
       int new_width = (int)(s.width * (1.0f / (float)reduce_factor));
       int new_height = (int)(s.height * (1.0f / (float)reduce_factor));
-      cv::resize(mat, mat, cv::Size(new_width, new_height));
+      if (new_height > 0 && new_height > 0) {
+        cv::resize(inputPart, inputPart, cv::Size(new_width, new_height));
+      }
     }
-    // get the new size if any resize
-    s = mat.size();
 
     // then resize to the layer resolution
     if (resize_x > 0 && resize_y > 0) {
-      cv::resize(mat, mat, cv::Size((int)resize_x, (int)resize_y));
-    } else {
-      resize_x = s.width;
-      resize_y = s.height;
+      cv::resize(inputPart, inputPart, cv::Size((int)resize_x, (int)resize_y));
     }
 
     // finally convert back to Image
-    const auto &data = convertToRGBAVector(mat);
-    auto image =
-        std::make_unique<Image>(data, resize_x, resize_y, s.width, s.height);
+    auto image = std::make_unique<cv::Mat>(inputPart);
     imagesParts.push_back(std::move(image));
   }
 
@@ -81,7 +103,13 @@ std::vector<cv::Mat> ImageHelper::splitImage(const cv::Mat &inputImage,
   if (split == 0) {
     throw ImageHelperException("internal exception: split 0.");
   }
+
   std::vector<cv::Mat> outputImages;
+
+  if (split == 1) {
+    outputImages.push_back(inputImage);
+    return outputImages;
+  }
 
   // Calculate the size of each part in pixels
   int partSizeX = (int)((inputImage.cols + split - 1) / split);
@@ -126,23 +154,45 @@ void ImageHelper::saveImage(const std::string &imagePath,
     throw ImageHelperException("internal exception: split 0.");
   }
   try {
-    std::vector<cv::Mat> mats(imageParts.size());
-    std::transform(imageParts.begin(), imageParts.end(), mats.begin(),
-                   [&](const std::unique_ptr<Image> &part) {
-                     return convertToMat(*part);
-                   });
-    auto mat = joinImages(mats, (int)split, (int)split);
+
+    auto mat = joinImages(imageParts, (int)split, (int)split);
+
+    if (mat.empty()) {
+      throw ImageHelperException("Image data is empty.");
+    }
 
     if (resize_x > 0 && resize_y > 0) {
       cv::resize(mat, mat, cv::Size((int)resize_x, (int)resize_y));
     }
-    cv::imwrite(imagePath, mat);
+
+    // convert back the [0,1] float range image to 255 pixel values
+    // TODO: check the original image rtype, CV_8U used temporary
+    mat.convertTo(mat, CV_8U, 255.0);
+
+    // TODO: check the original file channel, and use RGBA if it had a proper
+    // one, like cv::cvtColor(mat, mat, cv::COLOR_BGRA2RGBA);
+    cv::cvtColor(mat, mat, cv::COLOR_BGRA2RGB); // will reduce to 3 channels
+
+    if (mat.empty()) {
+      throw ImageHelperException("Image data is empty.");
+    }
+
+    // write the image
+    // std::vector<int> params;
+    // params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+    // params.push_back(9); // Compression level
+    // if (!cv::imwrite(imagePath, mat, params)) {
+    if (!cv::imwrite(imagePath, mat)) {
+      throw ImageHelperException("Error saving image: " + imagePath);
+    }
+  } catch (ImageHelperException &ihe) {
+    throw ihe;
   } catch (std::exception &ex) {
     throw ImageHelperException(ex.what());
   }
 }
 
-cv::Mat ImageHelper::joinImages(const std::vector<cv::Mat> &images, int splitsX,
+cv::Mat ImageHelper::joinImages(const ImageParts &images, int splitsX,
                                 int splitsY) const {
   if (splitsX == 0 || splitsY == 0) {
     throw ImageHelperException("internal exception: split 0.");
@@ -151,7 +201,7 @@ cv::Mat ImageHelper::joinImages(const std::vector<cv::Mat> &images, int splitsX,
   for (int i = 0; i < splitsY; ++i) {
     std::vector<cv::Mat> row;
     for (int j = 0; j < splitsX; ++j) {
-      row.push_back(images[i * splitsX + j]);
+      row.push_back(*images[i * splitsX + j]);
     }
     cv::Mat rowImage;
     cv::hconcat(row, rowImage);
@@ -162,48 +212,27 @@ cv::Mat ImageHelper::joinImages(const std::vector<cv::Mat> &images, int splitsX,
   return result;
 }
 
-std::vector<RGBA> ImageHelper::convertToRGBAVector(const cv::Mat &mat) const {
-  const int channels = mat.channels();
-  const int rows = mat.rows;
-  const int cols = mat.cols;
-  const int totalPixels = rows * cols;
-
-  std::vector<RGBA> rgbaValues(totalPixels);
-  auto pixelIterator = mat.begin<cv::Vec4b>();
-
-  std::transform(pixelIterator, pixelIterator + totalPixels, rgbaValues.begin(),
-                 [&channels](const cv::Vec4b &pixel) {
-                   return RGBA(pixel, channels == 4);
-                 });
-
-  return rgbaValues;
-}
-
-cv::Mat ImageHelper::convertToMat(const Image &image) const {
-  cv::Mat dest((int)image.size_y, (int)image.size_x, CV_8UC4);
-  auto destPtr = dest.begin<cv::Vec4b>();
-
-  std::transform(image.data.begin(), image.data.end(), destPtr,
-                 [](const RGBA &rgba) { return rgba.toVec4b(); });
-
-  return dest;
-}
-
-float ImageHelper::computeLoss(const std::vector<RGBA> &outputData,
-                               const std::vector<RGBA> &targetData) const {
-  if (outputData.size() != targetData.size() || outputData.size() == 0 ||
-      targetData.size() == 0) {
-    throw std::invalid_argument("Output and target images must have the same "
-                                "size, or size is null.");
+float ImageHelper::computeLoss(const cv::Mat &outputData,
+                               const cv::Mat &targetData) const {
+  if (outputData.total() != targetData.total() || outputData.total() == 0 ||
+      targetData.total() == 0) {
+    throw std::invalid_argument("Output and target images have different "
+                                "sizes, or some are empty.");
   }
-  // Using the mean squared error (MSE) loss algorithm
-  const auto squaredDifferences = [](const RGBA &a, const RGBA &b) {
-    return (a - b).pow(2).sum();
-  };
 
-  const float totalLoss = std::inner_product(
-      outputData.begin(), outputData.end(), targetData.begin(), 0.0f,
-      std::plus<>(), squaredDifferences);
+  // Calculate element-wise squared differences
+  cv::Mat diff;
+  cv::absdiff(outputData, targetData, diff);
+  diff = diff.mul(diff);
 
-  return totalLoss / (outputData.size() * 4);
+  // Compute the sum of squared differences
+  cv::Scalar sumSquaredDiff = cv::sum(diff);
+
+  // Compute the number of pixels
+  int numPixels = outputData.total();
+
+  // Calculate the MSE loss
+  double mseLoss = sumSquaredDiff.val[0] / static_cast<double>(numPixels);
+
+  return mseLoss;
 }
