@@ -25,11 +25,11 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
 
   // Ensure the image is in BGR format
   if (mat.channels() == 1) {
-    cv::cvtColor(mat, mat, cv::COLOR_GRAY2BGR);
+    cv::cvtColor(mat, mat, cv::COLOR_GRAY2BGRA);
   } else if (mat.channels() == 3) {
-    cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
+    cv::cvtColor(mat, mat, cv::COLOR_RGB2BGRA);
   } else if (mat.channels() == 4) {
-    cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGR);
+    cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
   }
 
   // If the image has only 3 channels (BGR), create and merge an alpha channel
@@ -171,7 +171,7 @@ void ImageHelper::saveImage(const std::string &imagePath,
 
     // TODO: check the original file channel, and use RGBA if it had a proper
     // one, like cv::cvtColor(mat, mat, cv::COLOR_BGRA2RGBA);
-    cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB); // will reduce to 3 channels
+    cv::cvtColor(mat, mat, cv::COLOR_BGRA2RGB); // will reduce to 3 channels
 
     if (mat.empty()) {
       throw ImageHelperException("Image data is empty.");

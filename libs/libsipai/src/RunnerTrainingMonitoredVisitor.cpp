@@ -112,6 +112,8 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       previousValidationLoss = validationLoss;
 
       if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
+        // TODO: an option to save the best validation rate network (if not
+        // saved)
         saveNetwork(hasLastEpochBeenSaved);
       }
     }
