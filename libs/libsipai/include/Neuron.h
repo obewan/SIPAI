@@ -64,7 +64,6 @@ public:
   }
 
   std::string toStringCsv(size_t max_weights) const {
-    // TODO: use Google Protocol Buffer serialization/deserialization instead
     std::ostringstream oss;
     for (int i = 0; i < weights.rows; i++) {
       for (int j = 0; j < weights.cols; j++) {

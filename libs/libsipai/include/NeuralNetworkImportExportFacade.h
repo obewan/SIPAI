@@ -13,6 +13,8 @@
 #include "NeuralNetworkImportExportCSV.h"
 #include "NeuralNetworkImportExportJSON.h"
 #include <memory>
+
+// TODO: find a better serialization framework for big data
 namespace sipai {
 class NeuralNetworkImportExportFacade {
 public:
