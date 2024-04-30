@@ -9,7 +9,9 @@
  */
 
 #pragma once
+#include "Image.h"
 #include <map>
+#include <memory>
 #include <opencv2/opencv.hpp>
 #include <regex> // for std::regex and std::regex_replace
 #include <string>
@@ -17,7 +19,7 @@
 #include <vector>
 
 namespace sipai {
-using ImageParts = std::vector<std::unique_ptr<cv::Mat>>;
+using ImageParts = std::vector<std::unique_ptr<Image>>;
 using ImagePartsPair = std::pair<ImageParts, ImageParts>;
 using ImagePathPair = std::pair<std::string, std::string>;
 using ImagePartsPairList = std::vector<std::pair<ImageParts, ImageParts>>;

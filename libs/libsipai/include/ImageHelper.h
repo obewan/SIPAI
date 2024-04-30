@@ -79,9 +79,9 @@ public:
    * @param images OpenCV image parts
    * @param splitsX
    * @param splitsY
-   * @return cv::Mat
+   * @return Image
    */
-  cv::Mat joinImages(const ImageParts &images, int splitsX, int splitsY) const;
+  Image joinImages(const ImageParts &images, int splitsX, int splitsY) const;
 
   /**
    * @brief Computes the loss between the output image
