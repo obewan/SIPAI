@@ -1,3 +1,4 @@
+#include "TrainingDataFactory.h"
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "AppParams.h"
 #include "Common.h"
@@ -142,6 +143,7 @@ TEST_CASE("Testing the Manager class") {
   SUBCASE("Testing run data file") {
     auto &manager = Manager::getInstance();
     manager.network.reset();
+    TrainingDataFactory::getInstance().clear();
 
     auto &ap = manager.app_params;
     ap.training_data_file = "images-test1.csv";
@@ -151,6 +153,7 @@ TEST_CASE("Testing the Manager class") {
     ap.network_to_export = "tempNetwork.json";
     ap.network_to_import = "";
     ap.enable_vulkan = false;
+    ap.random_loading = true;
     std::string network_csv = "tempNetwork.csv";
 
     auto &np = manager.network_params;
@@ -169,17 +172,22 @@ TEST_CASE("Testing the Manager class") {
       std::filesystem::remove(network_csv);
     }
     CHECK(std::filesystem::exists(ap.training_data_file));
+    CHECK_FALSE(TrainingDataFactory::getInstance().isLoaded());
     CHECK_NOTHROW(manager.run());
+    CHECK(TrainingDataFactory::getInstance().isLoaded());
+    CHECK_FALSE(TrainingDataFactory::getInstance().isDataFolder());
     CHECK(std::filesystem::exists(ap.network_to_export));
     CHECK(std::filesystem::exists(network_csv));
     std::filesystem::remove(ap.network_to_export);
     std::filesystem::remove(network_csv);
     manager.network.reset();
+    TrainingDataFactory::getInstance().clear();
   }
 
   SUBCASE("Testing run data folder") {
     auto &manager = Manager::getInstance();
     manager.network.reset();
+    TrainingDataFactory::getInstance().clear();
 
     auto &ap = manager.app_params;
     ap.training_data_file = "";
@@ -189,6 +197,7 @@ TEST_CASE("Testing the Manager class") {
     ap.network_to_export = "tempNetwork.json";
     ap.network_to_import = "";
     ap.enable_vulkan = false;
+    ap.random_loading = true;
     std::string network_csv = "tempNetwork.csv";
 
     auto &np = manager.network_params;
@@ -207,11 +216,15 @@ TEST_CASE("Testing the Manager class") {
       std::filesystem::remove(network_csv);
     }
     CHECK(std::filesystem::exists(ap.training_data_folder));
+    CHECK_FALSE(TrainingDataFactory::getInstance().isLoaded());
     CHECK_NOTHROW(manager.run());
+    CHECK(TrainingDataFactory::getInstance().isLoaded());
+    CHECK(TrainingDataFactory::getInstance().isDataFolder());
     CHECK(std::filesystem::exists(ap.network_to_export));
     CHECK(std::filesystem::exists(network_csv));
     std::filesystem::remove(ap.network_to_export);
     std::filesystem::remove(network_csv);
     manager.network.reset();
+    TrainingDataFactory::getInstance().clear();
   }
 }

@@ -5,6 +5,7 @@
 #include "exception/ImportExportException.h"
 #include "exception/ManagerException.h"
 #include "exception/NeuralNetworkException.h"
+#include "exception/TrainingDataFactoryException.h"
 
 using namespace sipai;
 
@@ -22,5 +23,7 @@ TEST_CASE("Testing exceptions") {
                             ManagerException, "test");
     CHECK_THROWS_AS_MESSAGE({ throw NeuralNetworkException("test"); },
                             NeuralNetworkException, "test");
+    CHECK_THROWS_AS_MESSAGE({ throw TrainingDataFactoryException("test"); },
+                            TrainingDataFactoryException, "test");
   }
 }

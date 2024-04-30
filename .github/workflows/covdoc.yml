@@ -6,7 +6,14 @@ on:
 
 jobs:
   build:
+    name: Build
+    defaults:
+      run:
+        working-directory: ./sipai-github-actions-docker
+
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/obewan/sipai-env
 
     permissions:
       contents: write
@@ -16,72 +23,56 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen g++-12 lcov libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools cmake gawk
-          echo "CC=gcc-12" >> $GITHUB_ENV
-          echo "CXX=g++-12" >> $GITHUB_ENV
-
-      - name: Cache OpenCV
-        id: opencv-cache
-        uses: actions/cache@v2
-        with:
-          path: ./opencv-install
-          key: ${{ runner.os }}-opencv-cache
-
-      - name: Install OpenCV
-        uses: rayandrews/with-opencv-action@v1
-        with:
-          dir: ./opencv-install
-          install-deps: false
-          cached: ${{ steps.opencv-cache.outputs.cache-hit }}
-          opencv-version: "4.6.0"
-
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        env:
+          CXX: g++-12
+        working-directory: ${{github.workspace}}
 
       - name: Build
-        run: cmake --build ${{github.workspace}}/build --config Debug -- -j 2
+        run: cmake --build build --config Debug -- -j 2
+        working-directory: ${{github.workspace}}
 
       - name: Run unit tests
-        working-directory: ${{github.workspace}}/build/test/doctests
         run: ./tester
+        working-directory: ${{github.workspace}}/build/test/doctests
 
       - name: Run code coverage
         run: |
-          mkdir -p ${{github.workspace}}/coverage
-          mkdir -p ${{github.workspace}}/coverage/html
-          lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
-          lcov --gcov-tool /usr/bin/gcov-12 --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
+          mkdir -p coverage
+          mkdir -p coverage/html
+          lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file coverage/lcov.info
+          lcov --gcov-tool /usr/bin/gcov-12 --remove coverage/lcov.info --output-file coverage/lcov.info \
           '/usr/include/*' '/usr/lib/*' \
-          '${{github.workspace}}/libs/libcsvparser/*' \
-          '${{github.workspace}}/libs/libjson/*' \
-          '${{github.workspace}}/libs/libsipai/src/VulkanController.cpp' \
-          '${{github.workspace}}/libs/libsipai/glsl/*' \
-          '${{github.workspace}}/test/*'
-          lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info
-          genhtml ${{github.workspace}}/coverage/lcov.info --output-directory ${{github.workspace}}/coverage/html
+          '*/libs/libcsvparser/*' \
+          '*/libs/libjson/*' \
+          '*/libs/libsipai/src/VulkanController.cpp' \          
+          '*/test/*'
+          lcov --gcov-tool /usr/bin/gcov-12 --summary coverage/lcov.info
+          genhtml coverage/lcov.info --output-directory coverage/html
+        working-directory: ${{github.workspace}}
 
       - name: Create JSON file for badge
         run: |
-          coverage=$(lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info 2>&1 | grep 'lines......:' | awk -F ' ' '{print $2}' | sed 's/%//')
+          coverage=$(lcov --gcov-tool /usr/bin/gcov-12 --summary coverage/lcov.info 2>&1 | grep 'lines......:' | awk -F ' ' '{print $2}' | sed 's/%//')
           echo -e "{\"coverage\": \"$coverage\"}" > coverage/coverage.json
+        working-directory: ${{github.workspace}}
 
       - name: Generate Documentation
         run: |
-          cd ${{github.workspace}}/doc
           doxygen Doxyfile
+        working-directory: ${{github.workspace}}/doc
 
       - name: Prepare files for deployment
         run: |
           mkdir deploy
-          cp -r ${{github.workspace}}/coverage ${{github.workspace}}/deploy/coverage
-          cp -r ${{github.workspace}}/doc/html ${{github.workspace}}/deploy/api
+          cp -r coverage deploy/coverage
+          cp -r doc/html deploy/api
+        working-directory: ${{github.workspace}}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{github.workspace}}/deploy
+          publish_dir: deploy
           destination_dir: .
