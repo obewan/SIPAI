@@ -83,7 +83,7 @@ inline auto tanhFunc = [](const cv::Vec4f &rgba) {
 
 inline auto tanhDerivative = [](const cv::Vec4f &rgba) {
   cv::Vec4f tanhValue = tanhFunc(rgba);
-  return cv::Vec4f(1.0f, 1.0f, 1.0f, 1.0f) - tanhValue.mul(tanhValue);
+  return cv::Vec4f::all(1.0f) - tanhValue.mul(tanhValue);
 };
 
 /**

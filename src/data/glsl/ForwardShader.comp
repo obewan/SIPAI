@@ -16,85 +16,135 @@ const int ReLU = 3;
 const int Sigmoid = 4;
 const int Tanh = 5;
 
-struct RGBA {
-    vec4 value;
-};
-
 struct Neuron {
-    RGBA value;
+    uint index_x;
+    uint index_y;
     uint weightsIndex;
+    uint neighborsIndex;
+    uint neighborsSize;
 };
 
-// will contains previous layer neurons here
-layout (std430, binding = 0) buffer InputBuffer {
-    Neuron neurons[];
-} inputBuffer;
-
-// will contains current layer neurons updated values
-layout (std430, binding = 1) buffer OutputBuffer {
-    vec4 values[];
-} outputBuffer;
-
+// Shader Storage Buffer Objects (SSBOs)
 // will contains current layer neurons
-layout (std430, binding = 2) buffer CurrentBuffer {
+layout (std430, binding = 0)  buffer readonly CurrentLayer {
     Neuron neurons[];
-} currentBuffer;
+} currentLayer;
 
-// will contains current layer activation function
-layout (std430, binding = 3) buffer ActivationFunction {
-    int function;
-    float alpha;
-} activationFunction;
+// will contains current layer values
+// *** not needed to be mapped in this shader *** 
+layout (std430, binding = 1)  buffer readonly CurrentLayerValues {
+    vec4 values[];
+} currentLayerValues;
 
-// will contains current layer flatten neurons weights (indexed)
-layout (std430, binding = 4) buffer Weights {
-    RGBA values[];
-} weights;
+// will contains current layer errors 
+// *** not needed to be mapped in this shader *** 
+layout (std430, binding = 2)  buffer readonly CurrentLayerErrors {
+    vec4 errors[];
+} currentLayerErrors;
+
+// will contains current layer neurons neighbors indexes (multi, indexed)
+// *** not needed to be mapped in this shader *** 
+layout (std430, binding = 3) buffer readonly  CurrentNeighborsIndexes {
+    uint index[];
+} currentNeighborsIndexes;
+
+// will contains current layer neurons neighbors weights (multi, indexed)
+// *** not needed to be mapped in this shader *** 
+layout (std430, binding = 4) buffer readonly  CurrentNeighborsWeights {
+    vec4 weights[];
+} currentNeighborsWeights;
+
+// will contains previous layer neurons
+layout (std430, binding = 5) buffer readonly PreviousLayer {
+    Neuron neurons[];
+} previousLayer;
+
+// will contains previous layer values
+layout (std430, binding = 6) buffer readonly PreviousLayerValues {
+    vec4 values[];
+} previousLayerValues;
+
+// will contains current layer neurons weights (multi, indexed)
+layout (std430, binding = 7) buffer readonly CurrentLayerWeights {
+    vec4 weights[];
+} currentLayerWeights;
+
+// will contains some parameters
+layout (std430, binding = 8) buffer readonly Parameters {
+    float error_min;
+    float error_max;
+    float activationAlpha;
+    uint currentLayerSizeX;
+    uint currentLayerSizeY;
+    uint previousLayerSizeX;
+    uint previousLayerSizeY;
+    uint nextLayerSizeX;
+    uint nextLayerSizeY;
+    uint activationFunction;
+} params;
+
+// will contains current layer values (output)
+layout (std430, binding = 9) buffer writeonly CurrentLayerNewValues {
+    vec4 values[];
+} currentLayerNewValues;
+
 
 vec4 activateFunction(vec4 value){
-   switch (activationFunction.function) {
+    bvec4 mask;
+    switch (params.activationFunction) {
         case ELU:        
-            bvec4 mask = greaterThanEqual(value, vec4(0.0));
-            value = mix(vec4(activationFunction.alpha) * (exp(value) - vec4(1.0)), value, mask);
-            value = clamp(value, vec4(0.0), vec4(1.0));
+            mask = greaterThanEqual(value, vec4(0.0));
+            value = mix(vec4(params.activationAlpha) * (exp(value) - vec4(1.0)), value, mask);
+            value = clamp(value, 0.0, 1.0);
         break;
         case LReLU: 
-            value = clamp(0.01*value, vec4(0.0), vec4(1.0));
+            value = clamp(0.01*value, 0.0, 1.0);
         break;
         case PReLU:
-            value = max(activationFunction.alpha * value, value);
-            value = clamp(value, vec4(0.0), vec4(1.0));
+            value = max(params.activationAlpha * value, value);
+            value = clamp(value, 0.0, 1.0);
         break;
         case ReLU: 
-            value = clamp(value, vec4(0.0), vec4(1.0));            
+            value = clamp(value, 0.0, 1.0);            
         break;
         case Sigmoid:
             value = 1.0 / (1.0 + exp(-value));
-            value = clamp(value, vec4(0.0), vec4(1.0));
+            value = clamp(value, 0.0, 1.0);
         break;
         case Tanh: // shifted tanh [-1,1] to [0,1]
             value = (tanh(value)/2.0) + 0.5;
         break;
-        default:
-            value = clamp(value, vec4(0.0), vec4(1.0));            
+        default:            
         break;
     }
     return value;
 }
 
-void main() {
-    // Get the index of the neuron (one workgroup thread per neuron)
-    uint index = gl_GlobalInvocationID.x;    
-    vec4 value = vec4(0.0);
-    // Get the index of the neuron weights in the flatten all neurons weights vector of current layer
-    uint weightsIndex = currentBuffer.neurons[index].weightsIndex;
-
-    // Calculate forward propagation using previous layer (inputBuffer) and weights of those connections with the neuron
-    for (uint i = 0; i < inputBuffer.neurons.length(); i++) {
-        value += (inputBuffer.neurons[i].value.value * weights.values[weightsIndex + i].value);
+vec4 computeForward(Neuron currentNeuron){
+    vec4 result = vec4(0.0);
+    for(uint previousNeuronIndex = 0; 
+    previousNeuronIndex < (params.previousLayerSizeX * params.previousLayerSizeY);
+    previousNeuronIndex++){
+        Neuron previousNeuron = previousLayer.neurons[previousNeuronIndex];
+        vec4 weight = currentLayerWeights.weights[currentNeuron.weightsIndex + previousNeuronIndex];
+        vec4 previousValue = previousLayerValues.values[previousNeuron.index_x * params.previousLayerSizeY + previousNeuron.index_y];
+        vec4 product = previousValue * weight;
+        result += product;
     }
-    value = activateFunction(value); 
+    vec4 activation = activateFunction(result);
+    return activation;
+}
 
-    // Put the results in the outputBuffer
-    outputBuffer.values[index] = value;    
+void main() {    
+    // Get the index of the neuron (one workgroup thread per neuron)
+    uint index_x = gl_GlobalInvocationID.x;
+    uint index_y = gl_GlobalInvocationID.y; 
+
+    Neuron currentNeuron = currentLayer.neurons[index_x * params.currentLayerSizeY + index_y];
+    
+    // Compute new value
+    vec4 value = computeForward(currentNeuron); 
+
+    // Put the results in the output buffer
+    currentLayerNewValues.values[index_x * params.currentLayerSizeY + index_y] = value;    
 }
