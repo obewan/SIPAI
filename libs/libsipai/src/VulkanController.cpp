@@ -155,7 +155,11 @@ VulkanController::_loadShader(const std::string &path) {
   }
   // Use glslangValidator to compile the GLSL shader to SPIR-V
   std::stringstream sst;
+#ifdef _WIN32
+  sst << "glslangValidator.exe -V " << path << " -o shader.spv";
+#else
   sst << "glslangValidator -V " << path << " -o shader.spv";
+#endif
   system(sst.str().c_str());
 
   // Load the compiled SPIR-V into a std::vector<uint32_t>

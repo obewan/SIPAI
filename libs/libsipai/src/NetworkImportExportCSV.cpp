@@ -91,7 +91,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
 
     if (!neighboors_count) {
       // add the neuron weights
-      cv::Mat weights = cv::Mat(weights_cols, weights_rows, CV_32FC4);
+      cv::Mat weights = cv::Mat((int)weights_cols, (int)weights_rows, CV_32FC4);
       size_t i_cols = 0;
       size_t i_rows = 0;
       for (size_t pos = 6; pos + 4 < fields.size();
@@ -102,7 +102,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
         auto b = fields[pos + 2];
         auto a = fields[pos + 3];
         if (r && g && b && a) {
-          weights.at<cv::Vec4f>(i_cols, i_rows) = cv::Vec4f(*r, *g, *b, *a);
+          weights.at<cv::Vec4f>((int)i_cols, (int)i_rows) = cv::Vec4f(*r, *g, *b, *a);
         }
         i_cols++;
         if (i_cols >= weights_cols) {

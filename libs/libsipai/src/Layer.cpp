@@ -24,9 +24,9 @@ void Layer::forwardPropagation(const bool &enable_vulkan) {
       // and current neuron weights
       cv::Mat dotProduct = previousLayer->values.mul(currentNeuron.weights);
       // Convert the result matrix to a single value by summing all elements
-      float result = cv::sum(dotProduct)[0];
+      float result = (float)cv::sum(dotProduct)[0];
       // Update the neuron value using the activation function
-      values.at<cv::Vec4f>(x, y) = activationFunction(result);
+      values.at<cv::Vec4f>((int)x, (int)y) = activationFunction(result);
     }
   }
 }
@@ -44,8 +44,8 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
   //    return;
   //  }
 
-  for (size_t y = 0; y < neurons.size(); ++y) {
-    for (size_t x = 0; x < neurons[y].size(); ++x) {
+  for (int y = 0; y < (int)neurons.size(); ++y) {
+    for (int x = 0; x < (int)neurons[y].size(); ++x) {
       Neuron &currentNeuron = neurons[y][x];
       cv::Vec4f error(0.0f);
       const cv::Mat nextLayerErrors = nextLayer->errors;
@@ -54,7 +54,7 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
       for (const auto &nextLayerNeuronRow : nextLayer->neurons) {
         for (const auto &nextLayerNeuron : nextLayerNeuronRow) {
           const cv::Vec4f currentError = nextLayerErrors.at<cv::Vec4f>(
-              nextLayerNeuron.index_x, nextLayerNeuron.index_y);
+              (int)nextLayerNeuron.index_x, (int)nextLayerNeuron.index_y);
           const cv::Vec4f weight = nextLayerNeuron.weights.at<cv::Vec4f>(x, y);
           error += currentError.mul(weight);
         }
@@ -62,7 +62,7 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
       // Consider errors of adjacent neurons
       for (const NeuronConnection &conn : currentNeuron.neighbors) {
         error += conn.weight.mul(
-            errors.at<cv::Vec4f>(conn.neuron->index_x, conn.neuron->index_y));
+            errors.at<cv::Vec4f>((int)conn.neuron->index_x, (int)conn.neuron->index_y));
       }
       // Use the derivative of the activation function
       const cv::Vec4f activationDerivative =
@@ -80,8 +80,8 @@ void Layer::updateWeights(float learningRate) {
     return;
   }
 
-  for (size_t y = 0; y < neurons.size(); ++y) {
-    for (size_t x = 0; x < neurons[y].size(); ++x) {
+  for (int y = 0; y < (int)neurons.size(); ++y) {
+    for (int x = 0; x < (int)neurons[y].size(); ++x) {
       Neuron &neuron = neurons[y][x];
 
       // Get the error of current neuron, mult by the learningRate
@@ -99,7 +99,7 @@ void Layer::updateWeights(float learningRate) {
       // Update weights based on neighboring neurons
       for (NeuronConnection &conn : neuron.neighbors) {
         conn.weight -=
-            values.at<cv::Vec4f>(conn.neuron->index_x, conn.neuron->index_y)
+            values.at<cv::Vec4f>((int)conn.neuron->index_x, (int)conn.neuron->index_y)
                 .mul(learningRateError);
       }
     }

@@ -47,8 +47,8 @@ public:
         neurons[row][col].index_y = row;
       }
     }
-    values = cv::Mat(size_x, size_y, CV_32FC4);
-    errors = cv::Mat(size_x, size_y, CV_32FC4);
+    values = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
+    errors = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
   }
   virtual ~Layer() = default;
 
@@ -129,8 +129,8 @@ public:
     return neurons[row][col];
   }
 
-  EActivationFunction eactivationFunction;
-  float activationFunctionAlpha;
+  EActivationFunction eactivationFunction = EActivationFunction::ReLU;
+  float activationFunctionAlpha = 0.0f;
   std::function<cv::Vec4f(cv::Vec4f)> activationFunction;
   std::function<cv::Vec4f(cv::Vec4f)> activationFunctionDerivative;
 

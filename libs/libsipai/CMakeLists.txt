@@ -30,6 +30,10 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(TBB REQUIRED)
 
 # Add Vulkan lib
+if(WIN32)
+# Specify the Vulkan SDK directory
+set(ENV{VULKAN_SDK} "C:/VulkanSDK/1.3.280.0")
+endif()
 find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 

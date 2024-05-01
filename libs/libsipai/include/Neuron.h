@@ -57,7 +57,7 @@ public:
    * @param size_y The new size in Y of the weights vector.
    */
   void initWeights(size_t size_x, size_t size_y) {
-    weights = cv::Mat(size_x, size_y, CV_32FC4);
+    weights = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
 
     // Random initialization
     cv::randn(weights, cv::Vec4f::all(0), cv::Vec4f::all(1));

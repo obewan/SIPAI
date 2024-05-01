@@ -79,7 +79,7 @@ inline cv::Vec4f clamp4f(const cv::Vec4f &value,
                          const cv::Vec4f &value_min = cv::Vec4f::all(0.0),
                          const cv::Vec4f &value_max = cv::Vec4f::all(1.0)) {
   cv::Vec4f result;
-  for (size_t i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     result[i] = std::clamp(value[i], value_min[i], value_max[i]);
   }
   return result;
