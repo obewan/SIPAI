@@ -32,82 +32,74 @@ layout (std430, binding = 0)  coherent buffer readonly CurrentLayer {
     Neuron neurons[];
 } currentLayer;
 
-
 // will contains current layer values
 layout (std430, binding = 1)  coherent buffer readonly CurrentLayerValues {
     vec4 values[];
 } currentLayerValues;
 
-// will contains current layer errors (input)
+// will contains current layer errors 
 layout (std430, binding = 2)  coherent buffer readonly CurrentLayerErrors {
     vec4 errors[];
 } currentLayerErrors;
 
-// will contains current layer errors (output)
-layout (std430, binding = 3)  coherent buffer writeonly CurrentLayerNewErrors {
-    vec4 errors[];
-} currentLayerNewErrors;
-
 // will contains current layer neurons neighbors indexes (multi, indexed)
-layout (std430, binding = 4) coherent buffer readonly  CurrentNeighborsIndexes {
+layout (std430, binding = 3) coherent buffer readonly  CurrentNeighborsIndexes {
     uint index[];
 } currentNeightborsIndexes;
 
 // will contains current layer neurons neighbors weights (multi, indexed)
-layout (std430, binding = 5) coherent buffer readonly  CurrentNeighborsWeights {
+layout (std430, binding = 4) coherent buffer readonly  CurrentNeighborsWeights {
     vec4 weights[];
 } currentNeightborsWeights;
 
 // will contains next layer neurons
-layout (std430, binding = 6) coherent buffer readonly NextLayer {
+layout (std430, binding = 5) coherent buffer readonly NextLayer {
     Neuron neurons[];
 } nextLayer;
 
 // will contains next layer errors
-layout (std430, binding = 7) coherent buffer readonly NextLayerErrors {
+layout (std430, binding = 6) coherent buffer readonly NextLayerErrors {
     vec4 errors[];
 } nextLayerErrors;
 
 // will contains next layer neurons weights (multi, indexed)
-layout (std430, binding = 8) coherent buffer readonly NextLayerWeights {
+layout (std430, binding = 7) coherent buffer readonly NextLayerWeights {
     vec4 weights[];
 } nextLayerWeights;
 
-// will contains current layer activation function
-layout (std430, binding = 9) coherent buffer readonly ActivationFunction {
-    int function;
-    float alpha;
-} activationFunction;
-
-// will contains error min and max parameters
-layout (std430, binding = 10) coherent buffer readonly ErrorMinMax {
+// will contains some parameters
+layout (std430, binding = 8) coherent buffer readonly Parameters {
     float error_min;
     float error_max;
-} errorMinMax;
-
-// will contains layers additional infos
-layout (std430, binding = 11) coherent buffer readonly LayersInfos {
+    float activationAlpha;
     uint currentLayerSizeX;
     uint currentLayerSizeY;
+    uint previousLayerSizeX;
+    uint previousLayerSizeY;
     uint nextLayerSizeX;
     uint nextLayerSizeY;
-} layersInfos;
+    uint activationFunction;
+} params;
 
+// will contains current layer errors (output)
+layout (std430, binding = 9)  coherent buffer writeonly CurrentLayerNewErrors {
+    vec4 errors[];
+} currentLayerNewErrors;
 
 
 vec4 derivativeFunction(vec4 value){
     bvec4 mask;
-    switch (activationFunction.function) {
+    switch (params.activationFunction) {
         case ELU:          
             mask = greaterThanEqual(value, vec4(0.0));
-            value = mix(vec4(1.0), activationFunction.alpha * exp(value), mask);       
+            value = mix(vec4(1.0), params.activationAlpha * exp(value), mask);       
         break;
         case LReLU:    
             value = clamp(value, 0.01, 1.0);         
         break;
         case PReLU:            
             mask = greaterThanEqual(value, vec4(0.0));
-            value = mix(vec4(1.0), vec4(activationFunction.alpha), mask);       
+            value = mix(vec4(1.0), vec4(params.activationAlpha), mask);       
         break;
         case ReLU:             
             mask = greaterThanEqual(value, vec4(0.0));
@@ -131,11 +123,11 @@ vec4 computeError(Neuron currentNeuron) {
     vec4 error = vec4(0.0);
 
     // Add next layer neurons error ponderated with weights for this neuron
-      for (uint y = 0; y < layersInfos.nextLayerSizeY; ++y) {
-        for (uint x = 0; x < layersInfos.nextLayerSizeX; ++x) {
-            Neuron nextLayerNeuron = nextLayer.neurons[layersInfos.nextLayerSizeX * y + x];
-            vec4 currentError = nextLayerErrors.errors[layersInfos.nextLayerSizeX * y + x];
-            vec4 weight = nextLayerWeights.weights[layersInfos.currentLayerSizeX * y + x];
+      for (uint y = 0; y < params.nextLayerSizeY; ++y) {
+        for (uint x = 0; x < params.nextLayerSizeX; ++x) {
+            Neuron nextLayerNeuron = nextLayer.neurons[params.nextLayerSizeX * y + x];
+            vec4 currentError = nextLayerErrors.errors[params.nextLayerSizeX * y + x];
+            vec4 weight = nextLayerWeights.weights[params.currentLayerSizeX * y + x];
             error += currentError * weight;
         }
     }
@@ -144,14 +136,14 @@ vec4 computeError(Neuron currentNeuron) {
     for (uint i = 0; i < currentNeuron.neighborsSize; ++i) {
         uint neighborIndex = currentNeightborsIndexes.index[currentNeuron.neighborsIndex + i];
         Neuron neighborNeuron = currentLayer.neurons[neighborIndex];
-        vec4 neighborError = currentLayerErrors.errors[neighborNeuron.index_x * layersInfos.currentLayerSizeY + neighborNeuron.index_y];
-        vec4 neighborWeight = currentNeightborsWeights.weights[currentNeuron.weightsIndex * layersInfos.currentLayerSizeY + currentNeuron.index_y];
+        vec4 neighborError = currentLayerErrors.errors[neighborNeuron.index_x * params.currentLayerSizeY + neighborNeuron.index_y];
+        vec4 neighborWeight = currentNeightborsWeights.weights[currentNeuron.weightsIndex * params.currentLayerSizeY + currentNeuron.index_y];
         error += neighborError * neighborWeight;
     }
 
     // Use the derivative of the activation function
     vec4 activationDerivative = derivativeFunction(currentLayerValues.values[currentNeuron.index_x * currentNeuron.index_y]);
-    vec4 clampedError = clamp(activationDerivative * error, errorMinMax.error_min, errorMinMax.error_max);
+    vec4 clampedError = clamp(activationDerivative * error, params.error_min, params.error_max);
 
     return clampedError;
 }
@@ -162,11 +154,11 @@ void main() {
     uint index_x = gl_GlobalInvocationID.x;
     uint index_y = gl_GlobalInvocationID.y; 
         
-    Neuron currentNeuron = currentLayer.neurons[index_x * layersInfos.currentLayerSizeY + index_y];
+    Neuron currentNeuron = currentLayer.neurons[index_x * params.currentLayerSizeY + index_y];
     
     // Compute the error
     vec4 error = computeError(currentNeuron);
 
    // Put the results in the outputBuffer
-    currentLayerNewErrors.errors[index_x * layersInfos.currentLayerSizeY + index_y] = error;   
+    currentLayerNewErrors.errors[index_x * params.currentLayerSizeY + index_y] = error;   
 }
