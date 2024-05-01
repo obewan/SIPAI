@@ -22,8 +22,7 @@ bool TrainingDataFactory::isDataFolder() const {
 ImagePartsPair *TrainingDataFactory::_next(
     std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
     std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
-    std::vector<std::string> &dataTargetPaths,
-    std::atomic<size_t> &currentIndex) {
+    std::vector<std::string> &dataTargetPaths, size_t &currentIndex) {
 
   const auto &manager = Manager::getConstInstance();
   const auto &app_params = manager.app_params;
@@ -185,13 +184,15 @@ void TrainingDataFactory::_splitDataPairPaths(
   for (size_t i = 0; i < data.size(); ++i) {
     if (i < split_index) {
       dataTrainingPaths_.push_back(std::move(data[i]));
+      data.erase(data.begin() + i); // Remove the moved element
     } else {
       dataValidationPaths_.push_back(std::move(data[i]));
+      data.erase(data.begin() + i); // Remove the moved element
     }
+    i--; // Adjust index after erasing to avoid skipping elements
   }
 
-  // clear the data as all its pointers has moved and are nullptr then.
-  data.clear();
+  assert(data.empty()); // Ensure all elements were moved and removed
 }
 
 void TrainingDataFactory::_splitDataTargetPaths(std::vector<std::string> &data,

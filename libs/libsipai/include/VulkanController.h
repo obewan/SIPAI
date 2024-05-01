@@ -183,7 +183,7 @@ private:
   void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
   std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
-  void _computeShader(const NeuronMat &neurons, VkPipeline &pipeline);
+  void _computeShader(const NeuronMat &neurons, VkPipeline pipeline);
 
   void _copyNeuronsToBuffer(const NeuronMat &neurons,
                             VkBufferCreateInfo &bufferInfo, void *&bufferData);
@@ -202,7 +202,7 @@ private:
   void _createDescriptorPool(size_t max_size);
   void _createBuffers(size_t max_size);
   void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
-                     VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+                     VkBuffer buffer, VkDeviceMemory &bufferMemory);
   void _createDataMapping();
   void _createShaderModules();
   void _createShadersComputePipeline();

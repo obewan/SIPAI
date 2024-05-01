@@ -126,7 +126,7 @@ private:
   ImagePartsPair *_next(std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
                         std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
                         std::vector<std::string> &dataTargetPaths,
-                        std::atomic<size_t> &currentIndex);
+                        size_t &currentIndex);
 
   void _splitDataPairPaths(std::vector<std::unique_ptr<ImagePathPair>> &data,
                            float split_ratio, bool withRandom = false);
@@ -151,7 +151,7 @@ private:
   TrainingDataFileReaderCSV trainingDatafileReaderCSV_;
   ImageHelper imageHelper_;
   std::atomic<bool> isLoaded_ = false;
-  std::atomic<size_t> currentTrainingIndex_ = 0;
-  std::atomic<size_t> currentValidationIndex_ = 0;
+  size_t currentTrainingIndex_ = 0;
+  size_t currentValidationIndex_ = 0;
 };
 } // namespace sipai

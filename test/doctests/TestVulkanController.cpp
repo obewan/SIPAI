@@ -1,6 +1,7 @@
 #include "Manager.h"
 #include "VulkanController.h"
 #include "doctest.h"
+#include <opencv2/core/matx.hpp>
 
 using namespace sipai;
 
@@ -23,6 +24,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
   np.adaptive_learning_rate = true;
   np.adaptive_learning_rate_factor = 0.123;
   manager.createOrImportNetwork();
+
+  CHECK(sizeof(cv::Vec4f) == 4 * sizeof(float));
 
   auto &vulkanController = VulkanController::getInstance();
 

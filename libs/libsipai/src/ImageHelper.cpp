@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "SimpleLogger.h"
 #include "exception/ImageHelperException.h"
+#include <filesystem>
 #include <memory>
 #include <opencv2/core/matx.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -17,70 +18,79 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
   if (split == 0) {
     throw ImageHelperException("internal exception: split 0.");
   }
+  // Check the path
+  if (!std::filesystem::exists(imagePath)) {
+    throw ImageHelperException("Could not find the image: " + imagePath);
+  }
 
   // Load the image
-  cv::Mat mat =
-      cv::imread(imagePath, cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
-  if (mat.empty()) {
-    throw ImageHelperException("Could not open or find the image: " +
-                               imagePath);
+  try {
+    cv::Mat mat =
+        cv::imread(imagePath, cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
+
+    if (mat.empty()) {
+      throw ImageHelperException("Could not open the image: " + imagePath);
+    }
+    Image orig{.height = (size_t)mat.size().height,
+               .width = (size_t)mat.size().width,
+               .type = mat.type(),
+               .channels = mat.channels()};
+
+    // Ensure the image is in BGR format
+    switch (mat.channels()) {
+    case 1:
+      cv::cvtColor(mat, mat, cv::COLOR_GRAY2BGRA);
+      break;
+    case 3:
+      cv::cvtColor(mat, mat, cv::COLOR_RGB2BGRA);
+      break;
+    case 4:
+      cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
+      break;
+    default:
+      SimpleLogger::LOG_WARN(
+          "Non implemented image colors channels processing: ", mat.channels());
+      break;
+    }
+
+    // If the image has only 3 channels (BGR), create and merge an alpha channel
+    if (mat.channels() == 3) {
+      cv::Mat alphaMat(mat.size(), CV_8UC1, cv::Scalar(255));
+      std::vector<cv::Mat> channels{mat, alphaMat};
+      cv::Mat bgraMat;
+      cv::merge(channels, bgraMat);
+      mat = bgraMat;
+    }
+
+    // Convert to floating-point range [0, 1] with 4 channels
+    mat.convertTo(mat, CV_32FC4, 1.0 / 255.0);
+    if (mat.channels() != 4) {
+      throw ImageHelperException("incorrect image channels");
+    }
+
+    // cv::imshow("Original Image step 3", mat);
+    // cv::waitKey(1000 * 60 * 2);
+
+    ImageParts imagesParts;
+    auto matParts = splitImage(mat, split, withPadding);
+    for (auto &matPart : matParts) {
+      Image image{.data = matPart,
+                  .height = orig.height,
+                  .width = orig.width,
+                  .type = orig.type,
+                  .channels = orig.channels};
+      image.resize(resize_x, resize_y);
+      auto image_ptr = std::make_unique<Image>(image);
+      imagesParts.push_back(std::move(image_ptr));
+    }
+
+    // Rq. C++ use Return Value Optimization (RVO) to avoid the extra copy or
+    // move operation associated with the return.
+    return imagesParts;
+  } catch (const cv::Exception &e) {
+    throw ImageHelperException("Error loading image: " + imagePath + ": " +
+                               e.what());
   }
-  Image orig{.height = (size_t)mat.size().height,
-             .width = (size_t)mat.size().width,
-             .type = mat.type(),
-             .channels = mat.channels()};
-
-  // Ensure the image is in BGR format
-  switch (mat.channels()) {
-  case 1:
-    cv::cvtColor(mat, mat, cv::COLOR_GRAY2BGRA);
-    break;
-  case 3:
-    cv::cvtColor(mat, mat, cv::COLOR_RGB2BGRA);
-    break;
-  case 4:
-    cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
-    break;
-  default:
-    SimpleLogger::LOG_WARN("Non implemented image colors channels processing: ",
-                           mat.channels());
-    break;
-  }
-
-  // If the image has only 3 channels (BGR), create and merge an alpha channel
-  if (mat.channels() == 3) {
-    cv::Mat alphaMat(mat.size(), CV_8UC1, cv::Scalar(255));
-    std::vector<cv::Mat> channels{mat, alphaMat};
-    cv::Mat bgraMat;
-    cv::merge(channels, bgraMat);
-    mat = bgraMat;
-  }
-
-  // Convert to floating-point range [0, 1] with 4 channels
-  mat.convertTo(mat, CV_32FC4, 1.0 / 255.0);
-  if (mat.channels() != 4) {
-    throw std::runtime_error("incorrect image channels");
-  }
-
-  // cv::imshow("Original Image step 3", mat);
-  // cv::waitKey(1000 * 60 * 2);
-
-  ImageParts imagesParts;
-  auto matParts = splitImage(mat, split, withPadding);
-  for (auto &matPart : matParts) {
-    Image image{.data = matPart,
-                .height = orig.height,
-                .width = orig.width,
-                .type = orig.type,
-                .channels = orig.channels};
-    image.resize(resize_x, resize_y);
-    auto image_ptr = std::make_unique<Image>(image);
-    imagesParts.push_back(std::move(image_ptr));
-  }
-
-  // Rq. C++ use Return Value Optimization (RVO) to avoid the extra copy or move
-  // operation associated with the return.
-  return imagesParts;
 }
 
 ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
@@ -217,6 +227,9 @@ void ImageHelper::saveImage(const std::string &imagePath,
     }
   } catch (ImageHelperException &ihe) {
     throw ihe;
+  } catch (const cv::Exception &e) {
+    throw ImageHelperException("Error saving image: " + imagePath + ": " +
+                               e.what());
   } catch (std::exception &ex) {
     throw ImageHelperException(ex.what());
   }

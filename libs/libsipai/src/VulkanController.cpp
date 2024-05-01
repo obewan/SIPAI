@@ -3,7 +3,9 @@
 #include "Manager.h"
 #include "Neuron.h"
 #include "SimpleLogger.h"
+#include "exception/NeuralNetworkException.h"
 #include <algorithm>
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -171,7 +173,7 @@ VulkanController::_loadShader(const std::string &path) {
 }
 
 void VulkanController::_computeShader(const NeuronMat &neurons,
-                                      VkPipeline &pipeline) {
+                                      VkPipeline pipeline) {
   VkCommandBuffer commandBuffer = _beginSingleTimeCommands();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
@@ -191,36 +193,54 @@ VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
   beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
   // Starts recording the command
-  vkBeginCommandBuffer(commandBuffer, &beginInfo);
+  auto result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+  if (result != VK_SUCCESS) {
+    throw NeuralNetworkException("Vulkan command buffer start error.");
+  }
   return commandBuffer;
 }
 
 void VulkanController::_endSingleTimeCommands(VkCommandBuffer commandBuffer) {
   // Ends recording the command
-  vkEndCommandBuffer(commandBuffer);
+  auto result = vkEndCommandBuffer(commandBuffer);
+  if (result != VK_SUCCESS) {
+    throw NeuralNetworkException("Vulkan command buffer end error.");
+  }
   // Reset the fence
-  vkResetFences(logicalDevice_, 1, &computeFence_);
+  result = vkResetFences(logicalDevice_, 1, &computeFence_);
+  if (result != VK_SUCCESS) {
+    throw NeuralNetworkException("Vulkan reset fence error.");
+  }
   // Submit the command to the queue
   VkSubmitInfo submitInfo{};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-  vkQueueSubmit(queue_, 1, &submitInfo, computeFence_);
+  result = vkQueueSubmit(queue_, 1, &submitInfo, computeFence_);
+  if (result != VK_SUCCESS) {
+    throw NeuralNetworkException("Vulkan queue submit error.");
+  }
   // Wait for the fence to signal that the GPU has finished
-  vkWaitForFences(logicalDevice_, 1, &computeFence_, VK_TRUE, UINT64_MAX);
+  result =
+      vkWaitForFences(logicalDevice_, 1, &computeFence_, VK_TRUE, UINT64_MAX);
+  if (result != VK_SUCCESS) {
+    throw NeuralNetworkException("Vulkan wait for fence error.");
+  }
 
-  vkResetCommandBuffer(commandBuffer, 0);
+  result = vkResetCommandBuffer(commandBuffer, 0);
+  if (result != VK_SUCCESS) {
+    throw NeuralNetworkException("Vulkan reset command buffer error.");
+  }
+
   commandBufferPool_.push_back(commandBuffer);
 }
 
 void VulkanController::_createCommandPool() {
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-  poolInfo.queueFamilyIndex =
-      queueFamilyIndex_; // Index of the queue family the pool is for
+  poolInfo.queueFamilyIndex = queueFamilyIndex_;
   poolInfo.flags =
       VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional flags
-
   if (vkCreateCommandPool(logicalDevice_, &poolInfo, nullptr, &commandPool_) !=
       VK_SUCCESS) {
     throw std::runtime_error("Failed to create command pool!");
@@ -261,7 +281,7 @@ void VulkanController::_createDescriptorSetLayout() {
   layoutInfo.pBindings = layoutBindings.data(); // array of bindings
   if (vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo, nullptr,
                                   &descriptorSetLayout_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create descriptor set layout!");
+    throw NeuralNetworkException("Failed to create descriptor set layout!");
   }
 }
 
@@ -276,7 +296,7 @@ void VulkanController::_createDescriptorPool(size_t max_size) {
   poolInfo.maxSets = static_cast<uint32_t>(max_size);
   if (vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr,
                              &descriptorPool_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create descriptor pool!");
+    throw NeuralNetworkException("Failed to create descriptor pool!");
   }
 }
 
@@ -342,7 +362,7 @@ void VulkanController::_createBuffers(size_t max_size) {
 
 void VulkanController::_createBuffer(VkDeviceSize size,
                                      VkBufferCreateInfo &bufferInfo,
-                                     VkBuffer &buffer,
+                                     VkBuffer buffer,
                                      VkDeviceMemory &bufferMemory) {
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size; // Size of the buffer in bytes
@@ -417,7 +437,6 @@ void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons,
 
   std::vector<GLSLNeuron> flatNeurons;
   flatNeurons.reserve(totalNeuronsSize);
-
   for (const auto &row : neurons) {
     for (const auto &neuron : row) {
       flatNeurons.push_back({.index_x = (uint)neuron.index_x,
@@ -436,12 +455,11 @@ void VulkanController::_copyMatToBuffer(const cv::Mat &mat,
                                         VkBufferCreateInfo &bufferInfo,
                                         void *&bufferData) {
   std::vector<cv::Vec4f> flatValues;
-  std::mutex mtx;
-  mat.forEach<cv::Vec4f>(
-      [&flatValues, &mtx](const auto &value, const int *pos) {
-        std::lock_guard<std::mutex> lock(mtx);
-        flatValues.push_back(value);
-      });
+  for (size_t x = 0; x < (size_t)mat.cols; x++) {
+    for (size_t y = 0; y < (size_t)mat.rows; y++) {
+      flatValues.push_back(mat.at<cv::Vec4f>(x, y));
+    }
+  }
   memset(bufferData, 0, (size_t)bufferInfo.size);
   memcpy(bufferData, flatValues.data(),
          (size_t)flatValues.size() * sizeof(cv::Vec4f));
@@ -505,14 +523,17 @@ void VulkanController::_copyNeuronsWeightsToWeightsBuffer(
 void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
   // retrieve the data
   const auto bufferDataArray = static_cast<std::array<float, 4> *>(outputData_);
+
   // copy the data
-  std::atomic<int> index = 0;
-  mat.forEach<cv::Vec4f>(
-      [&bufferDataArray, &index](cv::Vec4f &value, const int *pos) {
-        value = cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
-                          bufferDataArray[index][2], bufferDataArray[index][3]);
-        index++;
-      });
+  size_t index = 0;
+  for (size_t x = 0; x < (size_t)mat.cols; x++) {
+    for (size_t y = 0; y < (size_t)mat.rows; y++) {
+      mat.at<cv::Vec4f>(x, y) =
+          cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
+                    bufferDataArray[index][2], bufferDataArray[index][3]);
+      index++;
+    }
+  }
   // some debug logs
   const auto &app_params = Manager::getConstInstance().app_params;
   if (app_params.verbose_debug) {
