@@ -35,6 +35,14 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
+  struct GLSLNeuron {
+    uint index_x;
+    uint index_y;
+    uint weightsIndex;
+    uint neighborsIndex;
+    uint neighborsSize;
+  };
+
   struct GLSLParameters {
     float error_min;
     float error_max;

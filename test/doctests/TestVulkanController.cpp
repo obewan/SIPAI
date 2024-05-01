@@ -9,6 +9,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
   app_params.forwardShader = "../../" + app_params.forwardShader;
+  app_params.backwardShader = "../../" + app_params.backwardShader;
   app_params.network_to_import = "";
   auto &np = manager.network_params;
   np.input_size_x = 2;
@@ -32,10 +33,10 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
   CHECK_NOTHROW(vulkanController.initialize());
   CHECK(vulkanController.IsInitialized());
   CHECK(vulkanController.getDevice() != VK_NULL_HANDLE);
-  
+
   vulkanController.destroy();
   CHECK_FALSE(vulkanController.IsInitialized());
   CHECK(vulkanController.getDevice() == VK_NULL_HANDLE);
-  
+
   manager.network.reset();
 }

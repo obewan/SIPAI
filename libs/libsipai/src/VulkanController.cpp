@@ -71,9 +71,9 @@ void VulkanController::initialize() {
   queueCreateInfo.pQueuePriorities = &queuePriority;
 
   VkPhysicalDeviceFeatures deviceFeatures{};
-  deviceFeatures.logicOp = VK_TRUE; // Enable logical operation feature
-  deviceFeatures.shaderFloat64 =
-      VK_TRUE; // Enable 64-bit floats in shader code feature
+  // Commented as not required
+  // deviceFeatures.logicOp = VK_TRUE; // Enable logical operation feature
+  // deviceFeatures.shaderFloat64 = VK_TRUE; // Enable 64-bit floats in shader
 
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -300,7 +300,7 @@ void VulkanController::_createFence() {
 
 void VulkanController::_createBuffers(size_t max_size) {
   // Create CurrentLayer buffer
-  _createBuffer(sizeof(Neuron) * max_size, currentLayerBufferInfo_,
+  _createBuffer(sizeof(GLSLNeuron) * max_size, currentLayerBufferInfo_,
                 currentLayerBuffer_, currentLayerBufferMemory_);
   // Create CurrentLayerValues buffer
   _createBuffer(sizeof(cv::Vec4f) * max_size, currentLayerValuesBufferInfo_,
@@ -320,7 +320,7 @@ void VulkanController::_createBuffers(size_t max_size) {
                 currentNeighborsIndexesBufferMemory_);
   // Create adjacentLayer buffer (i.e. PreviousLayer in forward, NextLayer in
   // backward)
-  _createBuffer(sizeof(Neuron) * max_size, adjacentLayerBufferInfo_,
+  _createBuffer(sizeof(GLSLNeuron) * max_size, adjacentLayerBufferInfo_,
                 adjacentLayerBuffer_, adjacentLayerBufferMemory_);
   // Create adjacentLayerValues buffer (i.e. PreviousLayerValues in forward,
   // NextLayerErrors in backward)
@@ -415,15 +415,21 @@ void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons,
     totalNeuronsSize += row.size();
   }
 
-  std::vector<Neuron> flatNeurons;
+  std::vector<GLSLNeuron> flatNeurons;
   flatNeurons.reserve(totalNeuronsSize);
 
   for (const auto &row : neurons) {
-    std::copy(row.begin(), row.end(), std::back_inserter(flatNeurons));
+    for (const auto &neuron : row) {
+      flatNeurons.push_back({.index_x = (uint)neuron.index_x,
+                             .index_y = (uint)neuron.index_y,
+                             .weightsIndex = (uint)neuron.weightsIndex,
+                             .neighborsIndex = (uint)neuron.neighborsIndex,
+                             .neighborsSize = (uint)neuron.neighborsSize});
+    }
   }
   memset(bufferData, 0, (size_t)bufferInfo.size);
   memcpy(bufferData, flatNeurons.data(),
-         (size_t)flatNeurons.size() * sizeof(Neuron));
+         (size_t)flatNeurons.size() * sizeof(GLSLNeuron));
 }
 
 void VulkanController::_copyMatToBuffer(const cv::Mat &mat,
@@ -782,19 +788,14 @@ std::optional<VkPhysicalDevice> VulkanController::_pickPhysicalDevice() {
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-    // This feature indicates whether the physical device supports logical
-    // operations in the output color blending. Logical operations are used to
-    // combine color and/or alpha components of the source and destination
-    // fragments in ways other than traditional blending+
+
     if (deviceFeatures.logicOp) {
       score++;
     }
-    // This feature indicates whether the physical device supports 64-bit
-    // floats (doubles) in shader code. If this feature is not enabled, you
-    // won’t be able to use 64-bit floats in your shaders.
     if (deviceFeatures.shaderFloat64) {
       score++;
     }
+
     if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
       score += 3;
     }
