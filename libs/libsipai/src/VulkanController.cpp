@@ -339,9 +339,9 @@ void VulkanController::_createBuffers(size_t max_size) {
                 currentNeighborsIndexesBufferMemory_);
   // Create currentNeighborsWeights buffer
   _createBuffer(sizeof(cv::Vec4f) * max_size * MAX_NEIGHBOORS_PER_NEURON,
-                currentNeighborsIndexesBufferInfo_,
-                currentNeighborsIndexesBuffer_,
-                currentNeighborsIndexesBufferMemory_);
+                currentNeighborsWeightsBufferInfo_,
+                currentNeighborsWeightsBuffer_,
+                currentNeighborsWeightsBufferMemory_);
   // Create adjacentLayer buffer (i.e. PreviousLayer in forward, NextLayer in
   // backward)
   _createBuffer(sizeof(GLSLNeuron) * max_size, adjacentLayerBufferInfo_,
