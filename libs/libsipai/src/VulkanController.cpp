@@ -3,7 +3,7 @@
 #include "Manager.h"
 #include "Neuron.h"
 #include "SimpleLogger.h"
-#include "exception/NeuralNetworkException.h"
+#include "exception/VulkanControllerException.h"
 #include <algorithm>
 #include <cstddef>
 #include <filesystem>
@@ -49,19 +49,20 @@ void VulkanController::initialize() {
 
   if (vkCreateInstance(&createInfoInstance, nullptr, &vkInstance_) !=
       VK_SUCCESS) {
-    throw std::runtime_error("failed to create instance!");
+    throw VulkanControllerException("failed to create instance!");
   }
 
   // Create a device
   auto physicalDevice = _pickPhysicalDevice();
   if (!physicalDevice.has_value()) {
-    throw std::runtime_error("failed to find a suitable GPU!");
+    throw VulkanControllerException("failed to find a suitable GPU!");
   }
   physicalDevice_ = physicalDevice.value();
 
   auto queueFamilyIndex = _pickQueueFamily();
   if (!queueFamilyIndex.has_value()) {
-    throw std::runtime_error("failed to find GPUs with Vulkan queue support!");
+    throw VulkanControllerException(
+        "failed to find GPUs with Vulkan queue support!");
   }
   queueFamilyIndex_ = queueFamilyIndex.value();
 
@@ -85,7 +86,7 @@ void VulkanController::initialize() {
 
   if (vkCreateDevice(physicalDevice_, &createInfoDevice, nullptr,
                      &logicalDevice_) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create logical device!");
+    throw VulkanControllerException("failed to create logical device!");
   }
   vkGetDeviceQueue(logicalDevice_, queueFamilyIndex_, 0, &queue_);
 
@@ -103,7 +104,7 @@ void VulkanController::initialize() {
   _createBuffers(max_size);
   _createDataMapping();
   _createShaderModules();
-  _createShadersComputePipeline();
+  _createShadersComputePipelines();
   _bindBuffers();
 
   isInitialized_ = true;
@@ -143,14 +144,14 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
 void VulkanController::backwardPropagation(Layer *nextLayer,
                                            Layer *currentLayer) {
   if (!IsInitialized()) {
-    throw NeuralNetworkException("Vulkan controller is not initialized.");
+    throw VulkanControllerException("Vulkan controller is not initialized.");
   }
 }
 
 std::unique_ptr<std::vector<uint32_t>>
 VulkanController::_loadShader(const std::string &path) {
   if (!std::filesystem::exists(path)) {
-    throw std::runtime_error("GLSL file does not exist: " + path);
+    throw VulkanControllerException("GLSL file does not exist: " + path);
   }
   // Use glslangValidator to compile the GLSL shader to SPIR-V
   std::stringstream sst;
@@ -160,14 +161,14 @@ VulkanController::_loadShader(const std::string &path) {
   // Load the compiled SPIR-V into a std::vector<uint32_t>
   std::ifstream file("shader.spv", std::ios::binary | std::ios::ate);
   if (!file.good()) {
-    throw std::runtime_error("Failed to open SPIR-V file");
+    throw VulkanControllerException("Failed to open SPIR-V file");
   }
   std::streamsize size = file.tellg();
   file.seekg(0, std::ios::beg);
   auto compiledShaderCode =
       std::make_unique<std::vector<uint32_t>>(size / sizeof(uint32_t));
   if (!file.read(reinterpret_cast<char *>(compiledShaderCode->data()), size)) {
-    throw std::runtime_error("Failed to read SPIR-V file");
+    throw VulkanControllerException("Failed to read SPIR-V file");
   }
   return compiledShaderCode;
 }
@@ -195,7 +196,7 @@ VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
   // Starts recording the command
   auto result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
   if (result != VK_SUCCESS) {
-    throw NeuralNetworkException("Vulkan command buffer start error.");
+    throw VulkanControllerException("Vulkan command buffer start error.");
   }
   return commandBuffer;
 }
@@ -204,12 +205,12 @@ void VulkanController::_endSingleTimeCommands(VkCommandBuffer commandBuffer) {
   // Ends recording the command
   auto result = vkEndCommandBuffer(commandBuffer);
   if (result != VK_SUCCESS) {
-    throw NeuralNetworkException("Vulkan command buffer end error.");
+    throw VulkanControllerException("Vulkan command buffer end error.");
   }
   // Reset the fence
   result = vkResetFences(logicalDevice_, 1, &computeFence_);
   if (result != VK_SUCCESS) {
-    throw NeuralNetworkException("Vulkan reset fence error.");
+    throw VulkanControllerException("Vulkan reset fence error.");
   }
   // Submit the command to the queue
   VkSubmitInfo submitInfo{};
@@ -218,18 +219,18 @@ void VulkanController::_endSingleTimeCommands(VkCommandBuffer commandBuffer) {
   submitInfo.pCommandBuffers = &commandBuffer;
   result = vkQueueSubmit(queue_, 1, &submitInfo, computeFence_);
   if (result != VK_SUCCESS) {
-    throw NeuralNetworkException("Vulkan queue submit error.");
+    throw VulkanControllerException("Vulkan queue submit error.");
   }
   // Wait for the fence to signal that the GPU has finished
   result =
       vkWaitForFences(logicalDevice_, 1, &computeFence_, VK_TRUE, UINT64_MAX);
   if (result != VK_SUCCESS) {
-    throw NeuralNetworkException("Vulkan wait for fence error.");
+    throw VulkanControllerException("Vulkan wait for fence error.");
   }
 
   result = vkResetCommandBuffer(commandBuffer, 0);
   if (result != VK_SUCCESS) {
-    throw NeuralNetworkException("Vulkan reset command buffer error.");
+    throw VulkanControllerException("Vulkan reset command buffer error.");
   }
 
   commandBufferPool_.push_back(commandBuffer);
@@ -243,7 +244,7 @@ void VulkanController::_createCommandPool() {
       VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional flags
   if (vkCreateCommandPool(logicalDevice_, &poolInfo, nullptr, &commandPool_) !=
       VK_SUCCESS) {
-    throw std::runtime_error("Failed to create command pool!");
+    throw VulkanControllerException("Failed to create command pool!");
   }
 }
 
@@ -253,12 +254,11 @@ void VulkanController::_createCommandBufferPool() {
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandPool = commandPool_;
   allocInfo.commandBufferCount = COMMAND_POOL_SIZE;
-  std::vector<VkCommandBuffer> commandBuffers(COMMAND_POOL_SIZE);
+  commandBufferPool_ = std::vector<VkCommandBuffer>(COMMAND_POOL_SIZE);
   if (vkAllocateCommandBuffers(logicalDevice_, &allocInfo,
-                               commandBuffers.data()) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to allocate command buffers!");
+                               commandBufferPool_.data()) != VK_SUCCESS) {
+    throw VulkanControllerException("Failed to allocate command buffers!");
   }
-  commandBufferPool_ = std::move(commandBuffers);
 }
 
 void VulkanController::_createDescriptorSetLayout() {
@@ -281,7 +281,7 @@ void VulkanController::_createDescriptorSetLayout() {
   layoutInfo.pBindings = layoutBindings.data(); // array of bindings
   if (vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo, nullptr,
                                   &descriptorSetLayout_) != VK_SUCCESS) {
-    throw NeuralNetworkException("Failed to create descriptor set layout!");
+    throw VulkanControllerException("Failed to create descriptor set layout!");
   }
 }
 
@@ -296,7 +296,7 @@ void VulkanController::_createDescriptorPool(size_t max_size) {
   poolInfo.maxSets = static_cast<uint32_t>(max_size);
   if (vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr,
                              &descriptorPool_) != VK_SUCCESS) {
-    throw NeuralNetworkException("Failed to create descriptor pool!");
+    throw VulkanControllerException("Failed to create descriptor pool!");
   }
 }
 
@@ -308,7 +308,7 @@ void VulkanController::_createDescriptorSet() {
   allocInfo.pSetLayouts = &descriptorSetLayout_;
   if (vkAllocateDescriptorSets(logicalDevice_, &allocInfo, &descriptorSet_) !=
       VK_SUCCESS) {
-    throw std::runtime_error("Failed to allocate descriptor set!");
+    throw VulkanControllerException("Failed to allocate descriptor set!");
   }
 }
 
@@ -373,7 +373,7 @@ void VulkanController::_createBuffer(VkDeviceSize size,
                                  // time
   if (vkCreateBuffer(logicalDevice_, &bufferInfo, nullptr, &buffer) !=
       VK_SUCCESS) {
-    throw std::runtime_error("Failed to create buffer!");
+    throw VulkanControllerException("Failed to create buffer!");
   }
   VkMemoryRequirements memRequirements;
   vkGetBufferMemoryRequirements(logicalDevice_, buffer, &memRequirements);
@@ -386,7 +386,7 @@ void VulkanController::_createBuffer(VkDeviceSize size,
                                           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
   if (vkAllocateMemory(logicalDevice_, &allocInfo, nullptr, &bufferMemory) !=
       VK_SUCCESS) {
-    throw std::runtime_error("Failed to allocate buffer memory!");
+    throw VulkanControllerException("Failed to allocate buffer memory!");
   }
   vkBindBufferMemory(logicalDevice_, buffer, bufferMemory, 0);
 }
@@ -455,6 +455,7 @@ void VulkanController::_copyMatToBuffer(const cv::Mat &mat,
                                         VkBufferCreateInfo &bufferInfo,
                                         void *&bufferData) {
   std::vector<cv::Vec4f> flatValues;
+  flatValues.reserve(mat.total());
   for (size_t x = 0; x < (size_t)mat.cols; x++) {
     for (size_t y = 0; y < (size_t)mat.rows; y++) {
       flatValues.push_back(mat.at<cv::Vec4f>(x, y));
@@ -560,7 +561,7 @@ void VulkanController::_createPipelineLayout() {
 
   if (vkCreatePipelineLayout(logicalDevice_, &pipelineLayoutInfo, nullptr,
                              &pipelineLayout_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create pipeline layout!");
+    throw VulkanControllerException("Failed to create pipeline layout!");
   }
 }
 
@@ -577,7 +578,7 @@ VulkanController::_findMemoryType(uint32_t typeFilter,
     }
   }
 
-  throw std::runtime_error("failed to find suitable memory type!");
+  throw VulkanControllerException("failed to find suitable memory type!");
 }
 
 std::optional<unsigned int> VulkanController::_pickQueueFamily() {
@@ -585,7 +586,8 @@ std::optional<unsigned int> VulkanController::_pickQueueFamily() {
   vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
                                            nullptr);
   if (queueFamilyCount == 0) {
-    throw std::runtime_error("failed to find GPUs with Vulkan queue support!");
+    throw VulkanControllerException(
+        "failed to find GPUs with Vulkan queue support!");
   }
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
   vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount,
@@ -608,7 +610,7 @@ void VulkanController::_createShaderModules() {
   createForwardInfo.pCode = forwardShader_->data();
   if (vkCreateShaderModule(logicalDevice_, &createForwardInfo, nullptr,
                            &forwardShaderModule_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create forward shader module");
+    throw VulkanControllerException("Failed to create forward shader module");
   }
   // backward shader
   VkShaderModuleCreateInfo createBackwardInfo{};
@@ -617,42 +619,42 @@ void VulkanController::_createShaderModules() {
   createBackwardInfo.pCode = backwardShader_->data();
   if (vkCreateShaderModule(logicalDevice_, &createBackwardInfo, nullptr,
                            &backwardShaderModule_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create backward shader module");
+    throw VulkanControllerException("Failed to create backward shader module");
   }
 }
 
-void VulkanController::_createShadersComputePipeline() {
+void VulkanController::_createShadersComputePipelines() {
   // forward shader
-  VkComputePipelineCreateInfo forwardPipelineInfo{};
-  forwardPipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  forwardPipelineInfo.stage.sType =
+  forwardPipelineInfo_.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  forwardPipelineInfo_.stage.sType =
       VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  forwardPipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  forwardPipelineInfo.stage.module = forwardShaderModule_;
-  forwardPipelineInfo.stage.pName = "main";
-  forwardPipelineInfo.layout = pipelineLayout_;
-  forwardPipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-  forwardPipelineInfo.basePipelineIndex = 0;
+  forwardPipelineInfo_.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  forwardPipelineInfo_.stage.module = forwardShaderModule_;
+  forwardPipelineInfo_.stage.pName = "main";
+  forwardPipelineInfo_.layout = pipelineLayout_;
+  forwardPipelineInfo_.basePipelineHandle = VK_NULL_HANDLE;
+  forwardPipelineInfo_.basePipelineIndex = 0;
   if (vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1,
-                               &forwardPipelineInfo, nullptr,
+                               &forwardPipelineInfo_, nullptr,
                                &forwardComputePipeline_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create forward compute pipelines");
+    throw VulkanControllerException(
+        "Failed to create forward compute pipelines");
   };
   // backward shader
-  VkComputePipelineCreateInfo backwardPipelineInfo{};
-  backwardPipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  backwardPipelineInfo.stage.sType =
+  backwardPipelineInfo_.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  backwardPipelineInfo_.stage.sType =
       VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  backwardPipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  backwardPipelineInfo.stage.module = backwardShaderModule_;
-  backwardPipelineInfo.stage.pName = "main";
-  backwardPipelineInfo.layout = pipelineLayout_;
-  backwardPipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-  backwardPipelineInfo.basePipelineIndex = 0;
+  backwardPipelineInfo_.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  backwardPipelineInfo_.stage.module = backwardShaderModule_;
+  backwardPipelineInfo_.stage.pName = "main";
+  backwardPipelineInfo_.layout = pipelineLayout_;
+  backwardPipelineInfo_.basePipelineHandle = VK_NULL_HANDLE;
+  backwardPipelineInfo_.basePipelineIndex = 0;
   if (vkCreateComputePipelines(logicalDevice_, VK_NULL_HANDLE, 1,
-                               &backwardPipelineInfo, nullptr,
+                               &backwardPipelineInfo_, nullptr,
                                &backwardComputePipeline_) != VK_SUCCESS) {
-    throw std::runtime_error("Failed to create backward compute pipelines");
+    throw VulkanControllerException(
+        "Failed to create backward compute pipelines");
   };
 }
 

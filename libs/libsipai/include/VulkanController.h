@@ -93,12 +93,49 @@ private:
   VulkanController() = default;
   static std::unique_ptr<VulkanController> controllerInstance_;
 
+  uint32_t _findMemoryType(uint32_t typeFilter,
+                           VkMemoryPropertyFlags properties) const;
+
+  VkCommandBuffer _beginSingleTimeCommands();
+  void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
+  std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
+  void _computeShader(const NeuronMat &neurons, VkPipeline pipeline);
+
+  void _copyNeuronsToBuffer(const NeuronMat &neurons,
+                            VkBufferCreateInfo &bufferInfo, void *&bufferData);
+  void _copyMatToBuffer(const cv::Mat &mat, VkBufferCreateInfo &bufferInfo,
+                        void *&bufferData);
+  void _copyOutputBufferToMat(cv::Mat &mat);
+  void _copyParametersToParametersBuffer(Layer *currentLayer);
+  void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
+
+  void _createCommandPool();
+  void _createCommandBufferPool();
+  void _createPipelineLayout();
+  void _createDescriptorSet();
+  void _createDescriptorSetLayout();
+  void _createFence();
+  void _createDescriptorPool(size_t max_size);
+  void _createBuffers(size_t max_size);
+  void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
+                     VkBuffer buffer, VkDeviceMemory &bufferMemory);
+  void _createDataMapping();
+  void _createShaderModules();
+  void _createShadersComputePipelines();
+  void _bindBuffers();
+
+  std::optional<unsigned int> _pickQueueFamily();
+  std::optional<VkPhysicalDevice> _pickPhysicalDevice();
+
   std::unique_ptr<std::vector<uint32_t>> forwardShader_;
   std::unique_ptr<std::vector<uint32_t>> backwardShader_;
   VkShaderModule forwardShaderModule_ = VK_NULL_HANDLE;
   VkShaderModule backwardShaderModule_ = VK_NULL_HANDLE;
   VkPipeline forwardComputePipeline_ = VK_NULL_HANDLE;
   VkPipeline backwardComputePipeline_ = VK_NULL_HANDLE;
+  VkComputePipelineCreateInfo forwardPipelineInfo_{};
+  VkComputePipelineCreateInfo backwardPipelineInfo_{};
 
   std::atomic<bool> isInitialized_ = false;
   unsigned int queueFamilyIndex_ = 0;
@@ -175,40 +212,5 @@ private:
   void *outputData_ = nullptr;
 
   std::vector<VkCommandBuffer> commandBufferPool_;
-
-  uint32_t _findMemoryType(uint32_t typeFilter,
-                           VkMemoryPropertyFlags properties) const;
-
-  VkCommandBuffer _beginSingleTimeCommands();
-  void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
-
-  std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
-  void _computeShader(const NeuronMat &neurons, VkPipeline pipeline);
-
-  void _copyNeuronsToBuffer(const NeuronMat &neurons,
-                            VkBufferCreateInfo &bufferInfo, void *&bufferData);
-  void _copyMatToBuffer(const cv::Mat &mat, VkBufferCreateInfo &bufferInfo,
-                        void *&bufferData);
-  void _copyOutputBufferToMat(cv::Mat &mat);
-  void _copyParametersToParametersBuffer(Layer *currentLayer);
-  void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
-
-  void _createCommandPool();
-  void _createCommandBufferPool();
-  void _createPipelineLayout();
-  void _createDescriptorSet();
-  void _createDescriptorSetLayout();
-  void _createFence();
-  void _createDescriptorPool(size_t max_size);
-  void _createBuffers(size_t max_size);
-  void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
-                     VkBuffer buffer, VkDeviceMemory &bufferMemory);
-  void _createDataMapping();
-  void _createShaderModules();
-  void _createShadersComputePipeline();
-  void _bindBuffers();
-
-  std::optional<unsigned int> _pickQueueFamily();
-  std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 };
 } // namespace sipai
