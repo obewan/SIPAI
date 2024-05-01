@@ -281,7 +281,7 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
         SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
                                 inputImage.size(), "...");
       }
-      manager.network->backwardPropagation(targetPart->data, error_min,
+      manager.network->backwardPropagation(targetPart->data, manager.app_params.enable_vulkan, error_min,
                                            error_max);
       if (stopTrainingNow) {
         break;

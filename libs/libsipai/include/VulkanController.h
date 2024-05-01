@@ -35,9 +35,17 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
-  struct GLSLActivationFunction {
-    int value;
-    float alpha;
+  struct GLSLParameters {
+    float error_min;
+    float error_max;
+    float activationAlpha;
+    uint currentLayerSizeX;
+    uint currentLayerSizeY;
+    uint previousLayerSizeX;
+    uint previousLayerSizeY;
+    uint nextLayerSizeX;
+    uint nextLayerSizeY;
+    uint activationFunction;
   };
 
   void initialize();
@@ -51,6 +59,14 @@ public:
    * @param currentLayer
    */
   void forwardPropagation(Layer *previousLayer, Layer *currentLayer);
+
+  /**
+   * @brief Vulkan Backward Propagation
+   *
+   * @param nextLayer
+   * @param currentLayer
+   */
+  void backwardPropagation(Layer *nextLayer, Layer *currentLayer);
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -70,6 +86,11 @@ private:
   static std::unique_ptr<VulkanController> controllerInstance_;
 
   std::unique_ptr<std::vector<uint32_t>> forwardShader_;
+  std::unique_ptr<std::vector<uint32_t>> backwardShader_;
+  VkShaderModule forwardShaderModule_ = VK_NULL_HANDLE;
+  VkShaderModule backwardShaderModule_ = VK_NULL_HANDLE;
+  VkPipeline forwardComputePipeline_ = VK_NULL_HANDLE;
+  VkPipeline backwardComputePipeline_ = VK_NULL_HANDLE;
 
   std::atomic<bool> isInitialized_ = false;
   unsigned int queueFamilyIndex_ = 0;
@@ -85,34 +106,67 @@ private:
   VkQueue queue_ = VK_NULL_HANDLE;
   VkFence computeFence_ = VK_NULL_HANDLE;
 
-  VkBuffer inputBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory inputBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo inputBufferInfo_{};
-  void *inputData_ = nullptr;
+  // Binding 0
+  VkBuffer currentLayerBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentLayerBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentLayerBufferInfo_{};
+  void *currentLayerData_ = nullptr;
 
-  VkBuffer outputBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo outputBufferInfo_{};
-  void *outputData_ = nullptr;
+  // Binding 1
+  VkBuffer currentLayerValuesBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentLayerValuesBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentLayerValuesBufferInfo_{};
+  void *currentLayerValuesData_ = nullptr;
 
-  VkBuffer currentBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentBufferInfo_{};
-  void *currentData_ = nullptr;
+  // Binding 2
+  VkBuffer currentLayerErrorsBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentLayerErrorsBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentLayerErrorsBufferInfo_{};
+  void *currentLayerErrorsData_ = nullptr;
 
-  VkBuffer activationFunctionBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory activationFunctionBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo activationFunctionBufferInfo_{};
-  void *activationFunctionData_ = nullptr;
+  // Binding 3
+  VkBuffer currentNeighborsIndexesBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentNeighborsIndexesBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentNeighborsIndexesBufferInfo_{};
+  void *currentNeighborsIndexesData_ = nullptr;
 
+  // Binding 4
+  VkBuffer currentNeighborsWeightsBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentNeighborsWeightsBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentNeighborsWeightsBufferInfo_{};
+  void *currentNeighborsWeightsData_ = nullptr;
+
+  // Binding 5
+  VkBuffer adjacentLayerBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory adjacentLayerBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo adjacentLayerBufferInfo_{};
+  void *adjacentLayerData_ = nullptr;
+
+  // Binding 6
+  VkBuffer adjacentLayerValuesBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory adjacentLayerValuesBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo adjacentLayerValuesBufferInfo_{};
+  void *adjacentLayerValuesData_ = nullptr;
+
+  // Binding 7
   VkBuffer weightsBuffer_ = VK_NULL_HANDLE;
   VkDeviceMemory weightsBufferMemory_ = VK_NULL_HANDLE;
   VkBufferCreateInfo weightsBufferInfo_{};
   void *weightsData_ = nullptr;
 
+  // Binding 8
+  VkBuffer parametersBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory parametersBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo parametersBufferInfo_{};
+  void *parametersData_ = nullptr;
+
+  // Binding 9
+  VkBuffer outputBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo outputBufferInfo_{};
+  void *outputData_ = nullptr;
+
   std::vector<VkCommandBuffer> commandBufferPool_;
-  VkShaderModule forwardShaderModule_ = VK_NULL_HANDLE;
-  VkPipeline forwardComputePipeline_ = VK_NULL_HANDLE;
 
   uint32_t _findMemoryType(uint32_t typeFilter,
                            VkMemoryPropertyFlags properties) const;
@@ -121,14 +175,15 @@ private:
   void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
   std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
-  void _computeShader(std::vector<Neuron> &neurons);
+  void _computeShader(const NeuronMat &neurons, VkPipeline &pipeline);
 
-  void _copyNeuronsDataToInputBuffer(const std::vector<Neuron> &neurons);
-  void _copyNeuronsDataToCurrentBuffer(const std::vector<Neuron> &neurons);
-  void _copyOutputBufferToNeuronsData(std::vector<Neuron> &neurons);
-  void _copyActivationFunctionToActivationFunctionBuffer(
-      const EActivationFunction &activationFunction, float alpha);
-  void _copyNeuronsWeightsToWeightsBuffer(const std::vector<Neuron> &neurons);
+  void _copyNeuronsToBuffer(const NeuronMat &neurons,
+                            VkBufferCreateInfo &bufferInfo, void *&bufferData);
+  void _copyMatToBuffer(const cv::Mat &mat, VkBufferCreateInfo &bufferInfo,
+                        void *&bufferData);
+  void _copyOutputBufferToMat(cv::Mat &mat);
+  void _copyParametersToParametersBuffer(Layer *currentLayer);
+  void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
 
   void _createCommandPool();
   void _createCommandBufferPool();
@@ -141,8 +196,8 @@ private:
   void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
   void _createDataMapping();
-  void _createForwardShaderModule();
-  void _createForwardComputePipeline();
+  void _createShaderModules();
+  void _createShadersComputePipeline();
   void _bindBuffers();
 
   std::optional<unsigned int> _pickQueueFamily();

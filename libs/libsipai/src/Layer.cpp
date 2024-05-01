@@ -7,7 +7,7 @@
 
 using namespace sipai;
 
-void Layer::forwardPropagation(bool enable_vulkan) {
+void Layer::forwardPropagation(const bool &enable_vulkan) {
   if (previousLayer == nullptr) {
     return;
   }
@@ -31,11 +31,18 @@ void Layer::forwardPropagation(bool enable_vulkan) {
   }
 }
 
-void Layer::backwardPropagation(const float &error_min,
+void Layer::backwardPropagation(const bool &enable_vulkan,
+                                const float &error_min,
                                 const float &error_max) {
   if (nextLayer == nullptr) {
     return;
   }
+
+  // TODO: implement vulkan backward propagation
+  //  if (enable_vulkan) {
+  //    VulkanController::getInstance().backwardPropagation(nextLayer, this);
+  //    return;
+  //  }
 
   for (size_t y = 0; y < neurons.size(); ++y) {
     for (size_t x = 0; x < neurons[y].size(); ++x) {
