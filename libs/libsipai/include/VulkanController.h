@@ -11,6 +11,7 @@
 
 #include "Layer.h"
 #include "Neuron.h"
+#include "exception/VulkanControllerException.h"
 #include <atomic>
 #include <memory>
 #include <mutex>
@@ -18,6 +19,7 @@
 #include <vector>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
+#include <map>
 
 namespace sipai {
 class VulkanController {
@@ -34,6 +36,32 @@ public:
   VulkanController(VulkanController const &) = delete;
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
+
+
+  // number must match the binding number
+  enum class EBuffer {
+      CurrentLayerNeurons = 0,
+      CurrentLayerValues = 1,
+      CurrentNeighborsErrors = 2,
+      CurrentNeighborsWeights = 3,
+      AdjacentLayerNeurons = 4,
+      AdjacentLayerValues = 5,
+      LayerWeights = 6,
+      Parameters = 7,
+      Output = 8
+  };
+
+  const std::map<EBuffer, std::string, std::less<>> buffer_map{
+      { EBuffer::CurrentLayerNeurons,"CurrentLayerNeurons"},
+      { EBuffer::CurrentLayerValues, "CurrentLayerValues"},
+      { EBuffer::CurrentNeighborsErrors, "CurrentNeighborsErrors"},
+      { EBuffer::CurrentNeighborsWeights, "CurrentNeighborsWeights"},
+      { EBuffer::AdjacentLayerNeurons, "AdjacentLayerNeurons"},
+      { EBuffer::AdjacentLayerValues, "AdjacentLayerValues"},
+      { EBuffer::LayerWeights, "LayerWeights"},
+      { EBuffer::Parameters, "Parameters"},
+      { EBuffer::Output, "Output"} };
+
 
   struct GLSLNeuron {
     uint index_x;
@@ -55,6 +83,16 @@ public:
     uint nextLayerSizeY;
     uint activationFunction;
   };
+
+  struct Buffer {
+      EBuffer name;
+      uint binding = 0;
+      VkBuffer buffer = VK_NULL_HANDLE;
+      VkDeviceMemory memory = VK_NULL_HANDLE;
+      VkBufferCreateInfo info{};
+      void* data = nullptr;
+  };
+
 
   void initialize();
 
@@ -89,6 +127,18 @@ public:
    */
   VkDevice &getDevice() { return logicalDevice_; }
 
+  Buffer& getBuffer(const EBuffer &bufferName) {
+      auto it = std::find_if(buffers_.begin(), buffers_.end(), [&bufferName](auto& buffer) {
+          return buffer.name == bufferName;
+          });
+      if (it != buffers_.end()) {
+          return *it;
+      }
+      else {
+          throw VulkanControllerException("buffer not found");
+      }
+  }
+
 private:
   VulkanController() = default;
   static std::unique_ptr<VulkanController> controllerInstance_;
@@ -103,10 +153,8 @@ private:
   void _computeShader(const NeuronMat &neurons, VkCommandBuffer &commandBuffer,
                       VkPipeline &pipeline);
 
-  void _copyNeuronsToBuffer(const NeuronMat &neurons,
-                            VkBufferCreateInfo &bufferInfo, void *&bufferData);
-  void _copyMatToBuffer(const cv::Mat &mat, VkBufferCreateInfo &bufferInfo,
-                        void *&bufferData);
+  void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer& buffer);
+  void _copyMatToBuffer(const cv::Mat &mat, Buffer& buffer);
   void _copyOutputBufferToMat(cv::Mat &mat);
   void _copyParametersToParametersBuffer(Layer *currentLayer);
   void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
@@ -120,9 +168,7 @@ private:
   void _createDescriptorSetLayout();
   void _createFence();
   void _createDescriptorPool();
-  void _createBuffers(size_t max_size);
-  void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
-                     VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+  void _createBuffers();
   void _createDataMapping();
   void _createShaderModules();
   void _createShadersComputePipelines();
@@ -154,60 +200,7 @@ private:
   VkQueue queue_ = VK_NULL_HANDLE;
   VkFence computeFence_ = VK_NULL_HANDLE;
 
-  // Binding 0
-  VkBuffer currentLayerBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentLayerBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentLayerBufferInfo_{};
-  void *currentLayerData_ = nullptr;
-
-  // Binding 1
-  VkBuffer currentLayerValuesBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentLayerValuesBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentLayerValuesBufferInfo_{};
-  void *currentLayerValuesData_ = nullptr;
-
-  // Binding 2
-  VkBuffer currentNeighborsErrorsBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentNeighborsErrorsBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentNeighborsErrorsBufferInfo_{};
-  void *currentNeighborsErrorsData_ = nullptr;
-
-  // Binding 4
-  VkBuffer currentNeighborsWeightsBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentNeighborsWeightsBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentNeighborsWeightsBufferInfo_{};
-  void *currentNeighborsWeightsData_ = nullptr;
-
-  // Binding 5
-  VkBuffer adjacentLayerBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory adjacentLayerBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo adjacentLayerBufferInfo_{};
-  void *adjacentLayerData_ = nullptr;
-
-  // Binding 6
-  VkBuffer adjacentLayerValuesBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory adjacentLayerValuesBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo adjacentLayerValuesBufferInfo_{};
-  void *adjacentLayerValuesData_ = nullptr;
-
-  // Binding 7
-  VkBuffer weightsBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory weightsBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo weightsBufferInfo_{};
-  void *weightsData_ = nullptr;
-
-  // Binding 8
-  VkBuffer parametersBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory parametersBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo parametersBufferInfo_{};
-  void *parametersData_ = nullptr;
-
-  // Binding 9
-  VkBuffer outputBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory outputBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo outputBufferInfo_{};
-  void *outputData_ = nullptr;
-
+  std::vector<Buffer> buffers_;
   std::vector<VkCommandBuffer> commandBufferPool_;
 };
 } // namespace sipai
