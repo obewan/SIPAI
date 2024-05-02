@@ -73,6 +73,7 @@ jobs:
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release
         env:
           CXX: g++-12
+        working-directory: ${{github.workspace}}
 
       # ℹ️ Command-line programs to run using the OS shell.
       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
