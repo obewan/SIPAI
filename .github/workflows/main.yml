@@ -7,7 +7,7 @@ jobs:
     name: Build
     defaults:
       run:
-        working-directory: ./sipai-github-actions-docker
+        working-directory: sipai-github-actions-docker
 
     runs-on: ubuntu-latest
     container:

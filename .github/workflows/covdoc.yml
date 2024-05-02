@@ -9,7 +9,7 @@ jobs:
     name: Build
     defaults:
       run:
-        working-directory: ./sipai-github-actions-docker
+        working-directory: sipai-github-actions-docker
 
     runs-on: ubuntu-latest
     container:
@@ -44,10 +44,10 @@ jobs:
           lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file coverage/lcov.info
           lcov --gcov-tool /usr/bin/gcov-12 --remove coverage/lcov.info --output-file coverage/lcov.info \
           '/usr/include/*' '/usr/lib/*' \
-          '*/libs/libcsvparser/*' \
-          '*/libs/libjson/*' \
-          '*/libs/libsipai/src/VulkanController.cpp' \          
-          '*/test/*'
+          '*libs/libcsvparser/*' \
+          '*libs/libjson/*' \
+          '*libs/libsipai/src/VulkanController.cpp' \          
+          '*test/*'
           lcov --gcov-tool /usr/bin/gcov-12 --summary coverage/lcov.info
           genhtml coverage/lcov.info --output-directory coverage/html
         working-directory: ${{github.workspace}}

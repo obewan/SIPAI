@@ -22,7 +22,7 @@ jobs:
   analyze:
     defaults:
       run:
-        working-directory: ./sipai-github-actions-docker
+        working-directory: sipai-github-actions-docker
 
     name: Analyze
     # Runner size impacts CodeQL analysis time. To learn more, please see:
