@@ -29,32 +29,8 @@ public:
   LayerOutput(size_t size_x, size_t size_y)
       : Layer(LayerType::LayerOutput, size_x, size_y) {}
 
-  void computeErrors(std::vector<RGBA> const &expectedValues) {
-    if (expectedValues.size() != neurons.size()) {
-      throw std::invalid_argument("Invalid expected values size");
-    }
+  void computeErrors(cv::Mat const &expectedValues);
 
-    float error_min = -1.0f;
-    float error_max = 1.0f;
-    float weightFactor = 0.5; // Experiment with weight between 0 and 1
-
-    for (auto &neuron : neurons) {
-      // Compute the weighted sum of neighboring neuron values
-      RGBA neighborSum = {0.0, 0.0, 0.0, 0.0};
-      for (auto &connection : neuron.neighbors) {
-        neighborSum += connection.weight * connection.neuron->value;
-      }
-      size_t pos = &neuron - &neurons[0];
-      neuron.error = (weightFactor * (neuron.value - expectedValues[pos]) +
-                      (1.0f - weightFactor) * neighborSum)
-                         .clamp(error_min, error_max);
-    }
-  }
-
-  std::vector<RGBA> getOutputValues() {
-    auto neuronOutputs =
-        std::views::transform(neurons, [](const Neuron &n) { return n.value; });
-    return std::vector<RGBA>(neuronOutputs.begin(), neuronOutputs.end());
-  }
+  cv::Mat getOutputValues() const { return values; }
 };
 } // namespace sipai

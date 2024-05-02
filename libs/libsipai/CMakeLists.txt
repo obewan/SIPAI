@@ -23,11 +23,15 @@ endif()
 if(WIN32)
     set(OpenCV_DIR $ENV{OpenCV_BUILD})
 endif()
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.6.0 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Add Intel TBB lib
 find_package(TBB REQUIRED)
+
+# Add Vulkan lib
+find_package(Vulkan REQUIRED)
+include_directories(${Vulkan_INCLUDE_DIRS})
 
 # Add included libs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
@@ -52,7 +56,7 @@ add_library(${LIBRARY_NAME} STATIC
 )
 
 
-target_link_libraries(libsipai ${OpenCV_LIBS} TBB::tbb)
+target_link_libraries(libsipai ${OpenCV_LIBS} TBB::tbb  Vulkan::Vulkan)
 
 
 target_include_directories(${LIBRARY_NAME} PUBLIC

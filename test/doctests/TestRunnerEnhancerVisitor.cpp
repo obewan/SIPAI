@@ -38,6 +38,7 @@ TEST_CASE("Testing RunnerEnhancerVisitor") {
         .hiddens_count = 2,
     };
     manager.app_params.network_to_import = "";
+    manager.app_params.enable_vulkan = false;
     manager.createOrImportNetwork();
     manager.app_params.input_file = "../data/images/input/001a.png";
     manager.app_params.output_file = "../data/images/output/001a_test.png";

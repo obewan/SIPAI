@@ -10,10 +10,11 @@
 #pragma once
 #include "ActivationFunctions.h"
 #include "NeuronConnection.h"
-#include "RGBA.h"
 #include <exception>
 #include <functional>
 #include <math.h>
+#include <opencv2/core/matx.hpp>
+#include <opencv2/opencv.hpp>
 #include <random>
 #include <stdexcept>
 #include <vector>
@@ -31,16 +32,16 @@ public:
   Neuron() = default;
 
   // The weights of the neuron
-  std::vector<RGBA> weights;
+  cv::Mat weights;
 
-  // The value of the neuron
-  RGBA value = {0.0, 0.0, 0.0, 0.0};
+  // Index in current layer
+  size_t index_x;
+  size_t index_y;
 
-  // The bias of the neuron
-  RGBA bias = {0.0, 0.0, 0.0, 0.0};
-
-  // The error of the neuron
-  RGBA error = {0.0, 0.0, 0.0, 0.0};
+  // Some indexes to use with Vulkan
+  mutable size_t weightsIndex = 0;
+  mutable size_t neighborsIndex = 0;
+  mutable size_t neighborsSize = 0;
 
   // Connections to the adjacents neurons in the same layer, using
   // 4-neighborhood (Von Neumann neighborhood). Could be improve to
@@ -52,25 +53,28 @@ public:
    * @brief Initializes the weights of the neuron to a given size. The weights
    * are randomized to break symmetry.
    *
-   * @param new_size The new size of the weights vector.
+   * @param size_x The new size in X of the weights vector.
+   * @param size_y The new size in Y of the weights vector.
    */
-  void initWeights(size_t new_size) {
-    weights.resize(new_size);
+  void initWeights(size_t size_x, size_t size_y) {
+    weights = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
 
     // Random initialization
-    const float fanIn_fanOut = new_size + 4.0f; // 4 as the 4 values of RGBA
-    for (auto &w : weights) {
-      w = w.random(fanIn_fanOut);
-    }
+    cv::randn(weights, cv::Vec4f::all(0), cv::Vec4f::all(1));
   }
 
   std::string toStringCsv(size_t max_weights) const {
     std::ostringstream oss;
-    for (const auto &weight : weights) {
-      oss << weight.toStringCsv() << ",";
-    }
+    for (int i = 0; i < weights.rows; i++) {
+      for (int j = 0; j < weights.cols; j++) {
+        for (int k = 0; k < 4; k++) {
+          oss << weights.at<cv::Vec4f>(j, i)[k] << ",";
+        }
+      }
+    };
+
     // fill the lasts columns with empty ",RGBA"
-    for (size_t i = weights.size(); i < max_weights; ++i) {
+    for (size_t i = weights.total(); i < max_weights; ++i) {
       oss << ",,,,";
     }
     std::string str = oss.str();
@@ -83,7 +87,9 @@ public:
   std::string toNeighborsStringCsv(size_t max_weights) const {
     std::ostringstream oss;
     for (const auto &neighbor : neighbors) {
-      oss << neighbor.weight.toStringCsv() << ",";
+      for (int i = 0; i < 4; i++) {
+        oss << neighbor.weight[i] << ",";
+      }
     }
     // fill the lasts columns with empty ",RGBA"
     for (size_t i = neighbors.size(); i < max_weights; ++i) {
@@ -95,8 +101,5 @@ public:
     }
     return str;
   }
-
-  std::function<RGBA(RGBA)> activationFunction;
-  std::function<RGBA(RGBA)> activationFunctionDerivative;
 };
 } // namespace sipai

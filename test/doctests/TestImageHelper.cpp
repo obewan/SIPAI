@@ -1,6 +1,8 @@
 #include "ImageHelper.h"
 #include "doctest.h"
 #include <filesystem>
+#include <opencv2/core/matx.hpp>
+#include <opencv2/core/types.hpp>
 
 using namespace sipai;
 
@@ -12,13 +14,27 @@ TEST_CASE("Testing ImageHelper") {
     const auto &image =
         imageHelper.loadImage("../data/images/input/001a.png", split, false);
     for (const auto &part : image) {
-      CHECK(part->size_x == 50);
-      CHECK(part->size_y == 50);
-      CHECK(part->size() == 50 * 50);
-      CHECK(part->data.size() == part->size());
-      for (const auto &rgba : part->data) {
-        CHECK_FALSE(rgba.isOutOfRange());
+      // Testing resize
+      CHECK(part->data.size().width == 50);
+      CHECK(part->data.size().height == 50);
+      CHECK(part->data.total() == 50 * 50);
+      // Testing converted to 4 channels
+      int channels = part->data.channels();
+      CHECK(channels == 4);
+      // Testing that all values are in range [0,1]
+      bool allValuesInRange = true;
+      for (int y = 0; y < part->data.rows; ++y) {
+        for (int x = 0; x < part->data.cols; ++x) {
+          const cv::Vec4f &pixel = part->data.at<cv::Vec4f>(y, x);
+          if (pixel[0] < 0.0f || pixel[0] > 1.0f || pixel[1] < 0.0f ||
+              pixel[1] > 1.0f || pixel[2] < 0.0f || pixel[2] > 1.0f ||
+              pixel[3] < 0.0f || pixel[3] > 1.0f) {
+            allValuesInRange = false;
+            break;
+          }
+        }
       }
+      CHECK(allValuesInRange);
     }
   }
 
@@ -31,13 +47,27 @@ TEST_CASE("Testing ImageHelper") {
     const auto &imageInput =
         imageHelper.generateInputImage(imageTarget, reduce_factor);
     for (const auto &part : imageInput) {
-      CHECK(part->size_x == 53);
-      CHECK(part->size_y == 53);
-      CHECK(part->size() == 53 * 53);
-      CHECK(part->data.size() == part->size());
-      for (const auto &rgba : part->data) {
-        CHECK_FALSE(rgba.isOutOfRange());
+      // Testing resize (original size is 640x640)
+      CHECK(part->data.size().width == 53);
+      CHECK(part->data.size().height == 53);
+      CHECK(part->data.total() == 53 * 53);
+      // Testing converted to 4 channels
+      int channels = part->data.channels();
+      CHECK(channels == 4);
+      // Testing that all values are in range [0,1]
+      bool allValuesInRange = true;
+      for (int y = 0; y < part->data.rows; ++y) {
+        for (int x = 0; x < part->data.cols; ++x) {
+          const cv::Vec4f &pixel = part->data.at<cv::Vec4f>(y, x);
+          if (pixel[0] < 0.0f || pixel[0] > 1.0f || pixel[1] < 0.0f ||
+              pixel[1] > 1.0f || pixel[2] < 0.0f || pixel[2] > 1.0f ||
+              pixel[3] < 0.0f || pixel[3] > 1.0f) {
+            allValuesInRange = false;
+            break;
+          }
+        }
       }
+      CHECK(allValuesInRange);
     }
   }
 
@@ -55,22 +85,16 @@ TEST_CASE("Testing ImageHelper") {
     CHECK(std::filesystem::exists(tmpImage));
     const auto &image2 = imageHelper.loadImage(tmpImage, split, true);
     for (size_t i = 0; i < image2.size(); i++) {
-      CHECK(image2[i]->size_x == image[i]->size_x);
-      CHECK(image2[i]->size_y == image[i]->size_y);
+      CHECK(image2[i]->data.size().width == image[i]->data.size().width);
+      CHECK(image2[i]->data.size().height == image[i]->data.size().height);
     }
     std::filesystem::remove(tmpImage);
   }
 
   SUBCASE("Testing computeLoss method") {
     ImageHelper imageHelper;
-    std::vector<RGBA> outputData(10);
-    std::vector<RGBA> targetData(10);
-
-    RGBA pixel(0.1f, 0.2f, 0.3f, 0.4f);
-    for (int i = 0; i < 10; ++i) {
-      outputData[i] = pixel;
-      targetData[i] = pixel;
-    }
+    cv::Mat outputData = cv::Mat::ones(3, 3, CV_32FC1) * 5.0f;
+    cv::Mat targetData = cv::Mat::ones(3, 3, CV_32FC1) * 5.0f;
 
     float loss = imageHelper.computeLoss(outputData, targetData);
     CHECK(loss == doctest::Approx(0.0));
@@ -78,15 +102,8 @@ TEST_CASE("Testing ImageHelper") {
 
   SUBCASE("Testing computeLoss method with different images") {
     ImageHelper imageHelper;
-    std::vector<RGBA> outputData(10);
-    std::vector<RGBA> targetData(10);
-
-    RGBA pixel1(0.1f, 0.2f, 0.3f, 0.4f);
-    RGBA pixel2(0.5f, 0.6f, 0.7f, 0.8f);
-    for (int i = 0; i < 10; ++i) {
-      outputData[i] = pixel1;
-      targetData[i] = pixel2;
-    }
+    cv::Mat outputData(10, 1, CV_32FC4, cv::Vec4f(0.1f, 0.2f, 0.3f, 0.4f));
+    cv::Mat targetData(10, 1, CV_32FC4, cv::Vec4f(0.5f, 0.6f, 0.7f, 0.8f));
 
     float loss = imageHelper.computeLoss(outputData, targetData);
     CHECK(loss == doctest::Approx(0.16));

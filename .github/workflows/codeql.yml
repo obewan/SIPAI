@@ -20,14 +20,20 @@ on:
 
 jobs:
   analyze:
+    defaults:
+      run:
+        working-directory: sipai-github-actions-docker
+
     name: Analyze
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners
     # Consider using larger runners for possible analysis time improvements.
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/obewan/sipai-env
+    timeout-minutes: 360
     permissions:
       actions: read
       contents: read
@@ -63,11 +69,11 @@ jobs:
       #- name: Autobuild
       #  uses: github/codeql-action/autobuild@v3
 
-      - name: Install dependencies
-        run: sudo apt-get install -y g++-12 libopencv-dev
-
       - name: Build with C++20 support
-        run: find . -name "*.cpp" -exec g++-12 -I./include -I./libs/libsipai/include -I./libs/libcsvparser/include -I./libs/libjson/include -I/usr/include/opencv4 -I./test/doctests/include -std=c++20 -c {} \;
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+        env:
+          CXX: g++-12
+        working-directory: ${{github.workspace}}
 
       # ℹ️ Command-line programs to run using the OS shell.
       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun

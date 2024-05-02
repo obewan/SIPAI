@@ -9,7 +9,6 @@
  */
 #pragma once
 #include "Common.h"
-#include "Image.h"
 #include "ImageHelper.h"
 #include "RunnerVisitor.h"
 #include <memory>
@@ -60,9 +59,13 @@ public:
    * @param epoch The current epoch number.
    * @param trainingLoss The average training loss for the current epoch.
    * @param validationLoss The average validation loss for the current epoch.
+   * @param previousTrainingLoss
+   * @param previousValidationLoss
    */
-  void logTrainingProgress(int epoch, float trainingLoss,
-                           float validationLoss) const;
+  void logTrainingProgress(const int &epoch, const float &trainingLoss,
+                           const float &validationLoss,
+                           const float &previousTrainingLoss,
+                           const float &previousValidationLoss) const;
 
   /**
    * @brief Save and export the neural network

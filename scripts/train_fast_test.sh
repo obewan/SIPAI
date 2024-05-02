@@ -15,4 +15,4 @@ haa=0.001
 oaa=0.001
 
 cd ../build
-./sipai --en test.json --tfo $input_folder --isx $res_i --isy $res_i --hsx $res_h --hsy $res_h --osx $res_o --osy $res_o --hl $hl --haf $algo --oaf $algo --haa $haa --oaa $oaa --lr $lr --is $split --trf $factor --eas 10 --rl --bl -m TrainingMonitored -V --par --alr --alrf $alrf
+./sipai --en test.json --tfo $input_folder --isx $res_i --isy $res_i --hsx $res_h --hsy $res_h --osx $res_o --osy $res_o --hl $hl --haf $algo --oaf $algo --haa $haa --oaa $oaa --lr $lr --is $split --trf $factor --eas 10 --rl --bl -m TrainingMonitored -V --par --alr --alrf $alrf --vulkan
