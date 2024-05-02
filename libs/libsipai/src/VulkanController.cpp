@@ -97,7 +97,7 @@ void VulkanController::initialize() {
   _createCommandPool();
   _createCommandBufferPool();
   _createDescriptorSetLayout();
-  _createDescriptorPool(max_size);
+  _createDescriptorPool();
   _createDescriptorSet();
   _createPipelineLayout();
   _createFence();
@@ -286,7 +286,7 @@ void VulkanController::_createCommandBufferPool() {
 void VulkanController::_createDescriptorSetLayout() {
   std::array<VkDescriptorSetLayoutBinding, BUFFER_COUNT> layoutBindings{};
   // Buffer layout binding
-  for (size_t i = 0; i < layoutBindings.size(); i++) {
+  for (size_t i = 0; i < BUFFER_COUNT; i++) {
     layoutBindings[i].binding = (unsigned int)i; // binding number
     layoutBindings[i].descriptorType =
         VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // type of the bound descriptor(s)
@@ -298,8 +298,7 @@ void VulkanController::_createDescriptorSetLayout() {
   }
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = static_cast<uint32_t>(
-      layoutBindings.size()); // number of bindings in the descriptor set
+  layoutInfo.bindingCount = static_cast<uint32_t>(BUFFER_COUNT); // number of bindings in the descriptor set
   layoutInfo.pBindings = layoutBindings.data(); // array of bindings
   auto result = vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo,
                                             nullptr, &descriptorSetLayout_);
@@ -308,15 +307,15 @@ void VulkanController::_createDescriptorSetLayout() {
   }
 }
 
-void VulkanController::_createDescriptorPool(size_t max_size) {
+void VulkanController::_createDescriptorPool() {
   VkDescriptorPoolSize poolSize{};
   poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  poolSize.descriptorCount = static_cast<uint32_t>(max_size);
+  poolSize.descriptorCount = static_cast<uint32_t>(BUFFER_COUNT);
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
   poolInfo.poolSizeCount = 1;
   poolInfo.pPoolSizes = &poolSize;
-  poolInfo.maxSets = static_cast<uint32_t>(max_size);
+  poolInfo.maxSets = static_cast<uint32_t>(BUFFER_COUNT);
   auto result = vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr,
                                        &descriptorPool_);
   if (result != VK_SUCCESS) {

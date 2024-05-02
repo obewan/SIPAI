@@ -119,7 +119,7 @@ private:
   void _createDescriptorSet();
   void _createDescriptorSetLayout();
   void _createFence();
-  void _createDescriptorPool(size_t max_size);
+  void _createDescriptorPool();
   void _createBuffers(size_t max_size);
   void _createBuffer(VkDeviceSize size, VkBufferCreateInfo &bufferInfo,
                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
