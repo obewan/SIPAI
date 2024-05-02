@@ -81,22 +81,10 @@ public:
    */
   void updateWeights(float learning_rate);
 
-  /**
-   * @brief Return the maximum neurons count of any layer
-   *
-   * @return size_t
-   */
-  size_t max_neurons() {
-    auto max_layer = *std::max_element(
-        layers.begin(), layers.end(), [](const auto a, const auto b) {
-          return a->neurons.size() < b->neurons.size();
-        });
-    return max_layer->neurons.size();
-  }
 
   /**
    * @brief max weights of all neurons, useful for csv export
-   *
+   * It is also the maximum layer neurons.
    * Updated during neural network import or creation
    */
   size_t max_weights = 0;

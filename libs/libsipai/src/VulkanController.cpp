@@ -18,7 +18,7 @@
 using namespace sipai;
 
 constexpr size_t BUFFER_COUNT = 10;
-constexpr size_t COMMAND_POOL_SIZE = 10;
+constexpr size_t COMMAND_POOL_SIZE = 1;
 constexpr size_t MAX_NEIGHBOORS_PER_NEURON = 4;
 
 std::unique_ptr<VulkanController> VulkanController::controllerInstance_ =
@@ -93,7 +93,7 @@ void VulkanController::initialize() {
   forwardShader_ = _loadShader(manager.app_params.forwardShader);
   backwardShader_ = _loadShader(manager.app_params.backwardShader);
 
-  size_t max_size = manager.network->max_neurons();
+  size_t max_size = manager.network->max_weights;
   _createCommandPool();
   _createCommandBufferPool();
   _createDescriptorSetLayout();
@@ -116,29 +116,24 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
     throw NeuralNetworkException("Vulkan controller is not initialized.");
   }
 
-  // Prepare data for the shader
-  auto commandBuffer = _beginSingleTimeCommands();
+  // Prepare data for the shader  
   _copyNeuronsWeightsToWeightsBuffer(
-      currentLayer->neurons); // before others for weights index
-  _endSingleTimeCommands(commandBuffer);
-
-  commandBuffer = _beginSingleTimeCommands();
+      currentLayer->neurons); // before others for weights index    
   _copyNeuronsToBuffer(previousLayer->neurons, adjacentLayerBufferInfo_,
-                       adjacentLayerData_);
+                       adjacentLayerData_);  
   _copyMatToBuffer(previousLayer->values, adjacentLayerValuesBufferInfo_,
                    adjacentLayerValuesData_);
   _copyNeuronsToBuffer(currentLayer->neurons, currentLayerBufferInfo_,
                        currentLayerData_);
   _copyParametersToParametersBuffer(currentLayer);
-  _endSingleTimeCommands(commandBuffer);
 
   // Run the shader
-  _computeShader(currentLayer->neurons, forwardComputePipeline_);
-
-  // Get the results
-  commandBuffer = _beginSingleTimeCommands();
-  _copyOutputBufferToMat(currentLayer->values);
+  auto commandBuffer = _beginSingleTimeCommands();
+  _computeShader(currentLayer->neurons, commandBuffer, forwardComputePipeline_);
   _endSingleTimeCommands(commandBuffer);
+
+  // Get the results  
+  _copyOutputBufferToMat(currentLayer->values);
 }
 
 void VulkanController::backwardPropagation(Layer *nextLayer,
@@ -178,15 +173,14 @@ VulkanController::_loadShader(const std::string &path) {
 }
 
 void VulkanController::_computeShader(const NeuronMat &neurons,
-                                      VkPipeline pipeline) {
-  VkCommandBuffer commandBuffer = _beginSingleTimeCommands();
+                                      VkCommandBuffer& commandBuffer,
+                                      VkPipeline& pipeline) {  
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           pipelineLayout_, 0, 1, &descriptorSet_, 0, nullptr);
   uint32_t rows = static_cast<uint32_t>(neurons.size());
   uint32_t cols = rows > 0 ? static_cast<uint32_t>(neurons[0].size()) : 0;
   vkCmdDispatch(commandBuffer, cols, rows, 1);
-  _endSingleTimeCommands(commandBuffer);
 }
 
 VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
@@ -205,17 +199,13 @@ VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
   return commandBuffer;
 }
 
-void VulkanController::_endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+void VulkanController::_endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   // Ends recording the command
   auto result = vkEndCommandBuffer(commandBuffer);
   if (result != VK_SUCCESS) {
     throw VulkanControllerException("Vulkan command buffer end error.");
   }
-  // Reset the fence
-  result = vkResetFences(logicalDevice_, 1, &computeFence_);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan reset fence error.");
-  }
+  
   // Submit the command to the queue
   VkSubmitInfo submitInfo{};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -232,6 +222,13 @@ void VulkanController::_endSingleTimeCommands(VkCommandBuffer commandBuffer) {
     throw VulkanControllerException("Vulkan wait for fence error.");
   }
 
+  // Reset the fence
+  result = vkResetFences(logicalDevice_, 1, &computeFence_);
+  if (result != VK_SUCCESS) {
+      throw VulkanControllerException("Vulkan reset fence error.");
+  }
+
+  // Reset the command buffer
   result = vkResetCommandBuffer(commandBuffer, 0);
   if (result != VK_SUCCESS) {
     throw VulkanControllerException("Vulkan reset command buffer error.");
@@ -245,7 +242,7 @@ void VulkanController::_createCommandPool() {
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.queueFamilyIndex = queueFamilyIndex_;
   poolInfo.flags =
-      VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional flags
+      VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; 
   if (vkCreateCommandPool(logicalDevice_, &poolInfo, nullptr, &commandPool_) !=
       VK_SUCCESS) {
     throw VulkanControllerException("Failed to create command pool!");
@@ -283,8 +280,8 @@ void VulkanController::_createDescriptorSetLayout() {
   layoutInfo.bindingCount = static_cast<uint32_t>(
       layoutBindings.size()); // number of bindings in the descriptor set
   layoutInfo.pBindings = layoutBindings.data(); // array of bindings
-  if (vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo, nullptr,
-                                  &descriptorSetLayout_) != VK_SUCCESS) {
+  auto result = vkCreateDescriptorSetLayout(logicalDevice_, &layoutInfo, nullptr, &descriptorSetLayout_);
+  if (result != VK_SUCCESS) {
     throw VulkanControllerException("Failed to create descriptor set layout!");
   }
 }
@@ -298,8 +295,8 @@ void VulkanController::_createDescriptorPool(size_t max_size) {
   poolInfo.poolSizeCount = 1;
   poolInfo.pPoolSizes = &poolSize;
   poolInfo.maxSets = static_cast<uint32_t>(max_size);
-  if (vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr,
-                             &descriptorPool_) != VK_SUCCESS) {
+  auto result = vkCreateDescriptorPool(logicalDevice_, &poolInfo, nullptr, &descriptorPool_);
+  if (result != VK_SUCCESS) {
     throw VulkanControllerException("Failed to create descriptor pool!");
   }
 }
@@ -310,8 +307,8 @@ void VulkanController::_createDescriptorSet() {
   allocInfo.descriptorPool = descriptorPool_;
   allocInfo.descriptorSetCount = 1;
   allocInfo.pSetLayouts = &descriptorSetLayout_;
-  if (vkAllocateDescriptorSets(logicalDevice_, &allocInfo, &descriptorSet_) !=
-      VK_SUCCESS) {
+  auto result = vkAllocateDescriptorSets(logicalDevice_, &allocInfo, &descriptorSet_);
+  if (result != VK_SUCCESS) {
     throw VulkanControllerException("Failed to allocate descriptor set!");
   }
 }
@@ -319,7 +316,10 @@ void VulkanController::_createDescriptorSet() {
 void VulkanController::_createFence() {
   VkFenceCreateInfo fenceInfo{};
   fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-  vkCreateFence(logicalDevice_, &fenceInfo, nullptr, &computeFence_);
+  auto result = vkCreateFence(logicalDevice_, &fenceInfo, nullptr, &computeFence_);
+  if (result != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create fence!");
+  }
 }
 
 void VulkanController::_createBuffers(size_t max_size) {
@@ -366,7 +366,7 @@ void VulkanController::_createBuffers(size_t max_size) {
 
 void VulkanController::_createBuffer(VkDeviceSize size,
                                      VkBufferCreateInfo &bufferInfo,
-                                     VkBuffer buffer,
+                                     VkBuffer &buffer,
                                      VkDeviceMemory &bufferMemory) {
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size; // Size of the buffer in bytes
@@ -397,38 +397,68 @@ void VulkanController::_createBuffer(VkDeviceSize size,
 
 void VulkanController::_createDataMapping() {
   // Binding 0
-  vkMapMemory(logicalDevice_, currentLayerBufferMemory_, 0,
-              currentLayerBufferInfo_.size, 0, &currentLayerData_);
+  if (vkMapMemory(logicalDevice_, currentLayerBufferMemory_, 0,
+              currentLayerBufferInfo_.size, 0, &currentLayerData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for currentLayerData_");
+  }
   // Binding 1
-  vkMapMemory(logicalDevice_, currentLayerValuesBufferMemory_, 0,
-              currentLayerValuesBufferInfo_.size, 0, &currentLayerValuesData_);
+  if (vkMapMemory(logicalDevice_, currentLayerValuesBufferMemory_, 0,
+              currentLayerValuesBufferInfo_.size, 0, &currentLayerValuesData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for currentLayerValuesData_");
+  }
   // Binding 2
-  vkMapMemory(logicalDevice_, currentLayerErrorsBufferMemory_, 0,
-              currentLayerErrorsBufferInfo_.size, 0, &currentLayerErrorsData_);
+  if (vkMapMemory(logicalDevice_, currentLayerErrorsBufferMemory_, 0,
+              currentLayerErrorsBufferInfo_.size, 0, &currentLayerErrorsData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for currentLayerErrorsData_");
+  }
   // Binding 3
-  vkMapMemory(logicalDevice_, currentNeighborsIndexesBufferMemory_, 0,
+  if (vkMapMemory(logicalDevice_, currentNeighborsIndexesBufferMemory_, 0,
               currentNeighborsIndexesBufferInfo_.size, 0,
-              &currentNeighborsIndexesData_);
+              &currentNeighborsIndexesData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for currentNeighborsIndexesData_");
+  }
   // Binding 4
-  vkMapMemory(logicalDevice_, currentNeighborsWeightsBufferMemory_, 0,
+  if (vkMapMemory(logicalDevice_, currentNeighborsWeightsBufferMemory_, 0,
               currentNeighborsWeightsBufferInfo_.size, 0,
-              &currentNeighborsWeightsData_);
+              &currentNeighborsWeightsData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for currentNeighborsWeightsData_");
+  }
   // Binding 5
-  vkMapMemory(logicalDevice_, adjacentLayerBufferMemory_, 0,
-              adjacentLayerBufferInfo_.size, 0, &adjacentLayerData_);
+  if (vkMapMemory(logicalDevice_, adjacentLayerBufferMemory_, 0,
+              adjacentLayerBufferInfo_.size, 0, &adjacentLayerData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for adjacentLayerData_");
+  }
   // Binding 6
-  vkMapMemory(logicalDevice_, adjacentLayerValuesBufferMemory_, 0,
+  if (vkMapMemory(logicalDevice_, adjacentLayerValuesBufferMemory_, 0,
               adjacentLayerValuesBufferInfo_.size, 0,
-              &adjacentLayerValuesData_);
+              &adjacentLayerValuesData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for adjacentLayerValuesData_");
+  }
   // Binding 7
-  vkMapMemory(logicalDevice_, weightsBufferMemory_, 0, weightsBufferInfo_.size,
-              0, &weightsData_);
+  if (vkMapMemory(logicalDevice_, weightsBufferMemory_, 0, weightsBufferInfo_.size,
+      0, &weightsData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for weightsData_");
+  }
   // Binding 8
-  vkMapMemory(logicalDevice_, parametersBufferMemory_, 0,
-              parametersBufferInfo_.size, 0, &parametersData_);
+  if (vkMapMemory(logicalDevice_, parametersBufferMemory_, 0,
+              parametersBufferInfo_.size, 0, &parametersData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for parametersData_");
+  }
   // Binding 9
-  vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
-              &outputData_);
+  if(vkMapMemory(logicalDevice_, outputBufferMemory_, 0, outputBufferInfo_.size, 0,
+              &outputData_) != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to create allocate memory for outputData_");
+  }
+  // Checking
+  VkMappedMemoryRange memoryRange{};
+  memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+  memoryRange.memory = outputBufferMemory_; // The device memory object
+  memoryRange.offset = 0; // Starting offset within the memory object
+  memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
+  VkResult result = vkInvalidateMappedMemoryRanges(logicalDevice_, 1, &memoryRange);
+  if (result != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to validate memory for outputData_");
+  }
 }
 
 void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons,
@@ -460,8 +490,8 @@ void VulkanController::_copyMatToBuffer(const cv::Mat &mat,
                                         void *&bufferData) {
   std::vector<cv::Vec4f> flatValues;
   flatValues.reserve(mat.total());
-  for (size_t x = 0; x < (size_t)mat.cols; x++) {
-    for (size_t y = 0; y < (size_t)mat.rows; y++) {
+  for (int x = 0; x < mat.cols; x++) {
+    for (int y = 0; y < mat.rows; y++) {
       flatValues.push_back(mat.at<cv::Vec4f>(x, y));
     }
   }
@@ -531,8 +561,8 @@ void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
 
   // copy the data
   size_t index = 0;
-  for (size_t x = 0; x < (size_t)mat.cols; x++) {
-    for (size_t y = 0; y < (size_t)mat.rows; y++) {
+  for (int x = 0; x < mat.cols; x++) {
+    for (int y = 0; y < mat.rows; y++) {
       mat.at<cv::Vec4f>(x, y) =
           cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
                     bufferDataArray[index][2], bufferDataArray[index][3]);

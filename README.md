@@ -23,9 +23,9 @@ Requirements for compiling the source code:
 - The [Vulkan](https://www.vulkan.org/) library (on Debian: `sudo apt-get -y install libvulkan1 libvulkan-dev mesa-vulkan-drivers vulkan-tools`, on Windows: https://vulkan.lunarg.com/sdk/home#windows).
 - The GLSL tools to use with Vulkan (on Debian: `sudo apt-get -y install glslang-tools spirv-tools`)
 - [CMake](https://cmake.org/)
-
-- on Windows, be sure that the name of your images is encoded for your system (ASCII for example), or install Unicode UTF-8 on your system.
-    Also edit the `libs/libsipai/src/CMakeLists.txt` with the path of your Vulkan installation, and be sure to relogin after install to have correct paths.
+- on Windows:
+	- **Image Encoding**: Ensure that your image names are encoded in a format compatible with your system (for example, ASCII). Alternatively, you can install Unicode UTF-8 on your system for broader compatibility		.	
+	- **Vulkan SDK Installation**: After installing the Vulkan SDK, make sure to log out and log back in. This step is necessary to update the system paths.
 - on a Windows WSL Linux, be sure to use WSL 2 or better and to have enabled the GPU acceleration: after a `sudo apt-get install mesa-utils` the command `glxinfo | grep -i opengl` should show a line like `OpenGL renderer string: D3D12 (the 3D card)`. You should have a `/dev/dxg` device link as well.
 
 ---

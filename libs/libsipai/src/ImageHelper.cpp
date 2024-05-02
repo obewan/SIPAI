@@ -284,7 +284,7 @@ float ImageHelper::computeLoss(const cv::Mat &outputData,
   size_t numPixels = outputData.total();
 
   // Calculate the MSE loss
-  float mseLoss = sumSquaredDiff.val[0] / static_cast<float>(numPixels);
+  float mseLoss = static_cast<float>(sumSquaredDiff.val[0]) / static_cast<float>(numPixels);
 
   return mseLoss;
 }

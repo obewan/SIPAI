@@ -19,12 +19,12 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
 
   // Create the errors matrix if not already allocated
   if (errors.empty()) {
-    errors.create(cols, rows, CV_32FC4);
+    errors.create((int)cols, (int)rows, CV_32FC4);
   }
 
   // Iterate over all neurons in the layer
-  for (size_t y = 0; y < rows; ++y) {
-    for (size_t x = 0; x < cols; ++x) {
+  for (int y = 0; y < (int)rows; ++y) {
+    for (int x = 0; x < (int)cols; ++x) {
       const Neuron &neuron = neurons[y][x];
       cv::Vec4f &error = errors.at<cv::Vec4f>(x, y);
 
@@ -32,7 +32,7 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
       cv::Vec4f neighborSum = cv::Vec4f(0.0f);
       for (const NeuronConnection &connection : neuron.neighbors) {
         neighborSum += connection.weight.mul(values.at<cv::Vec4f>(
-            connection.neuron->index_x, connection.neuron->index_y));
+            (int)connection.neuron->index_x, (int)connection.neuron->index_y));
       }
 
       // Compute and update the error
