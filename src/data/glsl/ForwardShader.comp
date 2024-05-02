@@ -37,11 +37,11 @@ layout (std430, binding = 1)  buffer readonly CurrentLayerValues {
     vec4 values[];
 } currentLayerValues;
 
-// will contains current layer errors 
+// will contains current layer neighboors errors (multi, indexed)
 // *** not needed to be mapped in this shader *** 
-layout (std430, binding = 2)  buffer readonly CurrentLayerErrors {
+layout (std430, binding = 2)  buffer readonly CurrentLayerNeighboorsErrors {
     vec4 errors[];
-} currentLayerErrors;
+} currentLayerNeighboorsErrors;
 
 // will contains current layer neurons neighbors indexes (multi, indexed)
 // *** not needed to be mapped in this shader *** 
@@ -51,9 +51,9 @@ layout (std430, binding = 3) buffer readonly  CurrentNeighborsIndexes {
 
 // will contains current layer neurons neighbors weights (multi, indexed)
 // *** not needed to be mapped in this shader *** 
-layout (std430, binding = 4) buffer readonly  CurrentNeighborsWeights {
+layout (std430, binding = 4) buffer readonly  CurrentLayerNeighboorsConnectionWeights {
     vec4 weights[];
-} currentNeighborsWeights;
+} currentLayerNeighboorsConnectionWeights;
 
 // will contains previous layer neurons
 layout (std430, binding = 5) buffer readonly PreviousLayer {

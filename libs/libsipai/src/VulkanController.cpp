@@ -141,6 +141,18 @@ void VulkanController::backwardPropagation(Layer *nextLayer,
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
+
+  // Prepare data for the shader  
+  _copyNeuronsWeightsToWeightsBuffer(
+      nextLayer->neurons); //binding 7
+  _copyNeuronsToBuffer(nextLayer->neurons, adjacentLayerBufferInfo_,
+      adjacentLayerData_); //binding 5
+  _copyNeuronsToBuffer(currentLayer->neurons, currentLayerBufferInfo_,
+      currentLayerData_); //binding 0
+  _copyMatToBuffer(currentLayer->values, currentLayerValuesBufferInfo_,
+      currentLayerValuesData_); //binding 1  
+  _copyNeuronNeighboorsConnectionWeightsToBuffer(currentLayer); //binding 2 and 4
+  _copyParametersToParametersBuffer(currentLayer); //binding 8
 }
 
 std::unique_ptr<std::vector<uint32_t>>
@@ -330,7 +342,7 @@ void VulkanController::_createBuffers(size_t max_size) {
   _createBuffer(sizeof(cv::Vec4f) * max_size, currentLayerValuesBufferInfo_,
                 currentLayerValuesBuffer_, currentLayerValuesBufferMemory_);
   // Create CurrentLayerErrors buffer
-  _createBuffer(sizeof(cv::Vec4f) * max_size, currentLayerErrorsBufferInfo_,
+  _createBuffer(sizeof(cv::Vec4f) * max_size * MAX_NEIGHBOORS_PER_NEURON, currentLayerErrorsBufferInfo_,
                 currentLayerErrorsBuffer_, currentLayerErrorsBufferMemory_);
   // Create currentNeighborsIndexes buffer
   _createBuffer(sizeof(uint) * max_size * MAX_NEIGHBOORS_PER_NEURON,
@@ -553,6 +565,41 @@ void VulkanController::_copyNeuronsWeightsToWeightsBuffer(
   memcpy(weightsData_, flatWeights.data(),
          flatWeights.size() * sizeof(cv::Vec4f));
 }
+void VulkanController::_copyNeuronNeighboorsConnectionWeightsToBuffer(Layer* layer) {  
+    // get the neighboors connections weights and erros
+    std::vector<cv::Vec4f> neighboorsConnectionWeights;
+    std::vector<cv::Vec4f> neighboorsConnectionErrors;
+    size_t connectionWeightsIndex = 0;
+    for (const auto& row : layer->neurons) {
+        for (auto& neuron : row) {
+            neuron.neighborsSize = neuron.neighbors.size();
+            neuron.neighborsIndex = connectionWeightsIndex;
+            for (auto& connection : neuron.neighbors) {
+                neighboorsConnectionWeights.push_back(connection.weight);
+                neighboorsConnectionErrors.push_back(layer->errors.at<cv::Vec4f>((int)connection.neuron->index_x, (int)connection.neuron->index_y));
+            }
+            connectionWeightsIndex += neuron.neighborsSize;
+        }
+    }
+    // copy the weights to the buffer
+    memset(currentNeighborsWeightsData_, 0, (size_t)currentNeighborsWeightsBufferInfo_.size);
+    memcpy(currentNeighborsWeightsData_, neighboorsConnectionWeights.data(),
+        neighboorsConnectionWeights.size() * sizeof(cv::Vec4f));
+    // copy the errors to the buffer
+    memset(currentLayerErrorsData_, 0, (size_t)currentLayerErrorsBufferInfo_.size);
+    memcpy(currentLayerErrorsData_, neighboorsConnectionErrors.data(),
+        neighboorsConnectionErrors.size() * sizeof(cv::Vec4f));
+}
+
+
+void VulkanController::_copyNeuronNeighboorsIndexesToBuffer(const NeuronMat& neurons) {
+    for (const auto& row : neurons) {
+        for (auto& neuron : row) {
+            //neuron.neighborsIndex
+        }
+    }
+
+}
 
 // Copy the OutputBuffer data directly into the value field of the neurons
 void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
@@ -583,6 +630,8 @@ void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
     }
   }
 }
+
+
 
 void VulkanController::_createPipelineLayout() {
   VkDescriptorSetLayout setLayouts[] = {descriptorSetLayout_};

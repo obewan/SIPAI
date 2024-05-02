@@ -109,6 +109,8 @@ private:
   void _copyOutputBufferToMat(cv::Mat &mat);
   void _copyParametersToParametersBuffer(Layer *currentLayer);
   void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
+  void _copyNeuronNeighboorsConnectionWeightsToBuffer(Layer* layer);
+  void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat& neurons);
 
   void _createCommandPool();
   void _createCommandBufferPool();

@@ -37,20 +37,20 @@ layout (std430, binding = 1)  buffer readonly CurrentLayerValues {
     vec4 values[];
 } currentLayerValues;
 
-// will contains current layer errors 
-layout (std430, binding = 2)  buffer readonly CurrentLayerErrors {
+// will contains current layer neighboors errors (multi, indexed)
+layout (std430, binding = 2)  buffer readonly CurrentLayerNeighboorsErrors {
     vec4 errors[];
-} currentLayerErrors;
+} currentLayerNeighboorsErrors;
 
 // will contains current layer neurons neighbors indexes (multi, indexed)
 layout (std430, binding = 3) buffer readonly  CurrentNeighborsIndexes {
     uint index[];
 } currentNeighborsIndexes;
 
-// will contains current layer neurons neighbors weights (multi, indexed)
-layout (std430, binding = 4) buffer readonly  CurrentNeighborsWeights {
+// will contains current layer neurons neighboors connections weights (multi, indexed)
+layout (std430, binding = 4) buffer readonly  CurrentLayerNeighboorsConnectionWeights {
     vec4 weights[];
-} currentNeighborsWeights;
+} currentLayerNeighboorsConnectionWeights;
 
 // will contains next layer neurons
 layout (std430, binding = 5) buffer readonly NextLayer {
@@ -133,12 +133,10 @@ vec4 computeError(Neuron currentNeuron) {
     }
 
     // Consider errors of adjacent neurons
-    for (uint i = 0; i < currentNeuron.neighborsSize; ++i) {
-        uint neighborIndex = currentNeighborsIndexes.index[currentNeuron.neighborsIndex + i];
-        Neuron neighborNeuron = currentLayer.neurons[neighborIndex];
-        vec4 neighborError = currentLayerErrors.errors[neighborNeuron.index_x * params.currentLayerSizeY + neighborNeuron.index_y];
-        vec4 neighborWeight = currentNeighborsWeights.weights[currentNeuron.weightsIndex * params.currentLayerSizeY + currentNeuron.index_y];
-        error += neighborError * neighborWeight;
+    for (uint i = 0; i < currentNeuron.neighborsSize; ++i) {        
+        vec4 neighborError = currentLayerNeighboorsErrors.errors[currentNeuron.neighborsIndex + i];
+        vec4 connectionWeight = currentLayerNeighboorsConnectionWeights.weights[currentNeuron.neighborsIndex + i];
+        error += neighborError * connectionWeight;
     }
 
     // Use the derivative of the activation function

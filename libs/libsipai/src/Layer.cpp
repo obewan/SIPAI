@@ -38,11 +38,11 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
     return;
   }
 
-  // TODO: implement vulkan backward propagation
-  //  if (enable_vulkan) {
-  //    VulkanController::getInstance().backwardPropagation(nextLayer, this);
-  //    return;
-  //  }
+  
+  if (enable_vulkan) {
+    VulkanController::getInstance().backwardPropagation(nextLayer, this);
+    return;
+  }
 
   for (int y = 0; y < (int)neurons.size(); ++y) {
     for (int x = 0; x < (int)neurons[y].size(); ++x) {
