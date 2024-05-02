@@ -42,33 +42,28 @@ layout (std430, binding = 2)  buffer readonly CurrentLayerNeighboorsErrors {
     vec4 errors[];
 } currentLayerNeighboorsErrors;
 
-// will contains current layer neurons neighbors indexes (multi, indexed)
-layout (std430, binding = 3) buffer readonly  CurrentNeighborsIndexes {
-    uint index[];
-} currentNeighborsIndexes;
-
 // will contains current layer neurons neighboors connections weights (multi, indexed)
-layout (std430, binding = 4) buffer readonly  CurrentLayerNeighboorsConnectionWeights {
+layout (std430, binding = 3) buffer readonly  CurrentLayerNeighboorsConnectionWeights {
     vec4 weights[];
 } currentLayerNeighboorsConnectionWeights;
 
 // will contains next layer neurons
-layout (std430, binding = 5) buffer readonly NextLayer {
+layout (std430, binding = 4) buffer readonly NextLayer {
     Neuron neurons[];
 } nextLayer;
 
 // will contains next layer errors
-layout (std430, binding = 6) buffer readonly NextLayerErrors {
+layout (std430, binding = 5) buffer readonly NextLayerErrors {
     vec4 errors[];
 } nextLayerErrors;
 
 // will contains next layer neurons weights (multi, indexed)
-layout (std430, binding = 7) buffer readonly NextLayerWeights {
+layout (std430, binding = 6) buffer readonly NextLayerWeights {
     vec4 weights[];
 } nextLayerWeights;
 
 // will contains some parameters
-layout (std430, binding = 8) buffer readonly Parameters {
+layout (std430, binding = 7) buffer readonly Parameters {
     float error_min;
     float error_max;
     float activationAlpha;
@@ -82,7 +77,7 @@ layout (std430, binding = 8) buffer readonly Parameters {
 } params;
 
 // will contains current layer errors (output)
-layout (std430, binding = 9)  buffer writeonly CurrentLayerNewErrors {
+layout (std430, binding = 8)  buffer writeonly CurrentLayerNewErrors {
     vec4 errors[];
 } currentLayerNewErrors;
 

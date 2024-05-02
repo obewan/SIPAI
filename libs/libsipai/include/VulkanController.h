@@ -100,7 +100,8 @@ private:
   void _endSingleTimeCommands(VkCommandBuffer &commandBuffer);
 
   std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
-  void _computeShader(const NeuronMat &neurons, VkCommandBuffer& commandBuffer, VkPipeline& pipeline);
+  void _computeShader(const NeuronMat &neurons, VkCommandBuffer &commandBuffer,
+                      VkPipeline &pipeline);
 
   void _copyNeuronsToBuffer(const NeuronMat &neurons,
                             VkBufferCreateInfo &bufferInfo, void *&bufferData);
@@ -109,8 +110,8 @@ private:
   void _copyOutputBufferToMat(cv::Mat &mat);
   void _copyParametersToParametersBuffer(Layer *currentLayer);
   void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
-  void _copyNeuronNeighboorsConnectionWeightsToBuffer(Layer* layer);
-  void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat& neurons);
+  void _copyNeuronNeighboorsConnectionToBuffer(Layer *layer);
+  void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat &neurons);
 
   void _createCommandPool();
   void _createCommandBufferPool();
@@ -166,16 +167,10 @@ private:
   void *currentLayerValuesData_ = nullptr;
 
   // Binding 2
-  VkBuffer currentLayerErrorsBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentLayerErrorsBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentLayerErrorsBufferInfo_{};
-  void *currentLayerErrorsData_ = nullptr;
-
-  // Binding 3
-  VkBuffer currentNeighborsIndexesBuffer_ = VK_NULL_HANDLE;
-  VkDeviceMemory currentNeighborsIndexesBufferMemory_ = VK_NULL_HANDLE;
-  VkBufferCreateInfo currentNeighborsIndexesBufferInfo_{};
-  void *currentNeighborsIndexesData_ = nullptr;
+  VkBuffer currentNeighborsErrorsBuffer_ = VK_NULL_HANDLE;
+  VkDeviceMemory currentNeighborsErrorsBufferMemory_ = VK_NULL_HANDLE;
+  VkBufferCreateInfo currentNeighborsErrorsBufferInfo_{};
+  void *currentNeighborsErrorsData_ = nullptr;
 
   // Binding 4
   VkBuffer currentNeighborsWeightsBuffer_ = VK_NULL_HANDLE;
