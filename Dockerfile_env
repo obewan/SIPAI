@@ -4,7 +4,7 @@ FROM debian:bookworm
 LABEL org.opencontainers.image.source=https://github.com/obewan/sipai
 
 RUN apt-get update && apt-get install -y \
-    g++-12 lcov gawk doxygen \
+    g++-12 lcov gawk doxygen git \
     libtbb12 libtbb-dev libtbbmalloc2 \
     libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools \
     libopencv-dev \
