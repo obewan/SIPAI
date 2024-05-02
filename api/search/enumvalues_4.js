@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['prelu_624',['PReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a474e0c94ac3a455d2b98a72feba8fba4',1,'sipai']]]
+  ['info_0',['INFO',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0a551b723eafd6a31d444fcb2f5920fbd3',1,'sipai']]]
 ];

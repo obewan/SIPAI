@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['elu_616',['ELU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a5b44c930bf0ddeef48b50ef11e5ddd58',1,'sipai']]],
-  ['enhancer_617',['Enhancer',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b',1,'sipai']]],
-  ['error_618',['ERROR',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0abb1ca97ec761fc37101737ba0aa2e7c5',1,'sipai']]]
+  ['currentlayerneurons_0',['CurrentLayerNeurons',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba50b4ab7c72924749a2c3a40206fa7c1e',1,'sipai::VulkanController']]],
+  ['currentlayervalues_1',['CurrentLayerValues',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba5c6d00ddbba090aa8424d6e66fc600e1',1,'sipai::VulkanController']]],
+  ['currentneighborserrors_2',['CurrentNeighborsErrors',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba0ef2510b4cbde48e10e1d7dc5275b207',1,'sipai::VulkanController']]],
+  ['currentneighborsweights_3',['CurrentNeighborsWeights',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba0786ea29475b07f08f13db33a30b9963',1,'sipai::VulkanController']]]
 ];

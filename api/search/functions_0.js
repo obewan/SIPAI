@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['adaptlearningrate_389',['adaptLearningRate',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#a26ca7798953ae06db7b3d39f5b21e241',1,'sipai::RunnerTrainingMonitoredVisitor']]],
-  ['addlayers_390',['addLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a5fabf5a39071cb7bfda642d261acf682',1,'sipai::NeuralNetworkBuilder']]],
-  ['addneighbors_391',['addNeighbors',['../classsipai_1_1NeuralNetworkBuilder.html#a155910cf51b0212e87a4830f3f50ba82',1,'sipai::NeuralNetworkBuilder']]],
-  ['append_392',['append',['../classsipai_1_1SimpleLogger.html#a0ae83f8a9835e9c7d3f3581dadd91eb0',1,'sipai::SimpleLogger']]],
-  ['appenderror_393',['appendError',['../classsipai_1_1SimpleLogger.html#ab9912fa2472cf76c90be0012512ae922',1,'sipai::SimpleLogger']]],
-  ['apply_394',['apply',['../structsipai_1_1RGBA.html#a35bb3ad1e967b81b6bae5125e4cb1ccd',1,'sipai::RGBA::apply(const std::function&lt; float(float)&gt; &amp;func) const'],['../structsipai_1_1RGBA.html#a65b0e38fe7ad830aafa8c0530771249d',1,'sipai::RGBA::apply(const std::function&lt; float(float, float)&gt; &amp;func, float param) const']]],
-  ['applytoelements_395',['applyToElements',['../structsipai_1_1RGBA.html#a1a81ad2f001fb432a7c1efd92e967962',1,'sipai::RGBA']]]
+  ['adaptlearningrate_0',['adaptLearningRate',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#a26ca7798953ae06db7b3d39f5b21e241',1,'sipai::RunnerTrainingMonitoredVisitor']]],
+  ['addlayers_1',['addLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a5fabf5a39071cb7bfda642d261acf682',1,'sipai::NeuralNetworkBuilder']]],
+  ['addneighbors_2',['addNeighbors',['../classsipai_1_1NeuralNetworkBuilder.html#a155910cf51b0212e87a4830f3f50ba82',1,'sipai::NeuralNetworkBuilder']]],
+  ['append_3',['append',['../classsipai_1_1SimpleLogger.html#a28aeea0e00b3faff28ea5834812b62dc',1,'sipai::SimpleLogger']]],
+  ['appenderror_4',['appendError',['../classsipai_1_1SimpleLogger.html#a503477d6f0dbc103f589676daaaf21b2',1,'sipai::SimpleLogger']]],
+  ['apply_5',['apply',['../classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269',1,'sipai::Layer']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sigmoid_626',['Sigmoid',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a21eebb164e4b8b9bcf64fdb4d8d5dff4',1,'sipai']]]
+  ['output_0',['Output',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba29c2c02a361c9d7028472e5d92cd4a54',1,'sipai::VulkanController']]]
 ];

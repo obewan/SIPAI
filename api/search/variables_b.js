@@ -1,11 +1,17 @@
 var searchData=
 [
-  ['orig_5fx_573',['orig_x',['../structsipai_1_1Image.html#a7d731288814941e26a0094719d275e28',1,'sipai::Image']]],
-  ['orig_5fy_574',['orig_y',['../structsipai_1_1Image.html#ad7c9ae440e1a00d748da09a66762130c',1,'sipai::Image']]],
-  ['output_5factivation_5falpha_575',['output_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#af59652ab9640efbe3e1ee1d24bfdf3eb',1,'sipai::NeuralNetworkParams']]],
-  ['output_5factivation_5ffunction_576',['output_activation_function',['../structsipai_1_1NeuralNetworkParams.html#af53014e1ec358e4d4afab1c8c9b03315',1,'sipai::NeuralNetworkParams']]],
-  ['output_5ffile_577',['output_file',['../structsipai_1_1AppParams.html#aca50bfed2557acec4d1d50c38a9736a7',1,'sipai::AppParams']]],
-  ['output_5fscale_578',['output_scale',['../structsipai_1_1AppParams.html#a600f0e89aa9acc0b0c9d9131dc3115e7',1,'sipai::AppParams']]],
-  ['output_5fsize_5fx_579',['output_size_x',['../structsipai_1_1NeuralNetworkParams.html#a5892a752119dd90f07f0e4fac4adcd4d',1,'sipai::NeuralNetworkParams']]],
-  ['output_5fsize_5fy_580',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]]
+  ['name_0',['name',['../structsipai_1_1VulkanController_1_1Buffer.html#ad1b72e7edf2c3e5a046afd307c059dc8',1,'sipai::VulkanController::Buffer']]],
+  ['neighbors_1',['neighbors',['../classsipai_1_1Neuron.html#a2563fc6f15a4ea0fcc7eab9ddf5f0046',1,'sipai::Neuron']]],
+  ['neighborsindex_2',['neighborsIndex',['../classsipai_1_1Neuron.html#a5b5e6f162781f208527321792d4c074f',1,'sipai::Neuron::neighborsIndex()'],['../structsipai_1_1VulkanController_1_1GLSLNeuron.html#ae171ea974317cbe56418d7e46543c1ae',1,'sipai::VulkanController::GLSLNeuron::neighborsIndex()']]],
+  ['neighborssize_3',['neighborsSize',['../classsipai_1_1Neuron.html#a9b5108226b8a4bb5b362b2f9f46492fe',1,'sipai::Neuron::neighborsSize()'],['../structsipai_1_1VulkanController_1_1GLSLNeuron.html#a522ad5171f3cefcca9c0475824966fc0',1,'sipai::VulkanController::GLSLNeuron::neighborsSize()']]],
+  ['network_4',['network',['../classsipai_1_1Manager.html#a63c0ccc0b6c996b0fd10a2414c9a7ff2',1,'sipai::Manager']]],
+  ['network_5fparams_5',['network_params',['../classsipai_1_1Manager.html#a32d4f24db92ee4cbb2e3e15adc613207',1,'sipai::Manager']]],
+  ['network_5fto_5fexport_6',['network_to_export',['../structsipai_1_1AppParams.html#a5330b8b96411fed3ec8031d631832803',1,'sipai::AppParams']]],
+  ['network_5fto_5fimport_7',['network_to_import',['../structsipai_1_1AppParams.html#af4cef02031523a7596087fd1b7adf5ce',1,'sipai::AppParams']]],
+  ['neuron_8',['neuron',['../classsipai_1_1NeuronConnection.html#af33cf7a1913fc73e6e728c45d8d192be',1,'sipai::NeuronConnection']]],
+  ['neurons_9',['neurons',['../classsipai_1_1Layer.html#a33a2ec9724353ef115a398b6def9449c',1,'sipai::Layer']]],
+  ['nextlayer_10',['nextLayer',['../classsipai_1_1Layer.html#a4942c6d92e0c07a5558ef46ad704d201',1,'sipai::Layer']]],
+  ['nextlayersizex_11',['nextLayerSizeX',['../structsipai_1_1VulkanController_1_1GLSLParameters.html#aec7209be53eef18811a37df1ceb45984',1,'sipai::VulkanController::GLSLParameters']]],
+  ['nextlayersizey_12',['nextLayerSizeY',['../structsipai_1_1VulkanController_1_1GLSLParameters.html#a137773ea08da00cdb6013add08249f88',1,'sipai::VulkanController::GLSLParameters']]],
+  ['no_5fmax_5fepochs_13',['NO_MAX_EPOCHS',['../namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e',1,'sipai']]]
 ];

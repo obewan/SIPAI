@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['tanh_627',['Tanh',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194acc132a41cab5676334f353a22a0aa5c5',1,'sipai']]],
-  ['testing_628',['Testing',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032afa6a5a3224d7da66d9e0bdec25f62cf0',1,'sipai']]],
-  ['training_629',['Training',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032acf270e40d273f9e7fd7c3061729060c3',1,'sipai']]],
-  ['trainingmonitored_630',['TrainingMonitored',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032ad8bd04dc25b6c9e78730ad78cbd8d074',1,'sipai']]]
+  ['parameters_0',['Parameters',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba3225a10b07f1580f10dee4abc3779e6c',1,'sipai::VulkanController']]],
+  ['prelu_1',['PReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a474e0c94ac3a455d2b98a72feba8fba4',1,'sipai']]]
 ];

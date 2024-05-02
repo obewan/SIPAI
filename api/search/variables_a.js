@@ -1,12 +1,9 @@
 var searchData=
 [
-  ['neighbors_564',['neighbors',['../classsipai_1_1Neuron.html#a2563fc6f15a4ea0fcc7eab9ddf5f0046',1,'sipai::Neuron']]],
-  ['network_565',['network',['../classsipai_1_1Manager.html#a63c0ccc0b6c996b0fd10a2414c9a7ff2',1,'sipai::Manager']]],
-  ['network_5fparams_566',['network_params',['../classsipai_1_1Manager.html#a32d4f24db92ee4cbb2e3e15adc613207',1,'sipai::Manager']]],
-  ['network_5fto_5fexport_567',['network_to_export',['../structsipai_1_1AppParams.html#a5330b8b96411fed3ec8031d631832803',1,'sipai::AppParams']]],
-  ['network_5fto_5fimport_568',['network_to_import',['../structsipai_1_1AppParams.html#af4cef02031523a7596087fd1b7adf5ce',1,'sipai::AppParams']]],
-  ['neuron_569',['neuron',['../classsipai_1_1NeuronConnection.html#af33cf7a1913fc73e6e728c45d8d192be',1,'sipai::NeuronConnection']]],
-  ['neurons_570',['neurons',['../classsipai_1_1Layer.html#a74ba2e8d1949eebc1f829af9a158e9c9',1,'sipai::Layer']]],
-  ['nextlayer_571',['nextLayer',['../classsipai_1_1Layer.html#a4942c6d92e0c07a5558ef46ad704d201',1,'sipai::Layer']]],
-  ['no_5fmax_5fepochs_572',['NO_MAX_EPOCHS',['../namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e',1,'sipai']]]
+  ['max_5fepochs_0',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
+  ['max_5fepochs_5fwithout_5fimprovement_1',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5',1,'sipai::AppParams']]],
+  ['max_5fneighboors_5fper_5fneuron_2',['MAX_NEIGHBOORS_PER_NEURON',['../VulkanController_8cpp.html#aa0ec97f5a35f8a774eed37155d50cdc7',1,'VulkanController.cpp']]],
+  ['max_5fweights_3',['max_weights',['../classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9',1,'sipai::NeuralNetwork']]],
+  ['memory_4',['memory',['../structsipai_1_1VulkanController_1_1Buffer.html#afa0468beba0bd207b850257c7a239cee',1,'sipai::VulkanController::Buffer']]],
+  ['mode_5fmap_5',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]]
 ];

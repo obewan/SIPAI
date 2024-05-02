@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['image_307',['Image',['../structsipai_1_1Image.html',1,'sipai']]],
-  ['imagehelper_308',['ImageHelper',['../classsipai_1_1ImageHelper.html',1,'sipai']]],
-  ['imagehelperexception_309',['ImageHelperException',['../classsipai_1_1ImageHelperException.html',1,'sipai']]],
-  ['importexportexception_310',['ImportExportException',['../classsipai_1_1ImportExportException.html',1,'sipai']]]
+  ['filereaderexception_0',['FileReaderException',['../classsipai_1_1FileReaderException.html',1,'sipai']]]
 ];

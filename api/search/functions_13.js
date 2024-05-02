@@ -1,6 +1,12 @@
 var searchData=
 [
-  ['warn_510',['warn',['../classsipai_1_1SimpleLogger.html#ad7579e9bfdeaa8057674b8808545f5dc',1,'sipai::SimpleLogger']]],
-  ['what_511',['what',['../classsipai_1_1FileReaderException.html#a1cc84ae427674f4caae74c3f691c22a9',1,'sipai::FileReaderException::what()'],['../classsipai_1_1ImageHelperException.html#a85505d8ad9582a908db7f6fe986b0c70',1,'sipai::ImageHelperException::what()'],['../classsipai_1_1ImportExportException.html#a88125b93b3a0a1e9beceba9e23ebcded',1,'sipai::ImportExportException::what()'],['../classsipai_1_1ManagerException.html#a1a4a83457a92d1e7409e66379db73f34',1,'sipai::ManagerException::what()'],['../classsipai_1_1NeuralNetworkException.html#a937270df8f282f4f6a40ff6a10c4cf26',1,'sipai::NeuralNetworkException::what()'],['../classsipai_1_1RunnerVisitorException.html#a19183da2aea5641437e6fd27ceb39564',1,'sipai::RunnerVisitorException::what()'],['../classsipai_1_1TrainingDataFactoryException.html#ad3a3f03a64bc754515fddc77ea33754e',1,'sipai::TrainingDataFactoryException::what()']]],
-  ['with_512',['with',['../classsipai_1_1NeuralNetworkBuilder.html#aabb77c0f4ec86f4f72350b88acae2a02',1,'sipai::NeuralNetworkBuilder::with(std::unique_ptr&lt; NeuralNetwork &gt; &amp;network)'],['../classsipai_1_1NeuralNetworkBuilder.html#a52f27779baefcc524f4fee1a16fe0d8d',1,'sipai::NeuralNetworkBuilder::with(NeuralNetworkParams &amp;network_params)'],['../classsipai_1_1NeuralNetworkBuilder.html#a6a3eb01aa81f82be52fe375251c0fece',1,'sipai::NeuralNetworkBuilder::with(const AppParams &amp;app_params)']]]
+  ['_7eimportexportexception_0',['~ImportExportException',['../classsipai_1_1ImportExportException.html#aa34649beee8409576b5ac842540136dc',1,'sipai::ImportExportException']]],
+  ['_7elayer_1',['~Layer',['../classsipai_1_1Layer.html#a38c8c0374443ce22ea762150078f0add',1,'sipai::Layer']]],
+  ['_7emanager_2',['~Manager',['../classsipai_1_1Manager.html#ac4fc722e8211d1dd342417f8ee162fc5',1,'sipai::Manager']]],
+  ['_7eneuralnetwork_3',['~NeuralNetwork',['../classsipai_1_1NeuralNetwork.html#aa2cd9852cf13fe56c395dd7e5c11e35e',1,'sipai::NeuralNetwork']]],
+  ['_7eneuralnetworkimportexportfacade_4',['~NeuralNetworkImportExportFacade',['../classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd',1,'sipai::NeuralNetworkImportExportFacade']]],
+  ['_7erandomfactory_5',['~RandomFactory',['../classsipai_1_1RandomFactory.html#a43856ab84b328e915884370b1820177a',1,'sipai::RandomFactory']]],
+  ['_7erunnervisitor_6',['~RunnerVisitor',['../classsipai_1_1RunnerVisitor.html#a9eff828476354487d390af23b47516f0',1,'sipai::RunnerVisitor']]],
+  ['_7etrainingdatafactory_7',['~TrainingDataFactory',['../classsipai_1_1TrainingDataFactory.html#af2c675d918aeaa46504992342d0d3bc4',1,'sipai::TrainingDataFactory']]],
+  ['_7evulkancontroller_8',['~VulkanController',['../classsipai_1_1VulkanController.html#a52fb0521659584e17714d130bc6e7116',1,'sipai::VulkanController']]]
 ];

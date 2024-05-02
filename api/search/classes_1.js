@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['emptycellexception_305',['EmptyCellException',['../classsipai_1_1EmptyCellException.html',1,'sipai']]]
+  ['buffer_0',['Buffer',['../structsipai_1_1VulkanController_1_1Buffer.html',1,'sipai::VulkanController']]]
 ];

@@ -1,14 +1,9 @@
 var searchData=
 [
-  ['saveimage_490',['saveImage',['../classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740',1,'sipai::ImageHelper']]],
-  ['savenetwork_491',['saveNetwork',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#aa74b131cff92e20288cebfb946cb3e40',1,'sipai::RunnerTrainingMonitoredVisitor']]],
-  ['setactivationfunction_492',['setActivationFunction',['../classsipai_1_1Layer.html#abdaa34d3b5aafbe4b7ed81add4eb1348',1,'sipai::Layer::setActivationFunction()'],['../classsipai_1_1NeuralNetworkBuilder.html#af0e0a48dc3829a68bd1f6333c177802e',1,'sipai::NeuralNetworkBuilder::setActivationFunction()']]],
-  ['setinputvalues_493',['setInputValues',['../classsipai_1_1LayerInput.html#ac7cded76fc3b8c8226f77c59ddfd0cee',1,'sipai::LayerInput']]],
-  ['setprecision_494',['setPrecision',['../classsipai_1_1SimpleLogger.html#a38ac5d2f4773489fef4fedf5d389633e',1,'sipai::SimpleLogger']]],
-  ['shouldcontinuetraining_495',['shouldContinueTraining',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html#a974d3c256ff05573f2dd1db0f1a84bd8',1,'sipai::RunnerTrainingMonitoredVisitor']]],
-  ['signalhandler_496',['signalHandler',['../RunnerTrainingMonitoredVisitor_8cpp.html#ad2e59c7203b3bddc1bc9a2224b52e8e7',1,'RunnerTrainingMonitoredVisitor.cpp']]],
-  ['simplelogger_497',['SimpleLogger',['../classsipai_1_1SimpleLogger.html#af4a398d42feebbbce4286ead2b724e22',1,'sipai::SimpleLogger']]],
-  ['size_498',['size',['../structsipai_1_1Image.html#ab612a7f326d7d3ddca8ddc7ab7d22528',1,'sipai::Image']]],
-  ['splitimage_499',['splitImage',['../classsipai_1_1ImageHelper.html#acdcd609ce750e34aefb3bc952b5cc2aa',1,'sipai::ImageHelper']]],
-  ['sum_500',['sum',['../structsipai_1_1RGBA.html#a4fdf703233c5962c3660c767b593fa04',1,'sipai::RGBA']]]
+  ['toneighborsstringcsv_0',['toNeighborsStringCsv',['../classsipai_1_1Neuron.html#a9fe33c8da6ba5ab44b6b5f64a1002a50',1,'sipai::Neuron']]],
+  ['tostringcsv_1',['toStringCsv',['../classsipai_1_1Neuron.html#acc0bdf4182ec97adddaf231403961a47',1,'sipai::Neuron']]],
+  ['total_2',['total',['../classsipai_1_1Layer.html#a399578bc6b2f99647e043e405ed33d72',1,'sipai::Layer']]],
+  ['trainingdatafactory_3',['TrainingDataFactory',['../classsipai_1_1TrainingDataFactory.html#a9b5ba6d2519775ddd3f5b973747a91b9',1,'sipai::TrainingDataFactory']]],
+  ['trainingdatafactoryexception_4',['TrainingDataFactoryException',['../classsipai_1_1TrainingDataFactoryException.html#a0e75f573f8a65f88fca96a30066a49d1',1,'sipai::TrainingDataFactoryException']]],
+  ['trainingsize_5',['trainingSize',['../classsipai_1_1TrainingDataFactory.html#a7b7de69d7ff4b82f4cc94ce6d715c34f',1,'sipai::TrainingDataFactory']]]
 ];

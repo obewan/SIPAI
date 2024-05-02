@@ -31,17 +31,17 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">7</td>
-            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-04-18 21:01:28</td>
+            <td class="headerValue">2024-05-02 22:25:10</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">3</td>
-            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
@@ -63,36 +63,32 @@
 <a name="1"><span class="lineNum">       1 </span>            : /**</a>
 <a name="2"><span class="lineNum">       2 </span>            :  * @file Image.h</a>
 <a name="3"><span class="lineNum">       3 </span>            :  * @author Damien Balima (www.dams-labs.net)</a>
-<a name="4"><span class="lineNum">       4 </span>            :  * @brief Image data struct</a>
-<a name="5"><span class="lineNum">       5 </span>            :  * @date 2024-04-09</a>
+<a name="4"><span class="lineNum">       4 </span>            :  * @brief Image data</a>
+<a name="5"><span class="lineNum">       5 </span>            :  * @date 2024-04-30</a>
 <a name="6"><span class="lineNum">       6 </span>            :  *</a>
 <a name="7"><span class="lineNum">       7 </span>            :  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024</a>
 <a name="8"><span class="lineNum">       8 </span>            :  *</a>
 <a name="9"><span class="lineNum">       9 </span>            :  */</a>
-<a name="10"><span class="lineNum">      10 </span>            : #pragma once</a>
-<a name="11"><span class="lineNum">      11 </span>            : #include &quot;RGBA.h&quot;</a>
-<a name="12"><span class="lineNum">      12 </span>            : #include &lt;cstddef&gt;</a>
-<a name="13"><span class="lineNum">      13 </span>            : </a>
-<a name="14"><span class="lineNum">      14 </span>            : namespace sipai {</a>
-<a name="15"><span class="lineNum">      15 </span>            : struct Image {</a>
-<a name="16"><span class="lineNum">      16 </span>            :   std::vector&lt;RGBA&gt; data;</a>
-<a name="17"><span class="lineNum">      17 </span>            :   size_t size_x = 0;</a>
-<a name="18"><span class="lineNum">      18 </span>            :   size_t size_y = 0;</a>
-<a name="19"><span class="lineNum">      19 </span>            :   size_t orig_x = 0;</a>
-<a name="20"><span class="lineNum">      20 </span>            :   size_t orig_y = 0;</a>
-<a name="21"><span class="lineNum">      21 </span>            : </a>
-<a name="22"><span class="lineNum">      22 </span>            :   Image() {}</a>
-<a name="23"><span class="lineNum">      23 </span><span class="lineCov">          1 :   Image(const std::vector&lt;RGBA&gt; &amp;data, size_t size_x, size_t size_y)</span></a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">          1 :       : data(data), size_x(size_x), size_y(size_y), orig_x(size_x),</span></a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">          1 :         orig_y(size_y) {}</span></a>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         76 :   Image(const std::vector&lt;RGBA&gt; &amp;data, size_t size_x, size_t size_y,</span></a>
-<a name="27"><span class="lineNum">      27 </span>            :         size_t orig_x, size_t orig_y)</a>
-<a name="28"><span class="lineNum">      28 </span><span class="lineCov">         76 :       : data(data), size_x(size_x), size_y(size_y), orig_x(orig_x),</span></a>
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         76 :         orig_y(orig_y) {}</span></a>
-<a name="30"><span class="lineNum">      30 </span>            : </a>
-<a name="31"><span class="lineNum">      31 </span><span class="lineCov">         36 :   size_t size() const { return data.size(); }</span></a>
-<a name="32"><span class="lineNum">      32 </span>            : };</a>
-<a name="33"><span class="lineNum">      33 </span>            : } // namespace sipai</a>
+<a name="10"><span class="lineNum">      10 </span>            : </a>
+<a name="11"><span class="lineNum">      11 </span>            : #include &lt;cstddef&gt;</a>
+<a name="12"><span class="lineNum">      12 </span>            : #include &lt;memory&gt;</a>
+<a name="13"><span class="lineNum">      13 </span>            : #include &lt;opencv2/opencv.hpp&gt;</a>
+<a name="14"><span class="lineNum">      14 </span>            : </a>
+<a name="15"><span class="lineNum">      15 </span>            : namespace sipai {</a>
+<a name="16"><span class="lineNum">      16 </span>            : struct Image {</a>
+<a name="17"><span class="lineNum">      17 </span>            :   cv::Mat data;</a>
+<a name="18"><span class="lineNum">      18 </span>            :   size_t height; // original height</a>
+<a name="19"><span class="lineNum">      19 </span>            :   size_t width;  // original width</a>
+<a name="20"><span class="lineNum">      20 </span>            :   int type;      // original type</a>
+<a name="21"><span class="lineNum">      21 </span>            :   int channels;  // original channels</a>
+<a name="22"><span class="lineNum">      22 </span>            : </a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">        147 :   void resize(size_t width, size_t height) {</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">        147 :     if (width &gt; 0 &amp;&amp; height &gt; 0) {</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         91 :       cv::resize(data, data, cv::Size((int)width, (int)height));</span></a>
+<a name="26"><span class="lineNum">      26 </span>            :     }</a>
+<a name="27"><span class="lineNum">      27 </span><span class="lineCov">        147 :   }</span></a>
+<a name="28"><span class="lineNum">      28 </span>            : };</a>
+<a name="29"><span class="lineNum">      29 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>
@@ -101,7 +97,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="https://github.com/linux-test-project/lcov" target="_parent">LCOV version 1.16</a></td></tr>
   </table>
   <br>
 

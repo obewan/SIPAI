@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['warn_631',['WARN',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0a32bd8a1db2275458673903bdb84cb277',1,'sipai']]]
+  ['relu_0',['ReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194add10d919fa85cf27fc78c0e06fe0b378',1,'sipai']]]
 ];

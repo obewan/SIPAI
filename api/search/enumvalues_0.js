@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['debug_615',['DEBUG',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0adc30ec20708ef7b0f641ef78b7880a15',1,'sipai']]]
+  ['adjacentlayerneurons_0',['AdjacentLayerNeurons',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9bab11c7e0b3c5c0a51be644bee9e276444',1,'sipai::VulkanController']]],
+  ['adjacentlayervalues_1',['AdjacentLayerValues',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9bac02d81d145eb07f1e7c09af6f1ba5971',1,'sipai::VulkanController']]]
 ];
