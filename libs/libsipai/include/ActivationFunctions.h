@@ -9,18 +9,27 @@
  */
 
 #pragma once
-#include "RGBA.h"
+#include "Common.h"
 #include <algorithm>
 #include <map>
 #include <math.h>
+#include <opencv2/core/matx.hpp>
+#include <opencv2/opencv.hpp>
 #include <string>
 
 namespace sipai {
 /**
  * @brief Activation Function enum.
- *
+ * Beware the int values are used in the Vulkan GLSL shader
  */
-enum class EActivationFunction { ELU, LReLU, PReLU, ReLU, Sigmoid, Tanh };
+enum class EActivationFunction {
+  ELU = 0,
+  LReLU = 1,
+  PReLU = 2,
+  ReLU = 3,
+  Sigmoid = 4,
+  Tanh = 5
+};
 
 const std::map<std::string, EActivationFunction, std::less<>> activation_map{
     {"ELU", EActivationFunction::ELU},
@@ -48,16 +57,16 @@ inline std::string getActivationStr(EActivationFunction activation) {
  * the sigmoid function itself: if σ(x) is the sigmoid function, then its
  * derivative σ'(x) can be computed as σ(x) * (1 - σ(x)).
  */
-inline auto sigmoid = [](const RGBA &rgba) {
-  return rgba.apply([](float v) {
-    // Clamped sigmoid function
-    float value = 1.0f / (1.0f + exp(-v));
-    return std::clamp(value, 0.0f, 1.0f);
-  });
+inline auto sigmoid = [](const cv::Vec4f &rgba) {
+  cv::Vec4f result;
+  cv::exp(-rgba, result);
+  cv::divide(cv::Vec4f::all(1.0f), (cv::Vec4f::all(1.0f) + result), result);
+  return sipai::clamp4f(result);
 };
-inline auto sigmoidDerivative = [](const RGBA &rgba) {
-  RGBA sigmoidValue = sigmoid(rgba);
-  return sigmoidValue.apply([](float v) { return v * (1 - v); });
+
+inline auto sigmoidDerivative = [](const cv::Vec4f &rgba) {
+  cv::Vec4f sigmoidValue = sigmoid(rgba);
+  return sigmoidValue.mul(cv::Vec4f::all(1.0f) - sigmoidValue);
 };
 
 /**
@@ -65,15 +74,16 @@ inline auto sigmoidDerivative = [](const RGBA &rgba) {
  * sigmoid function but maps the input to a range between -1 and 1. It is often
  * used in the hidden layers of a neural network.
  */
-inline auto tanhFunc = [](const RGBA &rgba) {
-  return rgba.apply([](float v) {
-    // rescaling and shifting tanh values [-1,1] to rgba values [0,1]
-    return (std::tanh(v) / 2.0f) + 0.5f;
-  });
+inline auto tanhFunc = [](const cv::Vec4f &rgba) {
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val,
+                 [](float v) { return (std::tanh(v) / 2.0f) + 0.5f; });
+  return result;
 };
-inline auto tanhDerivative = [](const RGBA &rgba) {
-  RGBA tanhValue = tanhFunc(rgba);
-  return tanhValue.apply([](float v) { return 1 - v * v; });
+
+inline auto tanhDerivative = [](const cv::Vec4f &rgba) {
+  cv::Vec4f tanhValue = tanhFunc(rgba);
+  return cv::Vec4f::all(1.0f) - tanhValue.mul(tanhValue);
 };
 
 /**
@@ -86,11 +96,12 @@ inline auto tanhDerivative = [](const RGBA &rgba) {
  * @return ReLU
  */
 
-inline auto relu = [](const RGBA &rgba) {
-  return rgba.apply([](float v) { return std::clamp(v, 0.0f, 1.0f); });
-};
-inline auto reluDerivative = [](const RGBA &rgba) {
-  return rgba.apply([](float v) { return v > 0 ? 1.0f : 0.0f; });
+inline auto relu = [](const cv::Vec4f &rgba) { return sipai::clamp4f(rgba); };
+inline auto reluDerivative = [](const cv::Vec4f &rgba) {
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val,
+                 [](float v) { return v > 0.0f ? 1.0f : 0.0f; });
+  return result;
 };
 
 /**
@@ -99,13 +110,12 @@ inline auto reluDerivative = [](const RGBA &rgba) {
  * ReLU problem where neurons become inactive and only output zero.
  * Combine LReLU with clamping to [0, 1] range
  */
-inline auto leakyRelu = [](const RGBA &rgba) {
-  return rgba.apply(
-      [](float v) -> float { return std::clamp(0.01f * v, 0.0f, 1.0f); });
+inline auto leakyRelu = [](const cv::Vec4f &rgba) {
+  return sipai::clamp4f(rgba * 0.01f);
 };
 
-inline auto leakyReluDerivative = [](const RGBA &rgba) {
-  return rgba.apply([](float v) { return std::max(0.01f, std::min(1.0f, v)); });
+inline auto leakyReluDerivative = [](const cv::Vec4f &rgba) {
+  return sipai::clamp4f(rgba, cv::Vec4f::all(0.01f), cv::Vec4f::all(1.0f));
 };
 
 /**
@@ -114,19 +124,20 @@ inline auto leakyReluDerivative = [](const RGBA &rgba) {
  * This can give it a bit more flexibility and help it to learn more complex
  * patterns
  */
-inline auto parametricRelu = [](const RGBA &rgba, float alpha) {
-  return rgba.apply(
-      [](float v, float param) {
-        // Clamped version of PReLU
-        auto value = std::max(param * v, v);
-        return std::clamp(value, 0.f, 1.f);
-      },
-      alpha);
+inline auto parametricRelu = [](const cv::Vec4f &rgba, float alpha) {
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val, [alpha](float v) {
+    float value = std::max(alpha * v, v);
+    return std::clamp(value, 0.f, 1.f);
+  });
+  return result;
 };
 
-inline auto parametricReluDerivative = [](const RGBA &rgba, float alpha) {
-  return rgba.apply([](float v, float param) { return v > 0 ? 1.0f : param; },
-                    alpha);
+inline auto parametricReluDerivative = [](const cv::Vec4f &rgba, float alpha) {
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val,
+                 [alpha](float v) { return v > 0.0f ? 1.0f : alpha; });
+  return result;
 };
 
 /**
@@ -137,18 +148,19 @@ inline auto parametricReluDerivative = [](const RGBA &rgba, float alpha) {
  * “dead neuron” problem.
  *
  */
-inline auto elu = [](const RGBA &rgba, float alpha) {
-  return rgba.apply(
-      [](float v, float param) {
-        auto value = v >= 0 ? v : param * (exp(v) - 1);
-        return std::clamp(value, 0.f, 1.f);
-      },
-      alpha);
+inline auto elu = [](const cv::Vec4f &rgba, float alpha) {
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val, [alpha](float v) {
+    float value = v >= 0 ? v : alpha * (exp(v) - 1);
+    return std::clamp(value, 0.f, 1.f);
+  });
+  return result;
 };
 
-inline auto eluDerivative = [](const RGBA &rgba, float alpha) {
-  return rgba.apply(
-      [](float v, float param) { return v >= 0 ? 1.0f : param * exp(v); },
-      alpha);
+inline auto eluDerivative = [](const cv::Vec4f &rgba, float alpha) {
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val,
+                 [alpha](float v) { return v > 0.0f ? 1.0f : alpha * exp(v); });
+  return result;
 };
 } // namespace sipai

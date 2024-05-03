@@ -9,10 +9,11 @@
  */
 #pragma once
 #include "Common.h"
-#include "Image.h"
 #include "Layer.h"
+#include <algorithm>
 #include <atomic>
 #include <cstddef>
+#include <cstdint>
 
 namespace sipai {
 
@@ -52,38 +53,39 @@ public:
    * values.
    *
    * @param inputValues The input values for forward propagation.
-   * @param enable_parallel enable parallelism (experimental)
+   * @param enable_vulkan enable vulkan GPU acceleration
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  std::vector<RGBA> forwardPropagation(const std::vector<RGBA> &inputValues,
-                                       bool enable_parallel = false);
+  cv::Mat forwardPropagation(const cv::Mat &inputValues,
+                             const bool& enable_vulkan);
 
   /**
    * @brief Performs backward propagation on the network using the given
    * expected values.
    *
    * @param expectedValues The expected values for backward propagation.
+   * @param enable_vulkan enable vulkan GPU acceleration
    * @param error_min error minimum
    * @param error_max error maximum
-   * @param enable_parallel enable parallelism (experimental)
    */
-  void backwardPropagation(const std::vector<RGBA> &expectedValues,
-                           const float &error_min, const float &error_max,
-                           bool enable_parallel = false);
+  void backwardPropagation(const cv::Mat &expectedValues,
+                           const bool& enable_vulkan,
+                           const float &error_min, const float &error_max);
 
   /**
    * @brief Updates the weights of the neurons in the network using the learning
    * rate.
    *
    * @param learning_rate The learning rate
-   * @param enable_parallel enable parallelism (experimental)
    */
-  void updateWeights(float learning_rate, bool enable_parallel);
+  void updateWeights(float learning_rate);
+
 
   /**
    * @brief max weights of all neurons, useful for csv export
-   *
+   * It is also the maximum layer neurons.
+   * Updated during neural network import or creation
    */
   size_t max_weights = 0;
 };

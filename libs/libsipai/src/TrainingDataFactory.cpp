@@ -11,9 +11,15 @@ using namespace sipai;
 
 std::unique_ptr<TrainingDataFactory> TrainingDataFactory::instance_ = nullptr;
 
+bool TrainingDataFactory::isDataFolder() const {
+  const auto &app_params = Manager::getConstInstance().app_params;
+  return !app_params.training_data_folder.empty() &&
+         app_params.training_data_file.empty();
+}
+
 // Rq. if the input data are going more complex, this method should be
 // refactored using another factory
-ImagePartsPair *TrainingDataFactory::next(
+ImagePartsPair *TrainingDataFactory::_next(
     std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
     std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
     std::vector<std::string> &dataTargetPaths, size_t &currentIndex) {
@@ -22,15 +28,15 @@ ImagePartsPair *TrainingDataFactory::next(
   const auto &app_params = manager.app_params;
   const auto &network_params = manager.network_params;
 
-  size_t dataSize = isDataFolder ? dataTargetPaths.size() : dataPaths.size();
+  size_t dataSize = isDataFolder() ? dataTargetPaths.size() : dataPaths.size();
   if (currentIndex >= dataSize) {
     // No more training data
     return nullptr;
   }
 
   const std::string &inputPath =
-      isDataFolder ? "" : dataPaths[currentIndex]->first;
-  const std::string &targetPath = isDataFolder
+      isDataFolder() ? "" : dataPaths[currentIndex]->first;
+  const std::string &targetPath = isDataFolder()
                                       ? dataTargetPaths[currentIndex]
                                       : dataPaths[currentIndex]->second;
 
@@ -48,7 +54,7 @@ ImagePartsPair *TrainingDataFactory::next(
     // if it is a folder of target images, the input image will be generate,
     // else it will load the provided input image
     auto inputImageParts =
-        isDataFolder
+        isDataFolder()
             ? imageHelper_.generateInputImage(
                   targetImageParts, app_params.training_reduce_factor,
                   network_params.input_size_x, network_params.input_size_y)
@@ -71,22 +77,22 @@ ImagePartsPair *TrainingDataFactory::next(
 }
 
 ImagePartsPair *TrainingDataFactory::nextTraining() {
-  return next(dataTrainingPaths_, dataTrainingBulk_, dataTrainingTargetPaths_,
-              currentTrainingIndex);
+  return _next(dataTrainingPaths_, dataTrainingBulk_, dataTrainingTargetPaths_,
+               currentTrainingIndex_);
 }
 
 ImagePartsPair *TrainingDataFactory::nextValidation() {
-  return next(dataValidationPaths_, dataValidationBulk_,
-              dataValidationTargetPaths_, currentValidationIndex);
+  return _next(dataValidationPaths_, dataValidationBulk_,
+               dataValidationTargetPaths_, currentValidationIndex_);
 }
 
 size_t TrainingDataFactory::trainingSize() {
-  return isDataFolder ? dataTrainingTargetPaths_.size()
-                      : dataTrainingPaths_.size();
+  return isDataFolder() ? dataTrainingTargetPaths_.size()
+                        : dataTrainingPaths_.size();
 }
 size_t TrainingDataFactory::validationSize() {
-  return isDataFolder ? dataValidationTargetPaths_.size()
-                      : dataValidationPaths_.size();
+  return isDataFolder() ? dataValidationTargetPaths_.size()
+                        : dataValidationPaths_.size();
 }
 
 void TrainingDataFactory::loadData() {
@@ -99,9 +105,9 @@ void TrainingDataFactory::loadData() {
     SimpleLogger::LOG_INFO("Loading images paths...");
   }
   if (!app_params.training_data_file.empty()) {
-    loadDataPaths();
+    _loadDataPaths();
   } else if (!app_params.training_data_folder.empty()) {
-    loadDataFolder();
+    _loadDataFolder();
   } else {
     throw TrainingDataFactoryException(
         "Invalid training data file or data folder");
@@ -113,18 +119,17 @@ void TrainingDataFactory::loadData() {
   }
 }
 
-void TrainingDataFactory::loadDataPaths() {
+void TrainingDataFactory::_loadDataPaths() {
   const auto &app_params = Manager::getConstInstance().app_params;
 
   auto dataPaths = trainingDatafileReaderCSV_.loadTrainingDataPaths();
-  splitDataPairPaths(dataPaths, app_params.training_split_ratio,
-                     app_params.random_loading);
+  _splitDataPairPaths(dataPaths, app_params.training_split_ratio,
+                      app_params.random_loading);
 
-  isDataFolder = false;
   isLoaded_ = true;
 }
 
-void TrainingDataFactory::loadDataFolder() {
+void TrainingDataFactory::_loadDataFolder() {
   const auto &app_params = Manager::getConstInstance().app_params;
   const auto &folder = app_params.training_data_folder;
 
@@ -144,10 +149,8 @@ void TrainingDataFactory::loadDataFolder() {
     }
   }
 
-  splitDataTargetPaths(dataTargetPaths, app_params.training_split_ratio,
-                       app_params.random_loading);
-
-  isDataFolder = true;
+  _splitDataTargetPaths(dataTargetPaths, app_params.training_split_ratio,
+                        app_params.random_loading);
   isLoaded_ = true;
 }
 
@@ -155,10 +158,10 @@ void TrainingDataFactory::resetCounters() {
   resetTraining();
   resetValidation();
 }
-void TrainingDataFactory::resetTraining() { currentTrainingIndex = 0; }
-void TrainingDataFactory::resetValidation() { currentValidationIndex = 0; }
+void TrainingDataFactory::resetTraining() { currentTrainingIndex_ = 0; }
+void TrainingDataFactory::resetValidation() { currentValidationIndex_ = 0; }
 
-void TrainingDataFactory::splitDataPairPaths(
+void TrainingDataFactory::_splitDataPairPaths(
     std::vector<std::unique_ptr<ImagePathPair>> &data, float split_ratio,
     bool withRandom) {
   dataTrainingPaths_.clear();
@@ -181,18 +184,20 @@ void TrainingDataFactory::splitDataPairPaths(
   for (size_t i = 0; i < data.size(); ++i) {
     if (i < split_index) {
       dataTrainingPaths_.push_back(std::move(data[i]));
+      data.erase(data.begin() + i); // Remove the moved element
     } else {
       dataValidationPaths_.push_back(std::move(data[i]));
+      data.erase(data.begin() + i); // Remove the moved element
     }
+    i--; // Adjust index after erasing to avoid skipping elements
   }
 
-  // clear the data as all its pointers has moved and are nullptr then.
-  data.clear();
+  assert(data.empty()); // Ensure all elements were moved and removed
 }
 
-void TrainingDataFactory::splitDataTargetPaths(std::vector<std::string> &data,
-                                               float split_ratio,
-                                               bool withRandom) {
+void TrainingDataFactory::_splitDataTargetPaths(std::vector<std::string> &data,
+                                                float split_ratio,
+                                                bool withRandom) {
   dataTrainingTargetPaths_.clear();
   dataValidationTargetPaths_.clear();
 
@@ -217,4 +222,15 @@ void TrainingDataFactory::splitDataTargetPaths(std::vector<std::string> &data,
       dataValidationTargetPaths_.push_back(data[i]);
     }
   }
+}
+
+void TrainingDataFactory::clear() {
+  dataTrainingBulk_.clear();
+  dataValidationBulk_.clear();
+  dataTrainingPaths_.clear();
+  dataValidationPaths_.clear();
+  dataTrainingTargetPaths_.clear();
+  dataValidationTargetPaths_.clear();
+  resetCounters();
+  isLoaded_ = false;
 }

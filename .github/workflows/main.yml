@@ -4,51 +4,59 @@ on: [push]
 
 jobs:
   build:
+    name: Build
+    defaults:
+      run:
+        working-directory: sipai-github-actions-docker
+
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/obewan/sipai-env
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y g++-12 lcov libopencv-dev cmake gawk
-          echo "CC=gcc-12" >> $GITHUB_ENV
-          echo "CXX=g++-12" >> $GITHUB_ENV
-
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        env:
+          CXX: g++-12
+        working-directory: ${{github.workspace}}
 
       - name: Build
-        run: cmake --build ${{github.workspace}}/build --config Debug -- -j 2
+        run: cmake --build build --config Debug -- -j 2
+        working-directory: ${{github.workspace}}
 
       - name: Run unit tests
-        working-directory: ${{github.workspace}}/build/test/doctests
         run: ./tester
+        working-directory: ${{github.workspace}}/build/test/doctests
 
       - name: Run code coverage
         run: |
-          mkdir -p ${{github.workspace}}/coverage
-          lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file ${{github.workspace}}/coverage/lcov.info
-          lcov --gcov-tool /usr/bin/gcov-12 --remove ${{github.workspace}}/coverage/lcov.info --output-file ${{github.workspace}}/coverage/lcov.info \
+          mkdir -p coverage
+          lcov --gcov-tool /usr/bin/gcov-12 --directory . --capture --output-file coverage/lcov.info
+          lcov --gcov-tool /usr/bin/gcov-12 --remove coverage/lcov.info --output-file coverage/lcov.info \
           '/usr/include/*' '/usr/lib/*' \
-          '${{github.workspace}}/libs/libsmlp/src/SimpleHTTPServer.cpp' \
-          '${{github.workspace}}/libs/libcsvparser/*' \
-          '${{github.workspace}}/libs/libjson/*' \
-          '${{github.workspace}}/test/*'           
-          lcov --gcov-tool /usr/bin/gcov-12 --summary ${{github.workspace}}/coverage/lcov.info
+          '*/libs/libcsvparser/*' \
+          '*/libs/libjson/*' \
+          '*/libs/libsipai/src/VulkanController.cpp' \
+          '*/test/*'
+          lcov --gcov-tool /usr/bin/gcov-12 --summary coverage/lcov.info
+        working-directory: ${{github.workspace}}
 
       - name: Very Good Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          path: "${{github.workspace}}/coverage/lcov.info"
+          path: "coverage/lcov.info"
           min_coverage: 80
 
       - name: Configure CMake for Release
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+        working-directory: ${{github.workspace}}
 
       - name: Build Release
-        run: cmake --build ${{github.workspace}}/build --config Release -- -j 2
+        run: cmake --build build --config Release -- -j 2
+        working-directory: ${{github.workspace}}
 
       - name: Run integration tests
         working-directory: ${{github.workspace}}/build/test/ctests

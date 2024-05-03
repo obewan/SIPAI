@@ -8,16 +8,17 @@
  *
  */
 #pragma once
-#include "RGBA.h"
+#include <opencv2/core/matx.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace sipai {
 class Neuron;
 class NeuronConnection {
 public:
   Neuron *neuron;
-  RGBA weight;
+  cv::Vec4f weight;
 
-  NeuronConnection(Neuron *neuron, RGBA weight)
+  NeuronConnection(Neuron *neuron, cv::Vec4f weight)
       : neuron(neuron), weight(weight) {}
 };
 } // namespace sipai

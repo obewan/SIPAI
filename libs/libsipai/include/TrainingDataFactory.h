@@ -11,6 +11,7 @@
 #include "Common.h"
 #include "ImageHelper.h"
 #include "TrainingDataFileReaderCSV.h"
+#include <atomic>
 #include <cstddef>
 #include <memory>
 #include <mutex>
@@ -101,23 +102,37 @@ public:
    */
   bool isLoaded() const { return isLoaded_; }
 
+  /**
+   * @brief Indicate if the training is using a data folder
+   *
+   * @return true
+   * @return false
+   */
+  bool isDataFolder() const;
+
+  /**
+   * @brief Clear all data and reset counters
+   *
+   */
+  void clear();
+
 private:
   TrainingDataFactory() = default;
   static std::unique_ptr<TrainingDataFactory> instance_;
 
-  void loadDataPaths();
-  void loadDataFolder();
+  void _loadDataPaths();
+  void _loadDataFolder();
 
-  ImagePartsPair *next(std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
-                       std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
-                       std::vector<std::string> &dataTargetPaths,
-                       size_t &currentIndex);
+  ImagePartsPair *_next(std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
+                        std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
+                        std::vector<std::string> &dataTargetPaths,
+                        size_t &currentIndex);
 
-  void splitDataPairPaths(std::vector<std::unique_ptr<ImagePathPair>> &data,
-                          float split_ratio, bool withRandom = false);
+  void _splitDataPairPaths(std::vector<std::unique_ptr<ImagePathPair>> &data,
+                           float split_ratio, bool withRandom = false);
 
-  void splitDataTargetPaths(std::vector<std::string> &data, float split_ratio,
-                            bool withRandom = false);
+  void _splitDataTargetPaths(std::vector<std::string> &data, float split_ratio,
+                             bool withRandom = false);
 
   std::unique_ptr<ImagePartsPair> currentImagePartsPair_ = nullptr;
 
@@ -135,9 +150,8 @@ private:
 
   TrainingDataFileReaderCSV trainingDatafileReaderCSV_;
   ImageHelper imageHelper_;
-  bool isLoaded_ = false;
-  bool isDataFolder = false;
-  size_t currentTrainingIndex = 0;
-  size_t currentValidationIndex = 0;
+  std::atomic<bool> isLoaded_ = false;
+  size_t currentTrainingIndex_ = 0;
+  size_t currentValidationIndex_ = 0;
 };
 } // namespace sipai

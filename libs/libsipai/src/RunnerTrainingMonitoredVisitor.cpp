@@ -10,12 +10,14 @@
 #include <cstddef>
 #include <exception>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 
 using namespace sipai;
 
 volatile std::sig_atomic_t stopTraining = false;
+volatile std::sig_atomic_t stopTrainingNow = false;
 
 void signalHandler(int signal) {
   if (signal == SIGINT) {
@@ -26,10 +28,10 @@ void signalHandler(int signal) {
           "immediately without saving.");
       stopTraining = true;
     } else {
-      SimpleLogger::LOG_INFO(
-          "Received another interrupt signal (CTRL+C). "
-          "Forcing quitting immedialty without saving progress.");
-      std::exit(EXIT_SUCCESS); // Terminate the program immediately
+      SimpleLogger::LOG_INFO("Received another interrupt signal (CTRL+C). "
+                             "Forcing quitting immedialty without saving "
+                             "progress. Please wait for cleaning...");
+      stopTrainingNow = true;
     }
   }
 }
@@ -51,6 +53,9 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
+  if (appParams.verbose_debug) {
+    SimpleLogger::LOG_DEBUG("Loading images data...");
+  }
   trainingDataFactory.loadData();
   if (!trainingDataFactory.isLoaded() ||
       trainingDataFactory.trainingSize() == 0) {
@@ -61,6 +66,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   try {
     // Reset the stopTraining flag
     stopTraining = false;
+    stopTrainingNow = false;
 
     // Set up signal handler
     std::signal(SIGINT, signalHandler);
@@ -70,12 +76,20 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
-    while (!stopTraining &&
+    while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
       float trainingLoss = computeLoss(epoch, true);
-      float validationLoss = computeLoss(epoch, false);
+      if (stopTrainingNow) {
+        break;
+      }
 
-      logTrainingProgress(epoch, trainingLoss, validationLoss);
+      float validationLoss = computeLoss(epoch, false);
+      if (stopTrainingNow) {
+        break;
+      }
+
+      logTrainingProgress(epoch, trainingLoss, validationLoss,
+                          previousTrainingLoss, previousValidationLoss);
 
       hasLastEpochBeenSaved = false;
       epoch++;
@@ -97,14 +111,17 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       previousTrainingLoss = trainingLoss;
       previousValidationLoss = validationLoss;
 
-      if (epoch % appParams.epoch_autosave == 0) {
+      if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
+        // TODO: an option to save the best validation rate network (if not
+        // saved)
         saveNetwork(hasLastEpochBeenSaved);
       }
     }
 
     SimpleLogger::LOG_INFO("Exiting training...");
-    saveNetwork(hasLastEpochBeenSaved);
-
+    if (!stopTrainingNow) {
+      saveNetwork(hasLastEpochBeenSaved);
+    }
     // Show elapsed time
     const auto end{std::chrono::steady_clock::now()};
     const std::chrono::duration elapsed_seconds =
@@ -130,10 +147,20 @@ bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
 }
 
 void RunnerTrainingMonitoredVisitor::logTrainingProgress(
-    int epoch, float trainingLoss, float validationLoss) const {
-  SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
-                         ", Train Loss: ", trainingLoss * 100.0f,
-                         "%, Validation Loss: ", validationLoss * 100.0f, "%");
+    const int &epoch, const float &trainingLoss, const float &validationLoss,
+    const float &previousTrainingLoss,
+    const float &previousValidationLoss) const {
+  std::stringstream delta;
+  if (epoch > 0) {
+    float dtl = trainingLoss - previousTrainingLoss;
+    float dvl = validationLoss - previousValidationLoss;
+    delta.precision(2);
+    delta << " [" << (dtl > 0 ? "+" : "") << dtl * 100.0f << "%";
+    delta << "," << (dvl > 0 ? "+" : "") << dvl * 100.0f << "%]";
+  }
+  SimpleLogger::LOG_INFO(
+      "Epoch: ", epoch + 1, ", Train Loss: ", trainingLoss * 100.0f,
+      "%, Validation Loss: ", validationLoss * 100.0f, "%", delta.str());
 }
 
 void RunnerTrainingMonitoredVisitor::adaptLearningRate(
@@ -152,7 +179,7 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
   const float previous_learning_rate = learningRate;
   const float increase_slower_factor = 1.5f;
 
-  if (validationLoss > previousValidationLoss &&
+  if (validationLoss >= previousValidationLoss &&
       learningRate > learning_rate_min) {
     // this will decrease learningRate (0.001 * 0.5 = 0.0005)
     learningRate *= learning_rate_adaptive_factor;
@@ -210,29 +237,64 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
 
   // Loop over all parts of the current image
   for (size_t i = 0; i < inputImage.size(); i++) {
+    if (stopTrainingNow) {
+      break;
+    }
+
     // Get the input and target parts
     const auto &inputPart = inputImage.at(i);
     const auto &targetPart = targetImage.at(i);
 
     // Perform forward propagation
+    if (manager.app_params.verbose_debug) {
+      SimpleLogger::LOG_DEBUG("forward propagation part ", i + 1, "/",
+                              inputImage.size(), "...");
+    }
     const auto &outputData = manager.network->forwardPropagation(
-        inputPart->data, manager.app_params.enable_parallel);
+        inputPart->data, manager.app_params.enable_vulkan);
+
+    if (stopTrainingNow) {
+      break;
+    }
 
     // If the loss should be computed for the current image, compute the loss
     // for the current part
     if (isLossFrequency) {
-      partsLoss += imageHelper_.computeLoss(outputData, targetPart->data);
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("loss computation...");
+      }
+      float partLoss = imageHelper_.computeLoss(outputData, targetPart->data);
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("part loss: ", partLoss * 100.0f, "%");
+      }
+      partsLoss += partLoss;
       partsLossComputed++;
+    }
+    if (stopTrainingNow) {
+      break;
     }
 
     // If backward propagation and weight update should be performed, perform
     // them
     if (isTraining) {
-      manager.network->backwardPropagation(targetPart->data, error_min,
-                                           error_max,
-                                           manager.app_params.enable_parallel);
-      manager.network->updateWeights(manager.network_params.learning_rate,
-                                     manager.app_params.enable_parallel);
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
+                                inputImage.size(), "...");
+      }
+      manager.network->backwardPropagation(targetPart->data, manager.app_params.enable_vulkan, error_min,
+                                           error_max);
+      if (stopTrainingNow) {
+        break;
+      }
+
+      if (manager.app_params.verbose_debug) {
+        SimpleLogger::LOG_DEBUG("weights update part ", i + 1, "/",
+                                inputImage.size(), "...");
+      }
+      manager.network->updateWeights(manager.network_params.learning_rate);
+      if (stopTrainingNow) {
+        break;
+      }
     }
   }
 
@@ -265,6 +327,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
   while (auto imagePartsPair = isTraining
                                    ? trainingDataFactory.nextTraining()
                                    : trainingDataFactory.nextValidation()) {
+    if (stopTrainingNow) {
+      break;
+    }
     counter++;
     if (app_params.verbose) {
       SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
@@ -282,6 +347,9 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     const auto &[inputImageParts, targetImageParts] = *imagePartsPair;
     float imageLoss = computeLoss(epoch, inputImageParts, targetImageParts,
                                   isTraining, isLossFrequency);
+    if (stopTrainingNow) {
+      break;
+    }
 
     // If the loss was computed for the current image, add the average loss for
     // the current image to the total loss

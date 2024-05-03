@@ -11,6 +11,8 @@
 #pragma once
 #include "Image.h"
 #include <map>
+#include <memory>
+#include <opencv2/opencv.hpp>
 #include <regex> // for std::regex and std::regex_replace
 #include <string>
 #include <unordered_set>
@@ -49,6 +51,38 @@ inline std::string getRunModeStr(ERunMode mode) {
     }
   }
   return "";
+}
+
+/**
+ * @brief Return the clamp of a cv::Mat value
+ *
+ * @param value
+ * @param value_min
+ * @param value_max
+ */
+inline cv::Mat mat_clamp4f(const cv::Mat &value,
+                           const cv::Vec4f &value_min = cv::Vec4f::all(0.0),
+                           const cv::Vec4f &value_max = cv::Vec4f::all(1.0)) {
+  cv::Mat result;
+  cv::min(cv::max(value, value_min), value_max, result);
+  return result;
+}
+
+/**
+ * @brief Return the clamp of a cv::Vec4f value
+ *
+ * @param value
+ * @param value_min
+ * @param value_max
+ */
+inline cv::Vec4f clamp4f(const cv::Vec4f &value,
+                         const cv::Vec4f &value_min = cv::Vec4f::all(0.0),
+                         const cv::Vec4f &value_max = cv::Vec4f::all(1.0)) {
+  cv::Vec4f result;
+  for (int i = 0; i < 4; i++) {
+    result[i] = std::clamp(value[i], value_min[i], value_max[i]);
+  }
+  return result;
 }
 
 inline std::unordered_set<std::string> valid_extensions = {

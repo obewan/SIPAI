@@ -25,6 +25,8 @@ struct AppParams {
   std::string training_data_folder = "";
   std::string network_to_import = "";
   std::string network_to_export = "";
+  std::string forwardShader = "data/glsl/ForwardShader.comp";
+  std::string backwardShader = "data/glsl/BackwardShader.comp";
   ERunMode run_mode = ERunMode::Enhancer;
   float output_scale = 1.0f;
   float training_split_ratio = 0.7f;
@@ -37,8 +39,10 @@ struct AppParams {
   size_t training_reduce_factor = 4;
   bool random_loading = false;
   bool bulk_loading = false;
+  bool enable_vulkan = false;
   bool enable_parallel = false;
   bool enable_padding = false;
   bool verbose = false;
+  bool verbose_debug = false;
 };
 } // namespace sipai

@@ -13,7 +13,6 @@
 #include "Common.h"
 #include "NeuralNetworkBuilder.h"
 #include "NeuralNetworkParams.h"
-#include "RGBA.h"
 #include "RunnerVisitorFactory.h"
 #include <cstddef>
 #include <memory>

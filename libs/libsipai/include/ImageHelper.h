@@ -10,19 +10,20 @@
 #pragma once
 
 #include "Common.h"
-#include "Image.h"
 #include "exception/ImageHelperException.h"
 #include <cstddef>
 #include <exception>
 #include <execution>
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 namespace sipai {
 class ImageHelper {
 public:
   /**
-   * @brief Reads an image from a specified path and returns it as Image parts
+   * @brief Reads an image from a specified path and returns it as Image
+   * parts
    *
    * @param imagePath The file path of the image to be loaded.
    * @param split The split factor.
@@ -78,27 +79,9 @@ public:
    * @param images OpenCV image parts
    * @param splitsX
    * @param splitsY
-   * @return cv::Mat
+   * @return Image
    */
-  cv::Mat joinImages(const std::vector<cv::Mat> &images, int splitsX,
-                     int splitsY) const;
-
-  /**
-   * @brief Converts an OpenCV Mat image into a vector of RGBA values.
-   *
-   * @param image The OpenCV Mat image to be converted.
-   * @return std::vector<RGBA> The converted image as a vector of RGBA
-   * values.
-   */
-  std::vector<RGBA> convertToRGBAVector(const cv::Mat &image) const;
-
-  /**
-   * @brief Converts a vector of RGBA values into an OpenCV Mat image.
-   *
-   * @param image The vector of RGBA values to be converted.
-   * @return cv::Mat The converted image as an OpenCV Mat.
-   */
-  cv::Mat convertToMat(const Image &image) const;
+  Image joinImages(const ImageParts &images, int splitsX, int splitsY) const;
 
   /**
    * @brief Computes the loss between the output image
@@ -109,7 +92,9 @@ public:
    *
    * @return The computed loss.
    */
-  float computeLoss(const std::vector<RGBA> &outputData,
-                    const std::vector<RGBA> &targetData) const;
+  float computeLoss(const cv::Mat &outputData, const cv::Mat &targetData) const;
+
+private:
+  cv::Mat convertToFloatMat(const cv::Mat &mat) const;
 };
 } // namespace sipai
