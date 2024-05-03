@@ -6,6 +6,7 @@
 #include "exception/ManagerException.h"
 #include "exception/NeuralNetworkException.h"
 #include "exception/TrainingDataFactoryException.h"
+#include "exception/VulkanBuilderException.h"
 #include "exception/VulkanControllerException.h"
 
 using namespace sipai;
@@ -28,5 +29,7 @@ TEST_CASE("Testing exceptions") {
                             TrainingDataFactoryException, "test");
     CHECK_THROWS_AS_MESSAGE({ throw VulkanControllerException("test"); },
                             VulkanControllerException, "test");
+    CHECK_THROWS_AS_MESSAGE({ throw VulkanBuilderException("test"); },
+                            VulkanBuilderException, "test");
   }
 }

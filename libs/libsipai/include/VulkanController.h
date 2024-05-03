@@ -11,15 +11,17 @@
 
 #include "Layer.h"
 #include "Neuron.h"
+#include "VulkanBuilder.h"
+#include "VulkanCommon.h"
 #include "exception/VulkanControllerException.h"
 #include <atomic>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <vector>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
-#include <map>
 
 namespace sipai {
 class VulkanController {
@@ -37,66 +39,9 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
+  void initialize(bool enableDebug = false);
 
-  // number must match the binding number
-  enum class EBuffer {
-      CurrentLayerNeurons = 0,
-      CurrentLayerValues = 1,
-      CurrentNeighborsErrors = 2,
-      CurrentNeighborsWeights = 3,
-      AdjacentLayerNeurons = 4,
-      AdjacentLayerValues = 5,
-      LayerWeights = 6,
-      Parameters = 7,
-      Output = 8
-  };
-
-  const std::map<EBuffer, std::string, std::less<>> buffer_map{
-      { EBuffer::CurrentLayerNeurons,"CurrentLayerNeurons"},
-      { EBuffer::CurrentLayerValues, "CurrentLayerValues"},
-      { EBuffer::CurrentNeighborsErrors, "CurrentNeighborsErrors"},
-      { EBuffer::CurrentNeighborsWeights, "CurrentNeighborsWeights"},
-      { EBuffer::AdjacentLayerNeurons, "AdjacentLayerNeurons"},
-      { EBuffer::AdjacentLayerValues, "AdjacentLayerValues"},
-      { EBuffer::LayerWeights, "LayerWeights"},
-      { EBuffer::Parameters, "Parameters"},
-      { EBuffer::Output, "Output"} };
-
-
-  struct GLSLNeuron {
-    uint index_x;
-    uint index_y;
-    uint weightsIndex;
-    uint neighborsIndex;
-    uint neighborsSize;
-  };
-
-  struct GLSLParameters {
-    float error_min;
-    float error_max;
-    float activationAlpha;
-    uint currentLayerSizeX;
-    uint currentLayerSizeY;
-    uint previousLayerSizeX;
-    uint previousLayerSizeY;
-    uint nextLayerSizeX;
-    uint nextLayerSizeY;
-    uint activationFunction;
-  };
-
-  struct Buffer {
-      EBuffer name;
-      uint binding = 0;
-      VkBuffer buffer = VK_NULL_HANDLE;
-      VkDeviceMemory memory = VK_NULL_HANDLE;
-      VkBufferCreateInfo info{};
-      void* data = nullptr;
-  };
-
-
-  void initialize();
-
-  const bool IsInitialized() { return isInitialized_.load(); }
+  const bool IsInitialized() { return vulkan_->isInitialized; }
 
   /**
    * @brief Vulkan Forward Propagation
@@ -118,89 +63,69 @@ public:
    * @brief Destroy the device instance, cleaning ressources
    *
    */
-  void destroy();
+  void destroy() { builder_.clear(); };
 
   /**
    * @brief Get the Logical Device
    *
    * @return VkDevice&
    */
-  VkDevice &getDevice() { return logicalDevice_; }
+  VkDevice &getDevice() { return vulkan_->logicalDevice; }
 
-  Buffer& getBuffer(const EBuffer &bufferName) {
-      auto it = std::find_if(buffers_.begin(), buffers_.end(), [&bufferName](auto& buffer) {
-          return buffer.name == bufferName;
-          });
-      if (it != buffers_.end()) {
-          return *it;
-      }
-      else {
-          throw VulkanControllerException("buffer not found");
-      }
+  /**
+   * @brief Get a Buffer
+   *
+   * @param bufferName
+   * @return Buffer&
+   */
+  Buffer &getBuffer(const EBuffer &bufferName) {
+    if (!vulkan_) {
+      throw VulkanControllerException("vulkan is null pointer.");
+    }
+    auto it = std::find_if(
+        vulkan_->buffers.begin(), vulkan_->buffers.end(),
+        [&bufferName](auto &buffer) { return buffer.name == bufferName; });
+    if (it != vulkan_->buffers.end()) {
+      return *it;
+    } else {
+      throw VulkanControllerException("buffer not found.");
+    }
+  }
+
+  Shader &getShader(const EShader &shaderName) {
+    if (!vulkan_) {
+      throw VulkanControllerException("vulkan is null pointer.");
+    }
+    auto it = std::find_if(vulkan_->shaders.begin(), vulkan_->shaders.end(),
+                           [&shaderName](auto &shader) {
+                             return shader.shadername == shaderName;
+                           });
+    if (it != vulkan_->shaders.end()) {
+      return *it;
+    } else {
+      throw VulkanControllerException("shader not found.");
+    }
   }
 
 private:
-  VulkanController() = default;
+  VulkanController() { vulkan_ = std::make_shared<Vulkan>(); };
   static std::unique_ptr<VulkanController> controllerInstance_;
-
-  uint32_t _findMemoryType(uint32_t typeFilter,
-                           VkMemoryPropertyFlags properties) const;
 
   VkCommandBuffer _beginSingleTimeCommands();
   void _endSingleTimeCommands(VkCommandBuffer &commandBuffer);
 
-  std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
   void _computeShader(const NeuronMat &neurons, VkCommandBuffer &commandBuffer,
                       VkPipeline &pipeline);
 
-  void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer& buffer);
-  void _copyMatToBuffer(const cv::Mat &mat, Buffer& buffer);
+  void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer &buffer);
+  void _copyMatToBuffer(const cv::Mat &mat, Buffer &buffer);
   void _copyOutputBufferToMat(cv::Mat &mat);
   void _copyParametersToParametersBuffer(Layer *currentLayer);
   void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
   void _copyNeuronNeighboorsConnectionToBuffer(Layer *layer);
   void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat &neurons);
 
-  void _createCommandPool();
-  void _createCommandBufferPool();
-  void _createPipelineLayout();
-  void _createDescriptorSet();
-  void _createDescriptorSetLayout();
-  void _createFence();
-  void _createDescriptorPool();
-  void _createBuffers();
-  void _createDataMapping();
-  void _createShaderModules();
-  void _createShadersComputePipelines();
-  void _bindBuffers();
-
-  std::optional<unsigned int> _pickQueueFamily();
-  std::optional<VkPhysicalDevice> _pickPhysicalDevice();
-
-  std::unique_ptr<std::vector<uint32_t>> forwardShader_;
-  std::unique_ptr<std::vector<uint32_t>> backwardShader_;
-  VkShaderModule forwardShaderModule_ = VK_NULL_HANDLE;
-  VkShaderModule backwardShaderModule_ = VK_NULL_HANDLE;
-  VkPipeline forwardComputePipeline_ = VK_NULL_HANDLE;
-  VkPipeline backwardComputePipeline_ = VK_NULL_HANDLE;
-  VkComputePipelineCreateInfo forwardPipelineInfo_{};
-  VkComputePipelineCreateInfo backwardPipelineInfo_{};
-
-  std::atomic<bool> isInitialized_ = false;
-  unsigned int queueFamilyIndex_ = 0;
-
-  VkInstance vkInstance_ = VK_NULL_HANDLE;
-  VkPhysicalDevice physicalDevice_ = VK_NULL_HANDLE;
-  VkDevice logicalDevice_ = VK_NULL_HANDLE;
-  VkCommandPool commandPool_ = VK_NULL_HANDLE;
-  VkDescriptorSetLayout descriptorSetLayout_ = VK_NULL_HANDLE;
-  VkDescriptorPool descriptorPool_ = VK_NULL_HANDLE;
-  VkDescriptorSet descriptorSet_ = VK_NULL_HANDLE;
-  VkPipelineLayout pipelineLayout_ = VK_NULL_HANDLE;
-  VkQueue queue_ = VK_NULL_HANDLE;
-  VkFence computeFence_ = VK_NULL_HANDLE;
-
-  std::vector<Buffer> buffers_;
-  std::vector<VkCommandBuffer> commandBufferPool_;
+  std::shared_ptr<Vulkan> vulkan_;
+  VulkanBuilder builder_;
 };
 } // namespace sipai
