@@ -17,6 +17,8 @@
 
 using namespace sipai;
 
+//TODO: check DEBUG = false for Release
+constexpr bool DEBUG = true;
 constexpr size_t COMMAND_POOL_SIZE = 1;
 constexpr size_t MAX_NEIGHBOORS_PER_NEURON = 4;
 
@@ -42,9 +44,30 @@ void VulkanController::initialize() {
   appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
   appInfo.apiVersion = VK_API_VERSION_1_0;
 
+  // extensions
+  const std::vector<const char*> validationLayers = {
+      "VK_LAYER_KHRONOS_validation"
+  };
+
+  const std::vector<const char*> instanceExtensions = {
+      VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
+      // Commented as this non_semantic extension is not on my system, 
+      // but it is required for GLSL GL_EXT_debug_printf and its debugPrintEXT()
+      // VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME  
+  };
+
   VkInstanceCreateInfo createInfoInstance{};
   createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfoInstance.pApplicationInfo = &appInfo;
+  
+  // Disable validation debugging in Release
+  if (DEBUG){
+    createInfoInstance.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
+    createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
+    createInfoInstance.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+    createInfoInstance.ppEnabledLayerNames = validationLayers.data();
+  }
 
   if (vkCreateInstance(&createInfoInstance, nullptr, &vkInstance_) !=
       VK_SUCCESS) {
@@ -441,8 +464,8 @@ void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons, Buffer& bu
 void VulkanController::_copyMatToBuffer(const cv::Mat &mat, Buffer& buffer) {
   std::vector<cv::Vec4f> flatValues;
   flatValues.reserve(mat.total());
-  for (int x = 0; x < mat.cols; x++) {
-    for (int y = 0; y < mat.rows; y++) {
+  for (int y = 0; y < mat.rows; y++) {
+    for (int x = 0; x < mat.cols; x++) {
       flatValues.push_back(mat.at<cv::Vec4f>(x, y));
     }
   }
@@ -506,6 +529,7 @@ void VulkanController::_copyNeuronsWeightsToWeightsBuffer(
   memcpy(buffer.data, flatWeights.data(),
          flatWeights.size() * sizeof(cv::Vec4f));
 }
+
 void VulkanController::_copyNeuronNeighboorsConnectionToBuffer(Layer *layer) {
   // get the neighboors connections weights and erros
   std::vector<cv::Vec4f> neighboorsConnectionWeights;
@@ -544,8 +568,8 @@ void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
 
   // copy the data
   size_t index = 0;
-  for (int x = 0; x < mat.cols; x++) {
-    for (int y = 0; y < mat.rows; y++) {
+  for (int y = 0; y < mat.rows; y++) {
+    for (int x = 0; x < mat.cols; x++) {
       mat.at<cv::Vec4f>(x, y) =
           cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
                     bufferDataArray[index][2], bufferDataArray[index][3]);

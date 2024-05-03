@@ -135,7 +135,7 @@ vec4 computeError(Neuron currentNeuron) {
     }
 
     // Use the derivative of the activation function
-    vec4 activationDerivative = derivativeFunction(currentLayerValues.values[currentNeuron.index_x * currentNeuron.index_y]);
+    vec4 activationDerivative = derivativeFunction(currentLayerValues.values[currentNeuron.index_y * params.currentLayerSizeX + currentNeuron.index_x]);
     vec4 clampedError = clamp(activationDerivative * error, params.error_min, params.error_max);
 
     return clampedError;
@@ -147,11 +147,11 @@ void main() {
     uint index_x = gl_GlobalInvocationID.x;
     uint index_y = gl_GlobalInvocationID.y; 
         
-    Neuron currentNeuron = currentLayer.neurons[index_x * params.currentLayerSizeY + index_y];
+    Neuron currentNeuron = currentLayer.neurons[index_y * params.currentLayerSizeX + index_x];
     
     // Compute the error
     vec4 error = computeError(currentNeuron);
 
    // Put the results in the output buffer
-    currentLayerNewErrors.errors[index_x * params.currentLayerSizeY + index_y] = error;   
+    currentLayerNewErrors.errors[index_y * params.currentLayerSizeX + index_x] = error;   
 }

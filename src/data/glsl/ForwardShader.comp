@@ -1,5 +1,4 @@
 #version 450
-//#extension GL_EXT_debug_printf : enable
 
 /**
  * GLSL forward propagation compute shader for Vulkan, by Dams 
@@ -122,7 +121,7 @@ vec4 computeForward(Neuron currentNeuron){
     previousNeuronIndex++){
         Neuron previousNeuron = previousLayer.neurons[previousNeuronIndex];
         vec4 weight = currentLayerWeights.weights[currentNeuron.weightsIndex + previousNeuronIndex];
-        vec4 previousValue = previousLayerValues.values[previousNeuron.index_x * params.previousLayerSizeY + previousNeuron.index_y];
+        vec4 previousValue = previousLayerValues.values[previousNeuron.index_y * params.previousLayerSizeX + previousNeuron.index_x];
         vec4 product = previousValue * weight;
         result += product;
     }
@@ -135,15 +134,11 @@ void main() {
     uint index_x = gl_GlobalInvocationID.x;
     uint index_y = gl_GlobalInvocationID.y; 
 
-    // debugPrintfEXT("Current index: %i %i", index_x, index_y);
-    Neuron currentNeuron = currentLayer.neurons[index_x * params.currentLayerSizeY + index_y];
+    Neuron currentNeuron = currentLayer.neurons[index_y * params.currentLayerSizeX + index_x];
     
-    // debugPrintfEXT("Current neuron: %i %i", currentNeuron.index_x, currentNeuron.index_y);
-
     // Compute new value
     vec4 value = computeForward(currentNeuron); 
-    //debugPrintfEXT("Current value: %v4f", value);
 
     // Put the results in the output buffer
-    currentLayerNewValues.values[index_x * params.currentLayerSizeY + index_y] = value;    
+    currentLayerNewValues.values[index_y * params.currentLayerSizeX + index_x] = value;    
 }
