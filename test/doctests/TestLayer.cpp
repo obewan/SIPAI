@@ -31,7 +31,7 @@ TEST_CASE("Testing Layer") {
     cv::randu(outputLayer->previousLayer->values, 0, 1);
 
     // get the weights before update
-    auto w1 = outputLayer->neurons.back().back().weights.clone();
+    auto oldWeights = outputLayer->neurons.back().back().weights.clone();
 
     outputLayer->errors =
         cv::Mat(3, 3, CV_32FC4, cv::Vec4f{1.5, 3.2, 2.1, 5.3});
@@ -41,33 +41,20 @@ TEST_CASE("Testing Layer") {
         outputLayer->updateWeights(manager.network_params.learning_rate));
 
     // get the weights after update
-    auto w2 = outputLayer->neurons.back().back().weights.clone();
+    auto newWeights = outputLayer->neurons.back().back().weights.clone();
 
-    CHECK(w1.type() == w2.type());
-    CHECK(w1.size() == w2.size());
+    CHECK(oldWeights.type() == newWeights.type());
+    CHECK(oldWeights.size() == newWeights.size());
 
-    std::cout << "weights before:\n" << w1 << std::endl;
-    std::cout << "weights after:\n" << w2 << std::endl;
+    std::cout << "weights before:\n" << oldWeights << std::endl;
+    std::cout << "weights after:\n" << newWeights << std::endl;
 
-    bool isEq = true;
-    for (int y = 0; y < w1.rows; ++y) {
-      for (int x = 0; x < w1.cols; ++x) {
-        for (int c = 0; c < 4; ++c) {
-          if (std::abs(w1.at<cv::Vec4f>(y, x)[c] - w2.at<cv::Vec4f>(y, x)[c]) >=
-              std::numeric_limits<float>::epsilon()) {
-            isEq = false;
-            break;
-          }
-        }
-        if (!isEq) {
-          break;
-        }
-      }
-      if (!isEq) {
-        break;
-      }
-    }
+    //  Check if oldWeights and newWeights are not equals
+    cv::Mat diff = cv::abs(oldWeights - newWeights);
+    double norm = cv::norm(diff, cv::NORM_L1);
+    bool isEq = norm < std::numeric_limits<float>::epsilon() * diff.total();
     CHECK(isEq == false);
+
     manager.network.reset();
   }
 }

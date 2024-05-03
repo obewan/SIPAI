@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <vulkan/vulkan_core.h>
 
 using namespace sipai;
 
@@ -557,9 +558,12 @@ VulkanBuilder &VulkanBuilder::clear() {
     freeBuffer(vulkan_, buffer);
   }
 
-  for (auto &commmandBuffer : vulkan_->commandBufferPool) {
-    vkFreeCommandBuffers(vulkan_->logicalDevice, vulkan_->commandPool, 1,
-                         &commmandBuffer);
+  for (auto &commandBuffer : vulkan_->commandBufferPool) {
+    if (commandBuffer != VK_NULL_HANDLE) {
+      vkFreeCommandBuffers(vulkan_->logicalDevice, vulkan_->commandPool, 1,
+                           &commandBuffer);
+    }
+    commandBuffer = VK_NULL_HANDLE;
   }
   if (vulkan_->computeFence != VK_NULL_HANDLE) {
     vkDestroyFence(vulkan_->logicalDevice, vulkan_->computeFence, nullptr);
