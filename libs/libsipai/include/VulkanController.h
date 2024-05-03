@@ -10,18 +10,13 @@
 #pragma once
 
 #include "Layer.h"
-#include "Neuron.h"
 #include "VulkanBuilder.h"
 #include "VulkanCommon.h"
+#include "VulkanHelper.h"
 #include "exception/VulkanControllerException.h"
-#include <atomic>
-#include <map>
 #include <memory>
-#include <mutex>
-#include <optional>
 #include <vector>
 #include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_core.h>
 
 namespace sipai {
 class VulkanController {
@@ -39,7 +34,7 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
-  void initialize(bool enableDebug = false);
+  bool initialize(bool enableDebug = false);
 
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
@@ -108,14 +103,13 @@ public:
   }
 
 private:
-  VulkanController() { vulkan_ = std::make_shared<Vulkan>(); };
+  VulkanController() {
+    vulkan_ = std::make_shared<Vulkan>();
+    helper_.setVulkan(vulkan_);
+  };
   static std::unique_ptr<VulkanController> controllerInstance_;
 
-  VkCommandBuffer _beginSingleTimeCommands();
-  void _endSingleTimeCommands(VkCommandBuffer &commandBuffer);
-
-  void _computeShader(const NeuronMat &neurons, VkCommandBuffer &commandBuffer,
-                      VkPipeline &pipeline);
+  void _computeShader(const NeuronMat &neurons, VkPipeline &pipeline);
 
   void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer &buffer);
   void _copyMatToBuffer(const cv::Mat &mat, Buffer &buffer);
@@ -127,5 +121,6 @@ private:
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;
+  VulkanHelper helper_;
 };
 } // namespace sipai

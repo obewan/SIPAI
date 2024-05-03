@@ -8,6 +8,7 @@
 #include "exception/TrainingDataFactoryException.h"
 #include "exception/VulkanBuilderException.h"
 #include "exception/VulkanControllerException.h"
+#include "exception/VulkanHelperException.h"
 
 using namespace sipai;
 
@@ -31,5 +32,7 @@ TEST_CASE("Testing exceptions") {
                             VulkanControllerException, "test");
     CHECK_THROWS_AS_MESSAGE({ throw VulkanBuilderException("test"); },
                             VulkanBuilderException, "test");
+    CHECK_THROWS_AS_MESSAGE({ throw VulkanHelperException("test"); },
+                            VulkanHelperException, "test");
   }
 }

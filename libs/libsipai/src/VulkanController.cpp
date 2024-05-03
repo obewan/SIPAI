@@ -21,14 +21,14 @@ using namespace sipai;
 std::unique_ptr<VulkanController> VulkanController::controllerInstance_ =
     nullptr;
 
-void VulkanController::initialize(bool enableDebug) {
+bool VulkanController::initialize(bool enableDebug) {
   if (vulkan_->isInitialized) {
-    return;
+    return true;
   }
 
   const auto &manager = Manager::getConstInstance();
   if (!manager.network) {
-    return;
+    return false;
   }
 
   vulkan_->shaders.clear();
@@ -41,6 +41,8 @@ void VulkanController::initialize(bool enableDebug) {
       .withMaxNeighboorsPerNeuron(4)
       .withDebugInfo(enableDebug)
       .build(vulkan_);
+
+  return vulkan_->isInitialized;
 }
 
 void VulkanController::forwardPropagation(Layer *previousLayer,
@@ -61,10 +63,7 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
   _copyParametersToParametersBuffer(currentLayer);
 
   // Run the shader
-  auto commandBuffer = _beginSingleTimeCommands();
-  _computeShader(currentLayer->neurons, commandBuffer,
-                 getShader(EShader::Forward).pipeline);
-  _endSingleTimeCommands(commandBuffer);
+  _computeShader(currentLayer->neurons, getShader(EShader::Forward).pipeline);
 
   // Get the results
   _copyOutputBufferToMat(currentLayer->values);
@@ -90,18 +89,15 @@ void VulkanController::backwardPropagation(Layer *nextLayer,
   _copyParametersToParametersBuffer(currentLayer);           // binding 7
 
   // Run the shader
-  auto commandBuffer = _beginSingleTimeCommands();
-  _computeShader(currentLayer->neurons, commandBuffer,
-                 getShader(EShader::Backward).pipeline);
-  _endSingleTimeCommands(commandBuffer);
+  _computeShader(currentLayer->neurons, getShader(EShader::Backward).pipeline);
 
   // Get the results
   _copyOutputBufferToMat(currentLayer->errors);
 }
 
 void VulkanController::_computeShader(const NeuronMat &neurons,
-                                      VkCommandBuffer &commandBuffer,
                                       VkPipeline &pipeline) {
+  auto commandBuffer = helper_.beginSingleTimeCommands();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           vulkan_->pipelineLayout, 0, 1,
@@ -109,60 +105,7 @@ void VulkanController::_computeShader(const NeuronMat &neurons,
   uint32_t rows = static_cast<uint32_t>(neurons.size());
   uint32_t cols = rows > 0 ? static_cast<uint32_t>(neurons[0].size()) : 0;
   vkCmdDispatch(commandBuffer, cols, rows, 1);
-}
-
-VkCommandBuffer VulkanController::_beginSingleTimeCommands() {
-  // Take a command buffer from the pool
-  VkCommandBuffer commandBuffer = vulkan_->commandBufferPool.back();
-  vulkan_->commandBufferPool.pop_back();
-
-  VkCommandBufferBeginInfo beginInfo{};
-  beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-  beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-  // Starts recording the command
-  auto result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan command buffer start error.");
-  }
-  return commandBuffer;
-}
-
-void VulkanController::_endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
-  // Ends recording the command
-  auto result = vkEndCommandBuffer(commandBuffer);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan command buffer end error.");
-  }
-
-  // Submit the command to the queue
-  VkSubmitInfo submitInfo{};
-  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  submitInfo.commandBufferCount = 1;
-  submitInfo.pCommandBuffers = &commandBuffer;
-  result = vkQueueSubmit(vulkan_->queue, 1, &submitInfo, vulkan_->computeFence);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan queue submit error.");
-  }
-  // Wait for the fence to signal that the GPU has finished
-  result = vkWaitForFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence,
-                           VK_TRUE, UINT64_MAX);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan wait for fence error.");
-  }
-
-  // Reset the fence
-  result = vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan reset fence error.");
-  }
-
-  // Reset the command buffer
-  result = vkResetCommandBuffer(commandBuffer, 0);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan reset command buffer error.");
-  }
-
-  vulkan_->commandBufferPool.push_back(commandBuffer);
+  helper_.endSingleTimeCommands(commandBuffer);
 }
 
 void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons,
