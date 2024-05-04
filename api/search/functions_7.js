@@ -7,7 +7,7 @@ var searchData=
   ['importweights_4',['importWeights',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a569627f1b617b7fb83df0d26193d7547',1,'sipai::NeuralNetworkImportExportFacade']]],
   ['info_5',['info',['../classsipai_1_1SimpleLogger.html#a0154d9deb14298c26c8cd6d9c72855ea',1,'sipai::SimpleLogger']]],
   ['init_6',['init',['../classSIPAI.html#ade2dd822915fd47e80cc91089d836f60',1,'SIPAI']]],
-  ['initialize_7',['initialize',['../classsipai_1_1VulkanController.html#a179899a63e3c1ead2644b54ca75f9f92',1,'sipai::VulkanController']]],
+  ['initialize_7',['initialize',['../classsipai_1_1VulkanController.html#a025d283d4661fd9d38450138fcaa532b',1,'sipai::VulkanController']]],
   ['initializeweights_8',['initializeWeights',['../classsipai_1_1NeuralNetworkBuilder.html#a7ed61926de026157cde078bf1255ecb7',1,'sipai::NeuralNetworkBuilder']]],
   ['initweights_9',['initWeights',['../classsipai_1_1Neuron.html#a57090c95fbba406aa6199aac01dc130a',1,'sipai::Neuron']]],
   ['isdatafolder_10',['isDataFolder',['../classsipai_1_1TrainingDataFactory.html#abfe06e00da679493e00c908044e46243',1,'sipai::TrainingDataFactory']]],

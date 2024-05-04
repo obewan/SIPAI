@@ -2,7 +2,10 @@ var searchData=
 [
   ['parametricrelu_0',['parametricRelu',['../namespacesipai.html#a1054f011782057a93919baf09a141879',1,'sipai']]],
   ['parametricreluderivative_1',['parametricReluDerivative',['../namespacesipai.html#a07bcbe09fe9ab29378d50150b61cd3b8',1,'sipai']]],
-  ['previouslayer_2',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]],
-  ['previouslayersizex_3',['previousLayerSizeX',['../structsipai_1_1VulkanController_1_1GLSLParameters.html#ae01d735fe0866ee71e2236b78955858f',1,'sipai::VulkanController::GLSLParameters']]],
-  ['previouslayersizey_4',['previousLayerSizeY',['../structsipai_1_1VulkanController_1_1GLSLParameters.html#a4fe4f34ca0376cde87f153e071eea0b2',1,'sipai::VulkanController::GLSLParameters']]]
+  ['physicaldevice_2',['physicalDevice',['../structsipai_1_1Vulkan.html#ad05c637ac8a98ea33fb589281810c753',1,'sipai::Vulkan']]],
+  ['pipeline_3',['pipeline',['../structsipai_1_1Shader.html#ad3c39f09b692d93b94dcee3ec3f3004c',1,'sipai::Shader']]],
+  ['pipelinelayout_4',['pipelineLayout',['../structsipai_1_1Vulkan.html#af4f9fb636e2fb2d6e1d6187cb801936d',1,'sipai::Vulkan']]],
+  ['previouslayer_5',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]],
+  ['previouslayersizex_6',['previousLayerSizeX',['../structsipai_1_1GLSLParameters.html#a097db3ed9810bbbcf89ea1b14bc22023',1,'sipai::GLSLParameters']]],
+  ['previouslayersizey_7',['previousLayerSizeY',['../structsipai_1_1GLSLParameters.html#a6a227c6dbc0261afb1ba594f9d169226',1,'sipai::GLSLParameters']]]
 ];

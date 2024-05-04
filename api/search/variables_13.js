@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['weight_0',['weight',['../classsipai_1_1NeuronConnection.html#afbe332e8057094e438c3b4c265416571',1,'sipai::NeuronConnection']]],
-  ['weights_1',['weights',['../classsipai_1_1Neuron.html#a150ab50846aa12d03c435ff561d59158',1,'sipai::Neuron']]],
-  ['weightsindex_2',['weightsIndex',['../classsipai_1_1Neuron.html#a8c3d087c513938ac3674946f3a741e35',1,'sipai::Neuron::weightsIndex()'],['../structsipai_1_1VulkanController_1_1GLSLNeuron.html#a23538117f48978d21ebf51290c36c1e8',1,'sipai::VulkanController::GLSLNeuron::weightsIndex()']]],
-  ['width_3',['width',['../structsipai_1_1Image.html#a92c6d99019b6c5d85410ee13977bda18',1,'sipai::Image']]]
+  ['valid_5fextensions_0',['valid_extensions',['../namespacesipai.html#aaae5f7ca99feda8d753952bea7a1884f',1,'sipai']]],
+  ['values_1',['values',['../classsipai_1_1Layer.html#a3bd4d406b2df5792b93af0a9d4af002d',1,'sipai::Layer']]],
+  ['verbose_2',['verbose',['../structsipai_1_1AppParams.html#abc69dca8ee96a90e6e88ab27b51f6cbb',1,'sipai::AppParams']]],
+  ['verbose_5fdebug_3',['verbose_debug',['../structsipai_1_1AppParams.html#a7cede70953fb899c70d20ae62ff96eac',1,'sipai::AppParams']]],
+  ['version_4',['version',['../structsipai_1_1AppParams.html#a7807c73ba7fec1dbbb4ac38c931a6bf1',1,'sipai::AppParams']]],
+  ['vkinstance_5',['vkInstance',['../structsipai_1_1Vulkan.html#a95d371863dea7e56e0c477668b98fc6c',1,'sipai::Vulkan']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['simplelogger_0',['SimpleLogger',['../classsipai_1_1SimpleLogger.html',1,'sipai']]],
-  ['sipai_1',['SIPAI',['../classSIPAI.html',1,'']]]
+  ['shader_0',['Shader',['../structsipai_1_1Shader.html',1,'sipai']]],
+  ['simplelogger_1',['SimpleLogger',['../classsipai_1_1SimpleLogger.html',1,'sipai']]],
+  ['sipai_2',['SIPAI',['../classSIPAI.html',1,'']]]
 ];

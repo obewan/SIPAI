@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['output_0',['Output',['../classsipai_1_1VulkanController.html#af084d4273c5cb6557e908cdbcc3ece9ba29c2c02a361c9d7028472e5d92cd4a54',1,'sipai::VulkanController']]]
+  ['info_0',['INFO',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0a551b723eafd6a31d444fcb2f5920fbd3',1,'sipai']]]
 ];

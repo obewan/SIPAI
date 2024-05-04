@@ -1,31 +1,5 @@
 var searchData=
 [
-  ['rand_0',['Rand',['../classsipai_1_1RandomFactory.html#a64d8c699b6caa60953877466de03510a',1,'sipai::RandomFactory']]],
-  ['random_5floading_1',['random_loading',['../structsipai_1_1AppParams.html#a0bf65b920e626577dc43745c1b7a9a4e',1,'sipai::AppParams']]],
-  ['randomfactory_2',['RandomFactory',['../classsipai_1_1RandomFactory.html#ae5ebbc829cec94f5754500c23d948e2c',1,'sipai::RandomFactory::RandomFactory()'],['../classsipai_1_1RandomFactory.html',1,'sipai::RandomFactory']]],
-  ['randomfactory_2ecpp_3',['RandomFactory.cpp',['../RandomFactory_8cpp.html',1,'']]],
-  ['randomfactory_2eh_4',['RandomFactory.h',['../RandomFactory_8h.html',1,'']]],
-  ['relu_5',['ReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194add10d919fa85cf27fc78c0e06fe0b378',1,'sipai']]],
-  ['relu_6',['relu',['../namespacesipai.html#ac4ca1a408822f4824a7cc57802e3f73a',1,'sipai']]],
-  ['reluderivative_7',['reluDerivative',['../namespacesipai.html#ac9f01a2b99895a061124a4d1732708f8',1,'sipai']]],
-  ['resetcounters_8',['resetCounters',['../classsipai_1_1TrainingDataFactory.html#ad9826e0b7b84e46e4f494a221072543d',1,'sipai::TrainingDataFactory']]],
-  ['resetprecision_9',['resetPrecision',['../classsipai_1_1SimpleLogger.html#a67875ccf1fc75b9c8fd919627ba4eceb',1,'sipai::SimpleLogger']]],
-  ['resettraining_10',['resetTraining',['../classsipai_1_1TrainingDataFactory.html#a8e1106249d515b6f03b2170cc2818721',1,'sipai::TrainingDataFactory']]],
-  ['resetvalidation_11',['resetValidation',['../classsipai_1_1TrainingDataFactory.html#ab0f72084fe1686f5e45699ca88e26b50',1,'sipai::TrainingDataFactory']]],
-  ['resize_12',['resize',['../structsipai_1_1Image.html#a1d9e52855f89d823b535bffa5a4e7e22',1,'sipai::Image']]],
-  ['run_13',['run',['../classsipai_1_1Manager.html#af8c67c221068e4e3ccccf1d5f70ba8ee',1,'sipai::Manager::run()'],['../classSIPAI.html#a2083f3dc3545e3ddad71bb54211429c4',1,'SIPAI::run()']]],
-  ['run_5fmode_14',['run_mode',['../structsipai_1_1AppParams.html#a0d3fe9abf2b2c464b6c31996f110d19e',1,'sipai::AppParams']]],
-  ['runnerenhancervisitor_15',['RunnerEnhancerVisitor',['../classsipai_1_1RunnerEnhancerVisitor.html',1,'sipai']]],
-  ['runnerenhancervisitor_2ecpp_16',['RunnerEnhancerVisitor.cpp',['../RunnerEnhancerVisitor_8cpp.html',1,'']]],
-  ['runnerenhancervisitor_2eh_17',['RunnerEnhancerVisitor.h',['../RunnerEnhancerVisitor_8h.html',1,'']]],
-  ['runnertrainingmonitoredvisitor_18',['RunnerTrainingMonitoredVisitor',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html',1,'sipai']]],
-  ['runnertrainingmonitoredvisitor_2ecpp_19',['RunnerTrainingMonitoredVisitor.cpp',['../RunnerTrainingMonitoredVisitor_8cpp.html',1,'']]],
-  ['runnertrainingmonitoredvisitor_2eh_20',['RunnerTrainingMonitoredVisitor.h',['../RunnerTrainingMonitoredVisitor_8h.html',1,'']]],
-  ['runnervisitor_21',['RunnerVisitor',['../classsipai_1_1RunnerVisitor.html',1,'sipai']]],
-  ['runnervisitor_2eh_22',['RunnerVisitor.h',['../RunnerVisitor_8h.html',1,'']]],
-  ['runnervisitorexception_23',['RunnerVisitorException',['../classsipai_1_1RunnerVisitorException.html#a8a6598fb07cf65c7c1711d59fb4154ab',1,'sipai::RunnerVisitorException::RunnerVisitorException()'],['../classsipai_1_1RunnerVisitorException.html',1,'sipai::RunnerVisitorException']]],
-  ['runnervisitorexception_2eh_24',['RunnerVisitorException.h',['../RunnerVisitorException_8h.html',1,'']]],
-  ['runnervisitorfactory_25',['RunnerVisitorFactory',['../classsipai_1_1RunnerVisitorFactory.html',1,'sipai']]],
-  ['runnervisitorfactory_2eh_26',['RunnerVisitorFactory.h',['../RunnerVisitorFactory_8h.html',1,'']]],
-  ['runwithvisitor_27',['runWithVisitor',['../classsipai_1_1Manager.html#a443755f9ba6461de1a8e252677bff85a',1,'sipai::Manager']]]
+  ['queue_0',['queue',['../structsipai_1_1Vulkan.html#a09c274ef51e3e9105753fa5b738e7a79',1,'sipai::Vulkan']]],
+  ['queuefamilyindex_1',['queueFamilyIndex',['../structsipai_1_1Vulkan.html#a3e252ebf702ebd431f525dd026baf7d8',1,'sipai::Vulkan']]]
 ];

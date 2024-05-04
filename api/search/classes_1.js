@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['buffer_0',['Buffer',['../structsipai_1_1VulkanController_1_1Buffer.html',1,'sipai::VulkanController']]]
+  ['buffer_0',['Buffer',['../structsipai_1_1Buffer.html',1,'sipai']]]
 ];

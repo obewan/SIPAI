@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">82</td>
-            <td class="headerCovTableEntry">89</td>
-            <td class="headerCovTableEntryHi">92.1 %</td>
+            <td class="headerCovTableEntry">83</td>
+            <td class="headerCovTableEntry">90</td>
+            <td class="headerCovTableEntryHi">92.2 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-02 22:25:10</td>
+            <td class="headerValue">2024-05-04 15:32:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -149,11 +149,11 @@
 <a name="87"><span class="lineNum">      87 </span><span class="lineCov">         30 :     auto weights_cols = static_cast&lt;size_t&gt;(fields[2].value());</span></a>
 <a name="88"><span class="lineNum">      88 </span><span class="lineCov">         30 :     auto neuron_row = static_cast&lt;size_t&gt;(fields[3].value());</span></a>
 <a name="89"><span class="lineNum">      89 </span><span class="lineCov">         30 :     auto neuron_col = static_cast&lt;size_t&gt;(fields[4].value());</span></a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">         30 :     std::optional&lt;size_t&gt; neighboors_count = fields[5];</span></a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">         30 :     auto neighboors_count = fields[5];</span></a>
 <a name="91"><span class="lineNum">      91 </span>            : </a>
 <a name="92"><span class="lineNum">      92 </span><span class="lineCov">         30 :     if (!neighboors_count) {</span></a>
 <a name="93"><span class="lineNum">      93 </span>            :       // add the neuron weights</a>
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">         15 :       cv::Mat weights = cv::Mat((int)weights_cols, (int)weights_rows, CV_32FC4);</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">         15 :       cv::Mat weights = cv::Mat((int)weights_rows, (int)weights_cols, CV_32FC4);</span></a>
 <a name="95"><span class="lineNum">      95 </span><span class="lineCov">         15 :       size_t i_cols = 0;</span></a>
 <a name="96"><span class="lineNum">      96 </span><span class="lineCov">         15 :       size_t i_rows = 0;</span></a>
 <a name="97"><span class="lineNum">      97 </span><span class="lineCov">         90 :       for (size_t pos = 6; pos + 4 &lt; fields.size();</span></a>
@@ -164,48 +164,49 @@
 <a name="102"><span class="lineNum">     102 </span><span class="lineCov">         75 :         auto b = fields[pos + 2];</span></a>
 <a name="103"><span class="lineNum">     103 </span><span class="lineCov">         75 :         auto a = fields[pos + 3];</span></a>
 <a name="104"><span class="lineNum">     104 </span><span class="lineCov">         75 :         if (r &amp;&amp; g &amp;&amp; b &amp;&amp; a) {</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         69 :           weights.at&lt;cv::Vec4f&gt;((int)i_cols, (int)i_rows) = cv::Vec4f(*r, *g, *b, *a);</span></a>
-<a name="106"><span class="lineNum">     106 </span>            :         }</a>
-<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         75 :         i_cols++;</span></a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         75 :         if (i_cols &gt;= weights_cols) {</span></a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         30 :           i_cols = 0;</span></a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         30 :           i_rows++;</span></a>
-<a name="111"><span class="lineNum">     111 </span>            :         }</a>
-<a name="112"><span class="lineNum">     112 </span>            :       }</a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         15 :       network-&gt;layers.at(layer_index)</span></a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         15 :           -&gt;neurons.at(neuron_row)</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         15 :           .at(neuron_col)</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineCov">         15 :           .weights = weights;</span></a>
-<a name="117"><span class="lineNum">     117 </span><span class="lineCov">         15 :     } else {</span></a>
-<a name="118"><span class="lineNum">     118 </span>            :       // add the neighboors and their weights</a>
-<a name="119"><span class="lineNum">     119 </span>            :       // add the neuron weights</a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineCov">         15 :       std::vector&lt;cv::Vec4f&gt; weights;</span></a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineCov">         90 :       for (size_t pos = 6; pos + 4 &lt; fields.size();</span></a>
-<a name="122"><span class="lineNum">     122 </span><span class="lineCov">         75 :            pos += 4) { // pos start at fields[6], then increment of</span></a>
-<a name="123"><span class="lineNum">     123 </span>            :                        // the length of cv::Vec4f (4)</a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         75 :         auto r = fields[pos];</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">         75 :         auto g = fields[pos + 1];</span></a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         75 :         auto b = fields[pos + 2];</span></a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         75 :         auto a = fields[pos + 3];</span></a>
-<a name="128"><span class="lineNum">     128 </span><span class="lineCov">         75 :         if (r &amp;&amp; g &amp;&amp; b &amp;&amp; a) {</span></a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         38 :           weights.push_back(cv::Vec4f(*r, *g, *b, *a));</span></a>
-<a name="130"><span class="lineNum">     130 </span>            :         }</a>
-<a name="131"><span class="lineNum">     131 </span>            :       }</a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         15 :       auto &amp;connections = network-&gt;layers.at(layer_index)</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineCov">         15 :                               -&gt;neurons.at(neuron_row)</span></a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         15 :                               .at(neuron_col)</span></a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         15 :                               .neighbors;</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         15 :       if (connections.size() != weights.size()) {</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineNoCov">          0 :         throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :                                     std::to_string(current_line_number) +</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                                     &quot;): invalid column numbers&quot;);</span></a>
-<a name="140"><span class="lineNum">     140 </span>            :       }</a>
-<a name="141"><span class="lineNum">     141 </span><span class="lineCov">         53 :       for (size_t i = 0; i &lt; connections.size(); i++) {</span></a>
-<a name="142"><span class="lineNum">     142 </span><span class="lineCov">         38 :         connections.at(i).weight = weights.at(i);</span></a>
-<a name="143"><span class="lineNum">     143 </span>            :       }</a>
-<a name="144"><span class="lineNum">     144 </span><span class="lineCov">         15 :     }</span></a>
-<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         30 :   }</span></a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">          1 : }</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         69 :           weights.at&lt;cv::Vec4f&gt;((int)i_rows, (int)i_cols) =</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">        138 :               cv::Vec4f(*r, *g, *b, *a);</span></a>
+<a name="107"><span class="lineNum">     107 </span>            :         }</a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         75 :         i_cols++;</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         75 :         if (i_cols &gt;= weights_cols) {</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         30 :           i_cols = 0;</span></a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         30 :           i_rows++;</span></a>
+<a name="112"><span class="lineNum">     112 </span>            :         }</a>
+<a name="113"><span class="lineNum">     113 </span>            :       }</a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         15 :       network-&gt;layers.at(layer_index)</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         15 :           -&gt;neurons.at(neuron_row)</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">         15 :           .at(neuron_col)</span></a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">         15 :           .weights = weights;</span></a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">         15 :     } else {</span></a>
+<a name="119"><span class="lineNum">     119 </span>            :       // add the neighboors and their weights</a>
+<a name="120"><span class="lineNum">     120 </span>            :       // add the neuron weights</a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineCov">         15 :       std::vector&lt;cv::Vec4f&gt; weights;</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">         90 :       for (size_t pos = 6; pos + 4 &lt; fields.size();</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineCov">         75 :            pos += 4) { // pos start at fields[6], then increment of</span></a>
+<a name="124"><span class="lineNum">     124 </span>            :                        // the length of cv::Vec4f (4)</a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">         75 :         auto r = fields[pos];</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         75 :         auto g = fields[pos + 1];</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         75 :         auto b = fields[pos + 2];</span></a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">         75 :         auto a = fields[pos + 3];</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         75 :         if (r &amp;&amp; g &amp;&amp; b &amp;&amp; a) {</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         38 :           weights.push_back(cv::Vec4f(*r, *g, *b, *a));</span></a>
+<a name="131"><span class="lineNum">     131 </span>            :         }</a>
+<a name="132"><span class="lineNum">     132 </span>            :       }</a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">         15 :       auto &amp;connections = network-&gt;layers.at(layer_index)</span></a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         15 :                               -&gt;neurons.at(neuron_row)</span></a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         15 :                               .at(neuron_col)</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         15 :                               .neighbors;</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         15 :       if (connections.size() != weights.size()) {</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :         throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                                     std::to_string(current_line_number) +</span></a>
+<a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :                                     &quot;): invalid column numbers&quot;);</span></a>
+<a name="141"><span class="lineNum">     141 </span>            :       }</a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">         53 :       for (size_t i = 0; i &lt; connections.size(); i++) {</span></a>
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">         38 :         connections.at(i).weight = weights.at(i);</span></a>
+<a name="144"><span class="lineNum">     144 </span>            :       }</a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         15 :     }</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">         30 :   }</span></a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          1 : }</span></a>
 </pre>
       </td>
     </tr>

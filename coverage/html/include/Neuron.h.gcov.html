@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-02 22:25:10</td>
+            <td class="headerValue">2024-05-04 15:32:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -127,10 +127,10 @@
 <a name="65"><span class="lineNum">      65 </span>            : </a>
 <a name="66"><span class="lineNum">      66 </span><span class="lineCov">         45 :   std::string toStringCsv(size_t max_weights) const {</span></a>
 <a name="67"><span class="lineNum">      67 </span><span class="lineCov">         45 :     std::ostringstream oss;</span></a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">        162 :     for (int i = 0; i &lt; weights.rows; i++) {</span></a>
-<a name="69"><span class="lineNum">      69 </span><span class="lineCov">        351 :       for (int j = 0; j &lt; weights.cols; j++) {</span></a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">       1170 :         for (int k = 0; k &lt; 4; k++) {</span></a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">        936 :           oss &lt;&lt; weights.at&lt;cv::Vec4f&gt;(j, i)[k] &lt;&lt; &quot;,&quot;;</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">        162 :     for (int x = 0; x &lt; weights.rows; x++) {</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">        351 :       for (int y = 0; y &lt; weights.cols; y++) {</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">       1170 :         for (int i = 0; i &lt; 4; i++) {</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">        936 :           oss &lt;&lt; weights.at&lt;cv::Vec4f&gt;(x, y)[i] &lt;&lt; &quot;,&quot;;</span></a>
 <a name="72"><span class="lineNum">      72 </span>            :         }</a>
 <a name="73"><span class="lineNum">      73 </span>            :       }</a>
 <a name="74"><span class="lineNum">      74 </span>            :     };</a>
