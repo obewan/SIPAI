@@ -7,8 +7,10 @@
 
 using namespace sipai;
 
-TEST_CASE("Testing Layer") {
-  SUBCASE("Test updateWeights") {
+TEST_CASE("Testing Layer")
+{
+  SUBCASE("Test updateWeights")
+  {
     auto &manager = Manager::getInstance();
     manager.network.reset();
     manager.network_params = {
@@ -34,9 +36,9 @@ TEST_CASE("Testing Layer") {
     auto oldWeights = outputLayer->neurons.back().back().weights.clone();
 
     outputLayer->errors =
-        cv::Mat(3, 3, CV_32FC4, cv::Vec4f{1.5, 3.2, 2.1, 5.3});
+        cv::Mat(3, 3, CV_32FC4, cv::Vec4f{1.5f, 3.2f, 2.1f, 5.3f});
     outputLayer->previousLayer->errors =
-        cv::Mat(3, 2, CV_32FC4, cv::Vec4f{5.1, 1.1, -5.5, 2.2});
+        cv::Mat(3, 2, CV_32FC4, cv::Vec4f{5.1f, 1.1f, -5.5f, 2.2f});
     CHECK_NOTHROW(
         outputLayer->updateWeights(manager.network_params.learning_rate));
 
@@ -46,8 +48,10 @@ TEST_CASE("Testing Layer") {
     CHECK(oldWeights.type() == newWeights.type());
     CHECK(oldWeights.size() == newWeights.size());
 
-    std::cout << "weights before:\n" << oldWeights << std::endl;
-    std::cout << "weights after:\n" << newWeights << std::endl;
+    std::cout << "weights before:\n"
+              << oldWeights << std::endl;
+    std::cout << "weights after:\n"
+              << newWeights << std::endl;
 
     //  Check if oldWeights and newWeights are not equals
     cv::Mat diff = cv::abs(oldWeights - newWeights);

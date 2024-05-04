@@ -44,9 +44,9 @@ TEST_CASE("Testing Common") {
     cv::Mat inputMat(2, 2, CV_32FC4);
     inputMat.setTo(cv::Scalar(0.5, 2.8, 1.2, -3.9));
     cv::Mat clampedMat = mat_clamp4f(inputMat);
-    for (int y = 0; y < clampedMat.rows; ++y) {
-      for (int x = 0; x < clampedMat.cols; ++x) {
-        const cv::Vec4f &pixel = clampedMat.at<cv::Vec4f>(y, x);
+    for (int x = 0; x < clampedMat.rows; ++x) {
+      for (int y = 0; y < clampedMat.cols; ++y) {
+        const cv::Vec4f &pixel = clampedMat.at<cv::Vec4f>(x, y);
         CHECK(pixel[0] >= 0.0);
         CHECK(pixel[0] <= 1.0);
         CHECK(pixel[1] >= 0.0);
@@ -59,9 +59,9 @@ TEST_CASE("Testing Common") {
     }
     cv::Mat clampedMat2 = mat_clamp4f(inputMat, cv::Vec4f(0.0, 0.0, 0.0, -1.0),
                                       cv::Vec4f(1.0, 2.0, 1.0, 0.0));
-    for (int y = 0; y < clampedMat2.rows; ++y) {
-      for (int x = 0; x < clampedMat2.cols; ++x) {
-        const cv::Vec4f &pixel = clampedMat2.at<cv::Vec4f>(y, x);
+    for (int x = 0; x < clampedMat2.rows; ++x) {
+      for (int y = 0; y < clampedMat2.cols; ++y) {
+        const cv::Vec4f &pixel = clampedMat2.at<cv::Vec4f>(x, y);
         CHECK(pixel[0] >= 0.0);
         CHECK(pixel[0] <= 1.0);
         CHECK(pixel[1] >= 0.0);

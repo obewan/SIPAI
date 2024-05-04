@@ -31,7 +31,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
   np.hiddens_count = 1;
   np.learning_rate = 0.5f;
   np.adaptive_learning_rate = true;
-  np.adaptive_learning_rate_factor = 0.123;
+  np.adaptive_learning_rate_factor = 0.123f;
   manager.createOrImportNetwork();
 
   CHECK(sizeof(cv::Vec4f) == 4 * sizeof(float));

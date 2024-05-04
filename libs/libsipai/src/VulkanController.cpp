@@ -134,8 +134,8 @@ void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons,
 void VulkanController::_copyMatToBuffer(const cv::Mat &mat, Buffer &buffer) {
   std::vector<cv::Vec4f> flatValues;
   flatValues.reserve(mat.total());
-  for (int y = 0; y < mat.rows; y++) {
-    for (int x = 0; x < mat.cols; x++) {
+  for (int x = 0; x < mat.rows; x++) {
+    for (int y = 0; y < mat.cols; y++) {
       flatValues.push_back(mat.at<cv::Vec4f>(x, y));
     }
   }
@@ -238,8 +238,8 @@ void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
 
   // copy the data
   size_t index = 0;
-  for (int y = 0; y < mat.rows; y++) {
-    for (int x = 0; x < mat.cols; x++) {
+  for (int x = 0; x < mat.rows; x++) {
+    for (int y = 0; y < mat.cols; y++) {
       mat.at<cv::Vec4f>(x, y) =
           cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
                     bufferDataArray[index][2], bufferDataArray[index][3]);

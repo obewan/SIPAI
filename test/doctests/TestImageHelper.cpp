@@ -23,9 +23,9 @@ TEST_CASE("Testing ImageHelper") {
       CHECK(channels == 4);
       // Testing that all values are in range [0,1]
       bool allValuesInRange = true;
-      for (int y = 0; y < part->data.rows; ++y) {
-        for (int x = 0; x < part->data.cols; ++x) {
-          const cv::Vec4f &pixel = part->data.at<cv::Vec4f>(y, x);
+      for (int x = 0; x < part->data.rows; ++x) {
+        for (int y = 0; y < part->data.cols; ++y) {
+          const cv::Vec4f &pixel = part->data.at<cv::Vec4f>(x, y);
           if (pixel[0] < 0.0f || pixel[0] > 1.0f || pixel[1] < 0.0f ||
               pixel[1] > 1.0f || pixel[2] < 0.0f || pixel[2] > 1.0f ||
               pixel[3] < 0.0f || pixel[3] > 1.0f) {
@@ -56,9 +56,9 @@ TEST_CASE("Testing ImageHelper") {
       CHECK(channels == 4);
       // Testing that all values are in range [0,1]
       bool allValuesInRange = true;
-      for (int y = 0; y < part->data.rows; ++y) {
-        for (int x = 0; x < part->data.cols; ++x) {
-          const cv::Vec4f &pixel = part->data.at<cv::Vec4f>(y, x);
+      for (int x = 0; x < part->data.rows; ++x) {
+        for (int y = 0; y < part->data.cols; ++y) {
+          const cv::Vec4f &pixel = part->data.at<cv::Vec4f>(x, y);
           if (pixel[0] < 0.0f || pixel[0] > 1.0f || pixel[1] < 0.0f ||
               pixel[1] > 1.0f || pixel[2] < 0.0f || pixel[2] > 1.0f ||
               pixel[3] < 0.0f || pixel[3] > 1.0f) {

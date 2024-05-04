@@ -12,6 +12,9 @@
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#if defined(_MSC_VER)
+using uint = unsigned int;
+#endif
 
 namespace sipai {
 

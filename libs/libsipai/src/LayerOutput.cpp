@@ -14,17 +14,17 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
   const float error_max = Manager::getConstInstance().network_params.error_max;
   const float weightFactor = 0.5f; // Experiment with weight between 0 and 1
 
-  const size_t rows = neurons.size();
-  const size_t cols = neurons[0].size();
+  const size_t size_y = neurons.size();
+  const size_t size_x = neurons[0].size();
 
   // Create the errors matrix if not already allocated
   if (errors.empty()) {
-    errors.create((int)cols, (int)rows, CV_32FC4);
+    errors.create((int)size_x, (int)size_y, CV_32FC4);
   }
 
   // Iterate over all neurons in the layer
-  for (int y = 0; y < (int)rows; ++y) {
-    for (int x = 0; x < (int)cols; ++x) {
+  for (int y = 0; y < (int)size_y; ++y) {
+    for (int x = 0; x < (int)size_x; ++x) {
       const Neuron &neuron = neurons[y][x];
       cv::Vec4f &error = errors.at<cv::Vec4f>(x, y);
 

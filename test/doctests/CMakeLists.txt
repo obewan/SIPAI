@@ -6,12 +6,14 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread")
 endif()
 
-if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
-    # Add coverage
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")    
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage")    
-    set(CMAKE_EXE_LINKER_FLAGS "-lgcov")
-    
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    if(NOT WIN32)
+        # Add coverage
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")    
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage")    
+        set(CMAKE_EXE_LINKER_FLAGS "-lgcov")
+    endif()
+        
     # Add libs
     target_sources(nlohmann-json INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/libjson/include/json.hpp)
     add_library(lib_doctest INTERFACE)
@@ -23,5 +25,5 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
 
     # Create the unit tester
     add_executable(tester ${SOURCES}) 
-    target_link_libraries(tester PRIVATE ${LIBRARY_NAME} lib_doctest nlohmann-json libsipai)
+    target_link_libraries(tester PRIVATE ${LIBRARY_NAME} lib_doctest nlohmann-json libsipai)    
 endif()
