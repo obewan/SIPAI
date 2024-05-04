@@ -274,7 +274,7 @@ void VulkanBuilder::_createCommandBufferPool() {
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandPool = vulkan_->commandPool;
-  allocInfo.commandBufferCount = commandPoolSize;
+  allocInfo.commandBufferCount = (uint32_t)commandPoolSize;
   vulkan_->commandBufferPool = std::vector<VkCommandBuffer>(commandPoolSize);
   if (vkAllocateCommandBuffers(vulkan_->logicalDevice, &allocInfo,
                                vulkan_->commandBufferPool.data()) !=

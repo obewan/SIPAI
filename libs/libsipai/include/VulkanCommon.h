@@ -84,6 +84,7 @@ struct Shader {
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info{};
+  bool isFirstRun = true;
 };
 
 struct Vulkan {

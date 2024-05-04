@@ -51,6 +51,8 @@ void VulkanController::forwardPropagation(Layer *previousLayer,
     throw NeuralNetworkException("Vulkan controller is not initialized.");
   }
 
+  auto &shader = getShader(EShader::Forward);
+
   // Prepare data for the shader
   _copyNeuronsWeightsToWeightsBuffer(
       currentLayer->neurons); // before others for weights index
