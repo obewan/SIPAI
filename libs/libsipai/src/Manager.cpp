@@ -90,6 +90,25 @@ void Manager::run() {
       "\nverbose logs enabled: ", app_params.verbose ? "true" : "false",
       "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false");
 
+  // Enabling GPU Vulkan
+  bool wasParallel = app_params.enable_parallel;
+  if (app_params.enable_vulkan) {
+    SimpleLogger::LOG_INFO("Enabling Vulkan...");
+    if (wasParallel) {
+      app_params.enable_parallel = false;
+    }
+    try {
+      VulkanController::getInstance().initialize();
+    } catch (std::exception &ex) {
+      SimpleLogger::LOG_ERROR("Enabling Vulkan error: ", ex.what());
+      app_params.enable_vulkan = false;
+      SimpleLogger::LOG_INFO("Vulkan GPU acceleration disabled.");
+      if (wasParallel) {
+        app_params.enable_parallel = true;
+      }
+    }
+  }
+
   // Enabling CPU parallelism
   if (app_params.enable_parallel) {
     SimpleLogger::LOG_INFO("Enabling CPU parallelism...");
@@ -103,18 +122,6 @@ void Manager::run() {
     }
   } else {
     cv::setNumThreads(0);
-  }
-
-  // Enabling GPU Vulkan
-  if (app_params.enable_vulkan) {
-    SimpleLogger::LOG_INFO("Enabling Vulkan...");
-    try {
-      VulkanController::getInstance().initialize();
-    } catch (std::exception &ex) {
-      SimpleLogger::LOG_ERROR("Enabling Vulkan error: ", ex.what());
-      app_params.enable_vulkan = false;
-      SimpleLogger::LOG_INFO("Vulkan GPU acceleration disabled.");
-    }
   }
 
   // Run with visitor

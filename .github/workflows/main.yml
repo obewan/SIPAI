@@ -39,7 +39,7 @@ jobs:
           '/usr/include/*' '/usr/lib/*' \
           '*/libs/libcsvparser/*' \
           '*/libs/libjson/*' \
-          '*/libs/libsipai/src/VulkanController.cpp' \
+          '*/libs/libsipai/src/Vulkan*' \
           '*/test/*'
           lcov --gcov-tool /usr/bin/gcov-12 --summary coverage/lcov.info
         working-directory: ${{github.workspace}}

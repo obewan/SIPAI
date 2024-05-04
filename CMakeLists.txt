@@ -19,7 +19,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 if(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /MP")
 else() 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
 endif()
@@ -49,9 +49,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     )
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 project(${PROJECT_NAME})
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 add_executable(${PROJECT_NAME} ${SOURCE})
 

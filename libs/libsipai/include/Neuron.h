@@ -65,10 +65,10 @@ public:
 
   std::string toStringCsv(size_t max_weights) const {
     std::ostringstream oss;
-    for (int i = 0; i < weights.rows; i++) {
-      for (int j = 0; j < weights.cols; j++) {
-        for (int k = 0; k < 4; k++) {
-          oss << weights.at<cv::Vec4f>(j, i)[k] << ",";
+    for (int x = 0; x < weights.rows; x++) {
+      for (int y = 0; y < weights.cols; y++) {
+        for (int i = 0; i < 4; i++) {
+          oss << weights.at<cv::Vec4f>(x, y)[i] << ",";
         }
       }
     };

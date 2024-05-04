@@ -76,7 +76,7 @@ TEST_CASE("Testing the Manager class") {
     np.hiddens_count = 1;
     np.learning_rate = 0.02f;
     np.adaptive_learning_rate = true;
-    np.adaptive_learning_rate_factor = 0.123;
+    np.adaptive_learning_rate_factor = 0.123f;
     ap.network_to_import = "";
     ap.network_to_export = "tmpNetwork.json";
     std::string network_csv = "tmpNetwork.csv";

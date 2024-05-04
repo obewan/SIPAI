@@ -10,7 +10,8 @@ Its initial focus is on image enhancement, with plans for future releases to inc
 It uses a Multi-Layer Perceptron (MLP) architecture, with a modification that incorporates elements of a Recurrent Neural Network (RNN) to handle spatial information.
 
 ```
-Project under construction...
+WARNING : project still under early development...
+WARNING : Vulkan feature is very experimental and not really ready yet
 ```
 
 ---
@@ -24,8 +25,8 @@ Requirements for compiling the source code:
 - The GLSL tools to use with Vulkan (on Debian: `sudo apt-get -y install glslang-tools spirv-tools`)
 - [CMake](https://cmake.org/)
 - on Windows:
-	- **Image Encoding**: Ensure that your image names are encoded in a format compatible with your system (for example, ASCII). Alternatively, you can install Unicode UTF-8 on your system for broader compatibility		.	
-	- **Vulkan SDK Installation**: After installing the Vulkan SDK, make sure to log out and log back in. This step is necessary to update the system paths.
+  - **Image Encoding**: Ensure that your image names are encoded in a format compatible with your system (for example, ASCII). Alternatively, you can install Unicode UTF-8 on your system for broader compatibility .
+  - **Vulkan SDK Installation**: After installing the Vulkan SDK, make sure to log out and log back in. This step is necessary to update the system paths.
 - on a Windows WSL Linux, be sure to use WSL 2 or better and to have enabled the GPU acceleration: after a `sudo apt-get install mesa-utils` the command `glxinfo | grep -i opengl` should show a line like `OpenGL renderer string: D3D12 (the 3D card)`. You should have a `/dev/dxg` device link as well.
 
 ---

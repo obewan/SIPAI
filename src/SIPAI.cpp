@@ -389,7 +389,8 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       "--par,--parallelism", app_params.enable_parallel,
       "Enables CPU parallel processing for neural network computations. ");
   app.add_flag("--vul,--vulkan", app_params.enable_vulkan,
-               "Enables GPU acceleration by leveraging Vulkan for processing. "
+               "Enables GPU acceleration by leveraging Vulkan "
+               "for processing (experimental). "
                "\nWhen enabled, it utilizes the GPU to speed up computations, "
                "potentially "
                "leading to significant performance improvements for "
