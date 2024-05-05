@@ -7,7 +7,7 @@
  */
 
 // One workgroup, neurons local threads per workgroup
-layout(local_size_x = <MAX_SIZE_X>, local_size_y = <MAX_SIZE_Y>) in;
+layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
 // Enum mapping, do not change
 const int ELU = 0;

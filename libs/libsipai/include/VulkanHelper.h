@@ -16,6 +16,9 @@ class VulkanHelper {
 public:
   void setVulkan(std::shared_ptr<Vulkan> vulkan) { vulkan_ = vulkan; }
 
+  bool replaceTemplateParameters(const std::string &inputFile,
+                                 const std::string &outputFile);
+
   VkCommandBuffer beginSingleTimeCommands();
   void endSingleTimeCommands(VkCommandBuffer &commandBuffer);
 
