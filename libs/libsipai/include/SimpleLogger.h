@@ -52,42 +52,15 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args>
-  const SimpleLogger &log(LogLevel level, bool endl = true,
-                          Args &&...args) const {
-    switch (level) {
-    case LogLevel::INFO:
-      std::cout << get_timestamp() << "[INFO] ";
-      break;
-    case LogLevel::WARN:
-      std::cerr << get_timestamp() << "[WARN] ";
-      break;
-    case LogLevel::ERROR:
-      std::cerr << get_timestamp() << "[ERROR] ";
-      break;
-    case LogLevel::DEBUG:
-      std::cerr << get_timestamp() << "[DEBUG] ";
-      break;
-    default:
-      std::cerr << get_timestamp() << "[UNKNOWN] ";
-      break;
+  const SimpleLogger &log(LogLevel level, bool endl, Args &&...args) const {
+    std::ostream *stream = (level == LogLevel::INFO) ? osout : oserr;
+    *stream << get_timestamp() << "[" << toString(level) << "] ";
+    stream->precision(current_precision);
+    *stream << std::fixed;
+    (*stream << ... << args);
+    if (endl) {
+      *stream << std::endl;
     }
-
-    if (level == LogLevel::INFO) {
-      std::cout.precision(current_precision);
-      std::cout << std::fixed;
-      (std::cout << ... << args);
-      if (endl) {
-        std::cout << std::endl;
-      }
-    } else {
-      std::cerr.precision(current_precision);
-      std::cerr << std::fixed;
-      (std::cerr << ... << args);
-      if (endl) {
-        std::cerr << std::endl;
-      }
-    }
-
     return *this;
   }
 
@@ -104,8 +77,8 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args> const SimpleLogger &append(Args &&...args) const {
-    std::cout.precision(current_precision);
-    (std::cout << ... << args);
+    osout->precision(current_precision);
+    (*osout << ... << args);
     return *this;
   }
 
@@ -122,8 +95,8 @@ public:
    */
   template <typename... Args>
   const SimpleLogger &appendError(Args &&...args) const {
-    std::cerr.precision(current_precision);
-    (std::cerr << ... << args);
+    oserr->precision(current_precision);
+    (*oserr << ... << args);
     return *this;
   }
 
@@ -140,9 +113,9 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args> const SimpleLogger &out(Args &&...args) const {
-    std::cout.precision(current_precision);
-    (std::cout << ... << args);
-    std::cout << std::endl;
+    osout->precision(current_precision);
+    (*osout << ... << args);
+    *osout << std::endl;
     return *this;
   }
 
@@ -159,9 +132,9 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args> const SimpleLogger &err(Args &&...args) const {
-    std::cerr.precision(current_precision);
-    (std::cerr << ... << args);
-    std::cerr << std::endl;
+    oserr->precision(current_precision);
+    (*oserr << ... << args);
+    *oserr << std::endl;
     return *this;
   }
 
@@ -230,28 +203,48 @@ public:
   }
 
   /**
-   * @brief Outputs a newline character to the standard output or error stream
-   * and flushes the stream.
-   *
-   * This method outputs a newline character to either the standard output
-   * stream (std::cout) or the standard error stream (std::cerr), based on the
-   * provided argument. It then flushes the stream to ensure that the newline
-   * character is immediately visible.
-   *
-   * @param onCerr A boolean value that determines whether the newline character
-   * is output to the standard error stream. If true, the newline character is
-   * output to std::cerr; otherwise, it is output to std::cout. The default
-   * value is false.
+   * @brief Outputs a newline character to the standard output
+   * and flushes the stream. For INFO level only.
+   * If using WARN, ERROR or DEBUG level, use endErr() instead.
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
-  const SimpleLogger &endl(bool onCerr = false) const {
-    if (onCerr) {
-      std::cerr << std::endl;
-      std::cerr.flush();
-    } else {
-      std::cout << std::endl;
-      std::cout.flush();
-    }
+  const SimpleLogger &endl() const {
+    *osout << std::endl;
+    osout->flush();
+    return *this;
+  }
+
+  /**
+   * @brief Outputs a newline character to the standard error
+   * and flushes the stream. For WARN, ERROR or DEBUG level only.
+   * If using INFO level, use end() instead.
+   * @return const SimpleLogger& A reference to the SimpleLogger instance.
+   */
+  const SimpleLogger &endlErr() const {
+    *oserr << std::endl;
+    oserr->flush();
+    return *this;
+  }
+
+  /**
+   * @brief Set the Stream Out
+   *
+   * @param oss
+   * @return const SimpleLogger&
+   */
+  const SimpleLogger &setStreamOut(std::ostream &oss) const {
+    osout = &oss;
+    return *this;
+  }
+
+  /**
+   * @brief Set the Stream Err
+   *
+   * @param oss
+   * @return const SimpleLogger&
+   */
+  const SimpleLogger &setStreamErr(std::ostream &oss) const {
+    oserr = &oss;
     return *this;
   }
 
@@ -340,10 +333,15 @@ public:
   }
 
 private:
-  SimpleLogger() = default;
+  SimpleLogger() {
+    osout = &std::cout;
+    oserr = &std::cerr;
+  };
   std::streamsize default_precision = std::cout.precision();
   mutable std::streamsize current_precision = std::cout.precision();
   mutable std::mutex threadMutex_;
+  mutable std::ostream *osout;
+  mutable std::ostream *oserr;
 
   std::string get_timestamp() const {
     auto now = std::chrono::system_clock::now();
@@ -358,6 +356,21 @@ private:
 #endif
     sst << "[" << std::put_time(&now_tm, "%F %T") << "] ";
     return sst.str();
+  }
+
+  std::string toString(LogLevel level) const {
+    switch (level) {
+    case LogLevel::INFO:
+      return "INFO";
+    case LogLevel::WARN:
+      return "WARN";
+    case LogLevel::ERROR:
+      return "ERROR";
+    case LogLevel::DEBUG:
+      return "DEBUG";
+    default:
+      return "UNKNOWN";
+    }
   }
 };
 } // namespace sipai
