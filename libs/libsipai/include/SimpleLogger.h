@@ -39,10 +39,6 @@ public:
   /**
    * @brief Logs messages with a timestamp and log level.
    *
-   * This method logs messages with a timestamp and log level. The messages are
-   * output to the standard output stream (std::cout) or to the standard error
-   * stream (std::cerr).
-   *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param level The log level of the message (INFO, WARN, ERROR, DEBUG).
    * @param endl A boolean value that determines whether a newline character is
@@ -53,6 +49,8 @@ public:
    */
   template <typename... Args>
   const SimpleLogger &log(LogLevel level, bool endl, Args &&...args) const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
+    currentLevel = level;
     std::ostream *stream = (level == LogLevel::INFO) ? osout : oserr;
     *stream << get_timestamp() << "[" << toString(level) << "] ";
     stream->precision(current_precision);
@@ -65,11 +63,7 @@ public:
   }
 
   /**
-   * @brief Appends messages to the standard output stream.
-   *
-   * This method appends messages to the standard output stream (std::cout) or
-   * the standard error stream (std::cerr) without adding a newline character at
-   * the end.
+   * @brief Appends messages to the output stream.
    *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the message. These are forwarded to
@@ -77,35 +71,16 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args> const SimpleLogger &append(Args &&...args) const {
-    osout->precision(current_precision);
-    (*osout << ... << args);
+    std::scoped_lock<std::mutex> lock(threadMutex_);
+    std::ostream *stream = (currentLevel == LogLevel::INFO) ? osout : oserr;
+    stream->precision(current_precision);
+    (*stream << ... << args);
     return *this;
   }
 
   /**
-   * @brief Appends messages to the standard error stream.
-   *
-   * This method appends messages to the standard error stream (std::cerr)
-   * without adding a newline character at the end.
-   *
-   * @tparam Args The types of the arguments that are passed to the method.
-   * @param args The arguments that make up the message. These are forwarded to
-   * the error stream.
-   * @return const SimpleLogger& A reference to the SimpleLogger instance.
-   */
-  template <typename... Args>
-  const SimpleLogger &appendError(Args &&...args) const {
-    oserr->precision(current_precision);
-    (*oserr << ... << args);
-    return *this;
-  }
-
-  /**
-   * @brief Outputs messages to the standard output stream with a newline
-   * character at the end.
-   *
-   * This method outputs messages to the standard output stream (std::cout) and
-   * adds a newline character at the end.
+   * @brief Outputs messages to the output stream with a newline
+   * character at the end, without timestamp and additional infos.
    *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the message. These are forwarded to
@@ -113,6 +88,7 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args> const SimpleLogger &out(Args &&...args) const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
     osout->precision(current_precision);
     (*osout << ... << args);
     *osout << std::endl;
@@ -120,11 +96,8 @@ public:
   }
 
   /**
-   * @brief Outputs messages to the standard error stream with a newline
-   * character at the end.
-   *
-   * This method outputs messages to the standard error stream (std::cerr) and
-   * adds a newline character at the end.
+   * @brief Outputs messages to the error stream with a newline
+   * character at the end, without timestamp and additional infos.
    *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the message. These are forwarded to
@@ -132,6 +105,7 @@ public:
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   template <typename... Args> const SimpleLogger &err(Args &&...args) const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
     oserr->precision(current_precision);
     (*oserr << ... << args);
     *oserr << std::endl;
@@ -140,10 +114,6 @@ public:
 
   /**
    * @brief Logs messages with the INFO log level.
-   *
-   * This method logs messages with the INFO log level. The messages are output
-   * to the standard output stream (std::cout) with a newline character at the
-   * end.
    *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the log message. These are forwarded
@@ -157,10 +127,6 @@ public:
   /**
    * @brief Logs messages with the WARN log level.
    *
-   * This method logs messages with the WARN log level. The messages are output
-   * to the standard error stream (std::cerr) with a newline character at the
-   * end.
-   *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the log message. These are forwarded
    * to the error stream.
@@ -172,10 +138,6 @@ public:
 
   /**
    * @brief Logs messages with the ERROR log level.
-   *
-   * This method logs messages with the ERROR log level. The messages are output
-   * to the standard error stream (std::cerr) with a newline character at the
-   * end.
    *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the log message. These are forwarded
@@ -189,10 +151,6 @@ public:
   /**
    * @brief Logs messages with the DEBUG log level.
    *
-   * This method logs messages with the DEBUG log level. The messages are output
-   * to the standard error stream (std::cerr) with a newline character at the
-   * end.
-   *
    * @tparam Args The types of the arguments that are passed to the method.
    * @param args The arguments that make up the log message. These are forwarded
    * to the error stream.
@@ -203,26 +161,14 @@ public:
   }
 
   /**
-   * @brief Outputs a newline character to the standard output
-   * and flushes the stream. For INFO level only.
-   * If using WARN, ERROR or DEBUG level, use endErr() instead.
+   * @brief Outputs a newline character and flushes the stream.
    * @return const SimpleLogger& A reference to the SimpleLogger instance.
    */
   const SimpleLogger &endl() const {
-    *osout << std::endl;
-    osout->flush();
-    return *this;
-  }
-
-  /**
-   * @brief Outputs a newline character to the standard error
-   * and flushes the stream. For WARN, ERROR or DEBUG level only.
-   * If using INFO level, use end() instead.
-   * @return const SimpleLogger& A reference to the SimpleLogger instance.
-   */
-  const SimpleLogger &endlErr() const {
-    *oserr << std::endl;
-    oserr->flush();
+    std::scoped_lock<std::mutex> lock(threadMutex_);
+    std::ostream *stream = (currentLevel == LogLevel::INFO) ? osout : oserr;
+    *stream << std::endl;
+    stream->flush();
     return *this;
   }
 
@@ -233,6 +179,7 @@ public:
    * @return const SimpleLogger&
    */
   const SimpleLogger &setStreamOut(std::ostream &oss) const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
     osout = &oss;
     return *this;
   }
@@ -244,7 +191,20 @@ public:
    * @return const SimpleLogger&
    */
   const SimpleLogger &setStreamErr(std::ostream &oss) const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
     oserr = &oss;
+    return *this;
+  }
+
+  /**
+   * @brief Set the floating precision
+   *
+   * @param precision
+   * @return const SimpleLogger&
+   */
+  const SimpleLogger &setPrecision(std::streamsize precision) const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
+    current_precision = precision;
     return *this;
   }
 
@@ -256,80 +216,58 @@ public:
   const std::streamsize &getPrecision() const { return current_precision; }
 
   /**
-   * @brief Set the floating precision
-   *
-   * @param precision
-   * @return const SimpleLogger&
-   */
-  const SimpleLogger &setPrecision(std::streamsize precision) const {
-    current_precision = precision;
-    return *this;
-  }
-
-  /**
    * @brief Reset the floating precision
    *
    * @return const SimpleLogger&
    */
   const SimpleLogger &resetPrecision() const {
+    std::scoped_lock<std::mutex> lock(threadMutex_);
     current_precision = default_precision;
     return *this;
   }
 
   /**
    * @brief static shortcut for log info.
-   * @remark thread safe
    * @tparam Args
    * @param args
    * @return const SimpleLogger&
    */
   template <typename... Args>
   static const SimpleLogger &LOG_INFO(Args &&...args) {
-    auto &instance = getInstance();
-    std::scoped_lock<std::mutex> lock(instance.threadMutex_);
-    return instance.info(args...);
+    return getInstance().info(args...);
   }
 
   /**
    * @brief static shortcut for log warning.
-   * @remark thread safe
    * @tparam Args
    * @param args
    * @return const SimpleLogger&
    */
   template <typename... Args>
   static const SimpleLogger &LOG_WARN(Args &&...args) {
-    auto &instance = getInstance();
-    std::scoped_lock<std::mutex> lock(instance.threadMutex_);
-    return instance.warn(args...);
+    return getInstance().warn(args...);
   }
 
   /**
    * @brief static shortcut for log error.
-   * @remark thread safe
    * @tparam Args
    * @param args
    * @return const SimpleLogger&
    */
   template <typename... Args>
   static const SimpleLogger &LOG_ERROR(Args &&...args) {
-    auto &instance = getInstance();
-    std::scoped_lock<std::mutex> lock(instance.threadMutex_);
-    return instance.error(args...);
+    return getInstance().error(args...);
   }
 
   /**
    * @brief static shortcut for log debug.
-   * @remark thread safe
    * @tparam Args
    * @param args
    * @return const SimpleLogger&
    */
   template <typename... Args>
   static const SimpleLogger &LOG_DEBUG(Args &&...args) {
-    auto &instance = getInstance();
-    std::scoped_lock<std::mutex> lock(instance.threadMutex_);
-    return instance.debug(args...);
+    return getInstance().debug(args...);
   }
 
 private:
@@ -342,6 +280,7 @@ private:
   mutable std::mutex threadMutex_;
   mutable std::ostream *osout;
   mutable std::ostream *oserr;
+  mutable LogLevel currentLevel = LogLevel::INFO;
 
   std::string get_timestamp() const {
     auto now = std::chrono::system_clock::now();
