@@ -120,8 +120,9 @@ std::shared_ptr<Data> TrainingDataFactory::next(const TrainingPhase &phase) {
         .file_input = data.file_input,
         .file_output = data.file_output,
         .file_target = data.file_target,
-        .img_input = data.img_input,
+        .img_input = inputImageParts,
         .img_output = data.img_output,
+        .img_target = targetImageParts,
     });
   }
 }

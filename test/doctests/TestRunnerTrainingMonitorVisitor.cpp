@@ -27,6 +27,12 @@ TEST_CASE("Testing RunnerTrainingMonitoredVisitor") {
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);
 
     manager.network.reset();
+  }
+
+  SUBCASE("Test normal run") {
+    RunnerTrainingMonitoredVisitor visitor;
+    TrainingDataFactory::getInstance().clear();
+    auto &manager = Manager::getInstance();
 
     auto &ap = manager.app_params;
     ap.training_data_file = "";
