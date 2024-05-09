@@ -1,8 +1,12 @@
 var searchData=
 [
-  ['runnerenhancervisitor_0',['RunnerEnhancerVisitor',['../classsipai_1_1RunnerEnhancerVisitor.html',1,'sipai']]],
-  ['runnertrainingmonitoredvisitor_1',['RunnerTrainingMonitoredVisitor',['../classsipai_1_1RunnerTrainingMonitoredVisitor.html',1,'sipai']]],
-  ['runnervisitor_2',['RunnerVisitor',['../classsipai_1_1RunnerVisitor.html',1,'sipai']]],
-  ['runnervisitorexception_3',['RunnerVisitorException',['../classsipai_1_1RunnerVisitorException.html',1,'sipai']]],
-  ['runnervisitorfactory_4',['RunnerVisitorFactory',['../classsipai_1_1RunnerVisitorFactory.html',1,'sipai']]]
+  ['neuralnetwork_0',['NeuralNetwork',['../classsipai_1_1NeuralNetwork.html',1,'sipai']]],
+  ['neuralnetworkbuilder_1',['NeuralNetworkBuilder',['../classsipai_1_1NeuralNetworkBuilder.html',1,'sipai']]],
+  ['neuralnetworkexception_2',['NeuralNetworkException',['../classsipai_1_1NeuralNetworkException.html',1,'sipai']]],
+  ['neuralnetworkimportexportcsv_3',['NeuralNetworkImportExportCSV',['../classsipai_1_1NeuralNetworkImportExportCSV.html',1,'sipai']]],
+  ['neuralnetworkimportexportfacade_4',['NeuralNetworkImportExportFacade',['../classsipai_1_1NeuralNetworkImportExportFacade.html',1,'sipai']]],
+  ['neuralnetworkimportexportjson_5',['NeuralNetworkImportExportJSON',['../classsipai_1_1NeuralNetworkImportExportJSON.html',1,'sipai']]],
+  ['neuralnetworkparams_6',['NeuralNetworkParams',['../structsipai_1_1NeuralNetworkParams.html',1,'sipai']]],
+  ['neuron_7',['Neuron',['../classsipai_1_1Neuron.html',1,'sipai']]],
+  ['neuronconnection_8',['NeuronConnection',['../classsipai_1_1NeuronConnection.html',1,'sipai']]]
 ];

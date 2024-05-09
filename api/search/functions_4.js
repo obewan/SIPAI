@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['endl_0',['endl',['../classsipai_1_1SimpleLogger.html#a262fe3c469c48975cfefe313f4ad8db3',1,'sipai::SimpleLogger']]],
+  ['endl_0',['endl',['../classsipai_1_1SimpleLogger.html#a613928303076478481bfd69a5d6cd118',1,'sipai::SimpleLogger']]],
   ['endsingletimecommands_1',['endSingleTimeCommands',['../classsipai_1_1VulkanHelper.html#a51bdaafefd06975f3fcb222cb436ebf1',1,'sipai::VulkanHelper']]],
   ['err_2',['err',['../classsipai_1_1SimpleLogger.html#a4bb08e61103353b85d190b902587dba3',1,'sipai::SimpleLogger']]],
   ['error_3',['error',['../classsipai_1_1SimpleLogger.html#aba5c905a11ba9458bf19d6f2bf0d5f27',1,'sipai::SimpleLogger']]],

@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['trainingdatafactory_2ecpp_0',['TrainingDataFactory.cpp',['../TrainingDataFactory_8cpp.html',1,'']]],
-  ['trainingdatafactory_2eh_1',['TrainingDataFactory.h',['../TrainingDataFactory_8h.html',1,'']]],
-  ['trainingdatafactoryexception_2eh_2',['TrainingDataFactoryException.h',['../TrainingDataFactoryException_8h.html',1,'']]],
-  ['trainingdatafilereadercsv_2ecpp_3',['TrainingDataFileReaderCSV.cpp',['../TrainingDataFileReaderCSV_8cpp.html',1,'']]],
-  ['trainingdatafilereadercsv_2eh_4',['TrainingDataFileReaderCSV.h',['../TrainingDataFileReaderCSV_8h.html',1,'']]]
+  ['simplelogger_2eh_0',['SimpleLogger.h',['../SimpleLogger_8h.html',1,'']]],
+  ['sipai_2ecpp_1',['SIPAI.cpp',['../SIPAI_8cpp.html',1,'']]],
+  ['sipai_2eh_2',['SIPAI.h',['../SIPAI_8h.html',1,'']]]
 ];

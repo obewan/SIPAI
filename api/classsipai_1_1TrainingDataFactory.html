@@ -84,30 +84,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af85d7ef5fc75d9a4aed16adf7767a17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2c675d918aeaa46504992342d0d3bc4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#af2c675d918aeaa46504992342d0d3bc4">~TrainingDataFactory</a> ()=default</td></tr>
 <tr class="separator:af2c675d918aeaa46504992342d0d3bc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06fdc8ef8017c9cd062225010307f0d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">ImagePartsPair</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a06fdc8ef8017c9cd062225010307f0d9">nextTraining</a> ()</td></tr>
-<tr class="memdesc:a06fdc8ef8017c9cd062225010307f0d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next pair of input and target images for training.  <a href="classsipai_1_1TrainingDataFactory.html#a06fdc8ef8017c9cd062225010307f0d9">More...</a><br /></td></tr>
-<tr class="separator:a06fdc8ef8017c9cd062225010307f0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad47c363500ac3a62a9e5c6f57772c091"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">ImagePartsPair</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#ad47c363500ac3a62a9e5c6f57772c091">nextValidation</a> ()</td></tr>
-<tr class="memdesc:ad47c363500ac3a62a9e5c6f57772c091"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next pair of input and target images for validation.  <a href="classsipai_1_1TrainingDataFactory.html#ad47c363500ac3a62a9e5c6f57772c091">More...</a><br /></td></tr>
-<tr class="separator:ad47c363500ac3a62a9e5c6f57772c091"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b7de69d7ff4b82f4cc94ce6d715c34f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a7b7de69d7ff4b82f4cc94ce6d715c34f">trainingSize</a> ()</td></tr>
-<tr class="memdesc:a7b7de69d7ff4b82f4cc94ce6d715c34f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get training pairs collection size.  <a href="classsipai_1_1TrainingDataFactory.html#a7b7de69d7ff4b82f4cc94ce6d715c34f">More...</a><br /></td></tr>
-<tr class="separator:a7b7de69d7ff4b82f4cc94ce6d715c34f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bc4ac2cc8a2ad6422c6554707e1a859"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a5bc4ac2cc8a2ad6422c6554707e1a859">validationSize</a> ()</td></tr>
-<tr class="memdesc:a5bc4ac2cc8a2ad6422c6554707e1a859"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get validation pairs collection size.  <a href="classsipai_1_1TrainingDataFactory.html#a5bc4ac2cc8a2ad6422c6554707e1a859">More...</a><br /></td></tr>
-<tr class="separator:a5bc4ac2cc8a2ad6422c6554707e1a859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2569136ccdb6109298686d260acc12d"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structsipai_1_1Data.html">Data</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#ae2569136ccdb6109298686d260acc12d">next</a> (const <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> &amp;phase)</td></tr>
+<tr class="memdesc:ae2569136ccdb6109298686d260acc12d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next input and target images for training.  <a href="classsipai_1_1TrainingDataFactory.html#ae2569136ccdb6109298686d260acc12d">More...</a><br /></td></tr>
+<tr class="separator:ae2569136ccdb6109298686d260acc12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a543e4224367fc861d553671de6ed46ee"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a543e4224367fc861d553671de6ed46ee">getSize</a> (<a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase) const</td></tr>
+<tr class="memdesc:a543e4224367fc861d553671de6ed46ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get training pairs collection size.  <a href="classsipai_1_1TrainingDataFactory.html#a543e4224367fc861d553671de6ed46ee">More...</a><br /></td></tr>
+<tr class="separator:a543e4224367fc861d553671de6ed46ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab83515921fc3e28e7e001fc82605d2e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#ab83515921fc3e28e7e001fc82605d2e5">loadData</a> ()</td></tr>
 <tr class="memdesc:ab83515921fc3e28e7e001fc82605d2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the training and validation collections paths.  <a href="classsipai_1_1TrainingDataFactory.html#ab83515921fc3e28e7e001fc82605d2e5">More...</a><br /></td></tr>
 <tr class="separator:ab83515921fc3e28e7e001fc82605d2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9826e0b7b84e46e4f494a221072543d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#ad9826e0b7b84e46e4f494a221072543d">resetCounters</a> ()</td></tr>
 <tr class="memdesc:ad9826e0b7b84e46e4f494a221072543d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset training and validation counters.  <a href="classsipai_1_1TrainingDataFactory.html#ad9826e0b7b84e46e4f494a221072543d">More...</a><br /></td></tr>
 <tr class="separator:ad9826e0b7b84e46e4f494a221072543d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e1106249d515b6f03b2170cc2818721"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a8e1106249d515b6f03b2170cc2818721">resetTraining</a> ()</td></tr>
-<tr class="memdesc:a8e1106249d515b6f03b2170cc2818721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset training counter.  <a href="classsipai_1_1TrainingDataFactory.html#a8e1106249d515b6f03b2170cc2818721">More...</a><br /></td></tr>
-<tr class="separator:a8e1106249d515b6f03b2170cc2818721"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0f72084fe1686f5e45699ca88e26b50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#ab0f72084fe1686f5e45699ca88e26b50">resetValidation</a> ()</td></tr>
-<tr class="memdesc:ab0f72084fe1686f5e45699ca88e26b50"><td class="mdescLeft">&#160;</td><td class="mdescRight">reset validation counter  <a href="classsipai_1_1TrainingDataFactory.html#ab0f72084fe1686f5e45699ca88e26b50">More...</a><br /></td></tr>
-<tr class="separator:ab0f72084fe1686f5e45699ca88e26b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c87465a3b840a135108b9f80944c681"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a2c87465a3b840a135108b9f80944c681">isLoaded</a> () const</td></tr>
 <tr class="memdesc:a2c87465a3b840a135108b9f80944c681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate if the collections are loaded.  <a href="classsipai_1_1TrainingDataFactory.html#a2c87465a3b840a135108b9f80944c681">More...</a><br /></td></tr>
 <tr class="separator:a2c87465a3b840a135108b9f80944c681"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,6 +105,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afcb924f37d086ba26c6d9a60094b0865"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#afcb924f37d086ba26c6d9a60094b0865">clear</a> ()</td></tr>
 <tr class="memdesc:afcb924f37d086ba26c6d9a60094b0865"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all data and reset counters.  <a href="classsipai_1_1TrainingDataFactory.html#afcb924f37d086ba26c6d9a60094b0865">More...</a><br /></td></tr>
 <tr class="separator:afcb924f37d086ba26c6d9a60094b0865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08535daa36ad9e762f022c4e3c0555e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1TrainingDataFactory.html#a08535daa36ad9e762f022c4e3c0555e3">shuffle</a> (<a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase)</td></tr>
+<tr class="memdesc:a08535daa36ad9e762f022c4e3c0555e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuffle a vector.  <a href="classsipai_1_1TrainingDataFactory.html#a08535daa36ad9e762f022c4e3c0555e3">More...</a><br /></td></tr>
+<tr class="separator:a08535daa36ad9e762f022c4e3c0555e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -247,6 +238,35 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a543e4224367fc861d553671de6ed46ee" name="a543e4224367fc861d553671de6ed46ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a543e4224367fc861d553671de6ed46ee">&#9670;&nbsp;</a></span>getSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sipai::TrainingDataFactory::getSize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a>&#160;</td>
+          <td class="paramname"><em>phase</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get training pairs collection size. </p>
+<dl class="section return"><dt>Returns</dt><dd>size_t </dd></dl>
+
+</div>
+</div>
 <a id="abfe06e00da679493e00c908044e46243" name="abfe06e00da679493e00c908044e46243"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abfe06e00da679493e00c908044e46243">&#9670;&nbsp;</a></span>isDataFolder()</h2>
 
@@ -318,45 +338,24 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a06fdc8ef8017c9cd062225010307f0d9" name="a06fdc8ef8017c9cd062225010307f0d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06fdc8ef8017c9cd062225010307f0d9">&#9670;&nbsp;</a></span>nextTraining()</h2>
+<a id="ae2569136ccdb6109298686d260acc12d" name="ae2569136ccdb6109298686d260acc12d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2569136ccdb6109298686d260acc12d">&#9670;&nbsp;</a></span>next()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">ImagePartsPair</a> * TrainingDataFactory::nextTraining </td>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="structsipai_1_1Data.html">Data</a> &gt; TrainingDataFactory::next </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> &amp;&#160;</td>
+          <td class="paramname"><em>phase</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the next pair of input and target images for training. </p>
-<p >This method returns a pointer to the next pair of input and target images for training. If there are no more images available for training, it returns nullptr.</p>
-<dl class="section return"><dt>Returns</dt><dd>ImagePartsPair* Pointer to the next pair of input and target images for training, or nullptr if no more images are available. </dd></dl>
-
-</div>
-</div>
-<a id="ad47c363500ac3a62a9e5c6f57772c091" name="ad47c363500ac3a62a9e5c6f57772c091"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad47c363500ac3a62a9e5c6f57772c091">&#9670;&nbsp;</a></span>nextValidation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacesipai.html#ae983eb8b507d8c91984fcc42e2387027">ImagePartsPair</a> * TrainingDataFactory::nextValidation </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the next pair of input and target images for validation. </p>
-<p >This method returns a pointer to the next pair of input and target images for validation. If there are no more images available for validation, it returns nullptr.</p>
-<dl class="section return"><dt>Returns</dt><dd>ImagePartsPair* Pointer to the next pair of input and target images for validation, or nullptr if no more images are available. </dd></dl>
+<p>Get the next input and target images for training. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the next input and target images for training, or nullptr if no more images are available. </dd></dl>
 
 </div>
 </div>
@@ -405,81 +404,37 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a8e1106249d515b6f03b2170cc2818721" name="a8e1106249d515b6f03b2170cc2818721"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e1106249d515b6f03b2170cc2818721">&#9670;&nbsp;</a></span>resetTraining()</h2>
+<a id="a08535daa36ad9e762f022c4e3c0555e3" name="a08535daa36ad9e762f022c4e3c0555e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08535daa36ad9e762f022c4e3c0555e3">&#9670;&nbsp;</a></span>shuffle()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void TrainingDataFactory::resetTraining </td>
+          <td class="memname">void sipai::TrainingDataFactory::shuffle </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a>&#160;</td>
+          <td class="paramname"><em>phase</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Reset training counter. </p>
-
-</div>
-</div>
-<a id="ab0f72084fe1686f5e45699ca88e26b50" name="ab0f72084fe1686f5e45699ca88e26b50"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0f72084fe1686f5e45699ca88e26b50">&#9670;&nbsp;</a></span>resetValidation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TrainingDataFactory::resetValidation </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>reset validation counter </p>
-
-</div>
-</div>
-<a id="a7b7de69d7ff4b82f4cc94ce6d715c34f" name="a7b7de69d7ff4b82f4cc94ce6d715c34f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b7de69d7ff4b82f4cc94ce6d715c34f">&#9670;&nbsp;</a></span>trainingSize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t TrainingDataFactory::trainingSize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get training pairs collection size. </p>
-<dl class="section return"><dt>Returns</dt><dd>size_t </dd></dl>
-
-</div>
-</div>
-<a id="a5bc4ac2cc8a2ad6422c6554707e1a859" name="a5bc4ac2cc8a2ad6422c6554707e1a859"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bc4ac2cc8a2ad6422c6554707e1a859">&#9670;&nbsp;</a></span>validationSize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t TrainingDataFactory::validationSize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get validation pairs collection size. </p>
-<dl class="section return"><dt>Returns</dt><dd>size_t </dd></dl>
+<p>Shuffle a vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

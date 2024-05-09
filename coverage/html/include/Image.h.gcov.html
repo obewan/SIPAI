@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-04 15:32:26</td>
+            <td class="headerValue">2024-05-09 16:20:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -69,7 +69,7 @@
 <a name="7"><span class="lineNum">       7 </span>            :  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024</a>
 <a name="8"><span class="lineNum">       8 </span>            :  *</a>
 <a name="9"><span class="lineNum">       9 </span>            :  */</a>
-<a name="10"><span class="lineNum">      10 </span>            : </a>
+<a name="10"><span class="lineNum">      10 </span>            : #pragma once</a>
 <a name="11"><span class="lineNum">      11 </span>            : #include &lt;cstddef&gt;</a>
 <a name="12"><span class="lineNum">      12 </span>            : #include &lt;memory&gt;</a>
 <a name="13"><span class="lineNum">      13 </span>            : #include &lt;opencv2/opencv.hpp&gt;</a>
@@ -77,16 +77,16 @@
 <a name="15"><span class="lineNum">      15 </span>            : namespace sipai {</a>
 <a name="16"><span class="lineNum">      16 </span>            : struct Image {</a>
 <a name="17"><span class="lineNum">      17 </span>            :   cv::Mat data;</a>
-<a name="18"><span class="lineNum">      18 </span>            :   size_t height; // original height</a>
-<a name="19"><span class="lineNum">      19 </span>            :   size_t width;  // original width</a>
-<a name="20"><span class="lineNum">      20 </span>            :   int type;      // original type</a>
-<a name="21"><span class="lineNum">      21 </span>            :   int channels;  // original channels</a>
+<a name="18"><span class="lineNum">      18 </span>            :   size_t orig_height;</a>
+<a name="19"><span class="lineNum">      19 </span>            :   size_t orig_width;</a>
+<a name="20"><span class="lineNum">      20 </span>            :   int orig_type;</a>
+<a name="21"><span class="lineNum">      21 </span>            :   int orig_channels;</a>
 <a name="22"><span class="lineNum">      22 </span>            : </a>
-<a name="23"><span class="lineNum">      23 </span><span class="lineCov">        147 :   void resize(size_t width, size_t height) {</span></a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">        147 :     if (width &gt; 0 &amp;&amp; height &gt; 0) {</span></a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         91 :       cv::resize(data, data, cv::Size((int)width, (int)height));</span></a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">        207 :   void resize(size_t width, size_t height) {</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">        207 :     if (width &gt; 0 &amp;&amp; height &gt; 0) {</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">        131 :       cv::resize(data, data, cv::Size((int)width, (int)height));</span></a>
 <a name="26"><span class="lineNum">      26 </span>            :     }</a>
-<a name="27"><span class="lineNum">      27 </span><span class="lineCov">        147 :   }</span></a>
+<a name="27"><span class="lineNum">      27 </span><span class="lineCov">        207 :   }</span></a>
 <a name="28"><span class="lineNum">      28 </span>            : };</a>
 <a name="29"><span class="lineNum">      29 </span>            : } // namespace sipai</a>
 </pre>

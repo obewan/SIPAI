@@ -5,6 +5,5 @@ var searchData=
   ['neuralnetworkexception_2',['NeuralNetworkException',['../classsipai_1_1NeuralNetworkException.html#ab73475eddd6010709f7bc213a98e3ef4',1,'sipai::NeuralNetworkException']]],
   ['neuron_3',['Neuron',['../classsipai_1_1Neuron.html#aac8499a824b98f50f44c3a7692a7a167',1,'sipai::Neuron']]],
   ['neuronconnection_4',['NeuronConnection',['../classsipai_1_1NeuronConnection.html#aad50fb48cab1d36bd6c8026be1127aaf',1,'sipai::NeuronConnection']]],
-  ['nexttraining_5',['nextTraining',['../classsipai_1_1TrainingDataFactory.html#a06fdc8ef8017c9cd062225010307f0d9',1,'sipai::TrainingDataFactory']]],
-  ['nextvalidation_6',['nextValidation',['../classsipai_1_1TrainingDataFactory.html#ad47c363500ac3a62a9e5c6f57772c091',1,'sipai::TrainingDataFactory']]]
+  ['next_5',['next',['../classsipai_1_1TrainingDataFactory.html#ae2569136ccdb6109298686d260acc12d',1,'sipai::TrainingDataFactory']]]
 ];

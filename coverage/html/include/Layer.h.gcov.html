@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-04 15:32:26</td>
+            <td class="headerValue">2024-05-09 16:20:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -100,19 +100,19 @@
 <a name="38"><span class="lineNum">      38 </span>            :  */</a>
 <a name="39"><span class="lineNum">      39 </span>            : class Layer {</a>
 <a name="40"><span class="lineNum">      40 </span>            : public:</a>
-<a name="41"><span class="lineNum">      41 </span><span class="lineCov">         25 :   explicit Layer(LayerType layerType, size_t size_x = 0, size_t size_y = 0)</span></a>
-<a name="42"><span class="lineNum">      42 </span><span class="lineCov">         25 :       : layerType(layerType), size_x(size_x), size_y(size_y) {</span></a>
-<a name="43"><span class="lineNum">      43 </span><span class="lineCov">         25 :     neurons = NeuronMat(size_y, std::vector&lt;Neuron&gt;(size_x));</span></a>
-<a name="44"><span class="lineNum">      44 </span><span class="lineCov">         80 :     for (size_t row = 0; row &lt; size_y; ++row) {</span></a>
-<a name="45"><span class="lineNum">      45 </span><span class="lineCov">        206 :       for (size_t col = 0; col &lt; size_x; ++col) {</span></a>
-<a name="46"><span class="lineNum">      46 </span><span class="lineCov">        151 :         neurons[row][col].index_x = col;</span></a>
-<a name="47"><span class="lineNum">      47 </span><span class="lineCov">        151 :         neurons[row][col].index_y = row;</span></a>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">         28 :   explicit Layer(LayerType layerType, size_t size_x = 0, size_t size_y = 0)</span></a>
+<a name="42"><span class="lineNum">      42 </span><span class="lineCov">         28 :       : layerType(layerType), size_x(size_x), size_y(size_y) {</span></a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">         28 :     neurons = NeuronMat(size_y, std::vector&lt;Neuron&gt;(size_x));</span></a>
+<a name="44"><span class="lineNum">      44 </span><span class="lineCov">         90 :     for (size_t row = 0; row &lt; size_y; ++row) {</span></a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineCov">        232 :       for (size_t col = 0; col &lt; size_x; ++col) {</span></a>
+<a name="46"><span class="lineNum">      46 </span><span class="lineCov">        170 :         neurons[row][col].index_x = col;</span></a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineCov">        170 :         neurons[row][col].index_y = row;</span></a>
 <a name="48"><span class="lineNum">      48 </span>            :       }</a>
 <a name="49"><span class="lineNum">      49 </span>            :     }</a>
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">         25 :     values = cv::Mat((int)size_x, (int)size_y, CV_32FC4);</span></a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineCov">         25 :     errors = cv::Mat((int)size_x, (int)size_y, CV_32FC4);</span></a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineCov">         25 :   }</span></a>
-<a name="53"><span class="lineNum">      53 </span><span class="lineCov">         25 :   virtual ~Layer() = default;</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">         28 :     values = cv::Mat((int)size_x, (int)size_y, CV_32FC4);</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">         28 :     errors = cv::Mat((int)size_x, (int)size_y, CV_32FC4);</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">         28 :   }</span></a>
+<a name="53"><span class="lineNum">      53 </span><span class="lineCov">         28 :   virtual ~Layer() = default;</span></a>
 <a name="54"><span class="lineNum">      54 </span>            : </a>
 <a name="55"><span class="lineNum">      55 </span>            :   const LayerType layerType;</a>
 <a name="56"><span class="lineNum">      56 </span>            : </a>
@@ -163,7 +163,7 @@
 <a name="101"><span class="lineNum">     101 </span>            :    *</a>
 <a name="102"><span class="lineNum">     102 </span>            :    * @return size_t</a>
 <a name="103"><span class="lineNum">     103 </span>            :    */</a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">        189 :   size_t total() const { return size_x * size_y; }</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">        232 :   size_t total() const { return size_x * size_y; }</span></a>
 <a name="105"><span class="lineNum">     105 </span>            : </a>
 <a name="106"><span class="lineNum">     106 </span>            :   /**</a>
 <a name="107"><span class="lineNum">     107 </span>            :    * @brief Get the indexes (x,y) of a neuron from the layer size() index</a>
@@ -231,21 +231,21 @@
 <a name="169"><span class="lineNum">     169 </span>            :    */</a>
 <a name="170"><span class="lineNum">     170 </span>            :   virtual void updateWeights(float learningRate);</a>
 <a name="171"><span class="lineNum">     171 </span>            : </a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          9 :   const std::string getLayerTypeStr() const {</span></a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineCov">         18 :     for (const auto &amp;[key, mLayerType] : layer_map) {</span></a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         18 :       if (mLayerType == layerType) {</span></a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          9 :         return key;</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">         12 :   const std::string getLayerTypeStr() const {</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">         24 :     for (const auto &amp;[key, mLayerType] : layer_map) {</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         24 :       if (mLayerType == layerType) {</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">         12 :         return key;</span></a>
 <a name="176"><span class="lineNum">     176 </span>            :       }</a>
 <a name="177"><span class="lineNum">     177 </span>            :     }</a>
 <a name="178"><span class="lineNum">     178 </span><span class="lineNoCov">          0 :     return UndefinedLayer;</span></a>
 <a name="179"><span class="lineNum">     179 </span>            :   }</a>
 <a name="180"><span class="lineNum">     180 </span>            : </a>
 <a name="181"><span class="lineNum">     181 </span>            :   void</a>
-<a name="182"><span class="lineNum">     182 </span><span class="lineCov">         23 :   setActivationFunction(const std::function&lt;cv::Vec4f(cv::Vec4f)&gt; &amp;function,</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineCov">         25 :   setActivationFunction(const std::function&lt;cv::Vec4f(cv::Vec4f)&gt; &amp;function,</span></a>
 <a name="183"><span class="lineNum">     183 </span>            :                         const std::function&lt;cv::Vec4f(cv::Vec4f)&gt; &amp;derivative) {</a>
-<a name="184"><span class="lineNum">     184 </span><span class="lineCov">         23 :     activationFunction = function;</span></a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         23 :     activationFunctionDerivative = derivative;</span></a>
-<a name="186"><span class="lineNum">     186 </span><span class="lineCov">         23 :   }</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">         25 :     activationFunction = function;</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         25 :     activationFunctionDerivative = derivative;</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">         25 :   }</span></a>
 <a name="187"><span class="lineNum">     187 </span>            : };</a>
 <a name="188"><span class="lineNum">     188 </span>            : } // namespace sipai</a>
 </pre>

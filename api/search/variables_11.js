@@ -7,5 +7,5 @@ var searchData=
   ['training_5fdata_5ffolder_4',['training_data_folder',['../structsipai_1_1AppParams.html#af52a779d8dc2b083b13a886c4f38b7a9',1,'sipai::AppParams']]],
   ['training_5freduce_5ffactor_5',['training_reduce_factor',['../structsipai_1_1AppParams.html#a8af450510f5c9386a09d4347fba877ee',1,'sipai::AppParams']]],
   ['training_5fsplit_5fratio_6',['training_split_ratio',['../structsipai_1_1AppParams.html#abafa0f1aea8f8163cc92cc926ffeacc1',1,'sipai::AppParams']]],
-  ['type_7',['type',['../structsipai_1_1Image.html#afd0778b79475f0dd54e7615e125088c9',1,'sipai::Image']]]
+  ['type_7',['type',['../structsipai_1_1DataList.html#a04ffc3d0ce13a370f6f14116cd6259d7',1,'sipai::DataList']]]
 ];

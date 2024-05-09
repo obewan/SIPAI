@@ -15,8 +15,7 @@ var searchData=
   ['adjacentlayervalues_12',['AdjacentLayerValues',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac02d81d145eb07f1e7c09af6f1ba5971',1,'sipai']]],
   ['app_5fparams_13',['app_params',['../classsipai_1_1Manager.html#a04f60db76f56d7c2f8d62d15e7b436db',1,'sipai::Manager']]],
   ['append_14',['append',['../classsipai_1_1SimpleLogger.html#a28aeea0e00b3faff28ea5834812b62dc',1,'sipai::SimpleLogger']]],
-  ['appenderror_15',['appendError',['../classsipai_1_1SimpleLogger.html#a503477d6f0dbc103f589676daaaf21b2',1,'sipai::SimpleLogger']]],
-  ['apply_16',['apply',['../classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269',1,'sipai::Layer']]],
-  ['appparams_17',['AppParams',['../structsipai_1_1AppParams.html',1,'sipai']]],
-  ['appparams_2eh_18',['AppParams.h',['../AppParams_8h.html',1,'']]]
+  ['apply_15',['apply',['../classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269',1,'sipai::Layer']]],
+  ['appparams_16',['AppParams',['../structsipai_1_1AppParams.html',1,'sipai']]],
+  ['appparams_2eh_17',['AppParams.h',['../AppParams_8h.html',1,'']]]
 ];

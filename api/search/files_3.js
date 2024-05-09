@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['filereaderexception_2eh_0',['FileReaderException.h',['../FileReaderException_8h.html',1,'']]]
+  ['emptycellexception_2eh_0',['EmptyCellException.h',['../EmptyCellException_8h.html',1,'']]]
 ];
