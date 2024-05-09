@@ -9,12 +9,15 @@
  */
 #pragma once
 #include "Common.h"
+#include "DataList.h"
 #include "ImageHelper.h"
-#include "TrainingDataFileReaderCSV.h"
+#include "TrainingDataReader.h"
+#include "exception/TrainingDataFactoryException.h"
 #include <atomic>
 #include <cstddef>
 #include <memory>
 #include <mutex>
+#include <random>
 
 namespace sipai {
 class TrainingDataFactory {
@@ -33,42 +36,28 @@ public:
   ~TrainingDataFactory() = default;
 
   /**
-   * @brief Get the next pair of input and target images for training.
+   * @brief Get the next input and target images for training.
    *
-   * This method returns a pointer to the next pair of input and target images
-   * for training. If there are no more images available for training, it
-   * returns nullptr.
-   *
-   * @return ImagePartsPair* Pointer to the next pair of input and target images
+   * @return Pointer to the next input and target images
    * for training, or nullptr if no more images are available.
    */
-  ImagePartsPair *nextTraining();
-
-  /**
-   * @brief Get the next pair of input and target images for validation.
-   *
-   * This method returns a pointer to the next pair of input and target images
-   * for validation. If there are no more images available for validation, it
-   * returns nullptr.
-   *
-   * @return ImagePartsPair* Pointer to the next pair of input and target images
-   * for validation, or nullptr if no more images are available.
-   */
-  ImagePartsPair *nextValidation();
+  std::shared_ptr<Data> next(const TrainingPhase &phase);
 
   /**
    * @brief Get training pairs collection size
    *
    * @return size_t
    */
-  size_t trainingSize();
-
-  /**
-   * @brief Get validation pairs collection size
-   *
-   * @return size_t
-   */
-  size_t validationSize();
+  size_t getSize(TrainingPhase phase) const {
+    switch (phase) {
+    case TrainingPhase::Training:
+      return dataList_.data_training.size();
+    case TrainingPhase::Validation:
+      return dataList_.data_validation.size();
+    default:
+      throw TrainingDataFactoryException("Non-implemeted TrainingPhase");
+    }
+  }
 
   /**
    * @brief Load the training and validation collections paths
@@ -81,18 +70,6 @@ public:
    *
    */
   void resetCounters();
-
-  /**
-   * @brief Reset training counter
-   *
-   */
-  void resetTraining();
-
-  /**
-   * @brief reset validation counter
-   *
-   */
-  void resetValidation();
 
   /**
    * @brief Indicate if the collections are loaded
@@ -116,42 +93,39 @@ public:
    */
   void clear();
 
+  /**
+   * @brief Shuffle a vector
+   *
+   * @param data
+   */
+  void shuffle(TrainingPhase phase) {
+    switch (phase) {
+    case TrainingPhase::Training:
+      std::shuffle(dataList_.data_training.begin(),
+                   dataList_.data_training.end(), gen_);
+      break;
+    case TrainingPhase::Validation:
+      std::shuffle(dataList_.data_validation.begin(),
+                   dataList_.data_validation.end(), gen_);
+    default:
+      break;
+    }
+  }
+
 private:
-  TrainingDataFactory() = default;
+  TrainingDataFactory() : gen_(rd_()) {}
   static std::unique_ptr<TrainingDataFactory> instance_;
 
-  void _loadDataPaths();
-  void _loadDataFolder();
-
-  ImagePartsPair *_next(std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
-                        std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
-                        std::vector<std::string> &dataTargetPaths,
-                        size_t &currentIndex);
-
-  void _splitDataPairPaths(std::vector<std::unique_ptr<ImagePathPair>> &data,
-                           float split_ratio, bool withRandom = false);
-
-  void _splitDataTargetPaths(std::vector<std::string> &data, float split_ratio,
-                             bool withRandom = false);
-
-  std::unique_ptr<ImagePartsPair> currentImagePartsPair_ = nullptr;
-
-  // for bulk mode
-  std::vector<std::unique_ptr<ImagePartsPair>> dataTrainingBulk_;
-  std::vector<std::unique_ptr<ImagePartsPair>> dataValidationBulk_;
-
-  // for csv paths file input mode
-  std::vector<std::unique_ptr<ImagePathPair>> dataTrainingPaths_;
-  std::vector<std::unique_ptr<ImagePathPair>> dataValidationPaths_;
-
-  // for data folder input mode
-  std::vector<std::string> dataTrainingTargetPaths_;
-  std::vector<std::string> dataValidationTargetPaths_;
-
-  TrainingDataFileReaderCSV trainingDatafileReaderCSV_;
+  TrainingDataReader trainingDataReader_;
   ImageHelper imageHelper_;
   std::atomic<bool> isLoaded_ = false;
   size_t currentTrainingIndex_ = 0;
   size_t currentValidationIndex_ = 0;
+
+  // form random
+  std::random_device rd_;
+  std::mt19937 gen_;
+
+  DataList dataList_;
 };
 } // namespace sipai

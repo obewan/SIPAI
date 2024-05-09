@@ -48,7 +48,7 @@ TEST_CASE("Testing the Activation Functions") {
     cv::Vec4f input{1.0f, 1.0f, 1.0f, 1.0f};
     cv::Vec4f expected{0.01f, 0.01f, 0.01f, 0.01f};
     const auto output = lay.activationFunction(input);
-    for (size_t i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
       CHECK(output[i] == doctest::Approx(expected[i]).epsilon(eps));
     }
     CHECK(lay.activationFunction({-0.5f, -0.5f, -0.5f, -0.5f})[0] ==
@@ -102,7 +102,7 @@ TEST_CASE("Testing the Activation Functions") {
     cv::Vec4f input{0.0f, 0.0f, 0.0f, 0.0f};
     cv::Vec4f expected{0.75f, 0.75f, 0.75f, 0.75f};
     const auto output = lay.activationFunctionDerivative(input);
-    for (size_t i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
       CHECK(output[i] == doctest::Approx(expected[i]).epsilon(eps));
     }
     CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})[3] ==

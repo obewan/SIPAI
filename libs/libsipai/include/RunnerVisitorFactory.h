@@ -8,31 +8,18 @@
  *
  */
 #pragma once
-#include "RunnerEnhancerVisitor.h"
-#include "RunnerTrainingMonitoredVisitor.h"
+#include "RunnerVisitor.h"
 #include <memory>
 
 namespace sipai {
 class RunnerVisitorFactory {
 public:
-  const RunnerVisitor &getTrainingMonitoredVisitor() {
-    if (!trainingMonitoredVisitor_) {
-      trainingMonitoredVisitor_ =
-          std::make_unique<RunnerTrainingMonitoredVisitor>();
-    }
-    return *trainingMonitoredVisitor_;
-  }
+  const RunnerVisitor &getTrainingMonitoredVisitor();
 
-  const RunnerVisitor &getEnhancerVisitor() {
-    if (!enhancerVisitor_) {
-      enhancerVisitor_ = std::make_unique<RunnerEnhancerVisitor>();
-    }
-    return *enhancerVisitor_;
-  }
+  const RunnerVisitor &getEnhancerVisitor();
 
 private:
-  std::unique_ptr<RunnerTrainingMonitoredVisitor> trainingMonitoredVisitor_ =
-      nullptr;
-  std::unique_ptr<RunnerEnhancerVisitor> enhancerVisitor_ = nullptr;
+  std::unique_ptr<RunnerVisitor> trainingMonitoredVisitor_ = nullptr;
+  std::unique_ptr<RunnerVisitor> enhancerVisitor_ = nullptr;
 };
 } // namespace sipai

@@ -41,6 +41,10 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
 
   auto &manager = Manager::getInstance();
+  if (!manager.network) {
+    throw RunnerVisitorException("No neural network. Aborting.");
+  }
+
   const auto &appParams = manager.app_params;
   auto &learning_rate = manager.network_params.learning_rate;
   const auto &adaptive_learning_rate =
@@ -53,17 +57,16 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
-  if (appParams.verbose_debug) {
-    SimpleLogger::LOG_DEBUG("Loading images data...");
-  }
-  trainingDataFactory.loadData();
-  if (!trainingDataFactory.isLoaded() ||
-      trainingDataFactory.trainingSize() == 0) {
-    SimpleLogger::LOG_ERROR("No training data found. Aborting.");
-    return;
-  }
-
   try {
+    if (appParams.verbose_debug) {
+      SimpleLogger::LOG_DEBUG("Loading images data...");
+    }
+    trainingDataFactory.loadData();
+    if (!trainingDataFactory.isLoaded() ||
+        trainingDataFactory.getSize(TrainingPhase::Training) == 0) {
+      throw RunnerVisitorException("No training data found. Aborting.");
+    }
+
     // Reset the stopTraining flag
     stopTraining = false;
     stopTrainingNow = false;
@@ -78,12 +81,14 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     bool hasLastEpochBeenSaved = false;
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
-      float trainingLoss = computeLoss(epoch, true);
+      TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
+
+      float trainingLoss = computeLoss(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
       }
 
-      float validationLoss = computeLoss(epoch, false);
+      float validationLoss = computeLoss(epoch, TrainingPhase::Validation);
       if (stopTrainingNow) {
         break;
       }
@@ -131,7 +136,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
                            "s");
 
   } catch (std::exception &ex) {
-    SimpleLogger::LOG_ERROR("Training error: ", ex.what());
+    throw RunnerVisitorException(ex.what());
   }
 }
 
@@ -215,11 +220,63 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
 }
 
 float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
-                                                  const ImageParts &inputImage,
-                                                  const ImageParts &targetImage,
-                                                  bool isTraining,
-                                                  bool isLossFrequency) const {
-  if (inputImage.size() != targetImage.size()) {
+                                                  TrainingPhase phase) const {
+
+  // Initialize the total loss to 0
+  float loss = 0.0f;
+  size_t lossComputed = 0;
+  size_t counter = 0;
+  bool isLossFrequency = false;
+  auto &trainingDataFactory = TrainingDataFactory::getInstance();
+  trainingDataFactory.resetCounters();
+  const auto &app_params = Manager::getConstInstance().app_params;
+
+  // Compute the frequency at which the loss should be computed
+  size_t lossFrequency = std::max(
+      static_cast<size_t>(std::sqrt(trainingDataFactory.getSize(phase))),
+      (size_t)1);
+
+  // Loop over all images
+  while (auto data = trainingDataFactory.next(phase)) {
+    if (stopTrainingNow) {
+      break;
+    }
+    counter++;
+    if (app_params.verbose) {
+      SimpleLogger::LOG_INFO(
+          "Epoch: ", epoch + 1, ", ", getTrainingPhaseStr(phase), ": ",
+          "image ", counter, "/", trainingDataFactory.getSize(phase), "...");
+    }
+
+    // Check if the loss should be computed for the current image
+    isLossFrequency = counter % lossFrequency == 0 ? true : false;
+
+    // Compute the image parts loss
+    float imageLoss = _computeLoss(epoch, data, phase, isLossFrequency);
+    if (stopTrainingNow) {
+      break;
+    }
+
+    // If the loss was computed for the current image, add the average loss for
+    // the current image to the total loss
+    if (isLossFrequency) {
+      loss += imageLoss;
+      lossComputed++;
+    }
+  }
+
+  // Return the average loss over all images for which the loss was computed
+  if (lossComputed == 0) {
+    return 0;
+  }
+  return (loss / static_cast<float>(lossComputed));
+}
+
+float RunnerTrainingMonitoredVisitor::_computeLoss(size_t epoch,
+                                                   std::shared_ptr<Data> data,
+                                                   TrainingPhase phase,
+                                                   bool isLossFrequency) const {
+  if (data->img_input.size() != data->img_target.size()) {
     throw ImageHelperException(
         "internal exception: input and target parts have different sizes.");
   }
@@ -236,19 +293,19 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
   size_t partsLossComputed = 0;
 
   // Loop over all parts of the current image
-  for (size_t i = 0; i < inputImage.size(); i++) {
+  for (size_t i = 0; i < data->img_input.size(); i++) {
     if (stopTrainingNow) {
       break;
     }
 
     // Get the input and target parts
-    const auto &inputPart = inputImage.at(i);
-    const auto &targetPart = targetImage.at(i);
+    const auto &inputPart = data->img_input.at(i);
+    const auto &targetPart = data->img_target.at(i);
 
     // Perform forward propagation
     if (manager.app_params.verbose_debug) {
       SimpleLogger::LOG_DEBUG("forward propagation part ", i + 1, "/",
-                              inputImage.size(), "...");
+                              data->img_input.size(), "...");
     }
     const auto &outputData = manager.network->forwardPropagation(
         inputPart->data, manager.app_params.enable_vulkan);
@@ -276,20 +333,21 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
 
     // If backward propagation and weight update should be performed, perform
     // them
-    if (isTraining) {
+    if (phase == TrainingPhase::Training) {
       if (manager.app_params.verbose_debug) {
         SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
-                                inputImage.size(), "...");
+                                data->img_input.size(), "...");
       }
-      manager.network->backwardPropagation(targetPart->data, manager.app_params.enable_vulkan, error_min,
-                                           error_max);
+      manager.network->backwardPropagation(targetPart->data,
+                                           manager.app_params.enable_vulkan,
+                                           error_min, error_max);
       if (stopTrainingNow) {
         break;
       }
 
       if (manager.app_params.verbose_debug) {
         SimpleLogger::LOG_DEBUG("weights update part ", i + 1, "/",
-                                inputImage.size(), "...");
+                                data->img_input.size(), "...");
       }
       manager.network->updateWeights(manager.network_params.learning_rate);
       if (stopTrainingNow) {
@@ -302,66 +360,4 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
     return 0;
   }
   return (partsLoss / static_cast<float>(partsLossComputed));
-}
-
-float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
-                                                  bool isTraining) const {
-
-  // Initialize the total loss to 0
-  float loss = 0.0f;
-  size_t lossComputed = 0;
-  size_t counter = 0;
-  bool isLossFrequency = false;
-  auto &trainingDataFactory = TrainingDataFactory::getInstance();
-  trainingDataFactory.resetCounters();
-  const auto &app_params = Manager::getConstInstance().app_params;
-
-  // Compute the frequency at which the loss should be computed
-  size_t lossFrequency =
-      std::max(static_cast<size_t>(std::sqrt(
-                   isTraining ? trainingDataFactory.trainingSize()
-                              : trainingDataFactory.validationSize())),
-               (size_t)1);
-
-  // Loop over all images
-  while (auto imagePartsPair = isTraining
-                                   ? trainingDataFactory.nextTraining()
-                                   : trainingDataFactory.nextValidation()) {
-    if (stopTrainingNow) {
-      break;
-    }
-    counter++;
-    if (app_params.verbose) {
-      SimpleLogger::LOG_INFO("Epoch: ", epoch + 1,
-                             isTraining ? ", training: " : ", validation: ",
-                             "image ", counter, "/",
-                             isTraining ? trainingDataFactory.trainingSize()
-                                        : trainingDataFactory.validationSize(),
-                             "...");
-    }
-
-    // Check if the loss should be computed for the current image
-    isLossFrequency = counter % lossFrequency == 0 ? true : false;
-
-    // Compute the image parts loss
-    const auto &[inputImageParts, targetImageParts] = *imagePartsPair;
-    float imageLoss = computeLoss(epoch, inputImageParts, targetImageParts,
-                                  isTraining, isLossFrequency);
-    if (stopTrainingNow) {
-      break;
-    }
-
-    // If the loss was computed for the current image, add the average loss for
-    // the current image to the total loss
-    if (isLossFrequency) {
-      loss += imageLoss;
-      lossComputed++;
-    }
-  }
-
-  // Return the average loss over all images for which the loss was computed
-  if (lossComputed == 0) {
-    return 0;
-  }
-  return (loss / static_cast<float>(lossComputed));
 }

@@ -40,16 +40,16 @@ void RunnerEnhancerVisitor::visit() const {
       const auto &outputData = manager.network->forwardPropagation(
           inputPart->data, app_params.enable_vulkan);
       Image output{.data = outputData,
-                   .height = inputPart->height,
-                   .width = inputPart->width,
-                   .type = inputPart->type,
-                   .channels = inputPart->channels};
+                   .orig_height = inputPart->orig_height,
+                   .orig_width = inputPart->orig_width,
+                   .orig_type = inputPart->orig_type,
+                   .orig_channels = inputPart->orig_channels};
       outputParts.push_back(std::make_unique<Image>(output));
     }
 
     // Save the output image parts as a single image
-    size_t outputSizeX = outputParts.front()->width;
-    size_t outputSizeY = outputParts.front()->height;
+    size_t outputSizeX = outputParts.front()->orig_width;
+    size_t outputSizeY = outputParts.front()->orig_height;
     imageHelper_.saveImage(app_params.output_file, outputParts,
                            app_params.image_split,
                            (size_t)(outputSizeX * app_params.output_scale),

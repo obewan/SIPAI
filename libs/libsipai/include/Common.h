@@ -19,11 +19,6 @@
 #include <vector>
 
 namespace sipai {
-using ImageParts = std::vector<std::unique_ptr<Image>>;
-using ImagePartsPair = std::pair<ImageParts, ImageParts>;
-using ImagePathPair = std::pair<std::string, std::string>;
-using ImagePartsPairList = std::vector<std::pair<ImageParts, ImageParts>>;
-
 consteval unsigned long long operator"" _K(unsigned long long x) {
   return x * 1024;
 }
@@ -34,6 +29,19 @@ consteval unsigned long long operator"" _M(unsigned long long x) {
 
 consteval unsigned long long operator"" _G(unsigned long long x) {
   return x * 1024_M;
+}
+
+enum class TrainingPhase { Training, Validation };
+
+inline std::string getTrainingPhaseStr(TrainingPhase phase) {
+  switch (phase) {
+  case TrainingPhase::Training:
+    return "Training";
+  case TrainingPhase::Validation:
+    return "Validation";
+  default:
+    return "";
+  }
 }
 
 enum class ERunMode { Enhancer, Testing, Training, TrainingMonitored };
