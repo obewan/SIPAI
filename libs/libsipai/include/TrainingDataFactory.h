@@ -98,12 +98,22 @@ public:
    *
    * @param data
    */
-  template <typename T> void shuffle(std::vector<T> &data) {
-    std::shuffle(data.begin(), data.end(), gen);
+  void shuffle(TrainingPhase phase) {
+    switch (phase) {
+    case TrainingPhase::Training:
+      std::shuffle(dataList_.data_training.begin(),
+                   dataList_.data_training.end(), gen_);
+      break;
+    case TrainingPhase::Validation:
+      std::shuffle(dataList_.data_validation.begin(),
+                   dataList_.data_validation.end(), gen_);
+    default:
+      break;
+    }
   }
 
 private:
-  TrainingDataFactory() : gen(rd()) {}
+  TrainingDataFactory() : gen_(rd_()) {}
   static std::unique_ptr<TrainingDataFactory> instance_;
 
   TrainingDataReader trainingDataReader_;
@@ -113,8 +123,8 @@ private:
   size_t currentValidationIndex_ = 0;
 
   // form random
-  std::random_device rd;
-  std::mt19937 gen;
+  std::random_device rd_;
+  std::mt19937 gen_;
 
   DataList dataList_;
 };

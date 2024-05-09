@@ -40,6 +40,9 @@ void TrainingDataFactory::loadData() {
     throw TrainingDataFactoryException(
         "Invalid training data file or data folder");
   }
+  if (app_params.random_loading) {
+    std::shuffle(datas.begin(), datas.end(), gen_);
+  }
   // split datas
   size_t split_index =
       static_cast<size_t>(datas.size() * app_params.training_split_ratio);
@@ -129,6 +132,8 @@ void TrainingDataFactory::resetCounters() {
 }
 
 void TrainingDataFactory::clear() {
+  dataList_.data_training.clear();
+  dataList_.data_validation.clear();
   resetCounters();
   isLoaded_ = false;
 }

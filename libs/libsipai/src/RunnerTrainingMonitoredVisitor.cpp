@@ -41,6 +41,10 @@ void RunnerTrainingMonitoredVisitor::visit() const {
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
 
   auto &manager = Manager::getInstance();
+  if (!manager.network) {
+    throw RunnerVisitorException("No neural network. Aborting.");
+  }
+
   const auto &appParams = manager.app_params;
   auto &learning_rate = manager.network_params.learning_rate;
   const auto &adaptive_learning_rate =
@@ -53,17 +57,16 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   SimpleLogger::getInstance().setPrecision(2);
 
   // Load training data
-  if (appParams.verbose_debug) {
-    SimpleLogger::LOG_DEBUG("Loading images data...");
-  }
-  trainingDataFactory.loadData();
-  if (!trainingDataFactory.isLoaded() ||
-      trainingDataFactory.getSize(TrainingPhase::Training) == 0) {
-    SimpleLogger::LOG_ERROR("No training data found. Aborting.");
-    return;
-  }
-
   try {
+    if (appParams.verbose_debug) {
+      SimpleLogger::LOG_DEBUG("Loading images data...");
+    }
+    trainingDataFactory.loadData();
+    if (!trainingDataFactory.isLoaded() ||
+        trainingDataFactory.getSize(TrainingPhase::Training) == 0) {
+      throw RunnerVisitorException("No training data found. Aborting.");
+    }
+
     // Reset the stopTraining flag
     stopTraining = false;
     stopTrainingNow = false;
@@ -78,8 +81,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
     bool hasLastEpochBeenSaved = false;
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
-      // TODO: shuffle data lists again here, at each epoch (and remove the
-      // initial shuffle).
+      TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
       float trainingLoss = computeLoss(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
@@ -134,7 +136,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
                            "s");
 
   } catch (std::exception &ex) {
-    SimpleLogger::LOG_ERROR("Training error: ", ex.what());
+    throw RunnerVisitorException(ex.what());
   }
 }
 
