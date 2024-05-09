@@ -38,7 +38,6 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
     return;
   }
 
-  
   if (enable_vulkan) {
     VulkanController::getInstance().backwardPropagation(nextLayer, this);
     return;
@@ -61,8 +60,8 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
       }
       // Consider errors of adjacent neurons
       for (const NeuronConnection &conn : currentNeuron.neighbors) {
-        error += conn.weight.mul(
-            errors.at<cv::Vec4f>((int)conn.neuron->index_x, (int)conn.neuron->index_y));
+        error += conn.weight.mul(errors.at<cv::Vec4f>(
+            (int)conn.neuron->index_x, (int)conn.neuron->index_y));
       }
       // Use the derivative of the activation function
       const cv::Vec4f activationDerivative =
@@ -98,9 +97,10 @@ void Layer::updateWeights(float learningRate) {
 
       // Update weights based on neighboring neurons
       for (NeuronConnection &conn : neuron.neighbors) {
-        conn.weight -=
-            values.at<cv::Vec4f>((int)conn.neuron->index_x, (int)conn.neuron->index_y)
-                .mul(learningRateError);
+        conn.weight -= values
+                           .at<cv::Vec4f>((int)conn.neuron->index_x,
+                                          (int)conn.neuron->index_y)
+                           .mul(learningRateError);
       }
     }
   }

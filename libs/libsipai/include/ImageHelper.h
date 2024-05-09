@@ -10,6 +10,7 @@
 #pragma once
 
 #include "Common.h"
+#include "Data.h"
 #include "exception/ImageHelperException.h"
 #include <cstddef>
 #include <exception>

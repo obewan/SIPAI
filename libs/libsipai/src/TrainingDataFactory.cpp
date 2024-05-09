@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <memory>
 #include <numeric>
+#include <optional>
 
 using namespace sipai;
 
@@ -17,84 +18,6 @@ bool TrainingDataFactory::isDataFolder() const {
          app_params.training_data_file.empty();
 }
 
-// Rq. if the input data are going more complex, this method should be
-// refactored using another factory
-ImagePartsPair *TrainingDataFactory::_next(
-    std::vector<std::unique_ptr<ImagePathPair>> &dataPaths,
-    std::vector<std::unique_ptr<ImagePartsPair>> &dataBulk,
-    std::vector<std::string> &dataTargetPaths, size_t &currentIndex) {
-
-  const auto &manager = Manager::getConstInstance();
-  const auto &app_params = manager.app_params;
-  const auto &network_params = manager.network_params;
-
-  size_t dataSize = isDataFolder() ? dataTargetPaths.size() : dataPaths.size();
-  if (currentIndex >= dataSize) {
-    // No more training data
-    return nullptr;
-  }
-
-  const std::string &inputPath =
-      isDataFolder() ? "" : dataPaths[currentIndex]->first;
-  const std::string &targetPath = isDataFolder()
-                                      ? dataTargetPaths[currentIndex]
-                                      : dataPaths[currentIndex]->second;
-
-  if (app_params.bulk_loading && currentIndex < dataBulk.size()) {
-    // gets the data from bulk
-    return dataBulk.at(currentIndex++).get();
-  } else {
-    // load the data
-
-    // load the target image
-    auto targetImageParts = imageHelper_.loadImage(
-        targetPath, app_params.image_split, app_params.enable_padding,
-        network_params.output_size_x, network_params.output_size_y);
-
-    // if it is a folder of target images, the input image will be generate,
-    // else it will load the provided input image
-    auto inputImageParts =
-        isDataFolder()
-            ? imageHelper_.generateInputImage(
-                  targetImageParts, app_params.training_reduce_factor,
-                  network_params.input_size_x, network_params.input_size_y)
-            : imageHelper_.loadImage(
-                  inputPath, app_params.image_split, app_params.enable_padding,
-                  network_params.input_size_x, network_params.input_size_y);
-
-    currentImagePartsPair_ = std::make_unique<ImagePartsPair>(std::make_pair(
-        std::move(inputImageParts), std::move(targetImageParts)));
-
-    // return the data, make a push in the bulk for a next time
-    currentIndex++;
-    if (app_params.bulk_loading) {
-      dataBulk.push_back(std::move(currentImagePartsPair_));
-      return dataBulk.back().get();
-    } else {
-      return currentImagePartsPair_.get();
-    }
-  }
-}
-
-ImagePartsPair *TrainingDataFactory::nextTraining() {
-  return _next(dataTrainingPaths_, dataTrainingBulk_, dataTrainingTargetPaths_,
-               currentTrainingIndex_);
-}
-
-ImagePartsPair *TrainingDataFactory::nextValidation() {
-  return _next(dataValidationPaths_, dataValidationBulk_,
-               dataValidationTargetPaths_, currentValidationIndex_);
-}
-
-size_t TrainingDataFactory::trainingSize() {
-  return isDataFolder() ? dataTrainingTargetPaths_.size()
-                        : dataTrainingPaths_.size();
-}
-size_t TrainingDataFactory::validationSize() {
-  return isDataFolder() ? dataValidationTargetPaths_.size()
-                        : dataValidationPaths_.size();
-}
-
 void TrainingDataFactory::loadData() {
   if (isLoaded_) {
     return;
@@ -104,133 +27,108 @@ void TrainingDataFactory::loadData() {
   if (app_params.verbose) {
     SimpleLogger::LOG_INFO("Loading images paths...");
   }
+
+  std::vector<Data> datas;
+  // load images paths
   if (!app_params.training_data_file.empty()) {
-    _loadDataPaths();
+    datas = trainingDataReader_.loadTrainingDataPaths();
+    dataList_.type = DataListType::INPUT_TARGET;
   } else if (!app_params.training_data_folder.empty()) {
-    _loadDataFolder();
+    datas = trainingDataReader_.loadTrainingDataFolder();
+    dataList_.type = DataListType::TARGET_FOLDER;
   } else {
     throw TrainingDataFactoryException(
         "Invalid training data file or data folder");
   }
-  if (app_params.verbose && isLoaded_) {
-    SimpleLogger::LOG_INFO("Images paths loaded: ", trainingSize(),
-                           " images for training, ", validationSize(),
-                           " images for validation.");
-  }
-}
-
-void TrainingDataFactory::_loadDataPaths() {
-  const auto &app_params = Manager::getConstInstance().app_params;
-
-  auto dataPaths = trainingDatafileReaderCSV_.loadTrainingDataPaths();
-  _splitDataPairPaths(dataPaths, app_params.training_split_ratio,
-                      app_params.random_loading);
-
-  isLoaded_ = true;
-}
-
-void TrainingDataFactory::_loadDataFolder() {
-  const auto &app_params = Manager::getConstInstance().app_params;
-  const auto &folder = app_params.training_data_folder;
-
-  std::vector<std::string> dataTargetPaths;
-
-  // Add images paths from the folder
-  for (const auto &entry : std::filesystem::directory_iterator(folder)) {
-    if (entry.is_regular_file()) {
-      std::string extension = entry.path().extension().string();
-      // Convert the extension to lowercase
-      std::transform(extension.begin(), extension.end(), extension.begin(),
-                     ::tolower);
-      // Check if the file is an image by checking its extension
-      if (valid_extensions.find(extension) != valid_extensions.end()) {
-        dataTargetPaths.push_back(entry.path().string());
-      }
+  // split datas
+  size_t split_index =
+      static_cast<size_t>(datas.size() * app_params.training_split_ratio);
+  for (size_t i = 0; i < datas.size(); ++i) {
+    if (i < split_index) {
+      dataList_.data_training.push_back(datas[i]);
+    } else {
+      dataList_.data_validation.push_back(datas[i]);
     }
   }
 
-  _splitDataTargetPaths(dataTargetPaths, app_params.training_split_ratio,
-                        app_params.random_loading);
   isLoaded_ = true;
+  if (app_params.verbose) {
+    SimpleLogger::LOG_INFO(
+        "Images paths loaded: ", dataList_.data_training.size(),
+        " images for training, ", dataList_.data_validation.size(),
+        " images for validation.");
+  }
+}
+
+std::shared_ptr<Data> TrainingDataFactory::next(const TrainingPhase &phase) {
+  const auto &manager = Manager::getConstInstance();
+  const auto &app_params = manager.app_params;
+  const auto &network_params = manager.network_params;
+  size_t *index = nullptr;
+  std::vector<Data> *datas = nullptr;
+  switch (phase) {
+  case TrainingPhase::Training:
+    index = &currentTrainingIndex_;
+    datas = &dataList_.data_training;
+    break;
+  case TrainingPhase::Validation:
+    index = &currentValidationIndex_;
+    datas = &dataList_.data_validation;
+    break;
+  default:
+    throw TrainingDataFactoryException("Unimplemented TrainingPhase");
+  }
+
+  if (*index >= datas->size()) {
+    // No more training data
+    return nullptr;
+  }
+  auto &data = datas->at(*index);
+  // check if bulk_loading and already loaded
+  if (app_params.bulk_loading && data.img_input.size() > 0 &&
+      data.img_output.size() > 0) {
+    return std::make_shared<Data>(data);
+  }
+
+  // load the target image
+  ImageParts targetImageParts = imageHelper_.loadImage(
+      data.file_target, app_params.image_split, app_params.enable_padding,
+      network_params.output_size_x, network_params.output_size_y);
+
+  // generate or load the input image
+  ImageParts inputImageParts =
+      dataList_.type == DataListType::TARGET_FOLDER
+          ? imageHelper_.generateInputImage(
+                targetImageParts, app_params.training_reduce_factor,
+                network_params.input_size_x, network_params.input_size_y)
+          : imageHelper_.loadImage(data.file_input, app_params.image_split,
+                                   app_params.enable_padding,
+                                   network_params.input_size_x,
+                                   network_params.input_size_y);
+
+  (*index)++;
+
+  if (app_params.bulk_loading) {
+    data.img_input = inputImageParts;
+    data.img_target = targetImageParts;
+    return std::make_shared<Data>(data);
+  } else {
+    return std::make_shared<Data>(Data{
+        .file_input = data.file_input,
+        .file_output = data.file_output,
+        .file_target = data.file_target,
+        .img_input = data.img_input,
+        .img_output = data.img_output,
+    });
+  }
 }
 
 void TrainingDataFactory::resetCounters() {
-  resetTraining();
-  resetValidation();
-}
-void TrainingDataFactory::resetTraining() { currentTrainingIndex_ = 0; }
-void TrainingDataFactory::resetValidation() { currentValidationIndex_ = 0; }
-
-void TrainingDataFactory::_splitDataPairPaths(
-    std::vector<std::unique_ptr<ImagePathPair>> &data, float split_ratio,
-    bool withRandom) {
-  dataTrainingPaths_.clear();
-  dataValidationPaths_.clear();
-
-  if (data.empty()) {
-    return;
-  }
-
-  if (withRandom) {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(data.begin(), data.end(), g);
-  }
-
-  // Calculate the split index based on the split ratio
-  size_t split_index = static_cast<size_t>(data.size() * split_ratio);
-
-  // Split the data
-  for (size_t i = 0; i < data.size(); ++i) {
-    if (i < split_index) {
-      dataTrainingPaths_.push_back(std::move(data[i]));
-      data.erase(data.begin() + i); // Remove the moved element
-    } else {
-      dataValidationPaths_.push_back(std::move(data[i]));
-      data.erase(data.begin() + i); // Remove the moved element
-    }
-    i--; // Adjust index after erasing to avoid skipping elements
-  }
-
-  assert(data.empty()); // Ensure all elements were moved and removed
-}
-
-void TrainingDataFactory::_splitDataTargetPaths(std::vector<std::string> &data,
-                                                float split_ratio,
-                                                bool withRandom) {
-  dataTrainingTargetPaths_.clear();
-  dataValidationTargetPaths_.clear();
-
-  if (data.empty()) {
-    return;
-  }
-
-  if (withRandom) {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(data.begin(), data.end(), g);
-  }
-
-  // Calculate the split index based on the split ratio
-  size_t split_index = static_cast<size_t>(data.size() * split_ratio);
-
-  // Split the data
-  for (size_t i = 0; i < data.size(); ++i) {
-    if (i < split_index) {
-      dataTrainingTargetPaths_.push_back(data[i]);
-    } else {
-      dataValidationTargetPaths_.push_back(data[i]);
-    }
-  }
+  currentTrainingIndex_ = 0;
+  currentValidationIndex_ = 0;
 }
 
 void TrainingDataFactory::clear() {
-  dataTrainingBulk_.clear();
-  dataValidationBulk_.clear();
-  dataTrainingPaths_.clear();
-  dataValidationPaths_.clear();
-  dataTrainingTargetPaths_.clear();
-  dataValidationTargetPaths_.clear();
   resetCounters();
   isLoaded_ = false;
 }
