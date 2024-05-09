@@ -1,0 +1,97 @@
+#version 450
+
+/**
+ * *TEMPLATE* GLSL training compute shader for Vulkan, by Dams
+ * Damien Balima (c) CC-BY-NC-SA-4.0 2024
+ * Do not edit
+ */
+
+// One workgroup, neurons local threads per workgroup
+layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
+
+// Enum mapping, do not change
+const int ELU = 0;
+const int LReLU = 1;
+const int PReLU = 2;
+const int ReLU = 3;
+const int Sigmoid = 4;
+const int Tanh = 5;
+
+// Binding Parameters
+layout(std430, binding = 0) buffer readonly Parameters {
+  float learning_rate;
+  float error_min;
+  float error_max;
+  float activation_alpha;
+  uint activation_function;
+}
+params;
+
+vec4 derivativeFunction(vec4 value) {
+  bvec4 mask;
+  switch (params.activation_function) {
+  case ELU:
+    mask = greaterThanEqual(value, vec4(0.0));
+    value = mix(vec4(1.0), params.activation_alpha * exp(value), mask);
+    break;
+  case LReLU:
+    value = clamp(value, 0.01, 1.0);
+    break;
+  case PReLU:
+    mask = greaterThanEqual(value, vec4(0.0));
+    value = mix(vec4(1.0), vec4(params.activation_alpha), mask);
+    break;
+  case ReLU:
+    mask = greaterThanEqual(value, vec4(0.0));
+    value = mix(vec4(1.0), vec4(0.0), mask);
+    break;
+  case Sigmoid:
+    value *= (1 - value);
+    break;
+  case Tanh: // shifted tanh [-1,1] to [0,1]
+    value = (tanh(value) / 2.0) + 0.5;
+    value = 1 - value * value;
+    break;
+  default:
+    break;
+  }
+  return value;
+}
+
+vec4 activateFunction(vec4 value) {
+  bvec4 mask;
+  switch (params.activation_function) {
+  case ELU:
+    mask = greaterThanEqual(value, vec4(0.0));
+    value = mix(vec4(params.activation_alpha) * (exp(value) - vec4(1.0)), value,
+                mask);
+    value = clamp(value, 0.0, 1.0);
+    break;
+  case LReLU:
+    value = clamp(0.01 * value, 0.0, 1.0);
+    break;
+  case PReLU:
+    value = max(params.activation_alpha * value, value);
+    value = clamp(value, 0.0, 1.0);
+    break;
+  case ReLU:
+    value = clamp(value, 0.0, 1.0);
+    break;
+  case Sigmoid:
+    value = 1.0 / (1.0 + exp(-value));
+    value = clamp(value, 0.0, 1.0);
+    break;
+  case Tanh: // shifted tanh [-1,1] to [0,1]
+    value = (tanh(value) / 2.0) + 0.5;
+    break;
+  default:
+    break;
+  }
+  return value;
+}
+
+void main() {
+  // Get the index of the neuron (one workgroup thread per neuron)
+  uint index_x = gl_LocalInvocationID.x;
+  uint index_y = gl_LocalInvocationID.y;
+}

@@ -1,7 +1,54 @@
 #include "VulkanHelper.h"
+#include "Manager.h"
+#include "SimpleLogger.h"
 #include "exception/VulkanHelperException.h"
+#include <fstream>
+#include <sstream>
+#include <string>
 
 using namespace sipai;
+
+bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
+                                             const std::string &outputFile) {
+  std::ifstream inFile(inputFile);
+  if (!inFile.is_open()) {
+    SimpleLogger::LOG_ERROR("Failed to open input file: ", inputFile);
+    return false;
+  }
+
+  std::ofstream outFile(outputFile);
+  if (!outFile.is_open()) {
+    SimpleLogger::LOG_ERROR("Failed to open output file: ", outputFile);
+    return false;
+  }
+
+  const auto &network_param = Manager::getConstInstance().network_params;
+  size_t maxSizeX =
+      std::max({network_param.input_size_x, network_param.hidden_size_x,
+                network_param.output_size_x});
+  size_t maxSizeY =
+      std::max({network_param.input_size_y, network_param.hidden_size_y,
+                network_param.output_size_y});
+
+  std::string line;
+  while (std::getline(inFile, line)) {
+    size_t pos;
+    while ((pos = line.find("%%MAX_SIZE_X%%")) != std::string::npos) {
+      line.replace(pos, 12, std::to_string(maxSizeX));
+    }
+    while ((pos = line.find("%%MAX_SIZE_Y%%")) != std::string::npos) {
+      line.replace(pos, 12, std::to_string(maxSizeY));
+    }
+    outFile << line << '\n';
+  }
+
+  if (inFile.bad() || outFile.bad()) {
+    SimpleLogger::LOG_ERROR("Error during GLSL templating.");
+    return false;
+  }
+
+  return true;
+}
 
 VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   // Take a command buffer from the pool

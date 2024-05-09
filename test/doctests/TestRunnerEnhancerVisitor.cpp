@@ -13,13 +13,17 @@ TEST_CASE("Testing RunnerEnhancerVisitor") {
   SUBCASE("Test exceptions") {
     RunnerEnhancerVisitor visitor;
     auto &manager = Manager::getInstance();
+
+    // no network
     manager.network.reset();
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);
 
+    // no input file
     manager.network = std::make_unique<NeuralNetwork>();
     manager.app_params.input_file = "";
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);
 
+    // no output file
     manager.app_params.input_file = "../data/images/input/001a.png";
     manager.app_params.output_file = "";
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);

@@ -1,5 +1,6 @@
 #include "ImageHelper.h"
 #include "Common.h"
+#include "Data.h"
 #include "SimpleLogger.h"
 #include "exception/ImageHelperException.h"
 #include <filesystem>
@@ -31,10 +32,10 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
     if (mat.empty()) {
       throw ImageHelperException("Could not open the image: " + imagePath);
     }
-    Image orig{.height = (size_t)mat.size().height,
-               .width = (size_t)mat.size().width,
-               .type = mat.type(),
-               .channels = mat.channels()};
+    Image orig{.orig_height = (size_t)mat.size().height,
+               .orig_width = (size_t)mat.size().width,
+               .orig_type = mat.type(),
+               .orig_channels = mat.channels()};
 
     // Ensure the image is in BGR format
     switch (mat.channels()) {
@@ -75,13 +76,13 @@ ImageParts ImageHelper::loadImage(const std::string &imagePath, size_t split,
     auto matParts = splitImage(mat, split, withPadding);
     for (auto &matPart : matParts) {
       Image image{.data = matPart,
-                  .height = orig.height,
-                  .width = orig.width,
-                  .type = orig.type,
-                  .channels = orig.channels};
+                  .orig_height = orig.orig_height,
+                  .orig_width = orig.orig_width,
+                  .orig_type = orig.orig_type,
+                  .orig_channels = orig.orig_channels};
       image.resize(resize_x, resize_y);
-      auto image_ptr = std::make_unique<Image>(image);
-      imagesParts.push_back(std::move(image_ptr));
+      auto image_ptr = std::make_shared<Image>(image);
+      imagesParts.push_back(image_ptr);
     }
 
     // Rq. C++ use Return Value Optimization (RVO) to avoid the extra copy or
@@ -101,10 +102,10 @@ ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
   for (auto &targetPart : targetImage) {
     // clone of the Target image to the Input image
     Image inputImage = {.data = targetPart->data.clone(),
-                        .height = targetPart->height,
-                        .width = targetPart->width,
-                        .type = targetPart->type,
-                        .channels = targetPart->channels};
+                        .orig_height = targetPart->orig_height,
+                        .orig_width = targetPart->orig_width,
+                        .orig_type = targetPart->orig_type,
+                        .orig_channels = targetPart->orig_channels};
 
     // reduce the resolution of the input image
     if (reduce_factor != 0) {
@@ -119,8 +120,8 @@ ImageParts ImageHelper::generateInputImage(const ImageParts &targetImage,
     inputImage.resize(resize_x, resize_y);
 
     // finally convert back to Image
-    auto image = std::make_unique<Image>(inputImage);
-    imagesParts.push_back(std::move(image));
+    auto image = std::make_shared<Image>(inputImage);
+    imagesParts.push_back(image);
   }
 
   return imagesParts;
@@ -196,11 +197,11 @@ void ImageHelper::saveImage(const std::string &imagePath,
     image.resize(resize_x, resize_y);
 
     // convert back the [0,1] float range image to 255 pixel values
-    image.data.convertTo(image.data, image.type, 255.0);
+    image.data.convertTo(image.data, image.orig_type, 255.0);
 
     // Convert back to the original color format
     cv::Mat tmp;
-    switch (image.channels) {
+    switch (image.orig_channels) {
     case 1:
       cv::cvtColor(image.data, tmp, cv::COLOR_BGRA2GRAY);
       break;
@@ -212,7 +213,8 @@ void ImageHelper::saveImage(const std::string &imagePath,
       break;
     default:
       SimpleLogger::LOG_WARN(
-          "Non implemented image colors channels processing: ", image.channels);
+          "Non implemented image colors channels processing: ",
+          image.orig_channels);
       tmp = image.data;
       break;
     }
@@ -257,10 +259,10 @@ Image ImageHelper::joinImages(const ImageParts &images, int splitsX,
   cv::vconcat(rows, result);
 
   Image image{.data = result,
-              .height = images.front()->height,
-              .width = images.front()->height,
-              .type = images.front()->type,
-              .channels = images.front()->channels};
+              .orig_height = images.front()->orig_height,
+              .orig_width = images.front()->orig_height,
+              .orig_type = images.front()->orig_type,
+              .orig_channels = images.front()->orig_channels};
   return image;
 }
 
@@ -284,7 +286,8 @@ float ImageHelper::computeLoss(const cv::Mat &outputData,
   size_t numPixels = outputData.total();
 
   // Calculate the MSE loss
-  float mseLoss = static_cast<float>(sumSquaredDiff.val[0]) / static_cast<float>(numPixels);
+  float mseLoss =
+      static_cast<float>(sumSquaredDiff.val[0]) / static_cast<float>(numPixels);
 
   return mseLoss;
 }

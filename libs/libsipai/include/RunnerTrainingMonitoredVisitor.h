@@ -22,10 +22,10 @@ public:
    * @brief Compute the loss of all images.
    *
    * @param epoch the current epoch
-   * @param isTraining indicate if it is training or validation phase
+   * @param phase indicate if it is training or validation phase
    * @return float
    */
-  float computeLoss(size_t epoch, bool isTraining) const;
+  float computeLoss(size_t epoch, TrainingPhase phase) const;
 
   /**
    * @brief Determines whether the training should continue based on the
@@ -75,19 +75,8 @@ public:
   void saveNetwork(bool &hasLastEpochBeenSaved) const;
 
 private:
-  /**
-   * @brief Compute the loss of an input image and its target image
-   *
-   * @param epoch
-   * @param inputImage
-   * @param targetImage
-   * @param isTraining
-   * @param isLossFrequency
-   * @return float
-   */
-  float computeLoss(size_t epoch, const ImageParts &inputImage,
-                    const ImageParts &targetImage, bool isTraining,
-                    bool isLossFrequency) const;
+  float _computeLoss(size_t epoch, std::shared_ptr<Data> data,
+                     TrainingPhase phase, bool isLossFrequency) const;
 
   ImageHelper imageHelper_;
   mutable std::mutex threadMutex_;

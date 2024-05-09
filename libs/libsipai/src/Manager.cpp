@@ -42,7 +42,12 @@ void Manager::run() {
   SimpleLogger::LOG_INFO(getVersionHeader());
 
   // Initialize network
-  createOrImportNetwork();
+  try {
+    createOrImportNetwork();
+  } catch (std::exception &ex) {
+    SimpleLogger::LOG_ERROR("Error during network init: ", ex.what());
+    return;
+  }
 
   // Log parameters
   SimpleLogger::LOG_INFO(
@@ -125,15 +130,19 @@ void Manager::run() {
   }
 
   // Run with visitor
-  switch (app_params.run_mode) {
-  case ERunMode::TrainingMonitored:
-    runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
-    break;
-  case ERunMode::Enhancer:
-    runWithVisitor(runnerVisitorFactory_.getEnhancerVisitor());
-    break;
-  default:
-    break;
+  try {
+    switch (app_params.run_mode) {
+    case ERunMode::TrainingMonitored:
+      runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
+      break;
+    case ERunMode::Enhancer:
+      runWithVisitor(runnerVisitorFactory_.getEnhancerVisitor());
+      break;
+    default:
+      break;
+    }
+  } catch (std::exception &ex) {
+    SimpleLogger::LOG_ERROR("Error: ", ex.what());
   }
 }
 

@@ -19,7 +19,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 if(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /MP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /MP /EHsc")
 else() 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread -Wall")
 endif()
@@ -34,17 +34,18 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage")    
     set(CMAKE_EXE_LINKER_FLAGS "-lgcov")
     add_custom_target(lcov
-        COMMAND lcov --capture --directory . --output-file ../coverage/lcov.info
-        COMMAND lcov --remove ../coverage/lcov.info --output-file ../coverage/lcov.info 
+        COMMAND lcov --capture --directory . --output-file ${CMAKE_CURRENT_SOURCE_DIR}/coverage/lcov.info
+        COMMAND lcov --remove ${CMAKE_CURRENT_SOURCE_DIR}/coverage/lcov.info --output-file ${CMAKE_CURRENT_SOURCE_DIR}/coverage/lcov.info 
         '/usr/include/*' '/usr/lib/*' 
-        '${CMAKE_CURRENT_SOURCE_DIR}/test/*' 
+        '${CMAKE_CURRENT_SOURCE_DIR}/test/*'
+        '${CMAKE_CURRENT_SOURCE_DIR}/libs/libsipai/**Vulkan*' 
         '${CMAKE_CURRENT_SOURCE_DIR}/src/*'
         '${CMAKE_CURRENT_SOURCE_DIR}/libs/libcsvparser/*'
         '${CMAKE_CURRENT_SOURCE_DIR}/libs/libjson/*'
         COMMENT "Generating lcov.info"
     )
     add_custom_target(lcov_summary
-        COMMAND lcov --summary ../coverage/lcov.info
+        COMMAND lcov --summary ${CMAKE_CURRENT_SOURCE_DIR}/coverage/lcov.info
         COMMENT "Generating lcov summary"
     )
 endif()
