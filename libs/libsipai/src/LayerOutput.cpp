@@ -14,9 +14,6 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
   const float error_max = Manager::getConstInstance().network_params.error_max;
   const float weightFactor = 0.5f; // Experiment with weight between 0 and 1
 
-  const size_t size_y = neurons.size();
-  const size_t size_x = neurons[0].size();
-
   // Create the errors matrix if not already allocated
   if (errors.empty()) {
     errors.create((int)size_x, (int)size_y, CV_32FC4);
@@ -29,7 +26,7 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
       cv::Vec4f &error = errors.at<cv::Vec4f>(x, y);
 
       // Compute the weighted sum of neighboring neuron values
-      cv::Vec4f neighborSum = cv::Vec4f(0.0f);
+      cv::Vec4f neighborSum = cv::Vec4f::all(0.0f);
       for (const NeuronConnection &connection : neuron.neighbors) {
         neighborSum += connection.weight.mul(values.at<cv::Vec4f>(
             (int)connection.neuron->index_x, (int)connection.neuron->index_y));

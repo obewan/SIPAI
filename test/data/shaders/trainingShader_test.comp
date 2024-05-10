@@ -8,7 +8,7 @@
  */
 
 // One workgroup, neurons local threads per workgroup
-layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
+layout(local_size_x = 10, local_size_y = 10) in;
 
 // Enum mapping, do not change
 const int ELU = 0;
@@ -28,31 +28,30 @@ struct Neighbor {
 struct HiddenNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%INPUT_SIZE_X%%][%%INPUT_SIZE_Y%%];
+  vec4 weights[10][10];
   Neighbor neighbors[4];
 };
 
 struct OutputNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%HIDDEN_SIZE_X%%][%%HIDDEN_SIZE_Y%%];
+  vec4 weights[10][10];
   Neighbor neighbors[4];
 };
 
 // Parameters binding
-layout(std430, binding = 0) buffer readonly Parameters {
+layout(std430, binding = 0) buffer Parameters {
   float learning_rate;
   float error_min;
   float error_max;
 }
 params;
 
-
 // Data binding
 layout(std430, binding = 1) buffer Data {
-  vec4 inputValues[%%INPUT_SIZE_X%%][%%INPUT_SIZE_Y%%];
-  vec4 outputValues[%%OUTPUT_SIZE_X%%][%%OUTPUT_SIZE_Y%%];
-  vec4 targetValues[%%OUTPUT_SIZE_X%%][%%OUTPUT_SIZE_Y%%];
+  vec4 inputValues[10][10];
+  vec4 outputValues[10][10];
+  vec4 targetValues[10][10];
   float loss;
 }
 data;
@@ -67,8 +66,8 @@ layout(std430, binding = 2) buffer InputLayer {
 inputLayer;
 
 layout(std430, binding = 3) buffer OutputLayer {
-  OutputNeuron neurons[%%OUTPUT_SIZE_X%%][%%OUTPUT_SIZE_Y%%];
-  vec4 errors[%%OUTPUT_SIZE_X%%][%%OUTPUT_SIZE_Y%%];
+  OutputNeuron neurons[10][10];
+  vec4 errors[10][10];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -77,15 +76,16 @@ layout(std430, binding = 3) buffer OutputLayer {
 outputLayer;
 
 layout(std430, binding = 4) buffer HiddenLayer1 {
-  HiddenNeuron neurons[%%HIDDEN_SIZE_X%%][%%HIDDEN_SIZE_Y%%];
-  vec4 values[%%HIDDEN_SIZE_X%%][%%HIDDEN_SIZE_Y%%];
-  vec4 errors[%%HIDDEN_SIZE_X%%][%%HIDDEN_SIZE_Y%%];
+  HiddenNeuron neurons[10][10];
+  vec4 values[10][10];
+  vec4 errors[10][10];
   float activation_alpha;
   uint activation_function;
   uint size_x;
   uint size_y;
 }
 hiddenLayer1;
+
 // Functions
 vec4 derivativeFunction(vec4 value, uint activation_function,
                         float activation_alpha) {

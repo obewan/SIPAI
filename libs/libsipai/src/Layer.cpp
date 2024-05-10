@@ -36,12 +36,11 @@ void Layer::backwardPropagation(const float &error_min,
     for (int x = 0; x < (int)neurons[y].size(); ++x) {
       Neuron &currentNeuron = neurons[y][x];
       cv::Vec4f error(0.0f);
-      const cv::Mat nextLayerErrors = nextLayer->errors;
 
       // Add next layer neurons error ponderated with weights for this neuron
       for (const auto &nextLayerNeuronRow : nextLayer->neurons) {
         for (const auto &nextLayerNeuron : nextLayerNeuronRow) {
-          const cv::Vec4f currentError = nextLayerErrors.at<cv::Vec4f>(
+          const cv::Vec4f currentError = nextLayer->errors.at<cv::Vec4f>(
               (int)nextLayerNeuron.index_x, (int)nextLayerNeuron.index_y);
           const cv::Vec4f weight = nextLayerNeuron.weights.at<cv::Vec4f>(x, y);
           error += currentError.mul(weight);
@@ -84,7 +83,7 @@ void Layer::updateWeights(float learningRate) {
       // Update neuron weights that are connections weights with previous layers
       neuron.weights -= previousLayer->values.mul(learningRateErrorMat);
 
-      // Update weights based on neighboring neurons
+      // Update neighbors connections weights
       for (NeuronConnection &conn : neuron.neighbors) {
         conn.weight -= values
                            .at<cv::Vec4f>((int)conn.neuron->index_x,
