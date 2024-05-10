@@ -32,10 +32,10 @@ void TrainingDataFactory::loadData() {
   // load images paths
   if (!app_params.training_data_file.empty()) {
     datas = trainingDataReader_.loadTrainingDataPaths();
-    dataList_.type = DataListType::INPUT_TARGET;
+    dataListType_ = DataListType::INPUT_TARGET;
   } else if (!app_params.training_data_folder.empty()) {
     datas = trainingDataReader_.loadTrainingDataFolder();
-    dataList_.type = DataListType::TARGET_FOLDER;
+    dataListType_ = DataListType::TARGET_FOLDER;
   } else {
     throw TrainingDataFactoryException(
         "Invalid training data file or data folder");
@@ -99,15 +99,21 @@ std::shared_ptr<Data> TrainingDataFactory::next(const TrainingPhase &phase) {
       network_params.output_size_x, network_params.output_size_y);
 
   // generate or load the input image
-  ImageParts inputImageParts =
-      dataList_.type == DataListType::TARGET_FOLDER
-          ? imageHelper_.generateInputImage(
-                targetImageParts, app_params.training_reduce_factor,
-                network_params.input_size_x, network_params.input_size_y)
-          : imageHelper_.loadImage(data.file_input, app_params.image_split,
-                                   app_params.enable_padding,
-                                   network_params.input_size_x,
-                                   network_params.input_size_y);
+  ImageParts inputImageParts;
+  switch (dataListType_) {
+  case DataListType::TARGET_FOLDER:
+    inputImageParts = imageHelper_.generateInputImage(
+        targetImageParts, app_params.training_reduce_factor,
+        network_params.input_size_x, network_params.input_size_y);
+    break;
+  case DataListType::INPUT_TARGET:
+    inputImageParts = imageHelper_.loadImage(
+        data.file_input, app_params.image_split, app_params.enable_padding,
+        network_params.input_size_x, network_params.input_size_y);
+    break;
+  default:
+    throw TrainingDataFactoryException("Unimplemented DataListType");
+  }
 
   (*index)++;
 
@@ -118,11 +124,11 @@ std::shared_ptr<Data> TrainingDataFactory::next(const TrainingPhase &phase) {
   } else {
     return std::make_shared<Data>(Data{
         .file_input = data.file_input,
-        .file_output = data.file_output,
         .file_target = data.file_target,
+        .file_output = data.file_output,
         .img_input = inputImageParts,
-        .img_output = data.img_output,
         .img_target = targetImageParts,
+        .img_output = data.img_output,
     });
   }
 }
