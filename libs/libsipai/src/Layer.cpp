@@ -19,7 +19,7 @@ void Layer::forwardPropagation() {
       // and current neuron weights
       cv::Mat dotProduct = previousLayer->values.mul(currentNeuron.weights);
       // Convert the result matrix to a single value by summing all elements
-      float result = (float)cv::sum(dotProduct)[0];
+      cv::Vec4f result = cv::sum(dotProduct);
       // Update the neuron value using the activation function
       values.at<cv::Vec4f>((int)x, (int)y) = activationFunction(result);
     }
@@ -74,7 +74,7 @@ void Layer::updateWeights(float learningRate) {
 
       // Get the error of current neuron, mult by the learningRate
       const cv::Vec4f learningRateError =
-          errors.at<cv::Vec4f>(x, y) * learningRate;
+          errors.at<cv::Vec4f>(x, y) * cv::Vec4f::all(learningRate);
 
       // Create a matrix with dimensions of neuron weights
       // and previous learningRateError
