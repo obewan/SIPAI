@@ -7,8 +7,7 @@
 
 using namespace sipai;
 
-cv::Mat NeuralNetwork::forwardPropagation(const cv::Mat &inputValues,
-                                          const bool &enable_vulkan) {
+cv::Mat NeuralNetwork::forwardPropagation(const cv::Mat &inputValues) {
   if (layers.front()->layerType != LayerType::LayerInput) {
     throw NeuralNetworkException("Invalid front layer type");
   }
@@ -17,13 +16,12 @@ cv::Mat NeuralNetwork::forwardPropagation(const cv::Mat &inputValues,
   }
   ((LayerInput *)layers.front())->setInputValues(inputValues);
   for (auto &layer : layers) {
-    layer->forwardPropagation(enable_vulkan);
+    layer->forwardPropagation();
   }
   return ((LayerOutput *)layers.back())->getOutputValues();
 }
 
 void NeuralNetwork::backwardPropagation(const cv::Mat &expectedValues,
-                                        const bool &enable_vulkan,
                                         const float &error_min,
                                         const float &error_max) {
   if (layers.back()->layerType != LayerType::LayerOutput) {
@@ -31,7 +29,7 @@ void NeuralNetwork::backwardPropagation(const cv::Mat &expectedValues,
   }
   ((LayerOutput *)layers.back())->computeErrors(expectedValues);
   for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-    (*it)->backwardPropagation(enable_vulkan, error_min, error_max);
+    (*it)->backwardPropagation(error_min, error_max);
   }
 }
 

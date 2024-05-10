@@ -153,13 +153,12 @@ public:
   /**
    * @brief Performs forward propagation using the previous layer.
    */
-  virtual void forwardPropagation(const bool &enable_vulkan);
+  virtual void forwardPropagation();
 
   /**
    * @brief Performs backward propagation using the next layer.
    */
-  virtual void backwardPropagation(const bool &enable_vulkan,
-                                   const float &error_min,
+  virtual void backwardPropagation(const float &error_min,
                                    const float &error_max);
   /**
    * @brief Updates the weights of the neurons in this layer using the

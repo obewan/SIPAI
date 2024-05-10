@@ -1,6 +1,6 @@
 #include "Layer.h"
 #include "Manager.h"
-#include "RunnerTrainingMonitoredVisitor.h"
+#include "RunnerTrainingVulkanVisitor.h"
 #include "VulkanController.h"
 #include "doctest.h"
 #include <opencv2/core/matx.hpp>
@@ -53,7 +53,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
   CHECK(previousLayer->layerType == LayerType::LayerHidden);
 
   auto oldValues = currentLayer->values.clone();
-  RunnerTrainingMonitoredVisitor visitor;
+  RunnerTrainingVulkanVisitor visitor;
   CHECK_NOTHROW(visitor.visit());
   auto newValues = currentLayer->values.clone();
 

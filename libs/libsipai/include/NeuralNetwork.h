@@ -53,24 +53,20 @@ public:
    * values.
    *
    * @param inputValues The input values for forward propagation.
-   * @param enable_vulkan enable vulkan GPU acceleration
    * @return A vector of output values from the output layer after forward
    * propagation.
    */
-  cv::Mat forwardPropagation(const cv::Mat &inputValues,
-                             const bool& enable_vulkan);
+  cv::Mat forwardPropagation(const cv::Mat &inputValues);
 
   /**
    * @brief Performs backward propagation on the network using the given
    * expected values.
    *
    * @param expectedValues The expected values for backward propagation.
-   * @param enable_vulkan enable vulkan GPU acceleration
    * @param error_min error minimum
    * @param error_max error maximum
    */
   void backwardPropagation(const cv::Mat &expectedValues,
-                           const bool& enable_vulkan,
                            const float &error_min, const float &error_max);
 
   /**
@@ -80,7 +76,6 @@ public:
    * @param learning_rate The learning rate
    */
   void updateWeights(float learning_rate);
-
 
   /**
    * @brief max weights of all neurons, useful for csv export

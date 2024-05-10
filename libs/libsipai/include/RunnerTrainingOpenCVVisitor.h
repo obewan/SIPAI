@@ -1,5 +1,5 @@
 /**
- * @file RunnerTrainingMonitoredVisitor.h
+ * @file RunnerTrainingOpenCVVisitor.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Concret RunnerVisitor for TrainingMonitored run.
  * @date 2024-03-17
@@ -14,7 +14,7 @@
 #include <memory>
 
 namespace sipai {
-class RunnerTrainingMonitoredVisitor : public RunnerVisitor {
+class RunnerTrainingOpenCVVisitor : public RunnerVisitor {
 public:
   void visit() const override;
 

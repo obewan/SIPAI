@@ -7,13 +7,8 @@
 
 using namespace sipai;
 
-void Layer::forwardPropagation(const bool &enable_vulkan) {
+void Layer::forwardPropagation() {
   if (previousLayer == nullptr) {
-    return;
-  }
-
-  if (enable_vulkan) {
-    VulkanController::getInstance().forwardPropagation(previousLayer, this);
     return;
   }
 
@@ -31,15 +26,9 @@ void Layer::forwardPropagation(const bool &enable_vulkan) {
   }
 }
 
-void Layer::backwardPropagation(const bool &enable_vulkan,
-                                const float &error_min,
+void Layer::backwardPropagation(const float &error_min,
                                 const float &error_max) {
   if (nextLayer == nullptr) {
-    return;
-  }
-
-  if (enable_vulkan) {
-    VulkanController::getInstance().backwardPropagation(nextLayer, this);
     return;
   }
 

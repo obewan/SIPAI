@@ -1,4 +1,4 @@
-#include "RunnerTrainingMonitoredVisitor.h"
+#include "RunnerTrainingOpenCVVisitor.h"
 #include "AppParams.h"
 #include "Common.h"
 #include "ImageHelper.h"
@@ -36,7 +36,7 @@ void signalHandler(int signal) {
   }
 }
 
-void RunnerTrainingMonitoredVisitor::visit() const {
+void RunnerTrainingOpenCVVisitor::visit() const {
   SimpleLogger::LOG_INFO(
       "Starting training monitored, press (CTRL+C) to stop at anytime...");
 
@@ -140,7 +140,7 @@ void RunnerTrainingMonitoredVisitor::visit() const {
   }
 }
 
-bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
+bool RunnerTrainingOpenCVVisitor::shouldContinueTraining(
     int epoch, size_t epochsWithoutImprovement,
     const AppParams &appParams) const {
   bool improvementCondition =
@@ -151,7 +151,7 @@ bool RunnerTrainingMonitoredVisitor::shouldContinueTraining(
   return improvementCondition && epochCondition;
 }
 
-void RunnerTrainingMonitoredVisitor::logTrainingProgress(
+void RunnerTrainingOpenCVVisitor::logTrainingProgress(
     const int &epoch, const float &trainingLoss, const float &validationLoss,
     const float &previousTrainingLoss,
     const float &previousValidationLoss) const {
@@ -160,15 +160,15 @@ void RunnerTrainingMonitoredVisitor::logTrainingProgress(
     float dtl = trainingLoss - previousTrainingLoss;
     float dvl = validationLoss - previousValidationLoss;
     delta.precision(2);
-    delta << " [" << (dtl > 0 ? "+" : "") << dtl * 100.0f << "%";
-    delta << "," << (dvl > 0 ? "+" : "") << dvl * 100.0f << "%]";
+    delta << std::fixed << " [" << (dtl > 0 ? "+" : "") << dtl * 100.0f << "%";
+    delta << std::fixed << "," << (dvl > 0 ? "+" : "") << dvl * 100.0f << "%]";
   }
   SimpleLogger::LOG_INFO(
       "Epoch: ", epoch + 1, ", Train Loss: ", trainingLoss * 100.0f,
       "%, Validation Loss: ", validationLoss * 100.0f, "%", delta.str());
 }
 
-void RunnerTrainingMonitoredVisitor::adaptLearningRate(
+void RunnerTrainingOpenCVVisitor::adaptLearningRate(
     float &learningRate, const float &validationLoss,
     const float &previousValidationLoss,
     const bool &enable_adaptive_increase) const {
@@ -206,7 +206,7 @@ void RunnerTrainingMonitoredVisitor::adaptLearningRate(
   }
 }
 
-void RunnerTrainingMonitoredVisitor::saveNetwork(
+void RunnerTrainingOpenCVVisitor::saveNetwork(
     bool &hasLastEpochBeenSaved) const {
   std::scoped_lock<std::mutex> lock(threadMutex_);
   try {
@@ -219,8 +219,8 @@ void RunnerTrainingMonitoredVisitor::saveNetwork(
   }
 }
 
-float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
-                                                  TrainingPhase phase) const {
+float RunnerTrainingOpenCVVisitor::computeLoss(size_t epoch,
+                                               TrainingPhase phase) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;
@@ -272,10 +272,10 @@ float RunnerTrainingMonitoredVisitor::computeLoss(size_t epoch,
   return (loss / static_cast<float>(lossComputed));
 }
 
-float RunnerTrainingMonitoredVisitor::_computeLoss(size_t epoch,
-                                                   std::shared_ptr<Data> data,
-                                                   TrainingPhase phase,
-                                                   bool isLossFrequency) const {
+float RunnerTrainingOpenCVVisitor::_computeLoss(size_t epoch,
+                                                std::shared_ptr<Data> data,
+                                                TrainingPhase phase,
+                                                bool isLossFrequency) const {
   if (data->img_input.size() != data->img_target.size()) {
     throw ImageHelperException(
         "internal exception: input and target parts have different sizes.");
@@ -307,8 +307,8 @@ float RunnerTrainingMonitoredVisitor::_computeLoss(size_t epoch,
       SimpleLogger::LOG_DEBUG("forward propagation part ", i + 1, "/",
                               data->img_input.size(), "...");
     }
-    const auto &outputData = manager.network->forwardPropagation(
-        inputPart->data, manager.app_params.enable_vulkan);
+    const auto &outputData =
+        manager.network->forwardPropagation(inputPart->data);
 
     if (stopTrainingNow) {
       break;
@@ -338,9 +338,8 @@ float RunnerTrainingMonitoredVisitor::_computeLoss(size_t epoch,
         SimpleLogger::LOG_DEBUG("backward propagation part ", i + 1, "/",
                                 data->img_input.size(), "...");
       }
-      manager.network->backwardPropagation(targetPart->data,
-                                           manager.app_params.enable_vulkan,
-                                           error_min, error_max);
+      manager.network->backwardPropagation(targetPart->data, error_min,
+                                           error_max);
       if (stopTrainingNow) {
         break;
       }

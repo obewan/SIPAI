@@ -37,8 +37,8 @@ void RunnerEnhancerVisitor::visit() const {
     // Get output image parts by forward propagation
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
-      const auto &outputData = manager.network->forwardPropagation(
-          inputPart->data, app_params.enable_vulkan);
+      const auto &outputData =
+          manager.network->forwardPropagation(inputPart->data);
       Image output{.data = outputData,
                    .orig_height = inputPart->orig_height,
                    .orig_width = inputPart->orig_width,
