@@ -11,14 +11,12 @@ using namespace sipai;
 // Skip this test on Github, no vulkan device there.
 TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
 
-  SUBCASE("Test template builder") {
+  SUBCASE("Test template build") {
     const auto &manager = Manager::getConstInstance();
     VulkanHelper helper;
     std::string relativePath = "../../";
-
     CHECK(std::filesystem::exists(
         relativePath + manager.app_params.trainingMonitoredShaderTemplate));
-
     if (std::filesystem::exists(relativePath +
                                 manager.app_params.trainingMonitoredShader)) {
       std::filesystem::remove(relativePath +
@@ -27,10 +25,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     CHECK(helper.replaceTemplateParameters(
         relativePath + manager.app_params.trainingMonitoredShaderTemplate,
         relativePath + manager.app_params.trainingMonitoredShader));
-
     CHECK(std::filesystem::exists(relativePath +
                                   manager.app_params.trainingMonitoredShader));
-
     std::ifstream inFile(relativePath +
                          manager.app_params.trainingMonitoredShader);
     std::string line;

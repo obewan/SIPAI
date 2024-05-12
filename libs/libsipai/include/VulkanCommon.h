@@ -10,8 +10,10 @@
 #pragma once
 #include <map>
 #include <memory>
+#include <opencv2/opencv.hpp>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+
 #if defined(_MSC_VER)
 using uint = unsigned int;
 #endif
@@ -20,15 +22,11 @@ namespace sipai {
 
 // numbers must match the GLSL bindings
 enum class EBuffer {
-  CurrentLayerNeurons = 0,
-  CurrentLayerValues = 1,
-  CurrentNeighborsErrors = 2,
-  CurrentNeighborsWeights = 3,
-  AdjacentLayerNeurons = 4,
-  AdjacentLayerValues = 5,
-  LayerWeights = 6,
-  Parameters = 7,
-  Output = 8
+  Parameters = 0,
+  Data = 1,
+  InputLayer = 2,
+  OutputLayer = 3,
+  HiddenLayer1 = 4,
 };
 
 enum class EShader {
@@ -36,35 +34,24 @@ enum class EShader {
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
-    {EBuffer::CurrentLayerNeurons, "CurrentLayerNeurons"},
-    {EBuffer::CurrentLayerValues, "CurrentLayerValues"},
-    {EBuffer::CurrentNeighborsErrors, "CurrentNeighborsErrors"},
-    {EBuffer::CurrentNeighborsWeights, "CurrentNeighborsWeights"},
-    {EBuffer::AdjacentLayerNeurons, "AdjacentLayerNeurons"},
-    {EBuffer::AdjacentLayerValues, "AdjacentLayerValues"},
-    {EBuffer::LayerWeights, "LayerWeights"},
     {EBuffer::Parameters, "Parameters"},
-    {EBuffer::Output, "Output"}};
+    {EBuffer::Data, "Data"},
+    {EBuffer::InputLayer, "InputLayer"},
+    {EBuffer::OutputLayer, "OutputLayer"},
+    {EBuffer::HiddenLayer1, "HiddenLayer1"}};
+
+struct GLSLNeighbor {
+  bool is_used;
+  uint index_x;
+  uint index_y;
+  cv::Vec4f weight;
+};
 
 struct GLSLNeuron {
   uint index_x;
   uint index_y;
-  uint weightsIndex;
-  uint neighborsIndex;
-  uint neighborsSize;
-};
-
-struct GLSLParameters {
-  float error_min;
-  float error_max;
-  float activationAlpha;
-  uint currentLayerSizeX;
-  uint currentLayerSizeY;
-  uint previousLayerSizeX;
-  uint previousLayerSizeY;
-  uint nextLayerSizeX;
-  uint nextLayerSizeY;
-  uint activationFunction;
+  cv::Vec4f **weights;
+  GLSLNeighbor neighbors[4];
 };
 
 struct Buffer {
@@ -83,7 +70,6 @@ struct Shader {
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info{};
-  bool isFirstRun = true;
 };
 
 struct Vulkan {

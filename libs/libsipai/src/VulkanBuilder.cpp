@@ -287,29 +287,50 @@ void VulkanBuilder::_createBuffers() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
+
+  const auto &network_param = Manager::getConstInstance().network_params;
   const auto &max_size = Manager::getConstInstance().network->max_weights;
-  // Initialize the vector
   for (auto [ebuffer, bufferName] : buffer_map) {
     VkDeviceSize size = 0;
+    uint output_neuron_weights = 0;
+    uint hidden1_neuron_weights = 0;
     switch (ebuffer) {
-    case EBuffer::CurrentLayerNeurons:
-    case EBuffer::AdjacentLayerNeurons:
-      size = sizeof(GLSLNeuron) * max_size;
-      break;
-    case EBuffer::CurrentLayerValues:
-    case EBuffer::AdjacentLayerValues:
-    case EBuffer::Output:
-      size = sizeof(cv::Vec4f) * max_size;
-      break;
-    case EBuffer::CurrentNeighborsErrors:
-    case EBuffer::CurrentNeighborsWeights:
-      size = sizeof(cv::Vec4f) * max_size * maxNeighboosPerNeuron_;
-      break;
-    case EBuffer::LayerWeights:
-      size = sizeof(cv::Vec4f) * max_size * max_size;
-      break;
     case EBuffer::Parameters:
-      size = sizeof(GLSLParameters);
+      size = sizeof(float) * 3;
+      break;
+    case EBuffer::Data:
+      size = sizeof(cv::Vec4f) * network_param.input_size_x *
+             network_param.input_size_y; // inputValues
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y; // outputValues
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y;  // targetValues
+      size += sizeof(float) + sizeof(bool); // others attributes
+      break;
+    case EBuffer::InputLayer:
+      size = sizeof(float) + (3 * sizeof(uint)); // attributes
+      break;
+    case EBuffer::OutputLayer:
+      output_neuron_weights = sizeof(cv::Vec4f) * network_param.hidden_size_x *
+                              network_param.hidden_size_y;
+      size = (sizeof(GLSLNeuron) + output_neuron_weights) *
+             network_param.output_size_x *
+             network_param.output_size_y; // OutputNeuron neurons[][]
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y;        // vec4 errors[][]
+      size += sizeof(float) + (3 * sizeof(uint)); // others attributes
+      break;
+    case EBuffer::HiddenLayer1:
+      hidden1_neuron_weights = sizeof(cv::Vec4f) * network_param.input_size_x *
+                               network_param.input_size_y;
+      size = (sizeof(GLSLNeuron) + hidden1_neuron_weights) *
+             network_param.hidden_size_x *
+             network_param.hidden_size_y; // HiddenNeuron neurons[][]
+      size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
+              network_param.hidden_size_y; // vec4 values[][]
+      size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
+              network_param.hidden_size_y;        // vec4 errors[][]
+      size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
     default:
       throw VulkanBuilderException("Buffer not implemented.");

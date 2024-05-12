@@ -99,7 +99,7 @@ private:
   };
   static std::unique_ptr<VulkanController> controllerInstance_;
 
-  void _computeShader(const NeuronMat &neurons, VkPipeline &pipeline);
+  void _computeShader(VkPipeline &pipeline);
 
   void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer &buffer);
   void _copyMatToBuffer(const cv::Mat &mat, Buffer &buffer);
