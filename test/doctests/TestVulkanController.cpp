@@ -3,72 +3,39 @@
 #include "RunnerTrainingVulkanVisitor.h"
 #include "VulkanController.h"
 #include "doctest.h"
-#include <opencv2/core/matx.hpp>
+#include <filesystem>
+#include <fstream>
 
 using namespace sipai;
 
 // Skip this test on Github, no vulkan device there.
 TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
-  auto &manager = Manager::getInstance();
-  auto &app_params = manager.app_params;
-  app_params.forwardShader = "../../" + app_params.forwardShader;
-  app_params.backwardShader = "../../" + app_params.backwardShader;
-  app_params.training_data_file = "";
-  app_params.training_data_folder = "../data/images/target/";
-  app_params.max_epochs = 2;
-  app_params.run_mode = ERunMode::TrainingMonitored;
-  app_params.network_to_export = "";
-  app_params.network_to_import = "";
-  app_params.enable_vulkan = true;
-  app_params.random_loading = true;
-  auto &np = manager.network_params;
-  np.input_size_x = 2;
-  np.input_size_y = 2;
-  np.hidden_size_x = 3;
-  np.hidden_size_y = 2;
-  np.output_size_x = 3;
-  np.output_size_y = 3;
-  np.hiddens_count = 1;
-  np.learning_rate = 0.5f;
-  np.adaptive_learning_rate = true;
-  np.adaptive_learning_rate_factor = 0.123f;
-  manager.createOrImportNetwork();
 
-  CHECK(sizeof(cv::Vec4f) == 4 * sizeof(float));
+  SUBCASE("Test template builder") {
+    const auto &manager = Manager::getConstInstance();
+    VulkanHelper helper;
+    std::string relativePath = "../../";
 
-  auto &vulkanController = VulkanController::getInstance();
+    CHECK(std::filesystem::exists(
+        relativePath + manager.app_params.trainingMonitoredShaderTemplate));
 
-  CHECK_NOTHROW(vulkanController.destroy());
-  CHECK_FALSE(vulkanController.IsInitialized());
-  CHECK(vulkanController.getDevice() == VK_NULL_HANDLE);
+    if (std::filesystem::exists(relativePath +
+                                manager.app_params.trainingMonitoredShader)) {
+      std::filesystem::remove(relativePath +
+                              manager.app_params.trainingMonitoredShader);
+    }
+    CHECK(helper.replaceTemplateParameters(
+        relativePath + manager.app_params.trainingMonitoredShaderTemplate,
+        relativePath + manager.app_params.trainingMonitoredShader));
 
-  CHECK_NOTHROW(vulkanController.initialize());
-  CHECK(vulkanController.IsInitialized());
-  CHECK(vulkanController.getDevice() != VK_NULL_HANDLE);
+    CHECK(std::filesystem::exists(relativePath +
+                                  manager.app_params.trainingMonitoredShader));
 
-  // test forward propagation from previous to current layer
-  auto currentLayer = manager.network->layers.back();
-  CHECK(currentLayer->layerType == LayerType::LayerOutput);
-  auto previousLayer = currentLayer->previousLayer;
-  CHECK(previousLayer->layerType == LayerType::LayerHidden);
-
-  auto oldValues = currentLayer->values.clone();
-  RunnerTrainingVulkanVisitor visitor;
-  CHECK_NOTHROW(visitor.visit());
-  auto newValues = currentLayer->values.clone();
-
-  std::cout << "values before:\n" << oldValues << std::endl;
-  std::cout << "values after:\n" << newValues << std::endl;
-
-  //  Check if oldValues and newValues are not equals
-  cv::Mat diff = cv::abs(oldValues - newValues);
-  double norm = cv::norm(diff, cv::NORM_L1);
-  bool isEq = norm < std::numeric_limits<float>::epsilon() * diff.total();
-  CHECK(isEq == false);
-
-  vulkanController.destroy();
-  CHECK_FALSE(vulkanController.IsInitialized());
-  CHECK(vulkanController.getDevice() == VK_NULL_HANDLE);
-
-  manager.network.reset();
+    std::ifstream inFile(relativePath +
+                         manager.app_params.trainingMonitoredShader);
+    std::string line;
+    while (std::getline(inFile, line)) {
+      CHECK(line.find("%%") == std::string::npos);
+    }
+  }
 }

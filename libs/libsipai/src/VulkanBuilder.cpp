@@ -30,7 +30,7 @@ VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
   _createDescriptorSet();
   _createPipelineLayout();
   _createFence();
-  _createDataMapping();
+  //_createDataMapping();
   _createShaderModules();
   _createShadersComputePipelines();
 
@@ -440,6 +440,7 @@ void VulkanBuilder::_createFence() {
   }
 }
 
+// TODO: create data mapping only when needed
 void VulkanBuilder::_createDataMapping() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");

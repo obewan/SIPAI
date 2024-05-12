@@ -32,8 +32,7 @@ enum class EBuffer {
 };
 
 enum class EShader {
-  Forward,
-  Backward,
+  TrainingMonitored,
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{

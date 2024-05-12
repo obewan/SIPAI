@@ -19,7 +19,7 @@ const int Sigmoid = 4;
 const int Tanh = 5;
 
 struct Neighbor {
-  bool isUsed;
+  bool is_used;
   uint index_x;
   uint index_y;
   vec4 weight; // weight of the neighbor connection
@@ -53,6 +53,7 @@ layout(std430, binding = 1) buffer Data {
   vec4 outputValues[10][10];
   vec4 targetValues[10][10];
   float loss;
+  bool is_validation;
 }
 data;
 
@@ -244,7 +245,7 @@ void backwardHiddenLayer1(uint index_x, uint index_y) {
   // Consider errors of adjacent neurons
   for (uint i = 0;
        i < hiddenLayer1.neurons[index_y][index_x].neighbors.length(); i++) {
-    if (!hiddenLayer1.neurons[index_y][index_x].neighbors[i].isUsed) {
+    if (!hiddenLayer1.neurons[index_y][index_x].neighbors[i].is_used) {
       continue;
     }
     error += hiddenLayer1.neurons[index_y][index_x].neighbors[i].weight *
@@ -281,7 +282,7 @@ void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
   // Update neighbors connections weights
   for (uint i = 0;
        i < hiddenLayer1.neurons[index_y][index_x].neighbors.length(); i++) {
-    if (!hiddenLayer1.neurons[index_y][index_x].neighbors[i].isUsed) {
+    if (!hiddenLayer1.neurons[index_y][index_x].neighbors[i].is_used) {
       continue;
     }
     hiddenLayer1.neurons[index_y][index_x].neighbors[i].weight -=
@@ -313,7 +314,7 @@ void updateWeightsOutputLayer(uint index_x, uint index_y) {
   // Update neighbors connections weights
   for (uint i = 0; i < outputLayer.neurons[index_y][index_x].neighbors.length();
        i++) {
-    if (!outputLayer.neurons[index_y][index_x].neighbors[i].isUsed) {
+    if (!outputLayer.neurons[index_y][index_x].neighbors[i].is_used) {
       continue;
     }
     outputLayer.neurons[index_y][index_x].neighbors[i].weight -=
@@ -344,7 +345,10 @@ void main() {
   }
   barrier();
 
-  // Backward Propagation
+  // Backward Propagation (not for validation)
+  if (data.is_validation) {
+    return;
+  }
   computeOutputError(index_x, index_y);
   barrier();
   backwardHiddenLayer1(index_x, index_y);

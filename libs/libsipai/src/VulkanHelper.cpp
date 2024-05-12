@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "SimpleLogger.h"
 #include "exception/VulkanHelperException.h"
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -10,12 +11,26 @@ using namespace sipai;
 
 bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
                                              const std::string &outputFile) {
+  std::filesystem::path pi(inputFile);
+  if (!std::filesystem::exists(pi.parent_path())) {
+    SimpleLogger::LOG_ERROR(
+        "The input shader template directory does not exist: ",
+        pi.parent_path().string());
+    return false;
+  }
   std::ifstream inFile(inputFile);
   if (!inFile.is_open()) {
     SimpleLogger::LOG_ERROR("Failed to open input file: ", inputFile);
     return false;
   }
 
+  std::filesystem::path po(outputFile);
+  if (!std::filesystem::exists(po.parent_path())) {
+    SimpleLogger::LOG_ERROR(
+        "The output shader template directory does not exist: ",
+        po.parent_path().string());
+    return false;
+  }
   std::ofstream outFile(outputFile);
   if (!outFile.is_open()) {
     SimpleLogger::LOG_ERROR("Failed to open output file: ", outputFile);
@@ -30,14 +45,24 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
       std::max({network_param.input_size_y, network_param.hidden_size_y,
                 network_param.output_size_y});
 
+  std::map<std::string, std::string> values({
+      {"%%MAX_SIZE_X%%", std::to_string(maxSizeX)},
+      {"%%MAX_SIZE_Y%%", std::to_string(maxSizeY)},
+      {"%%INPUT_SIZE_X%%", std::to_string(network_param.input_size_x)},
+      {"%%INPUT_SIZE_Y%%", std::to_string(network_param.input_size_y)},
+      {"%%HIDDEN_SIZE_X%%", std::to_string(network_param.hidden_size_x)},
+      {"%%HIDDEN_SIZE_Y%%", std::to_string(network_param.hidden_size_y)},
+      {"%%OUTPUT_SIZE_X%%", std::to_string(network_param.output_size_x)},
+      {"%%OUTPUT_SIZE_Y%%", std::to_string(network_param.output_size_y)},
+  });
+
   std::string line;
+  size_t pos;
   while (std::getline(inFile, line)) {
-    size_t pos;
-    while ((pos = line.find("%%MAX_SIZE_X%%")) != std::string::npos) {
-      line.replace(pos, 12, std::to_string(maxSizeX));
-    }
-    while ((pos = line.find("%%MAX_SIZE_Y%%")) != std::string::npos) {
-      line.replace(pos, 12, std::to_string(maxSizeY));
+    for (auto &[key, value] : values) {
+      while ((pos = line.find(key)) != std::string::npos) {
+        line.replace(pos, key.length(), value);
+      }
     }
     outFile << line << '\n';
   }

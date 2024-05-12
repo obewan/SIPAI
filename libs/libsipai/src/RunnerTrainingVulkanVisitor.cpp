@@ -2,4 +2,6 @@
 
 using namespace sipai;
 
-void RunnerTrainingVulkanVisitor::visit() const {}
+void RunnerTrainingVulkanVisitor::visit() const {
+  // TODO
+}

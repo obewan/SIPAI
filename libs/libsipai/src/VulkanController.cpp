@@ -32,10 +32,14 @@ bool VulkanController::initialize(bool enableDebug) {
   }
 
   vulkan_->shaders.clear();
-  vulkan_->shaders.push_back({.shadername = EShader::Forward,
-                              .filename = manager.app_params.forwardShader});
-  vulkan_->shaders.push_back({.shadername = EShader::Backward,
-                              .filename = manager.app_params.backwardShader});
+  if (!helper_.replaceTemplateParameters(
+          manager.app_params.trainingMonitoredShaderTemplate,
+          manager.app_params.trainingMonitoredShader)) {
+    return false;
+  }
+  vulkan_->shaders.push_back(
+      {.shadername = EShader::TrainingMonitored,
+       .filename = manager.app_params.trainingMonitoredShader});
 
   builder_.withCommandPoolSize(1)
       .withMaxNeighboorsPerNeuron(4)
@@ -45,54 +49,8 @@ bool VulkanController::initialize(bool enableDebug) {
   return vulkan_->isInitialized;
 }
 
-void VulkanController::forwardPropagation(Layer *previousLayer,
-                                          Layer *currentLayer) {
-  if (!IsInitialized()) {
-    throw NeuralNetworkException("Vulkan controller is not initialized.");
-  }
-
-  // Prepare data for the shader
-  _copyNeuronsWeightsToWeightsBuffer(
-      currentLayer->neurons); // before others for weights index
-  _copyNeuronsToBuffer(previousLayer->neurons,
-                       getBuffer(EBuffer::AdjacentLayerNeurons));
-  _copyMatToBuffer(previousLayer->values,
-                   getBuffer(EBuffer::AdjacentLayerValues));
-  _copyNeuronsToBuffer(currentLayer->neurons,
-                       getBuffer(EBuffer::CurrentLayerNeurons));
-  _copyParametersToParametersBuffer(currentLayer);
-
-  // Run the shader
-  _computeShader(currentLayer->neurons, getShader(EShader::Forward).pipeline);
-
-  // Get the results
-  _copyOutputBufferToMat(currentLayer->values);
-}
-
-void VulkanController::backwardPropagation(Layer *nextLayer,
-                                           Layer *currentLayer) {
-  if (!IsInitialized()) {
-    throw VulkanControllerException("Vulkan controller is not initialized.");
-  }
-
-  // Prepare data for the shader
-  _copyNeuronsWeightsToWeightsBuffer(nextLayer->neurons); // binding 6
-  _copyNeuronsToBuffer(nextLayer->neurons,
-                       getBuffer(EBuffer::AdjacentLayerNeurons)); // binding 4
-  _copyNeuronsToBuffer(currentLayer->neurons,
-                       getBuffer(EBuffer::CurrentLayerNeurons)); // binding 0
-  _copyMatToBuffer(currentLayer->values,
-                   getBuffer(EBuffer::CurrentLayerValues)); // binding 1
-  _copyNeuronNeighboorsConnectionToBuffer(currentLayer);    // binding 2 and 3
-  _copyMatToBuffer(nextLayer->errors,
-                   getBuffer(EBuffer::AdjacentLayerValues)); // binding 5
-  _copyParametersToParametersBuffer(currentLayer);           // binding 7
-
-  // Run the shader
-  _computeShader(currentLayer->neurons, getShader(EShader::Backward).pipeline);
-
-  // Get the results
-  _copyOutputBufferToMat(currentLayer->errors);
+void VulkanController::trainingMonitored() {
+  // TODO
 }
 
 void VulkanController::_computeShader(const NeuronMat &neurons,

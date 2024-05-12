@@ -39,20 +39,10 @@ public:
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
   /**
-   * @brief Vulkan Forward Propagation
+   * @brief Vulkan training or validation on an input image
    *
-   * @param previousLayer
-   * @param currentLayer
    */
-  void forwardPropagation(Layer *previousLayer, Layer *currentLayer);
-
-  /**
-   * @brief Vulkan Backward Propagation
-   *
-   * @param nextLayer
-   * @param currentLayer
-   */
-  void backwardPropagation(Layer *nextLayer, Layer *currentLayer);
+  void trainingMonitored();
 
   /**
    * @brief Destroy the device instance, cleaning ressources
