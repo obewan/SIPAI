@@ -41,8 +41,10 @@ public:
   /**
    * @brief Vulkan training or validation on an input image
    *
+   *  @return float computed loss between the generated output and the expected
+   * images after the training or the validation
    */
-  void trainingMonitored();
+  float trainingMonitored(const TrainingPhase &phase);
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -104,7 +106,9 @@ private:
   void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer &buffer);
   void _copyMatToBuffer(const cv::Mat &mat, Buffer &buffer);
   void _copyOutputBufferToMat(cv::Mat &mat);
-  void _copyParametersToParametersBuffer(Layer *currentLayer);
+  void _copyParameters();
+  void _copyInputLayer();
+  void _copyOutputLayer();
   void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
   void _copyNeuronNeighboorsConnectionToBuffer(Layer *layer);
   void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat &neurons);

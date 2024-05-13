@@ -58,8 +58,19 @@ bool VulkanController::initialize(bool enableDebug) {
   return vulkan_->isInitialized;
 }
 
-void VulkanController::trainingMonitored() {
-  // TODO
+float VulkanController::trainingMonitored(const TrainingPhase &phase) {
+  if (!IsInitialized()) {
+    throw VulkanControllerException("Vulkan controller is not initialized.");
+  }
+  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitored);
+  if (!trainingMonitoredShader.isReady) {
+    _copyParameters();
+    _copyInputLayer();
+
+    trainingMonitoredShader.isReady = true;
+  }
+  // TODO continue...
+  return 0.0;
 }
 
 void VulkanController::_computeShader(VkPipeline &pipeline) {
@@ -108,30 +119,101 @@ void VulkanController::_copyMatToBuffer(const cv::Mat &mat, Buffer &buffer) {
          (size_t)flatValues.size() * sizeof(cv::Vec4f));
 }
 
-void VulkanController::_copyParametersToParametersBuffer(Layer *currentLayer) {
-  // const auto &network_params = Manager::getConstInstance().network_params;
-  // GLSLParameters parameters{
-  //     .error_min = network_params.error_min,
-  //     .error_max = network_params.error_max,
-  //     .activationAlpha = currentLayer->activationFunctionAlpha,
-  //     .currentLayerSizeX = (uint)currentLayer->size_x,
-  //     .currentLayerSizeY = (uint)currentLayer->size_y,
-  //     .previousLayerSizeX = currentLayer->previousLayer
-  //                               ? (uint)currentLayer->previousLayer->size_x
-  //                               : 0,
-  //     .previousLayerSizeY = currentLayer->previousLayer
-  //                               ? (uint)currentLayer->previousLayer->size_y
-  //                               : 0,
-  //     .nextLayerSizeX =
-  //         currentLayer->nextLayer ? (uint)currentLayer->nextLayer->size_x :
-  //         0,
-  //     .nextLayerSizeY =
-  //         currentLayer->nextLayer ? (uint)currentLayer->nextLayer->size_y :
-  //         0,
-  //     .activationFunction = (uint)currentLayer->eactivationFunction};
-  // auto &buffer = getBuffer(EBuffer::Parameters);
-  // memset(buffer.data, 0, (size_t)buffer.info.size);
-  // memcpy(buffer.data, &parameters, sizeof(GLSLParameters));
+void VulkanController::_copyParameters() {
+  const auto &network_params = Manager::getConstInstance().network_params;
+  GLSLParameters glslParams{
+      .learning_rate = network_params.learning_rate,
+      .error_min = network_params.error_min,
+      .error_max = network_params.error_max,
+  };
+  auto &buffer = getBuffer(EBuffer::Parameters);
+  builder_.mapBufferMemory(buffer);
+  memset(buffer.data, 0, (size_t)buffer.info.size);
+  memcpy(buffer.data, &glslParams, sizeof(GLSLParameters));
+  builder_.unmapBufferMemory(buffer);
+}
+
+void VulkanController::_copyInputLayer() {
+  const auto &inputLayer = Manager::getConstInstance().network->layers.front();
+  if (inputLayer->layerType != LayerType::LayerInput) {
+    throw VulkanControllerException("Invalid Input layer type.");
+  }
+  GLSLInputLayer glslInputLayer{
+      .activation_alpha = inputLayer->activationFunctionAlpha,
+      .activation_function = (uint)inputLayer->eactivationFunction,
+      .size_x = (uint)inputLayer->size_x,
+      .size_y = (uint)inputLayer->size_y,
+  };
+  auto &buffer = getBuffer(EBuffer::InputLayer);
+  builder_.mapBufferMemory(buffer);
+  memset(buffer.data, 0, (size_t)buffer.info.size);
+  memcpy(buffer.data, &glslInputLayer, sizeof(GLSLInputLayer));
+  builder_.unmapBufferMemory(buffer);
+}
+
+void VulkanController::_copyOutputLayer() {
+  auto copyMat = [](const cv::Mat &mat,
+                    std::vector<std::vector<cv::Vec4f>> &array) {
+    for (int i = 0; i < mat.rows; ++i) {
+      for (int j = 0; j < mat.cols; ++j) {
+        array[i][j] = mat.at<cv::Vec4f>(i, j);
+      }
+    }
+  };
+
+  const auto &layers = Manager::getConstInstance().network->layers;
+  const auto &outputLayer = layers.back();
+  if (outputLayer->layerType != LayerType::LayerOutput) {
+    throw VulkanControllerException("Invalid Output layer type.");
+  }
+
+  struct GLSLOutputNeuron {
+    uint index_x;
+    uint index_y;
+    std::vector<std::vector<cv::Vec4f>> weights;
+    GLSLNeighbor neighbors[4];
+  };
+  struct GLSLOutputLayer {
+    std::vector<std::vector<GLSLOutputNeuron>> neurons;
+    std::vector<std::vector<cv::Vec4f>> errors;
+    float activation_alpha;
+    uint activation_function;
+    uint size_x;
+    uint size_y;
+  };
+
+  std::vector<std::vector<GLSLOutputNeuron>> glslNeurons(
+      outputLayer->size_y, std::vector<GLSLOutputNeuron>(outputLayer->size_x));
+  for (int y = 0; y < outputLayer->neurons.size(); y++) {
+    for (int x = 0; x < outputLayer->neurons[0].size(); x++) {
+      const auto &neuron = outputLayer->neurons[y][x];
+      GLSLOutputNeuron glslNeuron = {.index_x = (uint)neuron.index_x,
+                                     .index_y = (uint)neuron.index_y};
+      glslNeuron.weights = std::vector<std::vector<cv::Vec4f>>(
+          neuron.weights.rows, std::vector<cv::Vec4f>(neuron.weights.cols));
+      copyMat(neuron.weights, glslNeuron.weights);
+
+      for (int i = 0; i < neuron.neighbors.size() && i < 4; i++) {
+        glslNeuron.neighbors[i].index_x =
+            (uint)neuron.neighbors[i].neuron->index_x;
+        glslNeuron.neighbors[i].index_y =
+            (uint)neuron.neighbors[i].neuron->index_y;
+        glslNeuron.neighbors[i].weight = neuron.neighbors[i].weight;
+        glslNeuron.neighbors[i].is_used = true;
+      }
+      glslNeurons[y][x] = glslNeuron;
+    }
+  }
+  GLSLOutputLayer glslOutputLayer{.neurons = glslNeurons};
+  glslOutputLayer.errors = std::vector<std::vector<cv::Vec4f>>(
+      outputLayer->errors.rows,
+      std::vector<cv::Vec4f>(outputLayer->errors.cols));
+  copyMat(outputLayer->errors, glslOutputLayer.errors);
+  auto &buffer = getBuffer(EBuffer::OutputLayer);
+  builder_.mapBufferMemory(buffer);
+  memset(buffer.data, 0, (size_t)buffer.info.size);
+  memcpy(buffer.data, &glslOutputLayer, sizeof(GLSLOutputLayer));
+  builder_.unmapBufferMemory(buffer);
 }
 
 // Flatten the all the weights vectors

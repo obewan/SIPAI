@@ -131,8 +131,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
         }
       }
       auto &connections = network->layers.at(layer_index)
-                              ->neurons.at(neuron_row)
-                              .at(neuron_col)
+                              ->neurons[neuron_row][neuron_col]
                               .neighbors;
       if (connections.size() != weights.size()) {
         throw ImportExportException("CSV parsing error at line (" +

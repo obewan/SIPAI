@@ -57,7 +57,7 @@ public:
    * @param size_y The new size in Y of the weights vector.
    */
   void initWeights(size_t size_x, size_t size_y) {
-    weights = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
+    weights = cv::Mat((int)size_y, (int)size_x, CV_32FC4);
 
     // Random initialization
     cv::randn(weights, cv::Vec4f::all(0), cv::Vec4f::all(1));
@@ -65,10 +65,10 @@ public:
 
   std::string toStringCsv(size_t max_weights) const {
     std::ostringstream oss;
-    for (int x = 0; x < weights.rows; x++) {
-      for (int y = 0; y < weights.cols; y++) {
+    for (int y = 0; y < weights.rows; y++) {
+      for (int x = 0; x < weights.cols; x++) {
         for (int i = 0; i < 4; i++) {
-          oss << weights.at<cv::Vec4f>(x, y)[i] << ",";
+          oss << weights.at<cv::Vec4f>(y, x)[i] << ",";
         }
       }
     };

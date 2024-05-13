@@ -40,6 +40,12 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::OutputLayer, "OutputLayer"},
     {EBuffer::HiddenLayer1, "HiddenLayer1"}};
 
+struct GLSLParameters {
+  float learning_rate;
+  float error_min;
+  float error_max;
+};
+
 struct GLSLNeighbor {
   bool is_used;
   uint index_x;
@@ -54,6 +60,22 @@ struct GLSLNeuron {
   GLSLNeighbor neighbors[4];
 };
 
+struct GLSLInputLayer {
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
+};
+
+// struct GLSLOutputLayer {
+//   GLSLNeuron **neurons;
+//   cv::Vec4f **errors;
+//   float activation_alpha;
+//   uint activation_function;
+//   uint size_x;
+//   uint size_y;
+// };
+
 struct Buffer {
   EBuffer name;
   uint binding = 0;
@@ -61,6 +83,7 @@ struct Buffer {
   VkDeviceMemory memory = VK_NULL_HANDLE;
   VkBufferCreateInfo info{};
   void *data = nullptr;
+  bool isMemoryMapped = false;
 };
 
 struct Shader {
@@ -70,6 +93,7 @@ struct Shader {
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info{};
+  bool isReady = false;
 };
 
 struct Vulkan {

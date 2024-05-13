@@ -311,8 +311,9 @@ void VulkanBuilder::_createBuffers() {
       size = sizeof(float) + (3 * sizeof(uint)); // attributes
       break;
     case EBuffer::OutputLayer:
-      output_neuron_weights = sizeof(cv::Vec4f) * network_param.hidden_size_x *
-                              network_param.hidden_size_y;
+      output_neuron_weights =
+          (uint)(sizeof(cv::Vec4f) * network_param.hidden_size_x *
+                 network_param.hidden_size_y);
       size = (sizeof(GLSLNeuron) + output_neuron_weights) *
              network_param.output_size_x *
              network_param.output_size_y; // OutputNeuron neurons[][]
@@ -321,8 +322,9 @@ void VulkanBuilder::_createBuffers() {
       size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
     case EBuffer::HiddenLayer1:
-      hidden1_neuron_weights = sizeof(cv::Vec4f) * network_param.input_size_x *
-                               network_param.input_size_y;
+      hidden1_neuron_weights =
+          (uint)(sizeof(cv::Vec4f) * network_param.input_size_x *
+                 network_param.input_size_y);
       size = (sizeof(GLSLNeuron) + hidden1_neuron_weights) *
              network_param.hidden_size_x *
              network_param.hidden_size_y; // HiddenNeuron neurons[][]
@@ -461,32 +463,6 @@ void VulkanBuilder::_createFence() {
   }
 }
 
-// TODO: create data mapping only when needed
-void VulkanBuilder::_createDataMapping() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
-  for (auto &buffer : vulkan_->buffers) {
-    if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size,
-                    0, &buffer.data) != VK_SUCCESS) {
-      throw VulkanBuilderException("Failed to create allocate memory for " +
-                                   buffer_map.at(buffer.name));
-    }
-    // Validation
-    VkMappedMemoryRange memoryRange{};
-    memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-    memoryRange.memory = buffer.memory; // The device memory object
-    memoryRange.offset = 0; // Starting offset within the memory object
-    memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
-    VkResult result =
-        vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
-    if (result != VK_SUCCESS) {
-      throw VulkanBuilderException("Failed to validate memory for " +
-                                   buffer_map.at(buffer.name));
-    }
-  }
-}
-
 void VulkanBuilder::_createShaderModules() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
@@ -551,13 +527,48 @@ void VulkanBuilder::_bindBuffers() {
                          writeDescriptorSets.data(), 0, nullptr);
 }
 
+void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  if (buffer.isMemoryMapped) {
+    return;
+  }
+  if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size, 0,
+                  &buffer.data) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create allocate memory for " +
+                                 buffer_map.at(buffer.name));
+  }
+  buffer.isMemoryMapped = true;
+  // Validation
+  VkMappedMemoryRange memoryRange{};
+  memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+  memoryRange.memory = buffer.memory; // The device memory object
+  memoryRange.offset = 0;           // Starting offset within the memory object
+  memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
+  VkResult result =
+      vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
+  if (result != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to validate memory for " +
+                                 buffer_map.at(buffer.name));
+  }
+}
+
+void VulkanBuilder::unmapBufferMemory(Buffer &buffer) {
+  vkUnmapMemory(vulkan_->logicalDevice, buffer.memory);
+  buffer.isMemoryMapped = false;
+}
+
 VulkanBuilder &VulkanBuilder::clear() {
   if (vulkan_ == nullptr) {
     return *this;
   }
   auto freeBuffer = [](std::shared_ptr<Vulkan> vulkan, Buffer buffer) {
     if (buffer.buffer != VK_NULL_HANDLE) {
-      vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
+      if (buffer.isMemoryMapped) {
+        vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
+        buffer.isMemoryMapped = false;
+      }
       vkFreeMemory(vulkan->logicalDevice, buffer.memory, nullptr);
       vkDestroyBuffer(vulkan->logicalDevice, buffer.buffer, nullptr);
       buffer.memory = VK_NULL_HANDLE;
@@ -575,10 +586,12 @@ VulkanBuilder &VulkanBuilder::clear() {
       shader.pipeline = VK_NULL_HANDLE;
     }
   }
+  vulkan_->shaders.clear();
 
   for (auto &buffer : vulkan_->buffers) {
     freeBuffer(vulkan_, buffer);
   }
+  vulkan_->buffers.clear();
 
   for (auto &commandBuffer : vulkan_->commandBufferPool) {
     if (commandBuffer != VK_NULL_HANDLE) {

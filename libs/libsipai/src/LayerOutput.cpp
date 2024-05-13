@@ -23,18 +23,18 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
   for (int y = 0; y < (int)size_y; ++y) {
     for (int x = 0; x < (int)size_x; ++x) {
       const Neuron &neuron = neurons[y][x];
-      cv::Vec4f &error = errors.at<cv::Vec4f>(x, y);
+      cv::Vec4f &error = errors.at<cv::Vec4f>(y, x);
 
       // Compute the weighted sum of neighboring neuron values
       cv::Vec4f neighborSum = cv::Vec4f::all(0.0f);
       for (const NeuronConnection &connection : neuron.neighbors) {
         neighborSum += connection.weight.mul(values.at<cv::Vec4f>(
-            (int)connection.neuron->index_x, (int)connection.neuron->index_y));
+            (int)connection.neuron->index_y, (int)connection.neuron->index_x));
       }
 
       // Compute and update the error
-      const cv::Vec4f &currentValue = values.at<cv::Vec4f>(x, y);
-      const cv::Vec4f &expectedValue = expectedValues.at<cv::Vec4f>(x, y);
+      const cv::Vec4f &currentValue = values.at<cv::Vec4f>(y, x);
+      const cv::Vec4f &expectedValue = expectedValues.at<cv::Vec4f>(y, x);
       const cv::Vec4f newError = weightFactor * (currentValue - expectedValue) +
                                  (1.0f - weightFactor) * neighborSum;
       error = sipai::clamp4f(newError, error_min, error_max);
