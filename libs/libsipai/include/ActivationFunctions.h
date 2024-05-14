@@ -61,7 +61,7 @@ inline auto sigmoid = [](const cv::Vec4f &rgba) {
   cv::Vec4f result;
   cv::exp(-rgba, result);
   cv::divide(cv::Vec4f::all(1.0f), (cv::Vec4f::all(1.0f) + result), result);
-  return sipai::clamp4f(result);
+  return Common::clamp4f(result);
 };
 
 inline auto sigmoidDerivative = [](const cv::Vec4f &rgba) {
@@ -96,7 +96,7 @@ inline auto tanhDerivative = [](const cv::Vec4f &rgba) {
  * @return ReLU
  */
 
-inline auto relu = [](const cv::Vec4f &rgba) { return sipai::clamp4f(rgba); };
+inline auto relu = [](const cv::Vec4f &rgba) { return Common::clamp4f(rgba); };
 inline auto reluDerivative = [](const cv::Vec4f &rgba) {
   cv::Vec4f result;
   std::transform(rgba.val, rgba.val + 4, result.val,
@@ -111,11 +111,11 @@ inline auto reluDerivative = [](const cv::Vec4f &rgba) {
  * Combine LReLU with clamping to [0, 1] range
  */
 inline auto leakyRelu = [](const cv::Vec4f &rgba) {
-  return sipai::clamp4f(rgba * 0.01f);
+  return Common::clamp4f(rgba * 0.01f);
 };
 
 inline auto leakyReluDerivative = [](const cv::Vec4f &rgba) {
-  return sipai::clamp4f(rgba, cv::Vec4f::all(0.01f), cv::Vec4f::all(1.0f));
+  return Common::clamp4f(rgba, cv::Vec4f::all(0.01f), cv::Vec4f::all(1.0f));
 };
 
 /**

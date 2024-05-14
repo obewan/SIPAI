@@ -298,14 +298,17 @@ void VulkanBuilder::_createBuffers() {
     case EBuffer::Parameters:
       size = sizeof(float) * 3;
       break;
-    case EBuffer::Data:
+    case EBuffer::InputData:
       size = sizeof(cv::Vec4f) * network_param.input_size_x *
              network_param.input_size_y; // inputValues
       size += sizeof(cv::Vec4f) * network_param.output_size_x *
-              network_param.output_size_y; // outputValues
-      size += sizeof(cv::Vec4f) * network_param.output_size_x *
-              network_param.output_size_y;  // targetValues
-      size += sizeof(float) + sizeof(bool); // others attributes
+              network_param.output_size_y; // targetValues
+      size += sizeof(bool);                // is_validation
+      break;
+    case EBuffer::OutputData:
+      size = sizeof(cv::Vec4f) * network_param.output_size_x *
+             network_param.output_size_y; // outputValues
+      size += sizeof(float);              // loss
       break;
     case EBuffer::InputLayer:
       size = sizeof(float) + (3 * sizeof(uint)); // attributes

@@ -131,7 +131,7 @@ void RunnerTrainingOpenCVVisitor::visit() const {
     const auto end{std::chrono::steady_clock::now()};
     const std::chrono::duration elapsed_seconds =
         std::chrono::duration_cast<std::chrono::seconds>(end - start);
-    const auto &hms = getHMSfromS(elapsed_seconds.count());
+    const auto &hms = Common::getHMSfromS(elapsed_seconds.count());
     SimpleLogger::LOG_INFO("Elapsed time: ", hms[0], "h ", hms[1], "m ", hms[2],
                            "s");
 
@@ -244,7 +244,7 @@ float RunnerTrainingOpenCVVisitor::computeLoss(size_t epoch,
     counter++;
     if (app_params.verbose) {
       SimpleLogger::LOG_INFO(
-          "Epoch: ", epoch + 1, ", ", getTrainingPhaseStr(phase), ": ",
+          "Epoch: ", epoch + 1, ", ", Common::getTrainingPhaseStr(phase), ": ",
           "image ", counter, "/", trainingDataFactory.getSize(phase), "...");
     }
 

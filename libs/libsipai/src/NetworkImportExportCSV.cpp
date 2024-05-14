@@ -19,7 +19,7 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
     const std::unique_ptr<NeuralNetwork> &network,
     const AppParams &appParams) const {
   // get the csv filename
-  std::string filename = getFilenameCsv(appParams.network_to_export);
+  std::string filename = Common::getFilenameCsv(appParams.network_to_export);
   std::ofstream file(filename);
 
   // Write the data
@@ -64,7 +64,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
   };
 
   // get the csv filename
-  std::string filename = getFilenameCsv(appParams.network_to_import);
+  std::string filename = Common::getFilenameCsv(appParams.network_to_import);
   std::ifstream file(filename);
   if (!file.is_open()) {
     throw ImportExportException("Failed to open file: " + filename);

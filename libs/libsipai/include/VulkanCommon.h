@@ -23,10 +23,11 @@ namespace sipai {
 // numbers must match the GLSL bindings
 enum class EBuffer {
   Parameters = 0,
-  Data = 1,
-  InputLayer = 2,
-  OutputLayer = 3,
-  HiddenLayer1 = 4,
+  InputData = 1,
+  OutputData = 2,
+  InputLayer = 3,
+  OutputLayer = 4,
+  HiddenLayer1 = 5,
 };
 
 enum class EShader {
@@ -35,7 +36,8 @@ enum class EShader {
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::Parameters, "Parameters"},
-    {EBuffer::Data, "Data"},
+    {EBuffer::InputData, "InputData"},
+    {EBuffer::OutputData, "OutputData"},
     {EBuffer::InputLayer, "InputLayer"},
     {EBuffer::OutputLayer, "OutputLayer"},
     {EBuffer::HiddenLayer1, "HiddenLayer1"}};
@@ -53,13 +55,6 @@ struct GLSLNeighbor {
   cv::Vec4f weight;
 };
 
-struct GLSLNeuron {
-  uint index_x;
-  uint index_y;
-  cv::Vec4f **weights;
-  GLSLNeighbor neighbors[4];
-};
-
 struct GLSLInputLayer {
   float activation_alpha;
   uint activation_function;
@@ -67,14 +62,31 @@ struct GLSLInputLayer {
   uint size_y;
 };
 
-// struct GLSLOutputLayer {
-//   GLSLNeuron **neurons;
-//   cv::Vec4f **errors;
-//   float activation_alpha;
-//   uint activation_function;
-//   uint size_x;
-//   uint size_y;
-// };
+struct GLSLNeuron {
+  uint index_x;
+  uint index_y;
+  std::vector<std::vector<cv::Vec4f>> weights;
+  GLSLNeighbor neighbors[4];
+};
+
+struct GLSLOutputLayer {
+  std::vector<std::vector<GLSLNeuron>> neurons;
+  std::vector<std::vector<cv::Vec4f>> errors;
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
+};
+
+struct GLSLHiddenLayer {
+  std::vector<std::vector<GLSLNeuron>> neurons;
+  std::vector<std::vector<cv::Vec4f>> values;
+  std::vector<std::vector<cv::Vec4f>> errors;
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
+};
 
 struct Buffer {
   EBuffer name;

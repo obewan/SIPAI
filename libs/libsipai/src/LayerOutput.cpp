@@ -16,7 +16,7 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
 
   // Create the errors matrix if not already allocated
   if (errors.empty()) {
-    errors.create((int)size_x, (int)size_y, CV_32FC4);
+    errors.create((int)size_y, (int)size_x, CV_32FC4);
   }
 
   // Iterate over all neurons in the layer
@@ -37,7 +37,7 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
       const cv::Vec4f &expectedValue = expectedValues.at<cv::Vec4f>(y, x);
       const cv::Vec4f newError = weightFactor * (currentValue - expectedValue) +
                                  (1.0f - weightFactor) * neighborSum;
-      error = sipai::clamp4f(newError, error_min, error_max);
+      error = Common::clamp4f(newError, error_min, error_max);
     }
   }
 }

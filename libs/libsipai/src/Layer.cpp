@@ -54,8 +54,8 @@ void Layer::backwardPropagation(const float &error_min,
       // Use the derivative of the activation function
       const cv::Vec4f activationDerivative =
           activationFunctionDerivative(values.at<cv::Vec4f>(y, x));
-      const cv::Vec4f clampedError =
-          sipai::clamp4f(activationDerivative.mul(error), error_min, error_max);
+      const cv::Vec4f clampedError = Common::clamp4f(
+          activationDerivative.mul(error), error_min, error_max);
 
       errors.at<cv::Vec4f>(y, x) = clampedError;
     }

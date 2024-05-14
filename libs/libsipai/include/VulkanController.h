@@ -103,15 +103,11 @@ private:
 
   void _computeShader(VkPipeline &pipeline);
 
-  void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer &buffer);
-  void _copyMatToBuffer(const cv::Mat &mat, Buffer &buffer);
-  void _copyOutputBufferToMat(cv::Mat &mat);
   void _copyParameters();
   void _copyInputLayer();
   void _copyOutputLayer();
-  void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
-  void _copyNeuronNeighboorsConnectionToBuffer(Layer *layer);
-  void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat &neurons);
+  void _copyHiddenLayer1();
+  void _copyInputData();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;

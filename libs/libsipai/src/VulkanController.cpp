@@ -66,7 +66,8 @@ float VulkanController::trainingMonitored(const TrainingPhase &phase) {
   if (!trainingMonitoredShader.isReady) {
     _copyParameters();
     _copyInputLayer();
-
+    _copyOutputLayer();
+    _copyHiddenLayer1();
     trainingMonitoredShader.isReady = true;
   }
   // TODO continue...
@@ -81,42 +82,6 @@ void VulkanController::_computeShader(VkPipeline &pipeline) {
                           &vulkan_->descriptorSet, 0, nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
   helper_.endSingleTimeCommands(commandBuffer);
-}
-
-void VulkanController::_copyNeuronsToBuffer(const NeuronMat &neurons,
-                                            Buffer &buffer) {
-  // size_t totalNeuronsSize = 0;
-  // for (const auto &row : neurons) {
-  //   totalNeuronsSize += row.size();
-  // }
-
-  // std::vector<GLSLNeuron> flatNeurons;
-  // flatNeurons.reserve(totalNeuronsSize);
-  // for (const auto &row : neurons) {
-  //   for (const auto &neuron : row) {
-  //     flatNeurons.push_back({.index_x = (uint)neuron.index_x,
-  //                            .index_y = (uint)neuron.index_y,
-  //                            .weightsIndex = (uint)neuron.weightsIndex,
-  //                            .neighborsIndex = (uint)neuron.neighborsIndex,
-  //                            .neighborsSize = (uint)neuron.neighborsSize});
-  //   }
-  // }
-  // memset(buffer.data, 0, (size_t)buffer.info.size);
-  // memcpy(buffer.data, flatNeurons.data(),
-  //        (size_t)flatNeurons.size() * sizeof(GLSLNeuron));
-}
-
-void VulkanController::_copyMatToBuffer(const cv::Mat &mat, Buffer &buffer) {
-  std::vector<cv::Vec4f> flatValues;
-  flatValues.reserve(mat.total());
-  for (int x = 0; x < mat.rows; x++) {
-    for (int y = 0; y < mat.cols; y++) {
-      flatValues.push_back(mat.at<cv::Vec4f>(x, y));
-    }
-  }
-  memset(buffer.data, 0, (size_t)buffer.info.size);
-  memcpy(buffer.data, flatValues.data(),
-         (size_t)flatValues.size() * sizeof(cv::Vec4f));
 }
 
 void VulkanController::_copyParameters() {
@@ -147,19 +112,11 @@ void VulkanController::_copyInputLayer() {
   auto &buffer = getBuffer(EBuffer::InputLayer);
   builder_.mapBufferMemory(buffer);
   memset(buffer.data, 0, (size_t)buffer.info.size);
-  memcpy(buffer.data, &glslInputLayer, sizeof(GLSLInputLayer));
+  memcpy(buffer.data, &glslInputLayer, sizeof(glslInputLayer));
   builder_.unmapBufferMemory(buffer);
 }
 
 void VulkanController::_copyOutputLayer() {
-  auto copyMat = [](const cv::Mat &mat,
-                    std::vector<std::vector<cv::Vec4f>> &array) {
-    for (int i = 0; i < mat.rows; ++i) {
-      for (int j = 0; j < mat.cols; ++j) {
-        array[i][j] = mat.at<cv::Vec4f>(i, j);
-      }
-    }
-  };
 
   const auto &layers = Manager::getConstInstance().network->layers;
   const auto &outputLayer = layers.back();
@@ -167,31 +124,17 @@ void VulkanController::_copyOutputLayer() {
     throw VulkanControllerException("Invalid Output layer type.");
   }
 
-  struct GLSLOutputNeuron {
-    uint index_x;
-    uint index_y;
-    std::vector<std::vector<cv::Vec4f>> weights;
-    GLSLNeighbor neighbors[4];
-  };
-  struct GLSLOutputLayer {
-    std::vector<std::vector<GLSLOutputNeuron>> neurons;
-    std::vector<std::vector<cv::Vec4f>> errors;
-    float activation_alpha;
-    uint activation_function;
-    uint size_x;
-    uint size_y;
-  };
-
-  std::vector<std::vector<GLSLOutputNeuron>> glslNeurons(
-      outputLayer->size_y, std::vector<GLSLOutputNeuron>(outputLayer->size_x));
+  // Create the layer neurons, including their weights
+  std::vector<std::vector<GLSLNeuron>> glslNeurons(
+      outputLayer->size_y, std::vector<GLSLNeuron>(outputLayer->size_x));
   for (int y = 0; y < outputLayer->neurons.size(); y++) {
     for (int x = 0; x < outputLayer->neurons[0].size(); x++) {
       const auto &neuron = outputLayer->neurons[y][x];
-      GLSLOutputNeuron glslNeuron = {.index_x = (uint)neuron.index_x,
-                                     .index_y = (uint)neuron.index_y};
+      GLSLNeuron glslNeuron = {.index_x = (uint)neuron.index_x,
+                               .index_y = (uint)neuron.index_y};
       glslNeuron.weights = std::vector<std::vector<cv::Vec4f>>(
           neuron.weights.rows, std::vector<cv::Vec4f>(neuron.weights.cols));
-      copyMat(neuron.weights, glslNeuron.weights);
+      Common::copyMatToVector(neuron.weights, glslNeuron.weights);
 
       for (int i = 0; i < neuron.neighbors.size() && i < 4; i++) {
         glslNeuron.neighbors[i].index_x =
@@ -204,110 +147,118 @@ void VulkanController::_copyOutputLayer() {
       glslNeurons[y][x] = glslNeuron;
     }
   }
-  GLSLOutputLayer glslOutputLayer{.neurons = glslNeurons};
-  glslOutputLayer.errors = std::vector<std::vector<cv::Vec4f>>(
-      outputLayer->errors.rows,
-      std::vector<cv::Vec4f>(outputLayer->errors.cols));
-  copyMat(outputLayer->errors, glslOutputLayer.errors);
+
+  // Create the GLSL formatted layer
+  GLSLOutputLayer glslOutputLayer{
+      .neurons = glslNeurons,
+      .errors = std::vector<std::vector<cv::Vec4f>>(
+          outputLayer->errors.rows,
+          std::vector<cv::Vec4f>(outputLayer->errors.cols)),
+      .activation_alpha = outputLayer->activationFunctionAlpha,
+      .activation_function = (uint)outputLayer->eactivationFunction,
+      .size_x = (uint)outputLayer->size_x,
+      .size_y = (uint)outputLayer->size_y,
+  };
+  Common::copyMatToVector(outputLayer->errors, glslOutputLayer.errors);
+
+  // Copy the layer into the VRAM
   auto &buffer = getBuffer(EBuffer::OutputLayer);
   builder_.mapBufferMemory(buffer);
   memset(buffer.data, 0, (size_t)buffer.info.size);
-  memcpy(buffer.data, &glslOutputLayer, sizeof(GLSLOutputLayer));
+  memcpy(buffer.data, &glslOutputLayer, sizeof(glslOutputLayer));
   builder_.unmapBufferMemory(buffer);
 }
 
-// Flatten the all the weights vectors
-void VulkanController::_copyNeuronsWeightsToWeightsBuffer(
-    const NeuronMat &neurons) {
-  // // Get total sum of weights of every neurons
-  // size_t totalWeightsSize = 0;
-  // for (const auto &row : neurons) {
-  //   totalWeightsSize += std::accumulate(row.begin(), row.end(), 0ull,
-  //                                       [](size_t sum, const Neuron &neuron)
-  //                                       {
-  //                                         return sum +
-  //                                         neuron.weights.total();
-  //                                       });
-  // }
-  // // flatten every weights mat to a flatWeights vector
-  // std::vector<cv::Vec4f> flatWeights;
-  // flatWeights.reserve(totalWeightsSize);
-  // size_t weightsIndex = 0;
-  // for (const auto &row : neurons) {
-  //   for (auto &neuron : row) {
-  //     neuron.weightsIndex = weightsIndex;
-  //     neuron.weights.forEach<cv::Vec4f>(
-  //         [&flatWeights](const auto &value, const int *pos) {
-  //           flatWeights.push_back(value);
-  //         });
-  //     weightsIndex += neuron.weights.total();
-  //   }
-  // }
-  // // copy the flatWeights to the buffer
-  // auto &buffer = getBuffer(EBuffer::LayerWeights);
-  // memset(buffer.data, 0, (size_t)buffer.info.size);
-  // memcpy(buffer.data, flatWeights.data(),
-  //        flatWeights.size() * sizeof(cv::Vec4f));
+void VulkanController::_copyHiddenLayer1() {
+  const auto &layers = Manager::getConstInstance().network->layers;
+  if (layers.size() < 2) {
+    throw VulkanControllerException("Invalid layers size.");
+  }
+  const auto &hiddenLayer1 = layers.at(1);
+  if (hiddenLayer1->layerType != LayerType::LayerHidden) {
+    throw VulkanControllerException("Invalid Hidden layer type.");
+  }
+
+  // Create the layer neurons, including their weights
+  std::vector<std::vector<GLSLNeuron>> glslNeurons(
+      hiddenLayer1->size_y, std::vector<GLSLNeuron>(hiddenLayer1->size_x));
+  for (int y = 0; y < hiddenLayer1->neurons.size(); y++) {
+    for (int x = 0; x < hiddenLayer1->neurons[0].size(); x++) {
+      const auto &neuron = hiddenLayer1->neurons[y][x];
+      GLSLNeuron glslNeuron = {.index_x = (uint)neuron.index_x,
+                               .index_y = (uint)neuron.index_y};
+      glslNeuron.weights = std::vector<std::vector<cv::Vec4f>>(
+          neuron.weights.rows, std::vector<cv::Vec4f>(neuron.weights.cols));
+      Common::copyMatToVector(neuron.weights, glslNeuron.weights);
+
+      for (int i = 0; i < neuron.neighbors.size() && i < 4; i++) {
+        glslNeuron.neighbors[i].index_x =
+            (uint)neuron.neighbors[i].neuron->index_x;
+        glslNeuron.neighbors[i].index_y =
+            (uint)neuron.neighbors[i].neuron->index_y;
+        glslNeuron.neighbors[i].weight = neuron.neighbors[i].weight;
+        glslNeuron.neighbors[i].is_used = true;
+      }
+      glslNeurons[y][x] = glslNeuron;
+    }
+  }
+
+  // Create the GLSL formatted layer
+  GLSLHiddenLayer glslHiddenLayer{
+      .neurons = glslNeurons,
+      .values = std::vector<std::vector<cv::Vec4f>>(
+          hiddenLayer1->values.rows,
+          std::vector<cv::Vec4f>(hiddenLayer1->values.cols)),
+      .errors = std::vector<std::vector<cv::Vec4f>>(
+          hiddenLayer1->errors.rows,
+          std::vector<cv::Vec4f>(hiddenLayer1->errors.cols)),
+      .activation_alpha = hiddenLayer1->activationFunctionAlpha,
+      .activation_function = (uint)hiddenLayer1->eactivationFunction,
+      .size_x = (uint)hiddenLayer1->size_x,
+      .size_y = (uint)hiddenLayer1->size_y,
+  };
+  Common::copyMatToVector(hiddenLayer1->values, glslHiddenLayer.values);
+  Common::copyMatToVector(hiddenLayer1->errors, glslHiddenLayer.errors);
+
+  // Copy the layer into the VRAM
+  auto &buffer = getBuffer(EBuffer::HiddenLayer1);
+  builder_.mapBufferMemory(buffer);
+  memset(buffer.data, 0, (size_t)buffer.info.size);
+  memcpy(buffer.data, &glslHiddenLayer, sizeof(glslHiddenLayer));
+  builder_.unmapBufferMemory(buffer);
 }
 
-void VulkanController::_copyNeuronNeighboorsConnectionToBuffer(Layer *layer) {
-  // // get the neighboors connections weights and erros
-  // std::vector<cv::Vec4f> neighboorsConnectionWeights;
-  // std::vector<cv::Vec4f> neighboorsConnectionErrors;
-  // size_t connectionWeightsIndex = 0;
-  // for (const auto &row : layer->neurons) {
-  //   for (auto &neuron : row) {
-  //     neuron.neighborsSize = neuron.neighbors.size();
-  //     neuron.neighborsIndex = connectionWeightsIndex;
-  //     for (auto &connection : neuron.neighbors) {
-  //       neighboorsConnectionWeights.push_back(connection.weight);
-  //       neighboorsConnectionErrors.push_back(layer->errors.at<cv::Vec4f>(
-  //           (int)connection.neuron->index_x,
-  //           (int)connection.neuron->index_y));
-  //     }
-  //     connectionWeightsIndex += neuron.neighborsSize;
-  //   }
-  // }
-  // // copy the weights to the buffer
-  // auto &bufferWeights = getBuffer(EBuffer::CurrentNeighborsWeights);
-  // memset(bufferWeights.data, 0, (size_t)bufferWeights.info.size);
-  // memcpy(bufferWeights.data, neighboorsConnectionWeights.data(),
-  //        neighboorsConnectionWeights.size() * sizeof(cv::Vec4f));
-  // // copy the errors to the buffer
-  // auto &bufferErrors = getBuffer(EBuffer::CurrentNeighborsErrors);
-  // memset(bufferErrors.data, 0, (size_t)bufferErrors.info.size);
-  // memcpy(bufferErrors.data, neighboorsConnectionErrors.data(),
-  //        neighboorsConnectionErrors.size() * sizeof(cv::Vec4f));
+void VulkanController::_copyInputData() {
+  // TODO
 }
 
 // Copy the OutputBuffer data directly into the value field of the neurons
-void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
-  // auto &bufferOutput = getBuffer(EBuffer::Output);
-  // // retrieve the data
-  // const auto bufferDataArray =
-  //     static_cast<std::array<float, 4> *>(bufferOutput.data);
-
-  // // copy the data
-  // size_t index = 0;
-  // for (int x = 0; x < mat.rows; x++) {
-  //   for (int y = 0; y < mat.cols; y++) {
-  //     mat.at<cv::Vec4f>(x, y) =
-  //         cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
-  //                   bufferDataArray[index][2], bufferDataArray[index][3]);
-  //     index++;
-  //   }
-  // }
-  // // some debug logs
-  // const auto &app_params = Manager::getConstInstance().app_params;
-  // if (app_params.verbose_debug) {
-  //   std::atomic<bool> areAllZero = true;
-  //   mat.forEach<cv::Vec4f>([&areAllZero](const auto &value, const int *pos) {
-  //     if (value != cv::Vec4f::all(0.0)) {
-  //       areAllZero = false;
-  //     }
-  //   });
-  //   if (areAllZero) {
-  //     SimpleLogger::LOG_DEBUG("Warning: all matrix values are zero.");
-  //   }
-  // }
-}
+// void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
+// auto &bufferOutput = getBuffer(EBuffer::Output);
+// // retrieve the data
+// const auto bufferDataArray =
+//     static_cast<std::array<float, 4> *>(bufferOutput.data);
+// // copy the data
+// size_t index = 0;
+// for (int x = 0; x < mat.rows; x++) {
+//   for (int y = 0; y < mat.cols; y++) {
+//     mat.at<cv::Vec4f>(x, y) =
+//         cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
+//                   bufferDataArray[index][2], bufferDataArray[index][3]);
+//     index++;
+//   }
+// }
+// // some debug logs
+// const auto &app_params = Manager::getConstInstance().app_params;
+// if (app_params.verbose_debug) {
+//   std::atomic<bool> areAllZero = true;
+//   mat.forEach<cv::Vec4f>([&areAllZero](const auto &value, const int *pos) {
+//     if (value != cv::Vec4f::all(0.0)) {
+//       areAllZero = false;
+//     }
+//   });
+//   if (areAllZero) {
+//     SimpleLogger::LOG_DEBUG("Warning: all matrix values are zero.");
+//   }
+// }
+//}
