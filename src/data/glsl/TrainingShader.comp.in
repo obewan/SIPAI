@@ -1,5 +1,4 @@
 #version 450
-#extension GL_EXT_shader_atomic_float : enable
 
 /**
  * *TEMPLATE* GLSL training compute shader for Vulkan, by Dams
@@ -9,6 +8,9 @@
 
 // One workgroup, neurons local threads per workgroup
 layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
+
+// local shared loss
+shared float loss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
 
 // Enum mapping, do not change
 const int ELU = 0;
@@ -199,7 +201,7 @@ void computeLoss(uint index_x, uint index_y) {
   vec4 diff = outputData.outputValues[index_y][index_x] - 
               inputData.targetValues[index_y][index_x];
   float squaredDiff = dot(diff, diff);
-  atomicAdd(outputData.loss, squaredDiff);
+  loss[index_y][index_x] = squaredDiff;
 }
 
 void computeOutputError(uint index_x, uint index_y) {
@@ -334,6 +336,12 @@ void main() {
   uint index_x = gl_LocalInvocationID.x;
   uint index_y = gl_LocalInvocationID.y;
 
+  // Initialize local loss
+  if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
+    loss[index_y][index_x] = 0.0;
+  }
+  barrier();
+
   // Forward Propagation
   forwardPropagationHiddenLayer1(index_x, index_y);
   barrier();
@@ -343,9 +351,16 @@ void main() {
   // Comput Loss
   computeLoss(index_x, index_y);
   barrier();
-  if (index_x == 0 && index_y == 0) {
-    uint numPixels = inputData.targetValues.length() * inputData.targetValues[0].length();
-    outputData.loss /= numPixels;
+  // Use one thread to sum up the local losses
+  if (gl_LocalInvocationIndex == 0) {
+    float totalLoss = 0.0;
+    for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
+      for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
+        totalLoss += loss[y][x];
+      }
+    }
+    uint numPixels = %%OUTPUT_SIZE_Y%% * %%OUTPUT_SIZE_X%%;    
+    outputData.loss = totalLoss / numPixels;
   }
   barrier();
 

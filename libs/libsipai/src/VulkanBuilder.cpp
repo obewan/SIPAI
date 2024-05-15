@@ -57,7 +57,6 @@ bool VulkanBuilder::_initialize() {
       "VK_LAYER_KHRONOS_validation"};
 
   const std::vector<const char *> instanceExtensions = {
-      VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
       VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
       VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME};
 
@@ -104,34 +103,13 @@ bool VulkanBuilder::_initialize() {
 
   VkPhysicalDeviceFeatures deviceFeatures{};
 
-  VkPhysicalDeviceShaderAtomicFloatFeaturesEXT floatFeatures{};
-  floatFeatures.sType =
-      VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT;
-  floatFeatures.shaderBufferFloat32AtomicAdd = VK_TRUE;
-  floatFeatures.pNext = VK_NULL_HANDLE;
-
-  VkPhysicalDeviceFeatures2 deviceFeatures2{};
-  deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-  deviceFeatures2.pNext = &floatFeatures;
-  deviceFeatures2.features = deviceFeatures;
-
-  // Check device extension support
-  vkGetPhysicalDeviceFeatures2(physicalDevice.value(), &deviceFeatures2);
-  if (!floatFeatures.shaderBufferFloat32AtomicAdd) {
-    // Handle unsupported device extension here
-    throw VulkanBuilderException("VK_EXT_shader_atomic_float extension is not "
-                                 "supported by the physical device!");
-  }
-
-  std::vector<const char *> deviceExtensions = {
-      VK_EXT_SHADER_ATOMIC_FLOAT_EXTENSION_NAME};
+  std::vector<const char *> deviceExtensions = {};
 
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
   createInfoDevice.pQueueCreateInfos = &queueCreateInfo;
   createInfoDevice.queueCreateInfoCount = 1;
-  // createInfoDevice.pEnabledFeatures = &deviceFeatures;
-  createInfoDevice.pNext = &deviceFeatures2;
+  createInfoDevice.pEnabledFeatures = &deviceFeatures;
   createInfoDevice.enabledExtensionCount =
       static_cast<uint32_t>(deviceExtensions.size());
   createInfoDevice.ppEnabledExtensionNames = deviceExtensions.data();
