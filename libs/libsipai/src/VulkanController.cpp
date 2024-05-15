@@ -10,11 +10,9 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
-#include <opencv2/core/matx.hpp>
-#include <opencv2/imgcodecs.hpp>
+#include <opencv2/opencv.hpp>
 #include <stdexcept>
 #include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_core.h>
 
 using namespace sipai;
 

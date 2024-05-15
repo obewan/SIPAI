@@ -30,7 +30,6 @@ VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
   _createDescriptorSet();
   _createPipelineLayout();
   _createFence();
-  //_createDataMapping();
   _createShaderModules();
   _createShadersComputePipelines();
 
@@ -58,25 +57,21 @@ bool VulkanBuilder::_initialize() {
       "VK_LAYER_KHRONOS_validation"};
 
   const std::vector<const char *> instanceExtensions = {
+      VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
       VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
-      // Commented as this non_semantic extension is not on my system,
-      // but it is required for GLSL GL_EXT_debug_printf and its debugPrintEXT()
-      // VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME
-  };
+      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME};
 
   VkInstanceCreateInfo createInfoInstance{};
   createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfoInstance.pApplicationInfo = &appInfo;
+  createInfoInstance.enabledExtensionCount =
+      static_cast<uint32_t>(instanceExtensions.size());
+  createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
 
-  if (enableDebugInfo_) {
-    createInfoInstance.enabledExtensionCount =
-        static_cast<uint32_t>(instanceExtensions.size());
-    createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
-    createInfoInstance.enabledLayerCount =
-        static_cast<uint32_t>(validationLayers.size());
-    createInfoInstance.ppEnabledLayerNames = validationLayers.data();
-  }
+  // FOR DEBUGGING ONLY
+  createInfoInstance.enabledLayerCount =
+      static_cast<uint32_t>(validationLayers.size());
+  createInfoInstance.ppEnabledLayerNames = validationLayers.data();
 
   // create instance
   if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->vkInstance) !=
@@ -106,15 +101,40 @@ bool VulkanBuilder::_initialize() {
   queueCreateInfo.queueCount = 1;
   float queuePriority = 1.0f;
   queueCreateInfo.pQueuePriorities = &queuePriority;
+
   VkPhysicalDeviceFeatures deviceFeatures{};
-  // Commented as not required
-  // deviceFeatures.logicOp = VK_TRUE; // Enable logical operation feature
-  // deviceFeatures.shaderFloat64 = VK_TRUE; // Enable 64-bit floats in shader
+
+  VkPhysicalDeviceShaderAtomicFloatFeaturesEXT floatFeatures{};
+  floatFeatures.sType =
+      VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT;
+  floatFeatures.shaderBufferFloat32AtomicAdd = VK_TRUE;
+  floatFeatures.pNext = VK_NULL_HANDLE;
+
+  VkPhysicalDeviceFeatures2 deviceFeatures2{};
+  deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+  deviceFeatures2.pNext = &floatFeatures;
+  deviceFeatures2.features = deviceFeatures;
+
+  // Check device extension support
+  vkGetPhysicalDeviceFeatures2(physicalDevice.value(), &deviceFeatures2);
+  if (!floatFeatures.shaderBufferFloat32AtomicAdd) {
+    // Handle unsupported device extension here
+    throw VulkanBuilderException("VK_EXT_shader_atomic_float extension is not "
+                                 "supported by the physical device!");
+  }
+
+  std::vector<const char *> deviceExtensions = {
+      VK_EXT_SHADER_ATOMIC_FLOAT_EXTENSION_NAME};
+
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
   createInfoDevice.pQueueCreateInfos = &queueCreateInfo;
   createInfoDevice.queueCreateInfoCount = 1;
-  createInfoDevice.pEnabledFeatures = &deviceFeatures;
+  // createInfoDevice.pEnabledFeatures = &deviceFeatures;
+  createInfoDevice.pNext = &deviceFeatures2;
+  createInfoDevice.enabledExtensionCount =
+      static_cast<uint32_t>(deviceExtensions.size());
+  createInfoDevice.ppEnabledExtensionNames = deviceExtensions.data();
   if (vkCreateDevice(vulkan_->physicalDevice, &createInfoDevice, nullptr,
                      &vulkan_->logicalDevice) != VK_SUCCESS) {
     throw VulkanBuilderException("failed to create logical device!");
