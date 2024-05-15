@@ -143,7 +143,8 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::bindLayers() {
 NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
   if (isImported) {
     NeuralNetworkImportExportFacade neuralNetworkImportExport;
-    std::string filenameCsv = getFilenameCsv(app_params_.network_to_import);
+    std::string filenameCsv =
+        Common::getFilenameCsv(app_params_.network_to_import);
     SimpleLogger::LOG_INFO("Importing layers neurons weights from ",
                            filenameCsv, "...");
     neuralNetworkImportExport.importWeights(network_, app_params_);

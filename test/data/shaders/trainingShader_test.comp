@@ -7,10 +7,10 @@
  */
 
 // One workgroup, neurons local threads per workgroup
-layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
+layout(local_size_x = 10, local_size_y = 10) in;
 
 // local shared loss
-shared float loss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+shared float loss[10][10];
 
 // Enum mapping, do not change
 const int ELU = 0;
@@ -30,19 +30,19 @@ struct Neighbor {
 struct HiddenNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];
+  vec4 weights[10][10];
   Neighbor neighbors[4];
 };
 
 struct OutputNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
+  vec4 weights[10][10];
   Neighbor neighbors[4];
 };
 
 // Parameters binding
-layout(std430, binding = 0) buffer readonly Parameters {
+layout(std430, binding = 0) buffer Parameters {
   float learning_rate;
   float error_min;
   float error_max;
@@ -51,15 +51,15 @@ params;
 
 // Data binding
 layout(std430, binding = 1) buffer readonly InputData {
-  vec4 inputValues[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];  
-  vec4 targetValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];  
+  vec4 inputValues[10][10];
+  vec4 targetValues[10][10];
   bool is_validation;
 }
 inputData;
 
-layout(std430, binding = 2) buffer OutputData { 
-  vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-  float loss; 
+layout(std430, binding = 2) buffer OutputData {
+  vec4 outputValues[10][10];
+  float loss;
 }
 outputData;
 
@@ -73,8 +73,8 @@ layout(std430, binding = 3) buffer InputLayer {
 inputLayer;
 
 layout(std430, binding = 4) buffer OutputLayer {
-  OutputNeuron neurons[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-  vec4 errors[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+  OutputNeuron neurons[10][10];
+  vec4 errors[10][10];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -83,9 +83,9 @@ layout(std430, binding = 4) buffer OutputLayer {
 outputLayer;
 
 layout(std430, binding = 5) buffer HiddenLayer1 {
-  HiddenNeuron neurons[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
-  vec4 values[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
-  vec4 errors[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
+  HiddenNeuron neurons[10][10];
+  vec4 values[10][10];
+  vec4 errors[10][10];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -198,7 +198,7 @@ void computeLoss(uint index_x, uint index_y) {
       index_x >= outputData.outputValues[0].length()) {
     return;
   }
-  vec4 diff = outputData.outputValues[index_y][index_x] - 
+  vec4 diff = outputData.outputValues[index_y][index_x] -
               inputData.targetValues[index_y][index_x];
   float squaredDiff = dot(diff, diff);
   loss[index_y][index_x] = squaredDiff;
@@ -337,7 +337,7 @@ void main() {
   uint index_y = gl_LocalInvocationID.y;
 
   // Initialize local loss
-  if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
+  if (index_y < 10 && index_x < 10) {
     loss[index_y][index_x] = 0.0;
   }
   barrier();
@@ -354,13 +354,13 @@ void main() {
   // Use one thread to sum up the local losses
   if (gl_LocalInvocationIndex == 0) {
     float totalLoss = 0.0;
-    for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
-      for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
+    for (int y = 0; y < 10; ++y) {
+      for (int x = 0; x < 10; ++x) {
         totalLoss += loss[y][x];
       }
     }
-    uint numPixels = %%OUTPUT_SIZE_Y%% * %%OUTPUT_SIZE_X%%;    
-    outputData.loss = totalLoss / numPixels;
+    uint numPixels = 10 * 10;
+    outputData.loss = numPixels / totalLoss;
   }
   barrier();
 

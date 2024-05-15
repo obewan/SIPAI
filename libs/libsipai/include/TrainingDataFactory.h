@@ -35,6 +35,11 @@ public:
   void operator=(TrainingDataFactory const &) = delete;
   ~TrainingDataFactory() = default;
 
+  enum class DataListType {
+    INPUT_TARGET,
+    TARGET_FOLDER,
+  };
+
   /**
    * @brief Get the next input and target images for training.
    *
@@ -127,5 +132,6 @@ private:
   std::mt19937 gen_;
 
   DataList dataList_;
+  DataListType dataListType_;
 };
 } // namespace sipai

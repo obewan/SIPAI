@@ -30,9 +30,9 @@ void Manager::createOrImportNetwork() {
 
 void Manager::exportNetwork() {
   if (!app_params.network_to_export.empty()) {
-    SimpleLogger::LOG_INFO("Saving the neural network to ",
-                           app_params.network_to_export, " and ",
-                           getFilenameCsv(app_params.network_to_export), "...");
+    SimpleLogger::LOG_INFO(
+        "Saving the neural network to ", app_params.network_to_export, " and ",
+        Common::getFilenameCsv(app_params.network_to_export), "...");
     auto exportator = std::make_unique<NeuralNetworkImportExportFacade>();
     exportator->exportModel(network, network_params, app_params);
   }
@@ -51,7 +51,7 @@ void Manager::run() {
 
   // Log parameters
   SimpleLogger::LOG_INFO(
-      "Parameters: ", "\nmode: ", getRunModeStr(app_params.run_mode),
+      "Parameters: ", "\nmode: ", Common::getRunModeStr(app_params.run_mode),
       "\nauto-save every ", app_params.epoch_autosave, " epochs",
       "\nauto-exit after ", app_params.max_epochs_without_improvement,
       " epochs without improvement",

@@ -1,32 +1,27 @@
 /**
- * @file RunnerTrainingMonitoredVisitor.h
+ * @file RunnerTrainingVisitor.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief Concret RunnerVisitor for TrainingMonitored run.
- * @date 2024-03-17
+ * @brief RunnerTrainingVisitor
+ * @date 2024-05-15
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
  *
  */
 #pragma once
-#include "Common.h"
-#include "ImageHelper.h"
+
 #include "RunnerVisitor.h"
-#include <memory>
+#include "SimpleLogger.h"
+#include <csignal>
+#include <mutex>
+
+extern volatile std::sig_atomic_t stopTraining;
+extern volatile std::sig_atomic_t stopTrainingNow;
+
+extern void signalHandler(int signal);
 
 namespace sipai {
-class RunnerTrainingMonitoredVisitor : public RunnerVisitor {
+class RunnerTrainingVisitor : public RunnerVisitor {
 public:
-  void visit() const override;
-
-  /**
-   * @brief Compute the loss of all images.
-   *
-   * @param epoch the current epoch
-   * @param phase indicate if it is training or validation phase
-   * @return float
-   */
-  float computeLoss(size_t epoch, TrainingPhase phase) const;
-
   /**
    * @brief Determines whether the training should continue based on the
    * provided conditions.
@@ -74,11 +69,7 @@ public:
    */
   void saveNetwork(bool &hasLastEpochBeenSaved) const;
 
-private:
-  float _computeLoss(size_t epoch, std::shared_ptr<Data> data,
-                     TrainingPhase phase, bool isLossFrequency) const;
-
-  ImageHelper imageHelper_;
+protected:
   mutable std::mutex threadMutex_;
 };
 } // namespace sipai

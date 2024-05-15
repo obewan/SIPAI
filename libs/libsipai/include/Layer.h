@@ -41,14 +41,14 @@ public:
   explicit Layer(LayerType layerType, size_t size_x = 0, size_t size_y = 0)
       : layerType(layerType), size_x(size_x), size_y(size_y) {
     neurons = NeuronMat(size_y, std::vector<Neuron>(size_x));
-    for (size_t row = 0; row < size_y; ++row) {
-      for (size_t col = 0; col < size_x; ++col) {
-        neurons[row][col].index_x = col;
-        neurons[row][col].index_y = row;
+    for (size_t y = 0; y < size_y; ++y) {
+      for (size_t x = 0; x < size_x; ++x) {
+        neurons[y][x].index_x = x;
+        neurons[y][x].index_y = y;
       }
     }
-    values = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
-    errors = cv::Mat((int)size_x, (int)size_y, CV_32FC4);
+    values = cv::Mat((int)size_y, (int)size_x, CV_32FC4);
+    errors = cv::Mat((int)size_y, (int)size_x, CV_32FC4);
   }
   virtual ~Layer() = default;
 
@@ -153,13 +153,12 @@ public:
   /**
    * @brief Performs forward propagation using the previous layer.
    */
-  virtual void forwardPropagation(const bool &enable_vulkan);
+  virtual void forwardPropagation();
 
   /**
    * @brief Performs backward propagation using the next layer.
    */
-  virtual void backwardPropagation(const bool &enable_vulkan,
-                                   const float &error_min,
+  virtual void backwardPropagation(const float &error_min,
                                    const float &error_max);
   /**
    * @brief Updates the weights of the neurons in this layer using the

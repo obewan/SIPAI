@@ -39,20 +39,14 @@ public:
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
   /**
-   * @brief Vulkan Forward Propagation
+   * @brief Vulkan training or validation on an input image
    *
-   * @param previousLayer
-   * @param currentLayer
+   *  @return float computed loss between the generated output and the expected
+   * images after the training or the validation
    */
-  void forwardPropagation(Layer *previousLayer, Layer *currentLayer);
-
-  /**
-   * @brief Vulkan Backward Propagation
-   *
-   * @param nextLayer
-   * @param currentLayer
-   */
-  void backwardPropagation(Layer *nextLayer, Layer *currentLayer);
+  float trainingMonitored(const std::shared_ptr<sipai::Image> &inputValues,
+                          const std::shared_ptr<sipai::Image> &targetValues,
+                          const TrainingPhase &phase);
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -109,15 +103,15 @@ private:
   };
   static std::unique_ptr<VulkanController> controllerInstance_;
 
-  void _computeShader(const NeuronMat &neurons, VkPipeline &pipeline);
+  void _computeShader(VkPipeline &pipeline);
 
-  void _copyNeuronsToBuffer(const NeuronMat &neurons, Buffer &buffer);
-  void _copyMatToBuffer(const cv::Mat &mat, Buffer &buffer);
-  void _copyOutputBufferToMat(cv::Mat &mat);
-  void _copyParametersToParametersBuffer(Layer *currentLayer);
-  void _copyNeuronsWeightsToWeightsBuffer(const NeuronMat &neurons);
-  void _copyNeuronNeighboorsConnectionToBuffer(Layer *layer);
-  void _copyNeuronNeighboorsIndexesToBuffer(const NeuronMat &neurons);
+  void _copyParameters();
+  void _copyInputLayer();
+  void _copyOutputLayer();
+  void _copyHiddenLayer1();
+  void _copyInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
+                      bool is_validation);
+  std::unique_ptr<GLSLOutputData> _getOutputData();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;

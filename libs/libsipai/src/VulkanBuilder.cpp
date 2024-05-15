@@ -30,7 +30,6 @@ VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
   _createDescriptorSet();
   _createPipelineLayout();
   _createFence();
-  _createDataMapping();
   _createShaderModules();
   _createShadersComputePipelines();
 
@@ -59,24 +58,19 @@ bool VulkanBuilder::_initialize() {
 
   const std::vector<const char *> instanceExtensions = {
       VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
-      // Commented as this non_semantic extension is not on my system,
-      // but it is required for GLSL GL_EXT_debug_printf and its debugPrintEXT()
-      // VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME
-  };
+      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME};
 
   VkInstanceCreateInfo createInfoInstance{};
   createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfoInstance.pApplicationInfo = &appInfo;
+  createInfoInstance.enabledExtensionCount =
+      static_cast<uint32_t>(instanceExtensions.size());
+  createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
 
-  if (enableDebugInfo_) {
-    createInfoInstance.enabledExtensionCount =
-        static_cast<uint32_t>(instanceExtensions.size());
-    createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
-    createInfoInstance.enabledLayerCount =
-        static_cast<uint32_t>(validationLayers.size());
-    createInfoInstance.ppEnabledLayerNames = validationLayers.data();
-  }
+  // FOR DEBUGGING ONLY
+  createInfoInstance.enabledLayerCount =
+      static_cast<uint32_t>(validationLayers.size());
+  createInfoInstance.ppEnabledLayerNames = validationLayers.data();
 
   // create instance
   if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->vkInstance) !=
@@ -106,15 +100,19 @@ bool VulkanBuilder::_initialize() {
   queueCreateInfo.queueCount = 1;
   float queuePriority = 1.0f;
   queueCreateInfo.pQueuePriorities = &queuePriority;
+
   VkPhysicalDeviceFeatures deviceFeatures{};
-  // Commented as not required
-  // deviceFeatures.logicOp = VK_TRUE; // Enable logical operation feature
-  // deviceFeatures.shaderFloat64 = VK_TRUE; // Enable 64-bit floats in shader
+
+  std::vector<const char *> deviceExtensions = {};
+
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
   createInfoDevice.pQueueCreateInfos = &queueCreateInfo;
   createInfoDevice.queueCreateInfoCount = 1;
   createInfoDevice.pEnabledFeatures = &deviceFeatures;
+  createInfoDevice.enabledExtensionCount =
+      static_cast<uint32_t>(deviceExtensions.size());
+  createInfoDevice.ppEnabledExtensionNames = deviceExtensions.data();
   if (vkCreateDevice(vulkan_->physicalDevice, &createInfoDevice, nullptr,
                      &vulkan_->logicalDevice) != VK_SUCCESS) {
     throw VulkanBuilderException("failed to create logical device!");
@@ -287,29 +285,55 @@ void VulkanBuilder::_createBuffers() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
+
+  const auto &network_param = Manager::getConstInstance().network_params;
   const auto &max_size = Manager::getConstInstance().network->max_weights;
-  // Initialize the vector
   for (auto [ebuffer, bufferName] : buffer_map) {
     VkDeviceSize size = 0;
+    uint output_neuron_weights = 0;
+    uint hidden1_neuron_weights = 0;
     switch (ebuffer) {
-    case EBuffer::CurrentLayerNeurons:
-    case EBuffer::AdjacentLayerNeurons:
-      size = sizeof(GLSLNeuron) * max_size;
-      break;
-    case EBuffer::CurrentLayerValues:
-    case EBuffer::AdjacentLayerValues:
-    case EBuffer::Output:
-      size = sizeof(cv::Vec4f) * max_size;
-      break;
-    case EBuffer::CurrentNeighborsErrors:
-    case EBuffer::CurrentNeighborsWeights:
-      size = sizeof(cv::Vec4f) * max_size * maxNeighboosPerNeuron_;
-      break;
-    case EBuffer::LayerWeights:
-      size = sizeof(cv::Vec4f) * max_size * max_size;
-      break;
     case EBuffer::Parameters:
-      size = sizeof(GLSLParameters);
+      size = sizeof(float) * 3;
+      break;
+    case EBuffer::InputData:
+      size = sizeof(cv::Vec4f) * network_param.input_size_x *
+             network_param.input_size_y; // inputValues
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y; // targetValues
+      size += sizeof(bool);                // is_validation
+      break;
+    case EBuffer::OutputData:
+      size = sizeof(cv::Vec4f) * network_param.output_size_x *
+             network_param.output_size_y; // outputValues
+      size += sizeof(float);              // loss
+      break;
+    case EBuffer::InputLayer:
+      size = sizeof(float) + (3 * sizeof(uint)); // attributes
+      break;
+    case EBuffer::OutputLayer:
+      output_neuron_weights =
+          (uint)(sizeof(cv::Vec4f) * network_param.hidden_size_x *
+                 network_param.hidden_size_y);
+      size = (sizeof(GLSLNeuron) + output_neuron_weights) *
+             network_param.output_size_x *
+             network_param.output_size_y; // OutputNeuron neurons[][]
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y;        // vec4 errors[][]
+      size += sizeof(float) + (3 * sizeof(uint)); // others attributes
+      break;
+    case EBuffer::HiddenLayer1:
+      hidden1_neuron_weights =
+          (uint)(sizeof(cv::Vec4f) * network_param.input_size_x *
+                 network_param.input_size_y);
+      size = (sizeof(GLSLNeuron) + hidden1_neuron_weights) *
+             network_param.hidden_size_x *
+             network_param.hidden_size_y; // HiddenNeuron neurons[][]
+      size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
+              network_param.hidden_size_y; // vec4 values[][]
+      size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
+              network_param.hidden_size_y;        // vec4 errors[][]
+      size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
     default:
       throw VulkanBuilderException("Buffer not implemented.");
@@ -440,31 +464,6 @@ void VulkanBuilder::_createFence() {
   }
 }
 
-void VulkanBuilder::_createDataMapping() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
-  for (auto &buffer : vulkan_->buffers) {
-    if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size,
-                    0, &buffer.data) != VK_SUCCESS) {
-      throw VulkanBuilderException("Failed to create allocate memory for " +
-                                   buffer_map.at(buffer.name));
-    }
-    // Validation
-    VkMappedMemoryRange memoryRange{};
-    memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-    memoryRange.memory = buffer.memory; // The device memory object
-    memoryRange.offset = 0; // Starting offset within the memory object
-    memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
-    VkResult result =
-        vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
-    if (result != VK_SUCCESS) {
-      throw VulkanBuilderException("Failed to validate memory for " +
-                                   buffer_map.at(buffer.name));
-    }
-  }
-}
-
 void VulkanBuilder::_createShaderModules() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
@@ -529,13 +528,48 @@ void VulkanBuilder::_bindBuffers() {
                          writeDescriptorSets.data(), 0, nullptr);
 }
 
+void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  if (buffer.isMemoryMapped) {
+    return;
+  }
+  if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size, 0,
+                  &buffer.data) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create allocate memory for " +
+                                 buffer_map.at(buffer.name));
+  }
+  buffer.isMemoryMapped = true;
+  // Validation
+  VkMappedMemoryRange memoryRange{};
+  memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+  memoryRange.memory = buffer.memory; // The device memory object
+  memoryRange.offset = 0;           // Starting offset within the memory object
+  memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
+  VkResult result =
+      vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
+  if (result != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to validate memory for " +
+                                 buffer_map.at(buffer.name));
+  }
+}
+
+void VulkanBuilder::unmapBufferMemory(Buffer &buffer) {
+  vkUnmapMemory(vulkan_->logicalDevice, buffer.memory);
+  buffer.isMemoryMapped = false;
+}
+
 VulkanBuilder &VulkanBuilder::clear() {
   if (vulkan_ == nullptr) {
     return *this;
   }
   auto freeBuffer = [](std::shared_ptr<Vulkan> vulkan, Buffer buffer) {
     if (buffer.buffer != VK_NULL_HANDLE) {
-      vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
+      if (buffer.isMemoryMapped) {
+        vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
+        buffer.isMemoryMapped = false;
+      }
       vkFreeMemory(vulkan->logicalDevice, buffer.memory, nullptr);
       vkDestroyBuffer(vulkan->logicalDevice, buffer.buffer, nullptr);
       buffer.memory = VK_NULL_HANDLE;
@@ -553,10 +587,12 @@ VulkanBuilder &VulkanBuilder::clear() {
       shader.pipeline = VK_NULL_HANDLE;
     }
   }
+  vulkan_->shaders.clear();
 
   for (auto &buffer : vulkan_->buffers) {
     freeBuffer(vulkan_, buffer);
   }
+  vulkan_->buffers.clear();
 
   for (auto &commandBuffer : vulkan_->commandBufferPool) {
     if (commandBuffer != VK_NULL_HANDLE) {

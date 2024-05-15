@@ -54,6 +54,27 @@ public:
   VulkanBuilder &build(std::shared_ptr<Vulkan> vulkan);
 
   /**
+   * @brief Maps a buffer's VRAM memory to CPU RAM memory.
+   * This allows the CPU to directly read from or write to the VRAM.
+   * Note: Proper synchronization must be ensured to prevent data races.
+   * Make sure any GPU operations using the buffer have completed before
+   * mapping.
+   *
+   * @param buffer The buffer whose memory is to be mapped.
+   */
+  void mapBufferMemory(Buffer &buffer);
+
+  /**
+   * @brief Unmaps a previously mapped buffer's VRAM memory from the CPU RAM
+   * memory. After this operation, the CPU will no longer have direct access to
+   * the buffer's memory. Note: Any writes to the memory should be completed
+   * before unmapping to ensure they are reflected in the buffer.
+   *
+   * @param buffer The buffer whose memory is to be unmapped.
+   */
+  void unmapBufferMemory(Buffer &buffer);
+
+  /**
    * @brief clear the vulkan instance
    *
    * @return VulkanBuilder&
@@ -76,7 +97,6 @@ private:
   void _createDescriptorSet();
   void _createPipelineLayout();
   void _createFence();
-  void _createDataMapping();
   void _createShaderModules();
   void _createShadersComputePipelines();
   void _bindBuffers();

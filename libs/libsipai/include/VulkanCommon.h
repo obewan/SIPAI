@@ -10,8 +10,10 @@
 #pragma once
 #include <map>
 #include <memory>
+#include <opencv2/opencv.hpp>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+
 #if defined(_MSC_VER)
 using uint = unsigned int;
 #endif
@@ -20,52 +22,81 @@ namespace sipai {
 
 // numbers must match the GLSL bindings
 enum class EBuffer {
-  CurrentLayerNeurons = 0,
-  CurrentLayerValues = 1,
-  CurrentNeighborsErrors = 2,
-  CurrentNeighborsWeights = 3,
-  AdjacentLayerNeurons = 4,
-  AdjacentLayerValues = 5,
-  LayerWeights = 6,
-  Parameters = 7,
-  Output = 8
+  Parameters = 0,
+  InputData = 1,
+  OutputData = 2,
+  InputLayer = 3,
+  OutputLayer = 4,
+  HiddenLayer1 = 5,
 };
 
 enum class EShader {
-  Forward,
-  Backward,
+  TrainingMonitored,
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
-    {EBuffer::CurrentLayerNeurons, "CurrentLayerNeurons"},
-    {EBuffer::CurrentLayerValues, "CurrentLayerValues"},
-    {EBuffer::CurrentNeighborsErrors, "CurrentNeighborsErrors"},
-    {EBuffer::CurrentNeighborsWeights, "CurrentNeighborsWeights"},
-    {EBuffer::AdjacentLayerNeurons, "AdjacentLayerNeurons"},
-    {EBuffer::AdjacentLayerValues, "AdjacentLayerValues"},
-    {EBuffer::LayerWeights, "LayerWeights"},
     {EBuffer::Parameters, "Parameters"},
-    {EBuffer::Output, "Output"}};
+    {EBuffer::InputData, "InputData"},
+    {EBuffer::OutputData, "OutputData"},
+    {EBuffer::InputLayer, "InputLayer"},
+    {EBuffer::OutputLayer, "OutputLayer"},
+    {EBuffer::HiddenLayer1, "HiddenLayer1"}};
+
+struct GLSLParameters {
+  float learning_rate;
+  float error_min;
+  float error_max;
+};
+
+struct GLSLNeighbor {
+  bool is_used;
+  uint index_x;
+  uint index_y;
+  cv::Vec4f weight;
+};
 
 struct GLSLNeuron {
   uint index_x;
   uint index_y;
-  uint weightsIndex;
-  uint neighborsIndex;
-  uint neighborsSize;
+  std::vector<std::vector<cv::Vec4f>> weights;
+  GLSLNeighbor neighbors[4];
 };
 
-struct GLSLParameters {
-  float error_min;
-  float error_max;
-  float activationAlpha;
-  uint currentLayerSizeX;
-  uint currentLayerSizeY;
-  uint previousLayerSizeX;
-  uint previousLayerSizeY;
-  uint nextLayerSizeX;
-  uint nextLayerSizeY;
-  uint activationFunction;
+struct GLSLInputData {
+  std::vector<std::vector<cv::Vec4f>> inputValues;
+  std::vector<std::vector<cv::Vec4f>> targetValues;
+  bool is_validation;
+};
+
+struct GLSLOutputData {
+  std::vector<std::vector<cv::Vec4f>> outputValues;
+  float loss;
+};
+
+struct GLSLInputLayer {
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
+};
+
+struct GLSLOutputLayer {
+  std::vector<std::vector<GLSLNeuron>> neurons;
+  std::vector<std::vector<cv::Vec4f>> errors;
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
+};
+
+struct GLSLHiddenLayer {
+  std::vector<std::vector<GLSLNeuron>> neurons;
+  std::vector<std::vector<cv::Vec4f>> values;
+  std::vector<std::vector<cv::Vec4f>> errors;
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
 };
 
 struct Buffer {
@@ -75,6 +106,7 @@ struct Buffer {
   VkDeviceMemory memory = VK_NULL_HANDLE;
   VkBufferCreateInfo info{};
   void *data = nullptr;
+  bool isMemoryMapped = false;
 };
 
 struct Shader {
@@ -84,7 +116,7 @@ struct Shader {
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info{};
-  bool isFirstRun = true;
+  bool isReady = false;
 };
 
 struct Vulkan {
