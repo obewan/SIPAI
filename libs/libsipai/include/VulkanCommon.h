@@ -55,18 +55,29 @@ struct GLSLNeighbor {
   cv::Vec4f weight;
 };
 
-struct GLSLInputLayer {
-  float activation_alpha;
-  uint activation_function;
-  uint size_x;
-  uint size_y;
-};
-
 struct GLSLNeuron {
   uint index_x;
   uint index_y;
   std::vector<std::vector<cv::Vec4f>> weights;
   GLSLNeighbor neighbors[4];
+};
+
+struct GLSLInputData {
+  std::vector<std::vector<cv::Vec4f>> inputValues;
+  std::vector<std::vector<cv::Vec4f>> targetValues;
+  bool is_validation;
+};
+
+struct GLSLOutputData {
+  std::vector<std::vector<cv::Vec4f>> outputValues;
+  float loss;
+};
+
+struct GLSLInputLayer {
+  float activation_alpha;
+  uint activation_function;
+  uint size_x;
+  uint size_y;
 };
 
 struct GLSLOutputLayer {

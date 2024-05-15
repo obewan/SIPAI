@@ -44,7 +44,9 @@ public:
    *  @return float computed loss between the generated output and the expected
    * images after the training or the validation
    */
-  float trainingMonitored(const TrainingPhase &phase);
+  float trainingMonitored(const std::shared_ptr<sipai::Image> &inputValues,
+                          const std::shared_ptr<sipai::Image> &targetValues,
+                          const TrainingPhase &phase);
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -107,7 +109,9 @@ private:
   void _copyInputLayer();
   void _copyOutputLayer();
   void _copyHiddenLayer1();
-  void _copyInputData();
+  void _copyInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
+                      bool is_validation);
+  std::unique_ptr<GLSLOutputData> _getOutputData();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;

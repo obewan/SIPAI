@@ -58,7 +58,10 @@ bool VulkanController::initialize(bool enableDebug) {
   return vulkan_->isInitialized;
 }
 
-float VulkanController::trainingMonitored(const TrainingPhase &phase) {
+float VulkanController::trainingMonitored(
+    const std::shared_ptr<sipai::Image> &inputValues,
+    const std::shared_ptr<sipai::Image> &targetValues,
+    const TrainingPhase &phase) {
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
@@ -70,8 +73,17 @@ float VulkanController::trainingMonitored(const TrainingPhase &phase) {
     _copyHiddenLayer1();
     trainingMonitoredShader.isReady = true;
   }
-  // TODO continue...
-  return 0.0;
+  // Inject input data
+  _copyInputData(inputValues->data, targetValues->data,
+                 phase == TrainingPhase::Validation);
+
+  // Run the shader
+  _computeShader(trainingMonitoredShader.pipeline);
+
+  // Get the results
+  const auto result = _getOutputData();
+
+  return result->loss;
 }
 
 void VulkanController::_computeShader(VkPipeline &pipeline) {
@@ -228,37 +240,32 @@ void VulkanController::_copyHiddenLayer1() {
   builder_.unmapBufferMemory(buffer);
 }
 
-void VulkanController::_copyInputData() {
-  // TODO
+void VulkanController::_copyInputData(const cv::Mat &inputValues,
+                                      const cv::Mat &targetValues,
+                                      bool is_validation) {
+  // Create the GLSL formatted data
+  GLSLInputData glslInputData{
+      .inputValues = std::vector<std::vector<cv::Vec4f>>(
+          inputValues.rows, std::vector<cv::Vec4f>(inputValues.cols)),
+      .targetValues = std::vector<std::vector<cv::Vec4f>>(
+          targetValues.rows, std::vector<cv::Vec4f>(targetValues.cols)),
+      .is_validation = is_validation};
+  Common::copyMatToVector(inputValues, glslInputData.inputValues);
+  Common::copyMatToVector(targetValues, glslInputData.targetValues);
+
+  // Copy the data into the VRAM
+  auto &buffer = getBuffer(EBuffer::InputData);
+  builder_.mapBufferMemory(buffer);
+  memset(buffer.data, 0, (size_t)buffer.info.size);
+  memcpy(buffer.data, &glslInputData, sizeof(glslInputData));
+  builder_.unmapBufferMemory(buffer);
 }
 
-// Copy the OutputBuffer data directly into the value field of the neurons
-// void VulkanController::_copyOutputBufferToMat(cv::Mat &mat) {
-// auto &bufferOutput = getBuffer(EBuffer::Output);
-// // retrieve the data
-// const auto bufferDataArray =
-//     static_cast<std::array<float, 4> *>(bufferOutput.data);
-// // copy the data
-// size_t index = 0;
-// for (int x = 0; x < mat.rows; x++) {
-//   for (int y = 0; y < mat.cols; y++) {
-//     mat.at<cv::Vec4f>(x, y) =
-//         cv::Vec4f(bufferDataArray[index][0], bufferDataArray[index][1],
-//                   bufferDataArray[index][2], bufferDataArray[index][3]);
-//     index++;
-//   }
-// }
-// // some debug logs
-// const auto &app_params = Manager::getConstInstance().app_params;
-// if (app_params.verbose_debug) {
-//   std::atomic<bool> areAllZero = true;
-//   mat.forEach<cv::Vec4f>([&areAllZero](const auto &value, const int *pos) {
-//     if (value != cv::Vec4f::all(0.0)) {
-//       areAllZero = false;
-//     }
-//   });
-//   if (areAllZero) {
-//     SimpleLogger::LOG_DEBUG("Warning: all matrix values are zero.");
-//   }
-// }
-//}
+std::unique_ptr<GLSLOutputData> VulkanController::_getOutputData() {
+  auto &buffer = getBuffer(EBuffer::OutputData);
+  builder_.mapBufferMemory(buffer);
+  std::unique_ptr<GLSLOutputData> data = std::make_unique<GLSLOutputData>(
+      *static_cast<GLSLOutputData *>(buffer.data));
+  builder_.unmapBufferMemory(buffer);
+  return data;
+}
