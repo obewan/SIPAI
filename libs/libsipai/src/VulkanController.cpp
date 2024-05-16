@@ -149,6 +149,7 @@ void VulkanController::_copyOutputLayer() {
     auto &buffer = getBuffer(EBuffer::OutputLayer);
     builder_.mapBufferMemory(buffer);
     memset(buffer.data, 0, (size_t)buffer.info.size);
+    size_t totalSize = 0;
     char *bufferPtr = static_cast<char *>(buffer.data);
 
     // Copy the neurons
@@ -157,14 +158,17 @@ void VulkanController::_copyOutputLayer() {
         size_t size = sizeof(uint);
         memcpy(bufferPtr, &neuron.index_x, size);
         bufferPtr += size;
+        totalSize += size;
 
         size = sizeof(uint);
         memcpy(bufferPtr, &neuron.index_y, size);
         bufferPtr += size;
+        totalSize += size;
 
         size = neuron.weights.total() * sizeof(cv::Vec4f);
         memcpy(bufferPtr, neuron.weights.data, size);
         bufferPtr += size;
+        totalSize += size;
 
         GLSLNeighbor neighbors[MAX_NEIGHBORS];
         for (int i = 0; i < neuron.neighbors.size(); i++) {
@@ -176,6 +180,7 @@ void VulkanController::_copyOutputLayer() {
         size = MAX_NEIGHBORS * sizeof(GLSLNeighbor);
         memcpy(bufferPtr, &neighbors, size);
         bufferPtr += size;
+        totalSize += size;
       }
     }
 
@@ -183,6 +188,7 @@ void VulkanController::_copyOutputLayer() {
     size_t size = outputLayer->errors.total() * sizeof(cv::Vec4f);
     memcpy(bufferPtr, outputLayer->errors.data, size);
     bufferPtr += size;
+    totalSize += size;
 
     // Copy the attributes
     _Attribs attribs{
@@ -194,8 +200,13 @@ void VulkanController::_copyOutputLayer() {
     size = sizeof(_Attribs);
     memcpy(bufferPtr, &attribs, size);
     bufferPtr += size;
+    totalSize += size;
 
     builder_.unmapBufferMemory(buffer);
+
+    if (totalSize > (size_t)buffer.info.size) {
+      throw VulkanControllerException("copy buffer overflow");
+    }
   } catch (std::exception &ex) {
     throw VulkanControllerException("Hidden layer copy error: " +
                                     std::string(ex.what()));
@@ -224,23 +235,31 @@ void VulkanController::_copyHiddenLayer1() {
     auto &buffer = getBuffer(EBuffer::HiddenLayer1);
     builder_.mapBufferMemory(buffer);
     memset(buffer.data, 0, (size_t)buffer.info.size);
+    size_t totalSize = 0;
     char *bufferPtr = static_cast<char *>(buffer.data);
 
     // Copy the neurons
     for (const auto &row : hiddenLayer1->neurons) {
       for (const auto &neuron : row) {
+        // index_x
         size_t size = sizeof(uint);
         memcpy(bufferPtr, &neuron.index_x, size);
         bufferPtr += size;
+        totalSize += size;
 
+        // index_y
         size = sizeof(uint);
         memcpy(bufferPtr, &neuron.index_y, size);
         bufferPtr += size;
+        totalSize += size;
 
+        // weights
         size = neuron.weights.total() * sizeof(cv::Vec4f);
         memcpy(bufferPtr, neuron.weights.data, size);
         bufferPtr += size;
+        totalSize += size;
 
+        // neighbors
         GLSLNeighbor neighbors[MAX_NEIGHBORS];
         for (int i = 0; i < neuron.neighbors.size(); i++) {
           neighbors[i].index_x = (uint)neuron.neighbors[i].neuron->index_x;
@@ -251,6 +270,7 @@ void VulkanController::_copyHiddenLayer1() {
         size = MAX_NEIGHBORS * sizeof(GLSLNeighbor);
         memcpy(bufferPtr, &neighbors, size);
         bufferPtr += size;
+        totalSize += size;
       }
     }
 
@@ -258,11 +278,13 @@ void VulkanController::_copyHiddenLayer1() {
     size_t size = hiddenLayer1->values.total() * sizeof(cv::Vec4f);
     memcpy(bufferPtr, hiddenLayer1->values.data, size);
     bufferPtr += size;
+    totalSize += size;
 
     // Copy the errors
     size = hiddenLayer1->errors.total() * sizeof(cv::Vec4f);
     memcpy(bufferPtr, hiddenLayer1->errors.data, size);
     bufferPtr += size;
+    totalSize += size;
 
     // Copy the attributes
     _Attribs attribs{
@@ -274,8 +296,13 @@ void VulkanController::_copyHiddenLayer1() {
     size = sizeof(_Attribs);
     memcpy(bufferPtr, &attribs, size);
     bufferPtr += size;
+    totalSize += size;
 
     builder_.unmapBufferMemory(buffer);
+
+    if (totalSize > (size_t)buffer.info.size) {
+      throw VulkanControllerException("copy buffer overflow");
+    }
   } catch (std::exception &ex) {
     throw VulkanControllerException("Hidden layer copy error: " +
                                     std::string(ex.what()));
@@ -291,20 +318,28 @@ void VulkanController::_copyInputData(const cv::Mat &inputValues,
     builder_.mapBufferMemory(buffer);
     memset(buffer.data, 0, (size_t)buffer.info.size);
     char *bufferPtr = static_cast<char *>(buffer.data);
+    size_t totalSize = 0;
 
     size_t size = inputValues.total() * sizeof(cv::Vec4f);
     memcpy(bufferPtr, inputValues.data, size);
     bufferPtr += size;
+    totalSize += size;
 
     size = targetValues.total() * sizeof(cv::Vec4f);
     memcpy(bufferPtr, targetValues.data, size);
     bufferPtr += size;
+    totalSize += size;
 
     size = sizeof(bool);
     memcpy(bufferPtr, &is_validation, size);
     bufferPtr += size;
+    totalSize += size;
 
     builder_.unmapBufferMemory(buffer);
+
+    if (totalSize > (size_t)buffer.info.size) {
+      throw VulkanControllerException("copy buffer overflow");
+    }
   } catch (std::exception &ex) {
     throw VulkanControllerException("Input data copy error: " +
                                     std::string(ex.what()));
@@ -315,14 +350,9 @@ std::unique_ptr<GLSLOutputData> VulkanController::_getOutputData() {
   const auto &params = Manager::getConstInstance().network_params;
 
   // Get loss
-  struct OutputLoss {
-    float loss;
-  };
-  float loss = 0;
   auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
   builder_.mapBufferMemory(bufferLoss);
-  const auto pLoss = static_cast<OutputLoss *>(bufferLoss.data);
-  loss = pLoss->loss;
+  float loss = *reinterpret_cast<float *>(bufferLoss.data);
   builder_.unmapBufferMemory(bufferLoss);
 
   // Get outputValues

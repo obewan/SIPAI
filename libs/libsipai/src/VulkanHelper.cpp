@@ -119,14 +119,21 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   // Reset the fence
   result = vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence);
   if (result != VK_SUCCESS) {
-    throw VulkanHelperException("Vulkan reset fence error.");
+    throw VulkanHelperException("Vulkan fence reset error.");
   }
 
   // Reset the command buffer
   result = vkResetCommandBuffer(commandBuffer, 0);
   if (result != VK_SUCCESS) {
-    throw VulkanHelperException("Vulkan reset command buffer error.");
+    throw VulkanHelperException("Vulkan command buffer reset error.");
   }
+
+  // Ensure the device has finished all operations
+  // Commented: job already done by fence
+  // result = vkDeviceWaitIdle(vulkan_->logicalDevice);
+  // if (result != VK_SUCCESS) {
+  //   throw VulkanHelperException("Vulkan wait idle error.");
+  // }
 
   vulkan_->commandBufferPool.push_back(commandBuffer);
 }

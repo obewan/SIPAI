@@ -25,12 +25,12 @@ const int MAX_NEIGHBORS = 4;
 // numbers must match the GLSL bindings
 enum class EBuffer {
   Parameters = 0,
-  InputData = 1,
-  OutputValues = 2,
-  OutputLoss = 3,
-  InputLayer = 4,
-  OutputLayer = 5,
-  HiddenLayer1 = 6
+  InputLayer = 1,
+  OutputLayer = 2,
+  HiddenLayer1 = 3,
+  InputData = 4,
+  OutputData = 5,
+  OutputLoss = 6
 };
 
 enum class EShader {
@@ -39,12 +39,12 @@ enum class EShader {
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::Parameters, "Parameters"},
-    {EBuffer::InputData, "InputData"},
-    {EBuffer::OutputValues, "OutputValues"},
-    {EBuffer::OutputLoss, "OutputLoss"},
     {EBuffer::InputLayer, "InputLayer"},
     {EBuffer::OutputLayer, "OutputLayer"},
-    {EBuffer::HiddenLayer1, "HiddenLayer1"}};
+    {EBuffer::HiddenLayer1, "HiddenLayer1"},
+    {EBuffer::InputData, "InputData"},
+    {EBuffer::OutputData, "OutputData"},
+    {EBuffer::OutputLoss, "OutputLoss"}};
 
 struct GLSLParameters {
   float learning_rate;

@@ -34,4 +34,10 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
       CHECK(line.find("%%") == std::string::npos);
     }
   }
+
+  SUBCASE("Test various") {
+    CHECK(sizeof(GLSLNeuron) ==
+          (2 * sizeof(uint) + MAX_NEIGHBORS * sizeof(GLSLNeighbor) +
+           sizeof(std::vector<std::vector<cv::Vec4f>>)));
+  }
 }
