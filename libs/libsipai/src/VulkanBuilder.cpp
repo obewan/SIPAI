@@ -1,5 +1,6 @@
 #include "VulkanBuilder.h"
 #include "Manager.h"
+#include "SimpleLogger.h"
 #include "exception/VulkanBuilderException.h"
 #include <filesystem>
 #include <fstream>
@@ -121,6 +122,32 @@ bool VulkanBuilder::_initialize() {
   // Get a queue device
   vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueFamilyIndex, 0,
                    &vulkan_->queue);
+
+  const auto &network_param = Manager::getConstInstance().network_params;
+  VkPhysicalDeviceProperties deviceProperties;
+  vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
+
+  // Checking maxComputeWorkGroupInvocations
+  uint32_t maxComputeWorkGroupInvocations =
+      deviceProperties.limits.maxComputeWorkGroupInvocations;
+  size_t maxSizeX =
+      std::max({network_param.input_size_x, network_param.hidden_size_x,
+                network_param.output_size_x});
+  size_t maxSizeY =
+      std::max({network_param.input_size_y, network_param.hidden_size_y,
+                network_param.output_size_y});
+  if (maxSizeX * maxSizeY <= maxComputeWorkGroupInvocations) {
+    SimpleLogger::LOG_INFO(
+        "Your current Vulkan device maximum workgroup invocations is ",
+        maxComputeWorkGroupInvocations, " and the neural network require ",
+        maxSizeX * maxSizeY, " invocations (", maxSizeX, "*", maxSizeY, ").");
+  } else {
+    SimpleLogger::LOG_ERROR(
+        "Your current Vulkan device maximum workgroup invocations is ",
+        maxComputeWorkGroupInvocations, " but the neural network require ",
+        maxSizeX * maxSizeY, " invocations (", maxSizeX, "*", maxSizeY, ").");
+    return false;
+  }
 
   return true;
 }
