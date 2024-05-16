@@ -9,8 +9,9 @@
 // One workgroup, neurons local threads per workgroup
 layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
-// local shared loss
-shared float loss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+// thread shared datas (warning it is a fast but very limited memory)
+shared float outputLoss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+shared vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
 
 // Enum mapping, do not change
 const int ELU = 0;
@@ -57,14 +58,18 @@ layout(std430, binding = 1) buffer readonly InputData {
 }
 inputData;
 
-layout(std430, binding = 2) buffer OutputData { 
-  vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-  float loss; 
+layout(std430, binding = 2) buffer writeonly OutputValues { 
+  vec4 outputValues[%%OUTPUT_SIZE_XY%%];
 }
-outputData;
+outputValues;
+
+layout(std430, binding = 3) buffer writeonly OutputLoss { 
+  float loss;
+}
+outputLoss;
 
 // Layers binding
-layout(std430, binding = 3) buffer InputLayer {
+layout(std430, binding = 4) buffer InputLayer {
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -72,7 +77,7 @@ layout(std430, binding = 3) buffer InputLayer {
 }
 inputLayer;
 
-layout(std430, binding = 4) buffer OutputLayer {
+layout(std430, binding = 5) buffer OutputLayer {
   OutputNeuron neurons[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
   vec4 errors[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
   float activation_alpha;
@@ -82,7 +87,7 @@ layout(std430, binding = 4) buffer OutputLayer {
 }
 outputLayer;
 
-layout(std430, binding = 5) buffer HiddenLayer1 {
+layout(std430, binding = 6) buffer HiddenLayer1 {
   HiddenNeuron neurons[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
   vec4 values[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
   vec4 errors[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
@@ -176,8 +181,8 @@ void forwardPropagationHiddenLayer1(uint index_x, uint index_y) {
 }
 
 void forwardPropagationOutputLayer(uint index_x, uint index_y) {
-  if (index_y >= outputData.outputValues.length() ||
-      index_x >= outputData.outputValues[0].length()) {
+  if (index_y >= outputValues.length() ||
+      index_x >= outputValues[0].length()) {
     return;
   }
   // forward output layer
@@ -188,20 +193,20 @@ void forwardPropagationOutputLayer(uint index_x, uint index_y) {
                 outputLayer.neurons[index_y][index_x].weights[y][x];
     }
   }
-  outputData.outputValues[index_y][index_x] = activateFunction(
+  outputValues[index_y][index_x] = activateFunction(
       result, outputLayer.activation_function, outputLayer.activation_alpha);
 }
 
 // Using mean square error (MSE)
 void computeLoss(uint index_x, uint index_y) {
-  if (index_y >= outputData.outputValues.length() ||
-      index_x >= outputData.outputValues[0].length()) {
+  if (index_y >= outputValues.length() ||
+      index_x >= outputValues[0].length()) {
     return;
   }
-  vec4 diff = outputData.outputValues[index_y][index_x] - 
+  vec4 diff = outputValues[index_y][index_x] - 
               inputData.targetValues[index_y][index_x];
   float squaredDiff = dot(diff, diff);
-  loss[index_y][index_x] = squaredDiff;
+  outputLoss[index_y][index_x] = squaredDiff;
 }
 
 void computeOutputError(uint index_x, uint index_y) {
@@ -218,12 +223,12 @@ void computeOutputError(uint index_x, uint index_y) {
     uint neighbor_y =
         outputLayer.neurons[index_y][index_x].neighbors[i].index_y;
     neighborSum += outputLayer.neurons[index_y][index_x].neighbors[i].weight *
-                   outputData.outputValues[neighbor_y][neighbor_x];
+                   outputValues[neighbor_y][neighbor_x];
   }
 
   // Compute and update the error
   float weightFactor = 0.5; // Experiment with weight between 0 and 1
-  vec4 outputValue = outputData.outputValues[index_y][index_x];
+  vec4 outputValue = outputValues[index_y][index_x];
   vec4 targetValue = inputData.targetValues[index_y][index_x];
   vec4 newError = weightFactor * (outputValue - targetValue) +
                   ((1.0 - weightFactor) * neighborSum);
@@ -324,7 +329,7 @@ void updateWeightsOutputLayer(uint index_x, uint index_y) {
       continue;
     }
     outputLayer.neurons[index_y][index_x].neighbors[i].weight -=
-        outputData.outputValues
+        outputValues
             [outputLayer.neurons[index_y][index_x].neighbors[i].index_y]
             [outputLayer.neurons[index_y][index_x].neighbors[i].index_x] *
         learningRateError;
@@ -338,7 +343,7 @@ void main() {
 
   // Initialize local loss
   if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
-    loss[index_y][index_x] = 0.0;
+    outputLoss[index_y][index_x] = 0.0;
   }
   barrier();
 
@@ -351,16 +356,25 @@ void main() {
   // Comput Loss
   computeLoss(index_x, index_y);
   barrier();
-  // Use one thread to sum up the local losses
+
+  // Output writing (unique thread)
   if (gl_LocalInvocationIndex == 0) {
     float totalLoss = 0.0;
     for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
       for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
-        totalLoss += loss[y][x];
+        totalLoss += outputLoss[y][x];
       }
     }
     uint numPixels = %%OUTPUT_SIZE_Y%% * %%OUTPUT_SIZE_X%%;    
-    outputData.loss = totalLoss / numPixels;
+    outputLoss.loss = totalLoss / numPixels;
+
+    // Flatten outputValues
+    // Commented: not required for training
+    // for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
+    //  for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
+    //    outputValues.outputValues[y * %%OUTPUT_SIZE_X%% + x] = outputValues[y][x];
+    // }
+    //}
   }
   barrier();
 
@@ -375,5 +389,5 @@ void main() {
   updateWeightsHiddenLayer1(index_x, index_y);
   barrier();
   updateWeightsOutputLayer(index_x, index_y);
-  barrier();
+  barrier();  
 }

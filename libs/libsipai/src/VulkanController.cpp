@@ -64,8 +64,9 @@ float VulkanController::trainingMonitored(
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
   auto &trainingMonitoredShader = getShader(EShader::TrainingMonitored);
+  _copyParameters();
+
   if (!trainingMonitoredShader.isReady) {
-    _copyParameters();
     _copyInputLayer();
     _copyOutputLayer();
     _copyHiddenLayer1();
@@ -260,10 +261,35 @@ void VulkanController::_copyInputData(const cv::Mat &inputValues,
 }
 
 std::unique_ptr<GLSLOutputData> VulkanController::_getOutputData() {
-  auto &buffer = getBuffer(EBuffer::OutputData);
-  builder_.mapBufferMemory(buffer);
-  std::unique_ptr<GLSLOutputData> data = std::make_unique<GLSLOutputData>(
-      *static_cast<GLSLOutputData *>(buffer.data));
-  builder_.unmapBufferMemory(buffer);
-  return data;
+  const auto &params = Manager::getConstInstance().network_params;
+
+  // Get loss
+  struct OutputLoss {
+    float loss;
+  };
+  float loss = 0;
+  auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
+  builder_.mapBufferMemory(bufferLoss);
+  const auto pLoss = static_cast<OutputLoss *>(bufferLoss.data);
+  loss = pLoss->loss;
+  builder_.unmapBufferMemory(bufferLoss);
+
+  // Get outputValues
+  // Commented: not required here
+  // cv::Mat outputValues((int)params.output_size_y, (int)params.output_size_x,
+  //                      CV_32FC4, cv::Vec4f::all(0.0));
+  // auto &buffer = getBuffer(EBuffer::OutputValues);
+  // builder_.mapBufferMemory(buffer);
+  // const auto mappedData = static_cast<std::array<float, 4> *>(buffer.data);
+  // // copy the data
+  // for (int y = 0; y < outputValues.rows; y++) {
+  //   for (int x = 0; x < outputValues.cols; x++) {
+  //     size_t index = y * outputValues.cols + x;
+  //     outputValues.at<cv::Vec4f>(y, x) =
+  //         cv::Vec4f(mappedData[index][0], mappedData[index][1],
+  //                   mappedData[index][2], mappedData[index][3]);
+  //   }
+  // }
+  // builder_.unmapBufferMemory(buffer);
+  return std::make_unique<GLSLOutputData>(GLSLOutputData{.loss = loss});
 }

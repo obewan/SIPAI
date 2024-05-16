@@ -24,10 +24,11 @@ namespace sipai {
 enum class EBuffer {
   Parameters = 0,
   InputData = 1,
-  OutputData = 2,
-  InputLayer = 3,
-  OutputLayer = 4,
-  HiddenLayer1 = 5,
+  OutputValues = 2,
+  OutputLoss = 3,
+  InputLayer = 4,
+  OutputLayer = 5,
+  HiddenLayer1 = 6
 };
 
 enum class EShader {
@@ -37,7 +38,8 @@ enum class EShader {
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::Parameters, "Parameters"},
     {EBuffer::InputData, "InputData"},
-    {EBuffer::OutputData, "OutputData"},
+    {EBuffer::OutputValues, "OutputValues"},
+    {EBuffer::OutputLoss, "OutputLoss"},
     {EBuffer::InputLayer, "InputLayer"},
     {EBuffer::OutputLayer, "OutputLayer"},
     {EBuffer::HiddenLayer1, "HiddenLayer1"}};
@@ -68,8 +70,9 @@ struct GLSLInputData {
   bool is_validation;
 };
 
+// special format after transformations and merge
 struct GLSLOutputData {
-  std::vector<std::vector<cv::Vec4f>> outputValues;
+  cv::Mat outputValues;
   float loss;
 };
 

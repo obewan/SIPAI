@@ -54,6 +54,8 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
       {"%%HIDDEN_SIZE_Y%%", std::to_string(network_param.hidden_size_y)},
       {"%%OUTPUT_SIZE_X%%", std::to_string(network_param.output_size_x)},
       {"%%OUTPUT_SIZE_Y%%", std::to_string(network_param.output_size_y)},
+      {"%%OUTPUT_SIZE_XY%%", std::to_string(network_param.output_size_x *
+                                            network_param.output_size_y)},
   });
 
   std::string line;
