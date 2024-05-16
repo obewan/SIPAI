@@ -20,6 +20,8 @@ using uint = unsigned int;
 
 namespace sipai {
 
+const int MAX_NEIGHBORS = 4;
+
 // numbers must match the GLSL bindings
 enum class EBuffer {
   Parameters = 0,
@@ -61,7 +63,7 @@ struct GLSLNeuron {
   uint index_x;
   uint index_y;
   std::vector<std::vector<cv::Vec4f>> weights;
-  GLSLNeighbor neighbors[4];
+  GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
 struct GLSLInputData {
