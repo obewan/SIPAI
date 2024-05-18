@@ -21,7 +21,7 @@ public:
    * @return VulkanBuilder&
    */
   VulkanBuilder &withCommandPoolSize(size_t size = 1) {
-    commandPoolSize = size;
+    commandPoolSize_ = size;
     return *this;
   }
   /**
@@ -102,7 +102,7 @@ private:
   void _bindBuffers();
 
   std::shared_ptr<Vulkan> vulkan_ = nullptr;
-  size_t commandPoolSize = 1;
+  size_t commandPoolSize_ = 1;
   size_t maxNeighboosPerNeuron_ = 4;
   bool enableDebugInfo_ = false;
 };

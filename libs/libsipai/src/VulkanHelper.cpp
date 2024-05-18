@@ -78,6 +78,12 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
 }
 
 VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
+  // Ensure the device has finished all previous operations
+  auto result = vkDeviceWaitIdle(vulkan_->logicalDevice);
+  if (result != VK_SUCCESS) {
+    throw VulkanHelperException("Vulkan wait idle error.");
+  }
+
   // Take a command buffer from the pool
   VkCommandBuffer commandBuffer = vulkan_->commandBufferPool.back();
   vulkan_->commandBufferPool.pop_back();
@@ -86,7 +92,7 @@ VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
   beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
   // Starts recording the command
-  auto result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+  result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan command buffer start error.");
   }
@@ -127,13 +133,6 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan command buffer reset error.");
   }
-
-  // Ensure the device has finished all operations
-  // Commented: job already done by fence
-  // result = vkDeviceWaitIdle(vulkan_->logicalDevice);
-  // if (result != VK_SUCCESS) {
-  //   throw VulkanHelperException("Vulkan wait idle error.");
-  // }
 
   vulkan_->commandBufferPool.push_back(commandBuffer);
 }

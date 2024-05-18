@@ -105,6 +105,9 @@ void VulkanController::_copyParameters() {
       .error_max = network_params.error_max,
   };
   auto &buffer = getBuffer(EBuffer::Parameters);
+  if (sizeof(GLSLParameters) > (size_t)buffer.info.size) {
+    throw VulkanControllerException("copy buffer overflow");
+  }
   builder_.mapBufferMemory(buffer);
   memset(buffer.data, 0, (size_t)buffer.info.size);
   memcpy(buffer.data, &glslParams, sizeof(GLSLParameters));
@@ -123,6 +126,9 @@ void VulkanController::_copyInputLayer() {
       .size_y = (uint)inputLayer->size_y,
   };
   auto &buffer = getBuffer(EBuffer::InputLayer);
+  if (sizeof(GLSLInputLayer) > (size_t)buffer.info.size) {
+    throw VulkanControllerException("copy buffer overflow");
+  }
   builder_.mapBufferMemory(buffer);
   memset(buffer.data, 0, (size_t)buffer.info.size);
   memcpy(buffer.data, &glslInputLayer, sizeof(GLSLInputLayer));

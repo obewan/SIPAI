@@ -96,6 +96,8 @@ public:
     }
   }
 
+  std::shared_ptr<Vulkan> getVulkan() { return vulkan_; }
+
 private:
   VulkanController() {
     vulkan_ = std::make_shared<Vulkan>();

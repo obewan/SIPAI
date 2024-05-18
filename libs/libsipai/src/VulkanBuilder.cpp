@@ -23,13 +23,13 @@ VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
   }
 
   // create other stuff
+  _createBuffers();
   _createCommandPool();
   _createCommandBufferPool();
-  _createBuffers();
   _createDescriptorSetLayout();
+  _createPipelineLayout();
   _createDescriptorPool();
   _createDescriptorSet();
-  _createPipelineLayout();
   _createFence();
   _createShaderModules();
   _createShadersComputePipelines();
@@ -137,15 +137,17 @@ bool VulkanBuilder::_initialize() {
       std::max({network_param.input_size_y, network_param.hidden_size_y,
                 network_param.output_size_y});
   if (maxSizeX * maxSizeY <= maxComputeWorkGroupInvocations) {
-    SimpleLogger::LOG_INFO(
-        "Your current Vulkan device maximum workgroup invocations is ",
-        maxComputeWorkGroupInvocations, " and the neural network require ",
-        maxSizeX * maxSizeY, " invocations (", maxSizeX, "*", maxSizeY, ").");
+    SimpleLogger::LOG_INFO("Maximum device workgroup invocations is ",
+                           maxComputeWorkGroupInvocations,
+                           " and the neural network require ",
+                           maxSizeX * maxSizeY, " invocations (", maxSizeX, "*",
+                           maxSizeY, "): OK.");
   } else {
-    SimpleLogger::LOG_ERROR(
-        "Your current Vulkan device maximum workgroup invocations is ",
-        maxComputeWorkGroupInvocations, " but the neural network require ",
-        maxSizeX * maxSizeY, " invocations (", maxSizeX, "*", maxSizeY, ").");
+    SimpleLogger::LOG_ERROR("Maximum device workgroup invocations is ",
+                            maxComputeWorkGroupInvocations,
+                            " but the neural network require ",
+                            maxSizeX * maxSizeY, " invocations (", maxSizeX,
+                            "*", maxSizeY, "): FAILURE.");
     return false;
   }
 
@@ -299,8 +301,8 @@ void VulkanBuilder::_createCommandBufferPool() {
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandPool = vulkan_->commandPool;
-  allocInfo.commandBufferCount = (uint32_t)commandPoolSize;
-  vulkan_->commandBufferPool = std::vector<VkCommandBuffer>(commandPoolSize);
+  allocInfo.commandBufferCount = (uint32_t)commandPoolSize_;
+  vulkan_->commandBufferPool = std::vector<VkCommandBuffer>(commandPoolSize_);
   if (vkAllocateCommandBuffers(vulkan_->logicalDevice, &allocInfo,
                                vulkan_->commandBufferPool.data()) !=
       VK_SUCCESS) {
@@ -574,7 +576,7 @@ void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   VkMappedMemoryRange memoryRange{};
   memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
   memoryRange.memory = buffer.memory; // The device memory object
-  memoryRange.offset = 0;           // Starting offset within the memory object
+  memoryRange.offset = 0;           // Starting offset within the memory  object
   memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
   VkResult result =
       vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
@@ -585,6 +587,9 @@ void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
 }
 
 void VulkanBuilder::unmapBufferMemory(Buffer &buffer) {
+  if (!buffer.isMemoryMapped) {
+    return;
+  }
   vkUnmapMemory(vulkan_->logicalDevice, buffer.memory);
   buffer.isMemoryMapped = false;
 }
