@@ -51,7 +51,8 @@ bool VulkanController::initialize(bool enableDebug) {
   builder_.withCommandPoolSize(1)
       .withMaxNeighboorsPerNeuron(4)
       .withDebugInfo(enableDebug)
-      .build(vulkan_);
+      .withVulkan(vulkan_)
+      .build();
 
   return vulkan_->isInitialized;
 }

@@ -46,12 +46,22 @@ public:
   }
 
   /**
-   * @brief build the Vulkan controller
+   * @brief set Vulkan struct
    *
    * @param vulkan
    * @return VulkanBuilder&
    */
-  VulkanBuilder &build(std::shared_ptr<Vulkan> vulkan);
+  VulkanBuilder &withVulkan(std::shared_ptr<Vulkan> vulkan) {
+    vulkan_ = vulkan;
+    return *this;
+  }
+
+  /**
+   * @brief build the Vulkan controller
+   *
+   * @return VulkanBuilder&
+   */
+  VulkanBuilder &build();
 
   /**
    * @brief Maps a buffer's VRAM memory to CPU RAM memory.
@@ -75,19 +85,47 @@ public:
   void unmapBufferMemory(Buffer &buffer);
 
   /**
+   * @brief initialize the vulkan instance
+   *
+   * @return VulkanBuilder&
+   */
+  VulkanBuilder &initialize();
+
+  /**
    * @brief clear the vulkan instance
    *
    * @return VulkanBuilder&
    */
   VulkanBuilder &clear();
 
+  /**
+   * @brief find memory type
+   *
+   * @param typeFilter
+   * @param properties
+   * @return uint32_t
+   */
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties) const;
+
+  /**
+   * @brief Get the Memory Properties flags
+   *
+   * @return VkMemoryPropertyFlags
+   */
+  VkMemoryPropertyFlags getMemoryProperties();
+
+  /**
+   * @brief load a GLSL shader file and compile it into a uint32 vector
+   *
+   * @param path
+   * @return std::unique_ptr<std::vector<uint32_t>>
+   */
+  std::unique_ptr<std::vector<uint32_t>> loadShader(const std::string &path);
+
 private:
-  bool _initialize();
-  uint32_t _findMemoryType(uint32_t typeFilter,
-                           VkMemoryPropertyFlags properties) const;
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
-  std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
 
   void _createCommandPool();
   void _createCommandBufferPool();

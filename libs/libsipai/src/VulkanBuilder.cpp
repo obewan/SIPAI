@@ -9,17 +9,16 @@
 
 using namespace sipai;
 
-VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
-  vulkan_ = vulkan;
-
+VulkanBuilder &VulkanBuilder::build() {
   // initialize
-  if (!vulkan_->isInitialized && !(vulkan_->isInitialized = _initialize())) {
+  initialize();
+  if (!vulkan_->isInitialized) {
     throw VulkanBuilderException("Vulkan initialization failure.");
   }
 
   // load shaders
   for (auto &shader : vulkan_->shaders) {
-    shader.shader = _loadShader(shader.filename);
+    shader.shader = loadShader(shader.filename);
   }
 
   // create other stuff
@@ -40,9 +39,12 @@ VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
   return *this;
 }
 
-bool VulkanBuilder::_initialize() {
+VulkanBuilder &VulkanBuilder::initialize() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
+  }
+  if (vulkan_->isInitialized) {
+    return *this;
   }
 
   VkApplicationInfo appInfo{};
@@ -148,10 +150,10 @@ bool VulkanBuilder::_initialize() {
                             " but the neural network require ",
                             maxSizeX * maxSizeY, " invocations (", maxSizeX,
                             "*", maxSizeY, "): FAILURE.");
-    return false;
   }
 
-  return true;
+  vulkan_->isInitialized = true;
+  return *this;
 }
 
 std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
@@ -203,9 +205,8 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
   return betterDevice->first;
 }
 
-uint32_t
-VulkanBuilder::_findMemoryType(uint32_t typeFilter,
-                               VkMemoryPropertyFlags properties) const {
+uint32_t VulkanBuilder::findMemoryType(uint32_t typeFilter,
+                                       VkMemoryPropertyFlags properties) const {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
@@ -220,6 +221,50 @@ VulkanBuilder::_findMemoryType(uint32_t typeFilter,
   }
 
   throw VulkanBuilderException("failed to find suitable memory type.");
+}
+
+VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
+
+  // Helper function to check if a memory type has the given property flag
+  auto hasMemoryPropertyFlag = [](VkMemoryPropertyFlags propertyFlags,
+                                  VkMemoryPropertyFlagBits flag) {
+    return (propertyFlags & flag) == flag;
+  };
+
+  VkPhysicalDeviceMemoryProperties memoryProperties;
+  vkGetPhysicalDeviceMemoryProperties(vulkan_->physicalDevice,
+                                      &memoryProperties);
+
+  std::array<bool, 3> hasMemoryPropertyFlags{
+      false, false, false}; // {hasHostCached, hasHostCoherent, hasHostVisible}
+
+  for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
+    const VkMemoryPropertyFlags propertyFlags =
+        memoryProperties.memoryTypes[i].propertyFlags;
+    hasMemoryPropertyFlags[0] |= hasMemoryPropertyFlag(
+        propertyFlags, VK_MEMORY_PROPERTY_HOST_CACHED_BIT);
+    hasMemoryPropertyFlags[1] |= hasMemoryPropertyFlag(
+        propertyFlags, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    hasMemoryPropertyFlags[2] |= hasMemoryPropertyFlag(
+        propertyFlags, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+  }
+
+  if (!hasMemoryPropertyFlags[0] && !hasMemoryPropertyFlags[1] &&
+      !hasMemoryPropertyFlags[2]) {
+    throw VulkanBuilderException("Not supported memory type.");
+  }
+
+  VkMemoryPropertyFlags memoryPropertiesFlags = 0;
+  if (hasMemoryPropertyFlags[0]) {
+    memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+  }
+  if (hasMemoryPropertyFlags[1]) {
+    memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+  }
+  if (hasMemoryPropertyFlags[2]) {
+    memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+  }
+  return memoryPropertiesFlags;
 }
 
 std::optional<unsigned int> VulkanBuilder::_pickQueueFamily() {
@@ -248,7 +293,7 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueFamily() {
 }
 
 std::unique_ptr<std::vector<uint32_t>>
-VulkanBuilder::_loadShader(const std::string &path) {
+VulkanBuilder::loadShader(const std::string &path) {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
@@ -315,6 +360,8 @@ void VulkanBuilder::_createBuffers() {
     throw VulkanBuilderException("null vulkan pointer.");
   }
 
+  VkMemoryPropertyFlags memoryPropertiesFlags = getMemoryProperties();
+
   const auto &network_param = Manager::getConstInstance().network_params;
   const auto &max_size = Manager::getConstInstance().network->max_weights;
   for (auto [ebuffer, bufferName] : buffer_map) {
@@ -323,7 +370,7 @@ void VulkanBuilder::_createBuffers() {
     uint hidden1_neuron_weights = 0;
     switch (ebuffer) {
     case EBuffer::Parameters:
-      size = sizeof(float) * 3;
+      size = sizeof(GLSLParameters);
       break;
     case EBuffer::InputData:
       size = sizeof(cv::Vec4f) * network_param.input_size_x *
@@ -383,13 +430,12 @@ void VulkanBuilder::_createBuffers() {
     VkMemoryRequirements memRequirements;
     vkGetBufferMemoryRequirements(vulkan_->logicalDevice, buffer.buffer,
                                   &memRequirements);
+
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex =
-        _findMemoryType(memRequirements.memoryTypeBits,
-                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        findMemoryType(memRequirements.memoryTypeBits, memoryPropertiesFlags);
     if (vkAllocateMemory(vulkan_->logicalDevice, &allocInfo, nullptr,
                          &buffer.memory) != VK_SUCCESS) {
       throw VulkanBuilderException("Failed to allocate buffer memory!");
@@ -471,8 +517,8 @@ void VulkanBuilder::_createPipelineLayout() {
   VkDescriptorSetLayout setLayouts[] = {vulkan_->descriptorSetLayout};
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 1;            // Optional
-  pipelineLayoutInfo.pSetLayouts = setLayouts;      // Optional
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = setLayouts;
   pipelineLayoutInfo.pushConstantRangeCount = 0;    // Optional
   pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -576,8 +622,8 @@ void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   VkMappedMemoryRange memoryRange{};
   memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
   memoryRange.memory = buffer.memory; // The device memory object
-  memoryRange.offset = 0;           // Starting offset within the memory  object
-  memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
+  memoryRange.offset = 0;             // Starting offset within the memory
+  memoryRange.size = VK_WHOLE_SIZE;   // Size of the memory range
   VkResult result =
       vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
   if (result != VK_SUCCESS) {

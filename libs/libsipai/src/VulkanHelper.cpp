@@ -83,6 +83,10 @@ VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan wait idle error.");
   }
+  VkMemoryBarrier memoryBarrier = {};
+  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  memoryBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
 
   // Take a command buffer from the pool
   VkCommandBuffer commandBuffer = vulkan_->commandBufferPool.back();
@@ -96,10 +100,24 @@ VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan command buffer start error.");
   }
+
+  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                       VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &memoryBarrier, 0,
+                       nullptr, 0, nullptr);
+
   return commandBuffer;
 }
 
 void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
+  VkMemoryBarrier memoryBarrier = {};
+  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  memoryBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
+
+  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                       VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &memoryBarrier, 0,
+                       nullptr, 0, nullptr);
+
   // Ends recording the command
   auto result = vkEndCommandBuffer(commandBuffer);
   if (result != VK_SUCCESS) {
