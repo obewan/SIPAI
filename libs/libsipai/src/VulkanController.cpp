@@ -354,16 +354,17 @@ void VulkanController::_copyInputData(const cv::Mat &inputValues,
 }
 
 std::unique_ptr<GLSLOutputData> VulkanController::_getOutputData() {
-  const auto &params = Manager::getConstInstance().network_params;
+  GLSLOutputData outputData = {};
 
   // Get loss
   auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
   builder_.mapBufferMemory(bufferLoss);
-  float loss = *reinterpret_cast<float *>(bufferLoss.data);
+  outputData.loss = *reinterpret_cast<float *>(bufferLoss.data);
   builder_.unmapBufferMemory(bufferLoss);
 
   // Get outputValues
   // Commented: not required here
+  // const auto &params = Manager::getConstInstance().network_params;
   // cv::Mat outputValues((int)params.output_size_y,
   // (int)params.output_size_x,
   //                      CV_32FC4, cv::Vec4f::all(0.0));
@@ -380,5 +381,6 @@ std::unique_ptr<GLSLOutputData> VulkanController::_getOutputData() {
   //   }
   // }
   // builder_.unmapBufferMemory(buffer);
-  return std::make_unique<GLSLOutputData>(GLSLOutputData{.loss = loss});
+
+  return std::make_unique<GLSLOutputData>(outputData);
 }

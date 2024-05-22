@@ -618,7 +618,7 @@ void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
                                  buffer_map.at(buffer.name));
   }
   buffer.isMemoryMapped = true;
-  // Validation
+  // Validation (disable for perfs or enable for safety)
   // VkMappedMemoryRange memoryRange{};
   // memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
   // memoryRange.memory = buffer.memory; // The device memory object
