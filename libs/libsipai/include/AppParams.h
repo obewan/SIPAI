@@ -25,8 +25,9 @@ struct AppParams {
   std::string training_data_folder = "";
   std::string network_to_import = "";
   std::string network_to_export = "";
-  std::string forwardShader = "data/glsl/ForwardShader.comp";
-  std::string backwardShader = "data/glsl/BackwardShader.comp";
+  std::string trainingMonitoredShaderTemplate =
+      "data/glsl/TrainingShader.comp.in";
+  std::string trainingMonitoredShader = "data/glsl/TrainingShader.comp";
   ERunMode run_mode = ERunMode::Enhancer;
   float output_scale = 1.0f;
   float training_split_ratio = 0.7f;

@@ -8,11 +8,13 @@
  *
  */
 #pragma once
-#include "RunnerVisitor.h"
+#include "RunnerTrainingVisitor.h"
 
 namespace sipai {
-class RunnerTrainingVulkanVisitor : public RunnerVisitor {
+class RunnerTrainingVulkanVisitor : public RunnerTrainingVisitor {
 public:
   void visit() const override;
+
+  float computeLoss(size_t epoch, TrainingPhase phase) const;
 };
 } // namespace sipai

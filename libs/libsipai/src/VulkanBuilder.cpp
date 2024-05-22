@@ -1,5 +1,6 @@
 #include "VulkanBuilder.h"
 #include "Manager.h"
+#include "SimpleLogger.h"
 #include "exception/VulkanBuilderException.h"
 #include <filesystem>
 #include <fstream>
@@ -8,41 +9,40 @@
 
 using namespace sipai;
 
-VulkanBuilder &VulkanBuilder::build(std::shared_ptr<Vulkan> vulkan) {
-  vulkan_ = vulkan;
-
+VulkanBuilder &VulkanBuilder::build() {
   // initialize
-  if (!vulkan_->isInitialized && !(vulkan_->isInitialized = _initialize())) {
+  initialize();
+  if (!vulkan_->isInitialized) {
     throw VulkanBuilderException("Vulkan initialization failure.");
   }
 
   // load shaders
   for (auto &shader : vulkan_->shaders) {
-    shader.shader = _loadShader(shader.filename);
+    shader.shader = loadShader(shader.filename);
   }
 
   // create other stuff
-  _createCommandPool();
-  _createCommandBufferPool();
   _createBuffers();
-  _createDescriptorSetLayout();
   _createDescriptorPool();
-  _createDescriptorSet();
-  _createPipelineLayout();
-  _createFence();
-  _createDataMapping();
+  _createDescriptorSetLayout();
+  _allocateDescriptorSets();
+  _updateDescriptorSets();
   _createShaderModules();
-  _createShadersComputePipelines();
-
-  // bind buffers
-  _bindBuffers();
+  _createPipelineLayout();
+  _createComputePipelines();
+  _createCommandPool();
+  _allocateCommandBuffers();
+  _createFence();
 
   return *this;
 }
 
-bool VulkanBuilder::_initialize() {
+VulkanBuilder &VulkanBuilder::initialize() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
+  }
+  if (vulkan_->isInitialized) {
+    return *this;
   }
 
   VkApplicationInfo appInfo{};
@@ -59,24 +59,19 @@ bool VulkanBuilder::_initialize() {
 
   const std::vector<const char *> instanceExtensions = {
       VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
-      // Commented as this non_semantic extension is not on my system,
-      // but it is required for GLSL GL_EXT_debug_printf and its debugPrintEXT()
-      // VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME
-  };
+      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME};
 
   VkInstanceCreateInfo createInfoInstance{};
   createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfoInstance.pApplicationInfo = &appInfo;
+  createInfoInstance.enabledExtensionCount =
+      static_cast<uint32_t>(instanceExtensions.size());
+  createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
 
-  if (enableDebugInfo_) {
-    createInfoInstance.enabledExtensionCount =
-        static_cast<uint32_t>(instanceExtensions.size());
-    createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
-    createInfoInstance.enabledLayerCount =
-        static_cast<uint32_t>(validationLayers.size());
-    createInfoInstance.ppEnabledLayerNames = validationLayers.data();
-  }
+  // FOR DEBUGGING ONLY
+  createInfoInstance.enabledLayerCount =
+      static_cast<uint32_t>(validationLayers.size());
+  createInfoInstance.ppEnabledLayerNames = validationLayers.data();
 
   // create instance
   if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->vkInstance) !=
@@ -106,15 +101,19 @@ bool VulkanBuilder::_initialize() {
   queueCreateInfo.queueCount = 1;
   float queuePriority = 1.0f;
   queueCreateInfo.pQueuePriorities = &queuePriority;
+
   VkPhysicalDeviceFeatures deviceFeatures{};
-  // Commented as not required
-  // deviceFeatures.logicOp = VK_TRUE; // Enable logical operation feature
-  // deviceFeatures.shaderFloat64 = VK_TRUE; // Enable 64-bit floats in shader
+
+  std::vector<const char *> deviceExtensions = {};
+
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
   createInfoDevice.pQueueCreateInfos = &queueCreateInfo;
   createInfoDevice.queueCreateInfoCount = 1;
   createInfoDevice.pEnabledFeatures = &deviceFeatures;
+  createInfoDevice.enabledExtensionCount =
+      static_cast<uint32_t>(deviceExtensions.size());
+  createInfoDevice.ppEnabledExtensionNames = deviceExtensions.data();
   if (vkCreateDevice(vulkan_->physicalDevice, &createInfoDevice, nullptr,
                      &vulkan_->logicalDevice) != VK_SUCCESS) {
     throw VulkanBuilderException("failed to create logical device!");
@@ -124,7 +123,35 @@ bool VulkanBuilder::_initialize() {
   vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueFamilyIndex, 0,
                    &vulkan_->queue);
 
-  return true;
+  const auto &network_param = Manager::getConstInstance().network_params;
+  VkPhysicalDeviceProperties deviceProperties;
+  vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
+
+  // Checking maxComputeWorkGroupInvocations
+  uint32_t maxComputeWorkGroupInvocations =
+      deviceProperties.limits.maxComputeWorkGroupInvocations;
+  size_t maxSizeX =
+      std::max({network_param.input_size_x, network_param.hidden_size_x,
+                network_param.output_size_x});
+  size_t maxSizeY =
+      std::max({network_param.input_size_y, network_param.hidden_size_y,
+                network_param.output_size_y});
+  if (maxSizeX * maxSizeY <= maxComputeWorkGroupInvocations) {
+    SimpleLogger::LOG_INFO(
+        "Device workgroup maximum invocations: ",
+        maxComputeWorkGroupInvocations,
+        ", neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
+        maxSizeX, "*", maxSizeY, "): OK.");
+  } else {
+    SimpleLogger::LOG_ERROR(
+        "Device workgroup maximum invocations: ",
+        maxComputeWorkGroupInvocations,
+        ", neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
+        maxSizeX, "*", maxSizeY, "): FAILURE.");
+  }
+
+  vulkan_->isInitialized = true;
+  return *this;
 }
 
 std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
@@ -176,9 +203,8 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
   return betterDevice->first;
 }
 
-uint32_t
-VulkanBuilder::_findMemoryType(uint32_t typeFilter,
-                               VkMemoryPropertyFlags properties) const {
+uint32_t VulkanBuilder::findMemoryType(uint32_t typeFilter,
+                                       VkMemoryPropertyFlags properties) const {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
@@ -193,6 +219,50 @@ VulkanBuilder::_findMemoryType(uint32_t typeFilter,
   }
 
   throw VulkanBuilderException("failed to find suitable memory type.");
+}
+
+VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
+
+  // Helper function to check if a memory type has the given property flag
+  auto hasMemoryPropertyFlag = [](VkMemoryPropertyFlags propertyFlags,
+                                  VkMemoryPropertyFlagBits flag) {
+    return (propertyFlags & flag) == flag;
+  };
+
+  VkPhysicalDeviceMemoryProperties memoryProperties;
+  vkGetPhysicalDeviceMemoryProperties(vulkan_->physicalDevice,
+                                      &memoryProperties);
+
+  std::array<bool, 3> hasMemoryPropertyFlags{
+      false, false, false}; // {hasHostCached, hasHostCoherent, hasHostVisible}
+
+  for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
+    const VkMemoryPropertyFlags propertyFlags =
+        memoryProperties.memoryTypes[i].propertyFlags;
+    hasMemoryPropertyFlags[0] |= hasMemoryPropertyFlag(
+        propertyFlags, VK_MEMORY_PROPERTY_HOST_CACHED_BIT);
+    hasMemoryPropertyFlags[1] |= hasMemoryPropertyFlag(
+        propertyFlags, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    hasMemoryPropertyFlags[2] |= hasMemoryPropertyFlag(
+        propertyFlags, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+  }
+
+  if (!hasMemoryPropertyFlags[0] && !hasMemoryPropertyFlags[1] &&
+      !hasMemoryPropertyFlags[2]) {
+    throw VulkanBuilderException("Not supported memory type.");
+  }
+
+  VkMemoryPropertyFlags memoryPropertiesFlags = 0;
+  if (hasMemoryPropertyFlags[0]) {
+    memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+  }
+  if (hasMemoryPropertyFlags[1]) {
+    memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+  }
+  if (hasMemoryPropertyFlags[2]) {
+    memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+  }
+  return memoryPropertiesFlags;
 }
 
 std::optional<unsigned int> VulkanBuilder::_pickQueueFamily() {
@@ -221,7 +291,7 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueFamily() {
 }
 
 std::unique_ptr<std::vector<uint32_t>>
-VulkanBuilder::_loadShader(const std::string &path) {
+VulkanBuilder::loadShader(const std::string &path) {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
@@ -252,64 +322,63 @@ VulkanBuilder::_loadShader(const std::string &path) {
   return compiledShaderCode;
 }
 
-void VulkanBuilder::_createCommandPool() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
-  VkCommandPoolCreateInfo poolInfo{};
-  poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-  poolInfo.queueFamilyIndex = vulkan_->queueFamilyIndex;
-  poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-  if (vkCreateCommandPool(vulkan_->logicalDevice, &poolInfo, nullptr,
-                          &vulkan_->commandPool) != VK_SUCCESS) {
-    throw VulkanBuilderException("Failed to create command pool!");
-  }
-}
-
-void VulkanBuilder::_createCommandBufferPool() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
-  VkCommandBufferAllocateInfo allocInfo{};
-  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandPool = vulkan_->commandPool;
-  allocInfo.commandBufferCount = (uint32_t)commandPoolSize;
-  vulkan_->commandBufferPool = std::vector<VkCommandBuffer>(commandPoolSize);
-  if (vkAllocateCommandBuffers(vulkan_->logicalDevice, &allocInfo,
-                               vulkan_->commandBufferPool.data()) !=
-      VK_SUCCESS) {
-    throw VulkanBuilderException("Failed to allocate command buffers!");
-  }
-}
-
 void VulkanBuilder::_createBuffers() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
+
+  VkMemoryPropertyFlags memoryPropertiesFlags = getMemoryProperties();
+
+  const auto &network_param = Manager::getConstInstance().network_params;
   const auto &max_size = Manager::getConstInstance().network->max_weights;
-  // Initialize the vector
   for (auto [ebuffer, bufferName] : buffer_map) {
     VkDeviceSize size = 0;
+    uint output_neuron_weights = 0;
+    uint hidden1_neuron_weights = 0;
     switch (ebuffer) {
-    case EBuffer::CurrentLayerNeurons:
-    case EBuffer::AdjacentLayerNeurons:
-      size = sizeof(GLSLNeuron) * max_size;
-      break;
-    case EBuffer::CurrentLayerValues:
-    case EBuffer::AdjacentLayerValues:
-    case EBuffer::Output:
-      size = sizeof(cv::Vec4f) * max_size;
-      break;
-    case EBuffer::CurrentNeighborsErrors:
-    case EBuffer::CurrentNeighborsWeights:
-      size = sizeof(cv::Vec4f) * max_size * maxNeighboosPerNeuron_;
-      break;
-    case EBuffer::LayerWeights:
-      size = sizeof(cv::Vec4f) * max_size * max_size;
-      break;
     case EBuffer::Parameters:
       size = sizeof(GLSLParameters);
+      break;
+    case EBuffer::InputData:
+      size = sizeof(cv::Vec4f) * network_param.input_size_x *
+             network_param.input_size_y; // inputValues
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y; // targetValues
+      size += sizeof(bool);                // is_validation
+      break;
+    case EBuffer::OutputData:
+      size = sizeof(cv::Vec4f) * network_param.output_size_x *
+             network_param.output_size_y; // outputValues
+      break;
+    case EBuffer::OutputLoss:
+      size = sizeof(float); // loss
+      break;
+    case EBuffer::InputLayer:
+      size = sizeof(float) + (3 * sizeof(uint)); // attributes
+      break;
+    case EBuffer::OutputLayer:
+      output_neuron_weights =
+          (uint)(sizeof(cv::Vec4f) * network_param.hidden_size_x *
+                 network_param.hidden_size_y);
+      size = (sizeof(GLSLNeuron) + output_neuron_weights) *
+             network_param.output_size_x *
+             network_param.output_size_y; // OutputNeuron neurons[][]
+      size += sizeof(cv::Vec4f) * network_param.output_size_x *
+              network_param.output_size_y;        // vec4 errors[][]
+      size += sizeof(float) + (3 * sizeof(uint)); // others attributes
+      break;
+    case EBuffer::HiddenLayer1:
+      hidden1_neuron_weights =
+          (uint)(sizeof(cv::Vec4f) * network_param.input_size_x *
+                 network_param.input_size_y);
+      size = (sizeof(GLSLNeuron) + hidden1_neuron_weights) *
+             network_param.hidden_size_x *
+             network_param.hidden_size_y; // HiddenNeuron neurons[][]
+      size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
+              network_param.hidden_size_y; // vec4 values[][]
+      size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
+              network_param.hidden_size_y;        // vec4 errors[][]
+      size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
     default:
       throw VulkanBuilderException("Buffer not implemented.");
@@ -328,13 +397,12 @@ void VulkanBuilder::_createBuffers() {
     VkMemoryRequirements memRequirements;
     vkGetBufferMemoryRequirements(vulkan_->logicalDevice, buffer.buffer,
                                   &memRequirements);
-    VkMemoryAllocateInfo allocInfo{};
+
+    VkMemoryAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex =
-        _findMemoryType(memRequirements.memoryTypeBits,
-                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        findMemoryType(memRequirements.memoryTypeBits, memoryPropertiesFlags);
     if (vkAllocateMemory(vulkan_->logicalDevice, &allocInfo, nullptr,
                          &buffer.memory) != VK_SUCCESS) {
       throw VulkanBuilderException("Failed to allocate buffer memory!");
@@ -344,44 +412,17 @@ void VulkanBuilder::_createBuffers() {
       throw VulkanBuilderException("Failed to bind buffer memory!");
     }
     vulkan_->buffers.push_back(buffer);
-  };
-}
-
-void VulkanBuilder::_createDescriptorSetLayout() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
-  // Buffer layout binding
-  std::vector<VkDescriptorSetLayoutBinding> layoutBindings{};
-  for (size_t i = 0; i < vulkan_->buffers.size(); i++) {
-    VkDescriptorSetLayoutBinding layoutBinding;
-    layoutBinding.binding = vulkan_->buffers.at(i).binding;
-    layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    layoutBinding.descriptorCount = 1;
-    layoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    layoutBindings.push_back(layoutBinding);
-  }
-  VkDescriptorSetLayoutCreateInfo layoutInfo{};
-  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = static_cast<uint32_t>(
-      vulkan_->buffers.size()); // number of bindings in the descriptor set
-  layoutInfo.pBindings = layoutBindings.data(); // array of bindings
-  auto result =
-      vkCreateDescriptorSetLayout(vulkan_->logicalDevice, &layoutInfo, nullptr,
-                                  &vulkan_->descriptorSetLayout);
-  if (result != VK_SUCCESS) {
-    throw VulkanBuilderException("Failed to create descriptor set layout!");
-  }
+  }; // end for
 }
 
 void VulkanBuilder::_createDescriptorPool() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
-  VkDescriptorPoolSize poolSize{};
+  VkDescriptorPoolSize poolSize = {};
   poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
   poolSize.descriptorCount = static_cast<uint32_t>(vulkan_->buffers.size());
-  VkDescriptorPoolCreateInfo poolInfo{};
+  VkDescriptorPoolCreateInfo poolInfo = {};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
   poolInfo.poolSizeCount = 1;
   poolInfo.pPoolSizes = &poolSize;
@@ -393,11 +434,37 @@ void VulkanBuilder::_createDescriptorPool() {
   }
 }
 
-void VulkanBuilder::_createDescriptorSet() {
+void VulkanBuilder::_createDescriptorSetLayout() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
-  VkDescriptorSetAllocateInfo allocInfo{};
+  // Buffer layout binding
+  std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
+  for (size_t i = 0; i < vulkan_->buffers.size(); i++) {
+    VkDescriptorSetLayoutBinding layoutBinding;
+    layoutBinding.binding = vulkan_->buffers.at(i).binding;
+    layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    layoutBinding.descriptorCount = 1;
+    layoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+    layoutBindings.push_back(layoutBinding);
+  }
+  VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = static_cast<uint32_t>(vulkan_->buffers.size());
+  layoutInfo.pBindings = layoutBindings.data(); // array of bindings
+  auto result =
+      vkCreateDescriptorSetLayout(vulkan_->logicalDevice, &layoutInfo, nullptr,
+                                  &vulkan_->descriptorSetLayout);
+  if (result != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create descriptor set layout!");
+  }
+}
+
+void VulkanBuilder::_allocateDescriptorSets() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkDescriptorSetAllocateInfo allocInfo = {};
   allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
   allocInfo.descriptorPool = vulkan_->descriptorPool;
   allocInfo.descriptorSetCount = 1;
@@ -409,60 +476,33 @@ void VulkanBuilder::_createDescriptorSet() {
   }
 }
 
-void VulkanBuilder::_createPipelineLayout() {
+void VulkanBuilder::_updateDescriptorSets() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
-  VkDescriptorSetLayout setLayouts[] = {vulkan_->descriptorSetLayout};
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 1;            // Optional
-  pipelineLayoutInfo.pSetLayouts = setLayouts;      // Optional
-  pipelineLayoutInfo.pushConstantRangeCount = 0;    // Optional
-  pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
-
-  if (vkCreatePipelineLayout(vulkan_->logicalDevice, &pipelineLayoutInfo,
-                             nullptr, &vulkan_->pipelineLayout) != VK_SUCCESS) {
-    throw VulkanBuilderException("Failed to create pipeline layout!");
-  }
-}
-
-void VulkanBuilder::_createFence() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
-  VkFenceCreateInfo fenceInfo{};
-  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-  auto result = vkCreateFence(vulkan_->logicalDevice, &fenceInfo, nullptr,
-                              &vulkan_->computeFence);
-  if (result != VK_SUCCESS) {
-    throw VulkanBuilderException("Failed to create fence!");
-  }
-}
-
-void VulkanBuilder::_createDataMapping() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
-  }
+  std::vector<VkDescriptorBufferInfo> descriptorBufferInfos;
   for (auto &buffer : vulkan_->buffers) {
-    if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size,
-                    0, &buffer.data) != VK_SUCCESS) {
-      throw VulkanBuilderException("Failed to create allocate memory for " +
-                                   buffer_map.at(buffer.name));
-    }
-    // Validation
-    VkMappedMemoryRange memoryRange{};
-    memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-    memoryRange.memory = buffer.memory; // The device memory object
-    memoryRange.offset = 0; // Starting offset within the memory object
-    memoryRange.size = VK_WHOLE_SIZE; // Size of the memory range to invalidate
-    VkResult result =
-        vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
-    if (result != VK_SUCCESS) {
-      throw VulkanBuilderException("Failed to validate memory for " +
-                                   buffer_map.at(buffer.name));
-    }
+    VkDescriptorBufferInfo descriptor{
+        .buffer = buffer.buffer, .offset = 0, .range = buffer.info.size};
+    descriptorBufferInfos.push_back(descriptor);
   }
+  size_t pos = 0;
+  std::vector<VkWriteDescriptorSet> writeDescriptorSets;
+  for (auto &buffer : vulkan_->buffers) {
+    VkWriteDescriptorSet writeDescriptorSet{
+        .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet = vulkan_->descriptorSet,
+        .dstBinding = buffer.binding,
+        .dstArrayElement = 0,
+        .descriptorCount = 1,
+        .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        .pBufferInfo = &descriptorBufferInfos.at(pos)};
+    writeDescriptorSets.push_back(writeDescriptorSet);
+    pos++;
+  }
+  vkUpdateDescriptorSets(vulkan_->logicalDevice,
+                         static_cast<uint32_t>(writeDescriptorSets.size()),
+                         writeDescriptorSets.data(), 0, nullptr);
 }
 
 void VulkanBuilder::_createShaderModules() {
@@ -470,7 +510,7 @@ void VulkanBuilder::_createShaderModules() {
     throw VulkanBuilderException("null vulkan pointer.");
   }
   for (auto &shader : vulkan_->shaders) {
-    VkShaderModuleCreateInfo createForwardInfo{};
+    VkShaderModuleCreateInfo createForwardInfo = {};
     createForwardInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createForwardInfo.codeSize = shader.shader->size() * sizeof(uint32_t);
     createForwardInfo.pCode = shader.shader->data();
@@ -482,7 +522,22 @@ void VulkanBuilder::_createShaderModules() {
   }
 }
 
-void VulkanBuilder::_createShadersComputePipelines() {
+void VulkanBuilder::_createPipelineLayout() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkDescriptorSetLayout setLayouts[] = {vulkan_->descriptorSetLayout};
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = setLayouts;
+  if (vkCreatePipelineLayout(vulkan_->logicalDevice, &pipelineLayoutInfo,
+                             nullptr, &vulkan_->pipelineLayout) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create pipeline layout!");
+  }
+}
+
+void VulkanBuilder::_createComputePipelines() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
@@ -506,27 +561,84 @@ void VulkanBuilder::_createShadersComputePipelines() {
   }
 }
 
-void VulkanBuilder::_bindBuffers() {
+void VulkanBuilder::_createCommandPool() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
-  std::vector<VkWriteDescriptorSet> writeDescriptorSets;
-  for (auto &buffer : vulkan_->buffers) {
-    VkDescriptorBufferInfo descriptor{
-        .buffer = buffer.buffer, .offset = 0, .range = buffer.info.size};
-    VkWriteDescriptorSet writeDescriptorSet{
-        .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-        .dstSet = vulkan_->descriptorSet,
-        .dstBinding = buffer.binding,
-        .dstArrayElement = 0,
-        .descriptorCount = 1,
-        .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-        .pBufferInfo = &descriptor};
-    writeDescriptorSets.push_back(writeDescriptorSet);
+  VkCommandPoolCreateInfo poolInfo = {};
+  poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+  poolInfo.queueFamilyIndex = vulkan_->queueFamilyIndex;
+  poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+  if (vkCreateCommandPool(vulkan_->logicalDevice, &poolInfo, nullptr,
+                          &vulkan_->commandPool) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create command pool!");
   }
-  vkUpdateDescriptorSets(vulkan_->logicalDevice,
-                         static_cast<uint32_t>(writeDescriptorSets.size()),
-                         writeDescriptorSets.data(), 0, nullptr);
+}
+
+void VulkanBuilder::_allocateCommandBuffers() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkCommandBufferAllocateInfo allocInfo = {};
+  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  allocInfo.commandPool = vulkan_->commandPool;
+  allocInfo.commandBufferCount = (uint32_t)commandPoolSize_;
+  vulkan_->commandBufferPool = std::vector<VkCommandBuffer>(commandPoolSize_);
+  if (vkAllocateCommandBuffers(vulkan_->logicalDevice, &allocInfo,
+                               vulkan_->commandBufferPool.data()) !=
+      VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to allocate command buffers!");
+  }
+}
+
+void VulkanBuilder::_createFence() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkFenceCreateInfo fenceInfo = {};
+  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+  auto result = vkCreateFence(vulkan_->logicalDevice, &fenceInfo, nullptr,
+                              &vulkan_->computeFence);
+  if (result != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create fence!");
+  }
+}
+
+void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  if (buffer.isMemoryMapped) {
+    return;
+  }
+  if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size, 0,
+                  &buffer.data) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create allocate memory for " +
+                                 buffer_map.at(buffer.name));
+  }
+  buffer.isMemoryMapped = true;
+  // Validation (disable for perfs or enable for safety)
+  // VkMappedMemoryRange memoryRange{};
+  // memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+  // memoryRange.memory = buffer.memory; // The device memory object
+  // memoryRange.offset = 0;             // Starting offset within the memory
+  // memoryRange.size = VK_WHOLE_SIZE;   // Size of the memory range
+  // VkResult result =
+  //     vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1,
+  //     &memoryRange);
+  // if (result != VK_SUCCESS) {
+  //   throw VulkanBuilderException("Failed to validate memory for " +
+  //                                buffer_map.at(buffer.name));
+  // }
+}
+
+void VulkanBuilder::unmapBufferMemory(Buffer &buffer) {
+  if (!buffer.isMemoryMapped) {
+    return;
+  }
+  vkUnmapMemory(vulkan_->logicalDevice, buffer.memory);
+  buffer.isMemoryMapped = false;
 }
 
 VulkanBuilder &VulkanBuilder::clear() {
@@ -535,7 +647,10 @@ VulkanBuilder &VulkanBuilder::clear() {
   }
   auto freeBuffer = [](std::shared_ptr<Vulkan> vulkan, Buffer buffer) {
     if (buffer.buffer != VK_NULL_HANDLE) {
-      vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
+      if (buffer.isMemoryMapped) {
+        vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
+        buffer.isMemoryMapped = false;
+      }
       vkFreeMemory(vulkan->logicalDevice, buffer.memory, nullptr);
       vkDestroyBuffer(vulkan->logicalDevice, buffer.buffer, nullptr);
       buffer.memory = VK_NULL_HANDLE;
@@ -553,10 +668,12 @@ VulkanBuilder &VulkanBuilder::clear() {
       shader.pipeline = VK_NULL_HANDLE;
     }
   }
+  vulkan_->shaders.clear();
 
   for (auto &buffer : vulkan_->buffers) {
     freeBuffer(vulkan_, buffer);
   }
+  vulkan_->buffers.clear();
 
   for (auto &commandBuffer : vulkan_->commandBufferPool) {
     if (commandBuffer != VK_NULL_HANDLE) {

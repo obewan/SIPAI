@@ -17,10 +17,10 @@ using ImageParts = std::vector<std::shared_ptr<Image>>;
 
 struct Data {
   std::string file_input;
-  std::string file_output;
   std::string file_target;
+  std::string file_output;
   ImageParts img_input;
-  ImageParts img_output;
   ImageParts img_target;
+  ImageParts img_output;
 };
 } // namespace sipai

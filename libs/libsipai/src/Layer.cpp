@@ -7,13 +7,8 @@
 
 using namespace sipai;
 
-void Layer::forwardPropagation(const bool &enable_vulkan) {
+void Layer::forwardPropagation() {
   if (previousLayer == nullptr) {
-    return;
-  }
-
-  if (enable_vulkan) {
-    VulkanController::getInstance().forwardPropagation(previousLayer, this);
     return;
   }
 
@@ -24,22 +19,16 @@ void Layer::forwardPropagation(const bool &enable_vulkan) {
       // and current neuron weights
       cv::Mat dotProduct = previousLayer->values.mul(currentNeuron.weights);
       // Convert the result matrix to a single value by summing all elements
-      float result = (float)cv::sum(dotProduct)[0];
+      cv::Vec4f result = cv::sum(dotProduct);
       // Update the neuron value using the activation function
-      values.at<cv::Vec4f>((int)x, (int)y) = activationFunction(result);
+      values.at<cv::Vec4f>((int)y, (int)x) = activationFunction(result);
     }
   }
 }
 
-void Layer::backwardPropagation(const bool &enable_vulkan,
-                                const float &error_min,
+void Layer::backwardPropagation(const float &error_min,
                                 const float &error_max) {
   if (nextLayer == nullptr) {
-    return;
-  }
-
-  if (enable_vulkan) {
-    VulkanController::getInstance().backwardPropagation(nextLayer, this);
     return;
   }
 
@@ -47,29 +36,28 @@ void Layer::backwardPropagation(const bool &enable_vulkan,
     for (int x = 0; x < (int)neurons[y].size(); ++x) {
       Neuron &currentNeuron = neurons[y][x];
       cv::Vec4f error(0.0f);
-      const cv::Mat nextLayerErrors = nextLayer->errors;
 
       // Add next layer neurons error ponderated with weights for this neuron
       for (const auto &nextLayerNeuronRow : nextLayer->neurons) {
         for (const auto &nextLayerNeuron : nextLayerNeuronRow) {
-          const cv::Vec4f currentError = nextLayerErrors.at<cv::Vec4f>(
-              (int)nextLayerNeuron.index_x, (int)nextLayerNeuron.index_y);
-          const cv::Vec4f weight = nextLayerNeuron.weights.at<cv::Vec4f>(x, y);
+          const cv::Vec4f currentError = nextLayer->errors.at<cv::Vec4f>(
+              (int)nextLayerNeuron.index_y, (int)nextLayerNeuron.index_x);
+          const cv::Vec4f weight = nextLayerNeuron.weights.at<cv::Vec4f>(y, x);
           error += currentError.mul(weight);
         }
       }
       // Consider errors of adjacent neurons
       for (const NeuronConnection &conn : currentNeuron.neighbors) {
         error += conn.weight.mul(errors.at<cv::Vec4f>(
-            (int)conn.neuron->index_x, (int)conn.neuron->index_y));
+            (int)conn.neuron->index_y, (int)conn.neuron->index_x));
       }
       // Use the derivative of the activation function
       const cv::Vec4f activationDerivative =
-          activationFunctionDerivative(values.at<cv::Vec4f>(x, y));
-      const cv::Vec4f clampedError =
-          sipai::clamp4f(activationDerivative.mul(error), error_min, error_max);
+          activationFunctionDerivative(values.at<cv::Vec4f>(y, x));
+      const cv::Vec4f clampedError = Common::clamp4f(
+          activationDerivative.mul(error), error_min, error_max);
 
-      errors.at<cv::Vec4f>(x, y) = clampedError;
+      errors.at<cv::Vec4f>(y, x) = clampedError;
     }
   }
 }
@@ -85,7 +73,7 @@ void Layer::updateWeights(float learningRate) {
 
       // Get the error of current neuron, mult by the learningRate
       const cv::Vec4f learningRateError =
-          errors.at<cv::Vec4f>(x, y) * learningRate;
+          errors.at<cv::Vec4f>(y, x) * cv::Vec4f::all(learningRate);
 
       // Create a matrix with dimensions of neuron weights
       // and previous learningRateError
@@ -95,11 +83,11 @@ void Layer::updateWeights(float learningRate) {
       // Update neuron weights that are connections weights with previous layers
       neuron.weights -= previousLayer->values.mul(learningRateErrorMat);
 
-      // Update weights based on neighboring neurons
+      // Update neighbors connections weights
       for (NeuronConnection &conn : neuron.neighbors) {
         conn.weight -= values
-                           .at<cv::Vec4f>((int)conn.neuron->index_x,
-                                          (int)conn.neuron->index_y)
+                           .at<cv::Vec4f>((int)conn.neuron->index_y,
+                                          (int)conn.neuron->index_x)
                            .mul(learningRateError);
       }
     }

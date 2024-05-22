@@ -21,7 +21,7 @@ public:
    * @return VulkanBuilder&
    */
   VulkanBuilder &withCommandPoolSize(size_t size = 1) {
-    commandPoolSize = size;
+    commandPoolSize_ = size;
     return *this;
   }
   /**
@@ -46,12 +46,50 @@ public:
   }
 
   /**
-   * @brief build the Vulkan controller
+   * @brief set Vulkan struct
    *
    * @param vulkan
    * @return VulkanBuilder&
    */
-  VulkanBuilder &build(std::shared_ptr<Vulkan> vulkan);
+  VulkanBuilder &withVulkan(std::shared_ptr<Vulkan> vulkan) {
+    vulkan_ = vulkan;
+    return *this;
+  }
+
+  /**
+   * @brief build the Vulkan controller
+   *
+   * @return VulkanBuilder&
+   */
+  VulkanBuilder &build();
+
+  /**
+   * @brief Maps a buffer's VRAM memory to CPU RAM memory.
+   * This allows the CPU to directly read from or write to the VRAM.
+   * Note: Proper synchronization must be ensured to prevent data races.
+   * Make sure any GPU operations using the buffer have completed before
+   * mapping.
+   *
+   * @param buffer The buffer whose memory is to be mapped.
+   */
+  void mapBufferMemory(Buffer &buffer);
+
+  /**
+   * @brief Unmaps a previously mapped buffer's VRAM memory from the CPU RAM
+   * memory. After this operation, the CPU will no longer have direct access to
+   * the buffer's memory. Note: Any writes to the memory should be completed
+   * before unmapping to ensure they are reflected in the buffer.
+   *
+   * @param buffer The buffer whose memory is to be unmapped.
+   */
+  void unmapBufferMemory(Buffer &buffer);
+
+  /**
+   * @brief initialize the vulkan instance
+   *
+   * @return VulkanBuilder&
+   */
+  VulkanBuilder &initialize();
 
   /**
    * @brief clear the vulkan instance
@@ -60,29 +98,49 @@ public:
    */
   VulkanBuilder &clear();
 
+  /**
+   * @brief find memory type
+   *
+   * @param typeFilter
+   * @param properties
+   * @return uint32_t
+   */
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties) const;
+
+  /**
+   * @brief Get the Memory Properties flags
+   *
+   * @return VkMemoryPropertyFlags
+   */
+  VkMemoryPropertyFlags getMemoryProperties();
+
+  /**
+   * @brief load a GLSL shader file and compile it into a uint32 vector
+   *
+   * @param path
+   * @return std::unique_ptr<std::vector<uint32_t>>
+   */
+  std::unique_ptr<std::vector<uint32_t>> loadShader(const std::string &path);
+
 private:
-  bool _initialize();
-  uint32_t _findMemoryType(uint32_t typeFilter,
-                           VkMemoryPropertyFlags properties) const;
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
-  std::unique_ptr<std::vector<uint32_t>> _loadShader(const std::string &path);
 
   void _createCommandPool();
-  void _createCommandBufferPool();
+  void _allocateCommandBuffers();
   void _createBuffers();
   void _createDescriptorSetLayout();
   void _createDescriptorPool();
-  void _createDescriptorSet();
+  void _allocateDescriptorSets();
   void _createPipelineLayout();
   void _createFence();
-  void _createDataMapping();
   void _createShaderModules();
-  void _createShadersComputePipelines();
-  void _bindBuffers();
+  void _createComputePipelines();
+  void _updateDescriptorSets();
 
   std::shared_ptr<Vulkan> vulkan_ = nullptr;
-  size_t commandPoolSize = 1;
+  size_t commandPoolSize_ = 1;
   size_t maxNeighboosPerNeuron_ = 4;
   bool enableDebugInfo_ = false;
 };

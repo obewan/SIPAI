@@ -1,7 +1,7 @@
 #include "RunnerVisitorFactory.h"
 #include "Manager.h"
 #include "RunnerEnhancerVisitor.h"
-#include "RunnerTrainingMonitoredVisitor.h"
+#include "RunnerTrainingOpenCVVisitor.h"
 #include "RunnerTrainingVulkanVisitor.h"
 
 using namespace sipai;
@@ -14,7 +14,7 @@ const RunnerVisitor &RunnerVisitorFactory::getTrainingMonitoredVisitor() {
           std::make_unique<RunnerTrainingVulkanVisitor>();
     } else {
       trainingMonitoredVisitor_ =
-          std::make_unique<RunnerTrainingMonitoredVisitor>();
+          std::make_unique<RunnerTrainingOpenCVVisitor>();
     }
   }
   return *trainingMonitoredVisitor_;

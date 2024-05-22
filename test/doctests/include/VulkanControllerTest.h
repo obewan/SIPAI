@@ -1,8 +1,8 @@
 /**
- * @file VulkanController.h
+ * @file VulkanControllerTest.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief Vulkan Controller
- * @date 2024-04-19
+ * @brief For testing purposes
+ * @date 2024-05-18
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
  *
@@ -19,54 +19,31 @@
 #include <vulkan/vulkan.hpp>
 
 namespace sipai {
-class VulkanController {
+class VulkanControllerTest {
 public:
-  static VulkanController &getInstance() {
+  static VulkanControllerTest &getInstance() {
     static std::once_flag initInstanceFlag;
     std::call_once(initInstanceFlag,
-                   [] { controllerInstance_.reset(new VulkanController); });
+                   [] { controllerInstance_.reset(new VulkanControllerTest); });
     return *controllerInstance_;
   }
-  static const VulkanController &getConstInstance() {
-    return const_cast<const VulkanController &>(getInstance());
+  static const VulkanControllerTest &getConstInstance() {
+    return const_cast<const VulkanControllerTest &>(getInstance());
   }
-  VulkanController(VulkanController const &) = delete;
-  void operator=(VulkanController const &) = delete;
-  ~VulkanController() { destroy(); }
+  VulkanControllerTest(VulkanControllerTest const &) = delete;
+  void operator=(VulkanControllerTest const &) = delete;
+  ~VulkanControllerTest() { destroy(); }
+
+  float test1();
 
   bool initialize(bool enableDebug = false);
 
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
-  /**
-   * @brief Vulkan training or validation on an input image
-   *
-   *  @return float computed loss between the generated output and the expected
-   * images after the training or the validation
-   */
-  float trainingMonitored(const std::shared_ptr<sipai::Image> &inputValues,
-                          const std::shared_ptr<sipai::Image> &targetValues,
-                          const TrainingPhase &phase);
-
-  /**
-   * @brief Destroy the device instance, cleaning ressources
-   *
-   */
   void destroy() { builder_.clear(); };
 
-  /**
-   * @brief Get the Logical Device
-   *
-   * @return VkDevice&
-   */
   VkDevice &getDevice() { return vulkan_->logicalDevice; }
 
-  /**
-   * @brief Get a Buffer
-   *
-   * @param bufferName
-   * @return Buffer&
-   */
   Buffer &getBuffer(const EBuffer &bufferName) {
     if (!vulkan_) {
       throw VulkanControllerException("vulkan is null pointer.");
@@ -98,12 +75,14 @@ public:
 
   std::shared_ptr<Vulkan> getVulkan() { return vulkan_; }
 
+  std::string testFile1 = "../../test/data/shaders/shader_test1.comp";
+
 private:
-  VulkanController() {
+  VulkanControllerTest() {
     vulkan_ = std::make_shared<Vulkan>();
     helper_.setVulkan(vulkan_);
   };
-  static std::unique_ptr<VulkanController> controllerInstance_;
+  static std::unique_ptr<VulkanControllerTest> controllerInstance_;
 
   void _computeShader(VkPipeline &pipeline);
 

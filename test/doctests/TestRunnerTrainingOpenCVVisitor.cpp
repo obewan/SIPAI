@@ -1,6 +1,6 @@
 #include "Manager.h"
 #include "NeuralNetwork.h"
-#include "RunnerTrainingMonitoredVisitor.h"
+#include "RunnerTrainingOpenCVVisitor.h"
 #include "TrainingDataFactory.h"
 #include "doctest.h"
 #include "exception/RunnerVisitorException.h"
@@ -10,9 +10,9 @@
 
 using namespace sipai;
 
-TEST_CASE("Testing RunnerTrainingMonitoredVisitor") {
+TEST_CASE("Testing RunnerTrainingOpenCVVisitor") {
   SUBCASE("Test exceptions") {
-    RunnerTrainingMonitoredVisitor visitor;
+    RunnerTrainingOpenCVVisitor visitor;
     TrainingDataFactory::getInstance().clear();
     auto &manager = Manager::getInstance();
 
@@ -30,7 +30,7 @@ TEST_CASE("Testing RunnerTrainingMonitoredVisitor") {
   }
 
   SUBCASE("Test normal run") {
-    RunnerTrainingMonitoredVisitor visitor;
+    RunnerTrainingOpenCVVisitor visitor;
     TrainingDataFactory::getInstance().clear();
     auto &manager = Manager::getInstance();
 

@@ -24,12 +24,11 @@ public:
   LayerInput(size_t size_x, size_t size_y)
       : Layer(LayerType::LayerInput, size_x, size_y) {}
 
-  void forwardPropagation(const bool& enable_vulkan = false) override {
+  void forwardPropagation() override {
     // No need to implement for input layer
   }
 
-  void backwardPropagation(const bool &enable_vulkan, 
-                           const float &error_min,
+  void backwardPropagation(const float &error_min,
                            const float &error_max) override {
     // No need to implement for input layer (no weights of input layer)
   }

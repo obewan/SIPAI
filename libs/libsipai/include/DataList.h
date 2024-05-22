@@ -12,14 +12,8 @@
 #include <vector>
 
 namespace sipai {
-enum class DataListType {
-  INPUT_TARGET,
-  TARGET_FOLDER,
-};
-
 struct DataList {
   std::vector<Data> data_training;
   std::vector<Data> data_validation;
-  DataListType type;
 };
 } // namespace sipai
