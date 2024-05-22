@@ -11,7 +11,7 @@ It uses a Multi-Layer Perceptron (MLP) architecture, with a modification that in
 
 ```
 WARNING : project still under early development...
-WARNING : Vulkan feature is very experimental and not really ready yet
+WARNING : Vulkan feature is very experimental, and is currently limited to one hidden layer (in addition to the input and the output layers)
 ```
 
 ---

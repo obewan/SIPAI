@@ -54,6 +54,8 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
       {"%%HIDDEN_SIZE_Y%%", std::to_string(network_param.hidden_size_y)},
       {"%%OUTPUT_SIZE_X%%", std::to_string(network_param.output_size_x)},
       {"%%OUTPUT_SIZE_Y%%", std::to_string(network_param.output_size_y)},
+      {"%%OUTPUT_SIZE_XY%%", std::to_string(network_param.output_size_x *
+                                            network_param.output_size_y)},
   });
 
   std::string line;
@@ -80,14 +82,15 @@ VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   VkCommandBuffer commandBuffer = vulkan_->commandBufferPool.back();
   vulkan_->commandBufferPool.pop_back();
 
-  VkCommandBufferBeginInfo beginInfo{};
+  VkCommandBufferBeginInfo beginInfo = {};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-  beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-  // Starts recording the command
+
+  //  Starts recording the command
   auto result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan command buffer start error.");
   }
+
   return commandBuffer;
 }
 
@@ -99,7 +102,7 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   }
 
   // Submit the command to the queue
-  VkSubmitInfo submitInfo{};
+  VkSubmitInfo submitInfo = {};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
@@ -107,7 +110,8 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan queue submit error.");
   }
-  // Wait for the fence to signal that the GPU has finished
+
+  //  Wait for the fence to signal that the GPU has finished
   result = vkWaitForFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence,
                            VK_TRUE, UINT64_MAX);
   if (result != VK_SUCCESS) {
@@ -117,14 +121,15 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   // Reset the fence
   result = vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence);
   if (result != VK_SUCCESS) {
-    throw VulkanHelperException("Vulkan reset fence error.");
+    throw VulkanHelperException("Vulkan fence reset error.");
   }
 
   // Reset the command buffer
   result = vkResetCommandBuffer(commandBuffer, 0);
   if (result != VK_SUCCESS) {
-    throw VulkanHelperException("Vulkan reset command buffer error.");
+    throw VulkanHelperException("Vulkan command buffer reset error.");
   }
 
+  // Push back the command buffer in the pool
   vulkan_->commandBufferPool.push_back(commandBuffer);
 }

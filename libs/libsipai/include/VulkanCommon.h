@@ -20,27 +20,34 @@ using uint = unsigned int;
 
 namespace sipai {
 
+const int MAX_NEIGHBORS = 4;
+
 // numbers must match the GLSL bindings
 enum class EBuffer {
   Parameters = 0,
-  InputData = 1,
-  OutputData = 2,
-  InputLayer = 3,
-  OutputLayer = 4,
-  HiddenLayer1 = 5,
+  InputLayer = 1,
+  OutputLayer = 2,
+  HiddenLayer1 = 3,
+  InputData = 4,
+  OutputData = 5,
+  OutputLoss = 6
 };
 
 enum class EShader {
   TrainingMonitored,
+
+  // For Testing
+  Test1
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::Parameters, "Parameters"},
-    {EBuffer::InputData, "InputData"},
-    {EBuffer::OutputData, "OutputData"},
     {EBuffer::InputLayer, "InputLayer"},
     {EBuffer::OutputLayer, "OutputLayer"},
-    {EBuffer::HiddenLayer1, "HiddenLayer1"}};
+    {EBuffer::HiddenLayer1, "HiddenLayer1"},
+    {EBuffer::InputData, "InputData"},
+    {EBuffer::OutputData, "OutputData"},
+    {EBuffer::OutputLoss, "OutputLoss"}};
 
 struct GLSLParameters {
   float learning_rate;
@@ -59,7 +66,7 @@ struct GLSLNeuron {
   uint index_x;
   uint index_y;
   std::vector<std::vector<cv::Vec4f>> weights;
-  GLSLNeighbor neighbors[4];
+  GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
 struct GLSLInputData {
@@ -68,8 +75,9 @@ struct GLSLInputData {
   bool is_validation;
 };
 
+// special format after transformations and merge
 struct GLSLOutputData {
-  std::vector<std::vector<cv::Vec4f>> outputValues;
+  cv::Mat outputValues;
   float loss;
 };
 
@@ -104,7 +112,7 @@ struct Buffer {
   uint binding = 0;
   VkBuffer buffer = VK_NULL_HANDLE;
   VkDeviceMemory memory = VK_NULL_HANDLE;
-  VkBufferCreateInfo info{};
+  VkBufferCreateInfo info = {};
   void *data = nullptr;
   bool isMemoryMapped = false;
 };
@@ -115,7 +123,7 @@ struct Shader {
   std::unique_ptr<std::vector<uint32_t>> shader;
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
-  VkComputePipelineCreateInfo info{};
+  VkComputePipelineCreateInfo info = {};
   bool isReady = false;
 };
 

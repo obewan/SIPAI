@@ -9,8 +9,9 @@
 // One workgroup, neurons local threads per workgroup
 layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
-// local shared loss
-shared float loss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+// thread shared datas (warning it is a fast but very limited memory)
+shared vec4 sharedOutputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+shared float sharedOutputLoss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
 
 // Enum mapping, do not change
 const int ELU = 0;
@@ -49,30 +50,16 @@ layout(std430, binding = 0) buffer readonly Parameters {
 }
 params;
 
-// Data binding
-layout(std430, binding = 1) buffer readonly InputData {
-  vec4 inputValues[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];  
-  vec4 targetValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];  
-  bool is_validation;
-}
-inputData;
-
-layout(std430, binding = 2) buffer OutputData { 
-  vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-  float loss; 
-}
-outputData;
-
 // Layers binding
-layout(std430, binding = 3) buffer InputLayer {
+layout(std430, binding = 1) buffer InputLayer {
   float activation_alpha;
   uint activation_function;
   uint size_x;
   uint size_y;
 }
-inputLayer;
+inputLayerBuffer;
 
-layout(std430, binding = 4) buffer OutputLayer {
+layout(std430, binding = 2) buffer OutputLayer {
   OutputNeuron neurons[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
   vec4 errors[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
   float activation_alpha;
@@ -80,9 +67,9 @@ layout(std430, binding = 4) buffer OutputLayer {
   uint size_x;
   uint size_y;
 }
-outputLayer;
+outputLayerBuffer;
 
-layout(std430, binding = 5) buffer HiddenLayer1 {
+layout(std430, binding = 3) buffer HiddenLayer1 {
   HiddenNeuron neurons[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
   vec4 values[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
   vec4 errors[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
@@ -91,7 +78,25 @@ layout(std430, binding = 5) buffer HiddenLayer1 {
   uint size_x;
   uint size_y;
 }
-hiddenLayer1;
+hiddenLayer1Buffer;
+
+// Data binding
+layout(std430, binding = 4) buffer readonly InputData {
+  vec4 inputValues[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];  
+  vec4 targetValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];  
+  bool is_validation;
+}
+inputDataBuffer;
+
+layout(std430, binding = 5) buffer writeonly OutputData { 
+  vec4 outputValues[%%OUTPUT_SIZE_XY%%];
+}
+outputDataBuffer;
+
+layout(std430, binding = 6) buffer writeonly OutputLoss { 
+  float loss;
+}
+lossBuffer;
 
 // Functions
 vec4 derivativeFunction(vec4 value, uint activation_function,
@@ -159,174 +164,174 @@ vec4 activateFunction(vec4 value, uint activation_function,
 }
 
 void forwardPropagationHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= hiddenLayer1.values.length() ||
-      index_x >= hiddenLayer1.values[0].length()) {
+  if (index_y >= hiddenLayer1Buffer.values.length() ||
+      index_x >= hiddenLayer1Buffer.values[0].length()) {
     return;
   }
   // forward hidden layer
   vec4 result = vec4(0.0);
-  for (uint y = 0; y < inputData.inputValues.length(); y++) {
-    for (uint x = 0; x < inputData.inputValues[0].length(); x++) {
-      result += inputData.inputValues[y][x] *
-                hiddenLayer1.neurons[index_y][index_x].weights[y][x];
+  for (uint y = 0; y < inputDataBuffer.inputValues.length(); y++) {
+    for (uint x = 0; x < inputDataBuffer.inputValues[0].length(); x++) {
+      result += inputDataBuffer.inputValues[y][x] *
+                hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x];
     }
   }
-  hiddenLayer1.values[index_y][index_x] = activateFunction(
-      result, hiddenLayer1.activation_function, hiddenLayer1.activation_alpha);
+  hiddenLayer1Buffer.values[index_y][index_x] = activateFunction(
+      result, hiddenLayer1Buffer.activation_function, hiddenLayer1Buffer.activation_alpha);
 }
 
 void forwardPropagationOutputLayer(uint index_x, uint index_y) {
-  if (index_y >= outputData.outputValues.length() ||
-      index_x >= outputData.outputValues[0].length()) {
+  if (index_y >= sharedOutputValues.length() ||
+      index_x >= sharedOutputValues[0].length()) {
     return;
   }
   // forward output layer
   vec4 result = vec4(0.0);
-  for (uint y = 0; y < hiddenLayer1.values.length(); y++) {
-    for (uint x = 0; x < hiddenLayer1.values[0].length(); x++) {
-      result += hiddenLayer1.values[y][x] *
-                outputLayer.neurons[index_y][index_x].weights[y][x];
+  for (uint y = 0; y < hiddenLayer1Buffer.values.length(); y++) {
+    for (uint x = 0; x < hiddenLayer1Buffer.values[0].length(); x++) {
+      result += hiddenLayer1Buffer.values[y][x] *
+                outputLayerBuffer.neurons[index_y][index_x].weights[y][x];
     }
   }
-  outputData.outputValues[index_y][index_x] = activateFunction(
-      result, outputLayer.activation_function, outputLayer.activation_alpha);
+  sharedOutputValues[index_y][index_x] = activateFunction(
+      result, outputLayerBuffer.activation_function, outputLayerBuffer.activation_alpha);
 }
 
 // Using mean square error (MSE)
 void computeLoss(uint index_x, uint index_y) {
-  if (index_y >= outputData.outputValues.length() ||
-      index_x >= outputData.outputValues[0].length()) {
+  if (index_y >= sharedOutputValues.length() ||
+      index_x >= sharedOutputValues[0].length()) {
     return;
   }
-  vec4 diff = outputData.outputValues[index_y][index_x] - 
-              inputData.targetValues[index_y][index_x];
+  vec4 diff = sharedOutputValues[index_y][index_x] - 
+              inputDataBuffer.targetValues[index_y][index_x];
   float squaredDiff = dot(diff, diff);
-  loss[index_y][index_x] = squaredDiff;
+  sharedOutputLoss[index_y][index_x] = squaredDiff;
 }
 
 void computeOutputError(uint index_x, uint index_y) {
-  if (index_y >= outputLayer.neurons.length() ||
-      index_x >= outputLayer.neurons[0].length()) {
+  if (index_y >= outputLayerBuffer.neurons.length() ||
+      index_x >= outputLayerBuffer.neurons[0].length()) {
     return;
   }
   // add neighbors connections weighted values
   vec4 neighborSum = vec4(0.0);
-  for (uint i = 0; i < outputLayer.neurons[index_y][index_x].neighbors.length();
+  for (uint i = 0; i < outputLayerBuffer.neurons[index_y][index_x].neighbors.length();
        i++) {
     uint neighbor_x =
-        outputLayer.neurons[index_y][index_x].neighbors[i].index_x;
+        outputLayerBuffer.neurons[index_y][index_x].neighbors[i].index_x;
     uint neighbor_y =
-        outputLayer.neurons[index_y][index_x].neighbors[i].index_y;
-    neighborSum += outputLayer.neurons[index_y][index_x].neighbors[i].weight *
-                   outputData.outputValues[neighbor_y][neighbor_x];
+        outputLayerBuffer.neurons[index_y][index_x].neighbors[i].index_y;
+    neighborSum += outputLayerBuffer.neurons[index_y][index_x].neighbors[i].weight *
+                   sharedOutputValues[neighbor_y][neighbor_x];
   }
 
   // Compute and update the error
   float weightFactor = 0.5; // Experiment with weight between 0 and 1
-  vec4 outputValue = outputData.outputValues[index_y][index_x];
-  vec4 targetValue = inputData.targetValues[index_y][index_x];
+  vec4 outputValue = sharedOutputValues[index_y][index_x];
+  vec4 targetValue = inputDataBuffer.targetValues[index_y][index_x];
   vec4 newError = weightFactor * (outputValue - targetValue) +
                   ((1.0 - weightFactor) * neighborSum);
-  outputLayer.errors[index_y][index_x] =
+  outputLayerBuffer.errors[index_y][index_x] =
       clamp(newError, params.error_min, params.error_max);
 }
 
 void backwardHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= hiddenLayer1.neurons.length() ||
-      index_x >= hiddenLayer1.neurons[0].length()) {
+  if (index_y >= hiddenLayer1Buffer.neurons.length() ||
+      index_x >= hiddenLayer1Buffer.neurons[0].length()) {
     return;
   }
   vec4 error = vec4(0.0);
 
   // Add next layer neurons error ponderated with weights for this neuron
-  for (uint out_y = 0; out_y < outputLayer.neurons.length(); out_y++) {
-    for (uint out_x = 0; out_x < outputLayer.neurons[0].length(); out_x++) {
-      vec4 out_error = outputLayer.errors[out_y][out_x];
+  for (uint out_y = 0; out_y < outputLayerBuffer.neurons.length(); out_y++) {
+    for (uint out_x = 0; out_x < outputLayerBuffer.neurons[0].length(); out_x++) {
+      vec4 out_error = outputLayerBuffer.errors[out_y][out_x];
       vec4 out_weight =
-          outputLayer.neurons[out_y][out_x].weights[index_y][index_x];
+          outputLayerBuffer.neurons[out_y][out_x].weights[index_y][index_x];
       error += (out_error * out_weight);
     }
   }
 
   // Consider errors of adjacent neurons
   for (uint i = 0;
-       i < hiddenLayer1.neurons[index_y][index_x].neighbors.length(); i++) {
-    if (!hiddenLayer1.neurons[index_y][index_x].neighbors[i].is_used) {
+       i < hiddenLayer1Buffer.neurons[index_y][index_x].neighbors.length(); i++) {
+    if (!hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].is_used) {
       continue;
     }
-    error += hiddenLayer1.neurons[index_y][index_x].neighbors[i].weight *
-             hiddenLayer1.errors
-                 [hiddenLayer1.neurons[index_y][index_x].neighbors[i].index_y]
-                 [hiddenLayer1.neurons[index_y][index_x].neighbors[i].index_x];
+    error += hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].weight *
+             hiddenLayer1Buffer.errors
+                 [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_y]
+                 [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_x];
   }
 
   // Use the derivative of the activation function
   vec4 derivatedError = derivativeFunction(
-      error, hiddenLayer1.activation_function, hiddenLayer1.activation_alpha);
-  hiddenLayer1.errors[index_y][index_x] =
+      error, hiddenLayer1Buffer.activation_function, hiddenLayer1Buffer.activation_alpha);
+  hiddenLayer1Buffer.errors[index_y][index_x] =
       clamp(derivatedError, params.error_min, params.error_max);
 }
 
 void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= hiddenLayer1.neurons.length() ||
-      index_x >= hiddenLayer1.neurons[0].length()) {
+  if (index_y >= hiddenLayer1Buffer.neurons.length() ||
+      index_x >= hiddenLayer1Buffer.neurons[0].length()) {
     return;
   }
   vec4 learningRateError =
-      hiddenLayer1.errors[index_y][index_x] * params.learning_rate;
+      hiddenLayer1Buffer.errors[index_y][index_x] * params.learning_rate;
 
   // Update neuron weights that are connections weights with previous layers
-  for (uint y = 0; y < hiddenLayer1.neurons[index_y][index_x].weights.length();
+  for (uint y = 0; y < hiddenLayer1Buffer.neurons[index_y][index_x].weights.length();
        y++) {
     for (uint x = 0;
-         x < hiddenLayer1.neurons[index_y][index_x].weights[0].length(); x++) {
-      hiddenLayer1.neurons[index_y][index_x].weights[y][x] -=
-          (inputData.inputValues[y][x] * learningRateError);
+         x < hiddenLayer1Buffer.neurons[index_y][index_x].weights[0].length(); x++) {
+      hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x] -=
+          (inputDataBuffer.inputValues[y][x] * learningRateError);
     }
   }
 
   // Update neighbors connections weights
   for (uint i = 0;
-       i < hiddenLayer1.neurons[index_y][index_x].neighbors.length(); i++) {
-    if (!hiddenLayer1.neurons[index_y][index_x].neighbors[i].is_used) {
+       i < hiddenLayer1Buffer.neurons[index_y][index_x].neighbors.length(); i++) {
+    if (!hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].is_used) {
       continue;
     }
-    hiddenLayer1.neurons[index_y][index_x].neighbors[i].weight -=
-        hiddenLayer1.values
-            [hiddenLayer1.neurons[index_y][index_x].neighbors[i].index_y]
-            [hiddenLayer1.neurons[index_y][index_x].neighbors[i].index_x] *
+    hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].weight -=
+        hiddenLayer1Buffer.values
+            [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_y]
+            [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_x] *
         learningRateError;
   }
 }
 
 void updateWeightsOutputLayer(uint index_x, uint index_y) {
-  if (index_y >= outputLayer.neurons.length() ||
-      index_x >= outputLayer.neurons[0].length()) {
+  if (index_y >= outputLayerBuffer.neurons.length() ||
+      index_x >= outputLayerBuffer.neurons[0].length()) {
     return;
   }
   vec4 learningRateError =
-      outputLayer.errors[index_y][index_x] * params.learning_rate;
+      outputLayerBuffer.errors[index_y][index_x] * params.learning_rate;
 
   // Update neuron weights that are connections weights with previous layers
-  for (uint y = 0; y < outputLayer.neurons[index_y][index_x].weights.length();
+  for (uint y = 0; y < outputLayerBuffer.neurons[index_y][index_x].weights.length();
        y++) {
     for (uint x = 0;
-         x < outputLayer.neurons[index_y][index_x].weights[0].length(); x++) {
-      outputLayer.neurons[index_y][index_x].weights[y][x] -=
-          (hiddenLayer1.values[y][x] * learningRateError);
+         x < outputLayerBuffer.neurons[index_y][index_x].weights[0].length(); x++) {
+      outputLayerBuffer.neurons[index_y][index_x].weights[y][x] -=
+          (hiddenLayer1Buffer.values[y][x] * learningRateError);
     }
   }
 
   // Update neighbors connections weights
-  for (uint i = 0; i < outputLayer.neurons[index_y][index_x].neighbors.length();
+  for (uint i = 0; i < outputLayerBuffer.neurons[index_y][index_x].neighbors.length();
        i++) {
-    if (!outputLayer.neurons[index_y][index_x].neighbors[i].is_used) {
+    if (!outputLayerBuffer.neurons[index_y][index_x].neighbors[i].is_used) {
       continue;
     }
-    outputLayer.neurons[index_y][index_x].neighbors[i].weight -=
-        outputData.outputValues
-            [outputLayer.neurons[index_y][index_x].neighbors[i].index_y]
-            [outputLayer.neurons[index_y][index_x].neighbors[i].index_x] *
+    outputLayerBuffer.neurons[index_y][index_x].neighbors[i].weight -=
+        sharedOutputValues
+            [outputLayerBuffer.neurons[index_y][index_x].neighbors[i].index_y]
+            [outputLayerBuffer.neurons[index_y][index_x].neighbors[i].index_x] *
         learningRateError;
   }
 }
@@ -338,7 +343,7 @@ void main() {
 
   // Initialize local loss
   if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
-    loss[index_y][index_x] = 0.0;
+    sharedOutputLoss[index_y][index_x] = 0.0;
   }
   barrier();
 
@@ -351,21 +356,33 @@ void main() {
   // Comput Loss
   computeLoss(index_x, index_y);
   barrier();
-  // Use one thread to sum up the local losses
-  if (gl_LocalInvocationIndex == 0) {
+
+  // Output writing (unique thread)
+  if (gl_LocalInvocationIndex == 0) {   
     float totalLoss = 0.0;
-    for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
+    for (int y = 0; y < %%OUTPUT_SIZE_Y%%; ++y) {
       for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
-        totalLoss += loss[y][x];
+        totalLoss += sharedOutputLoss[y][x];
       }
     }
     uint numPixels = %%OUTPUT_SIZE_Y%% * %%OUTPUT_SIZE_X%%;    
-    outputData.loss = totalLoss / numPixels;
+    if (numPixels == 0){
+      numPixels = 1;
+    }
+    lossBuffer.loss = totalLoss / numPixels;
+
+    // Flatten outputValues
+    // Commented: not required for training
+    // for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
+    //  for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
+    //    outputDataBuffer.outputValues[y * %%OUTPUT_SIZE_X%% + x] = sharedOutputValues[y][x];
+    // }
+    //}
   }
   barrier();
 
   // Backward Propagation (not for validation)
-  if (inputData.is_validation) {
+  if (inputDataBuffer.is_validation) {
     return;
   }
   computeOutputError(index_x, index_y);
@@ -375,5 +392,4 @@ void main() {
   updateWeightsHiddenLayer1(index_x, index_y);
   barrier();
   updateWeightsOutputLayer(index_x, index_y);
-  barrier();
 }
