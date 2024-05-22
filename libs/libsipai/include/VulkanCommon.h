@@ -112,7 +112,7 @@ struct Buffer {
   uint binding = 0;
   VkBuffer buffer = VK_NULL_HANDLE;
   VkDeviceMemory memory = VK_NULL_HANDLE;
-  VkBufferCreateInfo info{};
+  VkBufferCreateInfo info = {};
   void *data = nullptr;
   bool isMemoryMapped = false;
 };
@@ -123,7 +123,7 @@ struct Shader {
   std::unique_ptr<std::vector<uint32_t>> shader;
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
-  VkComputePipelineCreateInfo info{};
+  VkComputePipelineCreateInfo info = {};
   bool isReady = false;
 };
 

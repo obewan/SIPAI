@@ -65,9 +65,10 @@ float VulkanControllerTest::test1() {
 void VulkanControllerTest::_computeShader(VkPipeline &pipeline) {
   auto commandBuffer = helper_.beginSingleTimeCommands();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+  VkDescriptorSet descriptorSets[] = {vulkan_->descriptorSet};
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                          vulkan_->pipelineLayout, 0, 1,
-                          &vulkan_->descriptorSet, 0, nullptr);
+                          vulkan_->pipelineLayout, 0, 1, descriptorSets, 0,
+                          nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
   helper_.endSingleTimeCommands(commandBuffer);
 }
@@ -85,21 +86,15 @@ void VulkanControllerTest::_copyParameters() {
   }
   builder_.mapBufferMemory(buffer);
   // memset(buffer.data, 0, (size_t)buffer.info.size);
-
-  // Write directly to the mapped memory
-  float *data = static_cast<float *>(buffer.data);
-  data[0] = 0.65f; // learning_rate
-  data[1] = 0.0f;  // error_min
-  data[2] = 1.0f;  // error_max
-  // memcpy(buffer.data, &glslParams, sizeof(GLSLParameters));
+  memcpy(buffer.data, &glslParams, sizeof(GLSLParameters));
 
   // Flush the mapped memory range
-  VkMappedMemoryRange memoryRange{};
-  memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-  memoryRange.memory = buffer.memory;
-  memoryRange.offset = 0;
-  memoryRange.size = VK_WHOLE_SIZE;
-  vkFlushMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
+  // VkMappedMemoryRange memoryRange{};
+  // memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+  // memoryRange.memory = buffer.memory;
+  // memoryRange.offset = 0;
+  // memoryRange.size = VK_WHOLE_SIZE;
+  // vkFlushMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
   builder_.unmapBufferMemory(buffer);
 }
 
@@ -111,15 +106,14 @@ void VulkanControllerTest::_copyInputData(const cv::Mat &inputValues,
                                           bool is_validation) {}
 
 std::unique_ptr<GLSLOutputData> VulkanControllerTest::_getOutputData() {
-  const auto &params = Manager::getConstInstance().network_params;
-
   // Get loss
+  GLSLOutputData outputData{.loss = 0.0f};
   auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
   builder_.mapBufferMemory(bufferLoss);
-  float loss = *reinterpret_cast<float *>(bufferLoss.data);
+  outputData.loss = *reinterpret_cast<float *>(bufferLoss.data);
   builder_.unmapBufferMemory(bufferLoss);
 
   // Get outputValues
   // Commented: not required here
-  return std::make_unique<GLSLOutputData>(GLSLOutputData{.loss = loss});
+  return std::make_unique<GLSLOutputData>(outputData);
 }

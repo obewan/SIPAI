@@ -79,44 +79,44 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
 
 VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   // Ensure the device has finished all previous operations
-  auto result = vkDeviceWaitIdle(vulkan_->logicalDevice);
-  if (result != VK_SUCCESS) {
-    throw VulkanHelperException("Vulkan wait idle error.");
-  }
-  VkMemoryBarrier memoryBarrier = {};
-  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-  memoryBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
+  // auto result = vkDeviceWaitIdle(vulkan_->logicalDevice);
+  // if (result != VK_SUCCESS) {
+  //   throw VulkanHelperException("Vulkan wait idle error.");
+  // }
+  // VkMemoryBarrier memoryBarrier = {};
+  // memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  // memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  // memoryBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
 
   // Take a command buffer from the pool
   VkCommandBuffer commandBuffer = vulkan_->commandBufferPool.back();
   vulkan_->commandBufferPool.pop_back();
 
-  VkCommandBufferBeginInfo beginInfo{};
+  VkCommandBufferBeginInfo beginInfo = {};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-  beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-  // Starts recording the command
-  result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+  // beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+  //  Starts recording the command
+  auto result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan command buffer start error.");
   }
 
-  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                       VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &memoryBarrier, 0,
-                       nullptr, 0, nullptr);
+  // vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+  //                      VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &memoryBarrier, 0,
+  //                      nullptr, 0, nullptr);
 
   return commandBuffer;
 }
 
 void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
-  VkMemoryBarrier memoryBarrier = {};
-  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-  memoryBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
+  // VkMemoryBarrier memoryBarrier = {};
+  // memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  // memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  // memoryBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
 
-  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                       VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &memoryBarrier, 0,
-                       nullptr, 0, nullptr);
+  // vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+  //                      VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &memoryBarrier, 0,
+  //                      nullptr, 0, nullptr);
 
   // Ends recording the command
   auto result = vkEndCommandBuffer(commandBuffer);
@@ -125,26 +125,27 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   }
 
   // Submit the command to the queue
-  VkSubmitInfo submitInfo{};
+  VkSubmitInfo submitInfo = {};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-  result = vkQueueSubmit(vulkan_->queue, 1, &submitInfo, vulkan_->computeFence);
+  result = vkQueueSubmit(vulkan_->queue, 1, &submitInfo, VK_NULL_HANDLE);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan queue submit error.");
   }
+  result = vkQueueWaitIdle(vulkan_->queue);
   // Wait for the fence to signal that the GPU has finished
-  result = vkWaitForFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence,
-                           VK_TRUE, UINT64_MAX);
+  // result = vkWaitForFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence,
+  //                          VK_TRUE, UINT64_MAX);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan wait for fence error.");
   }
 
   // Reset the fence
-  result = vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence);
-  if (result != VK_SUCCESS) {
-    throw VulkanHelperException("Vulkan fence reset error.");
-  }
+  // result = vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->computeFence);
+  // if (result != VK_SUCCESS) {
+  //   throw VulkanHelperException("Vulkan fence reset error.");
+  // }
 
   // Reset the command buffer
   result = vkResetCommandBuffer(commandBuffer, 0);

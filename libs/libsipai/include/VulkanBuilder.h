@@ -128,16 +128,16 @@ private:
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 
   void _createCommandPool();
-  void _createCommandBufferPool();
+  void _allocateCommandBuffers();
   void _createBuffers();
   void _createDescriptorSetLayout();
   void _createDescriptorPool();
-  void _createDescriptorSet();
+  void _allocateDescriptorSets();
   void _createPipelineLayout();
   void _createFence();
   void _createShaderModules();
-  void _createShadersComputePipelines();
-  void _bindBuffers();
+  void _createComputePipelines();
+  void _updateDescriptorSets();
 
   std::shared_ptr<Vulkan> vulkan_ = nullptr;
   size_t commandPoolSize_ = 1;

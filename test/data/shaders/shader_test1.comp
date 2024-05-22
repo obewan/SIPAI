@@ -14,6 +14,6 @@ lossBuffer;
 
 void main() {
   if (gl_LocalInvocationIndex == 0) {
-    lossBuffer.loss = params.learning_rate;
+    lossBuffer.loss = params.learning_rate * 2;
   }
 }
