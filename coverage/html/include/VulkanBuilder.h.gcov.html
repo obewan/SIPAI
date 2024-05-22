@@ -32,16 +32,16 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">12</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-09 16:20:55</td>
+            <td class="headerValue">2024-05-22 21:03:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">4</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
@@ -83,7 +83,7 @@
 <a name="21"><span class="lineNum">      21 </span>            :    * @return VulkanBuilder&amp;</a>
 <a name="22"><span class="lineNum">      22 </span>            :    */</a>
 <a name="23"><span class="lineNum">      23 </span><span class="lineNoCov">          0 :   VulkanBuilder &amp;withCommandPoolSize(size_t size = 1) {</span></a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineNoCov">          0 :     commandPoolSize = size;</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineNoCov">          0 :     commandPoolSize_ = size;</span></a>
 <a name="25"><span class="lineNum">      25 </span><span class="lineNoCov">          0 :     return *this;</span></a>
 <a name="26"><span class="lineNum">      26 </span>            :   }</a>
 <a name="27"><span class="lineNum">      27 </span>            :   /**</a>
@@ -108,47 +108,105 @@
 <a name="46"><span class="lineNum">      46 </span>            :   }</a>
 <a name="47"><span class="lineNum">      47 </span>            : </a>
 <a name="48"><span class="lineNum">      48 </span>            :   /**</a>
-<a name="49"><span class="lineNum">      49 </span>            :    * @brief build the Vulkan controller</a>
+<a name="49"><span class="lineNum">      49 </span>            :    * @brief set Vulkan struct</a>
 <a name="50"><span class="lineNum">      50 </span>            :    *</a>
 <a name="51"><span class="lineNum">      51 </span>            :    * @param vulkan</a>
 <a name="52"><span class="lineNum">      52 </span>            :    * @return VulkanBuilder&amp;</a>
 <a name="53"><span class="lineNum">      53 </span>            :    */</a>
-<a name="54"><span class="lineNum">      54 </span>            :   VulkanBuilder &amp;build(std::shared_ptr&lt;Vulkan&gt; vulkan);</a>
-<a name="55"><span class="lineNum">      55 </span>            : </a>
-<a name="56"><span class="lineNum">      56 </span>            :   /**</a>
-<a name="57"><span class="lineNum">      57 </span>            :    * @brief clear the vulkan instance</a>
-<a name="58"><span class="lineNum">      58 </span>            :    *</a>
-<a name="59"><span class="lineNum">      59 </span>            :    * @return VulkanBuilder&amp;</a>
-<a name="60"><span class="lineNum">      60 </span>            :    */</a>
-<a name="61"><span class="lineNum">      61 </span>            :   VulkanBuilder &amp;clear();</a>
-<a name="62"><span class="lineNum">      62 </span>            : </a>
-<a name="63"><span class="lineNum">      63 </span>            : private:</a>
-<a name="64"><span class="lineNum">      64 </span>            :   bool _initialize();</a>
-<a name="65"><span class="lineNum">      65 </span>            :   uint32_t _findMemoryType(uint32_t typeFilter,</a>
-<a name="66"><span class="lineNum">      66 </span>            :                            VkMemoryPropertyFlags properties) const;</a>
-<a name="67"><span class="lineNum">      67 </span>            :   std::optional&lt;unsigned int&gt; _pickQueueFamily();</a>
-<a name="68"><span class="lineNum">      68 </span>            :   std::optional&lt;VkPhysicalDevice&gt; _pickPhysicalDevice();</a>
-<a name="69"><span class="lineNum">      69 </span>            :   std::unique_ptr&lt;std::vector&lt;uint32_t&gt;&gt; _loadShader(const std::string &amp;path);</a>
-<a name="70"><span class="lineNum">      70 </span>            : </a>
-<a name="71"><span class="lineNum">      71 </span>            :   void _createCommandPool();</a>
-<a name="72"><span class="lineNum">      72 </span>            :   void _createCommandBufferPool();</a>
-<a name="73"><span class="lineNum">      73 </span>            :   void _createBuffers();</a>
-<a name="74"><span class="lineNum">      74 </span>            :   void _createDescriptorSetLayout();</a>
-<a name="75"><span class="lineNum">      75 </span>            :   void _createDescriptorPool();</a>
-<a name="76"><span class="lineNum">      76 </span>            :   void _createDescriptorSet();</a>
-<a name="77"><span class="lineNum">      77 </span>            :   void _createPipelineLayout();</a>
-<a name="78"><span class="lineNum">      78 </span>            :   void _createFence();</a>
-<a name="79"><span class="lineNum">      79 </span>            :   void _createDataMapping();</a>
-<a name="80"><span class="lineNum">      80 </span>            :   void _createShaderModules();</a>
-<a name="81"><span class="lineNum">      81 </span>            :   void _createShadersComputePipelines();</a>
-<a name="82"><span class="lineNum">      82 </span>            :   void _bindBuffers();</a>
-<a name="83"><span class="lineNum">      83 </span>            : </a>
-<a name="84"><span class="lineNum">      84 </span>            :   std::shared_ptr&lt;Vulkan&gt; vulkan_ = nullptr;</a>
-<a name="85"><span class="lineNum">      85 </span>            :   size_t commandPoolSize = 1;</a>
-<a name="86"><span class="lineNum">      86 </span>            :   size_t maxNeighboosPerNeuron_ = 4;</a>
-<a name="87"><span class="lineNum">      87 </span>            :   bool enableDebugInfo_ = false;</a>
-<a name="88"><span class="lineNum">      88 </span>            : };</a>
-<a name="89"><span class="lineNum">      89 </span>            : } // namespace sipai</a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :   VulkanBuilder &amp;withVulkan(std::shared_ptr&lt;Vulkan&gt; vulkan) {</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineNoCov">          0 :     vulkan_ = vulkan;</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 :     return *this;</span></a>
+<a name="57"><span class="lineNum">      57 </span>            :   }</a>
+<a name="58"><span class="lineNum">      58 </span>            : </a>
+<a name="59"><span class="lineNum">      59 </span>            :   /**</a>
+<a name="60"><span class="lineNum">      60 </span>            :    * @brief build the Vulkan controller</a>
+<a name="61"><span class="lineNum">      61 </span>            :    *</a>
+<a name="62"><span class="lineNum">      62 </span>            :    * @return VulkanBuilder&amp;</a>
+<a name="63"><span class="lineNum">      63 </span>            :    */</a>
+<a name="64"><span class="lineNum">      64 </span>            :   VulkanBuilder &amp;build();</a>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<a name="66"><span class="lineNum">      66 </span>            :   /**</a>
+<a name="67"><span class="lineNum">      67 </span>            :    * @brief Maps a buffer's VRAM memory to CPU RAM memory.</a>
+<a name="68"><span class="lineNum">      68 </span>            :    * This allows the CPU to directly read from or write to the VRAM.</a>
+<a name="69"><span class="lineNum">      69 </span>            :    * Note: Proper synchronization must be ensured to prevent data races.</a>
+<a name="70"><span class="lineNum">      70 </span>            :    * Make sure any GPU operations using the buffer have completed before</a>
+<a name="71"><span class="lineNum">      71 </span>            :    * mapping.</a>
+<a name="72"><span class="lineNum">      72 </span>            :    *</a>
+<a name="73"><span class="lineNum">      73 </span>            :    * @param buffer The buffer whose memory is to be mapped.</a>
+<a name="74"><span class="lineNum">      74 </span>            :    */</a>
+<a name="75"><span class="lineNum">      75 </span>            :   void mapBufferMemory(Buffer &amp;buffer);</a>
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<a name="77"><span class="lineNum">      77 </span>            :   /**</a>
+<a name="78"><span class="lineNum">      78 </span>            :    * @brief Unmaps a previously mapped buffer's VRAM memory from the CPU RAM</a>
+<a name="79"><span class="lineNum">      79 </span>            :    * memory. After this operation, the CPU will no longer have direct access to</a>
+<a name="80"><span class="lineNum">      80 </span>            :    * the buffer's memory. Note: Any writes to the memory should be completed</a>
+<a name="81"><span class="lineNum">      81 </span>            :    * before unmapping to ensure they are reflected in the buffer.</a>
+<a name="82"><span class="lineNum">      82 </span>            :    *</a>
+<a name="83"><span class="lineNum">      83 </span>            :    * @param buffer The buffer whose memory is to be unmapped.</a>
+<a name="84"><span class="lineNum">      84 </span>            :    */</a>
+<a name="85"><span class="lineNum">      85 </span>            :   void unmapBufferMemory(Buffer &amp;buffer);</a>
+<a name="86"><span class="lineNum">      86 </span>            : </a>
+<a name="87"><span class="lineNum">      87 </span>            :   /**</a>
+<a name="88"><span class="lineNum">      88 </span>            :    * @brief initialize the vulkan instance</a>
+<a name="89"><span class="lineNum">      89 </span>            :    *</a>
+<a name="90"><span class="lineNum">      90 </span>            :    * @return VulkanBuilder&amp;</a>
+<a name="91"><span class="lineNum">      91 </span>            :    */</a>
+<a name="92"><span class="lineNum">      92 </span>            :   VulkanBuilder &amp;initialize();</a>
+<a name="93"><span class="lineNum">      93 </span>            : </a>
+<a name="94"><span class="lineNum">      94 </span>            :   /**</a>
+<a name="95"><span class="lineNum">      95 </span>            :    * @brief clear the vulkan instance</a>
+<a name="96"><span class="lineNum">      96 </span>            :    *</a>
+<a name="97"><span class="lineNum">      97 </span>            :    * @return VulkanBuilder&amp;</a>
+<a name="98"><span class="lineNum">      98 </span>            :    */</a>
+<a name="99"><span class="lineNum">      99 </span>            :   VulkanBuilder &amp;clear();</a>
+<a name="100"><span class="lineNum">     100 </span>            : </a>
+<a name="101"><span class="lineNum">     101 </span>            :   /**</a>
+<a name="102"><span class="lineNum">     102 </span>            :    * @brief find memory type</a>
+<a name="103"><span class="lineNum">     103 </span>            :    *</a>
+<a name="104"><span class="lineNum">     104 </span>            :    * @param typeFilter</a>
+<a name="105"><span class="lineNum">     105 </span>            :    * @param properties</a>
+<a name="106"><span class="lineNum">     106 </span>            :    * @return uint32_t</a>
+<a name="107"><span class="lineNum">     107 </span>            :    */</a>
+<a name="108"><span class="lineNum">     108 </span>            :   uint32_t findMemoryType(uint32_t typeFilter,</a>
+<a name="109"><span class="lineNum">     109 </span>            :                           VkMemoryPropertyFlags properties) const;</a>
+<a name="110"><span class="lineNum">     110 </span>            : </a>
+<a name="111"><span class="lineNum">     111 </span>            :   /**</a>
+<a name="112"><span class="lineNum">     112 </span>            :    * @brief Get the Memory Properties flags</a>
+<a name="113"><span class="lineNum">     113 </span>            :    *</a>
+<a name="114"><span class="lineNum">     114 </span>            :    * @return VkMemoryPropertyFlags</a>
+<a name="115"><span class="lineNum">     115 </span>            :    */</a>
+<a name="116"><span class="lineNum">     116 </span>            :   VkMemoryPropertyFlags getMemoryProperties();</a>
+<a name="117"><span class="lineNum">     117 </span>            : </a>
+<a name="118"><span class="lineNum">     118 </span>            :   /**</a>
+<a name="119"><span class="lineNum">     119 </span>            :    * @brief load a GLSL shader file and compile it into a uint32 vector</a>
+<a name="120"><span class="lineNum">     120 </span>            :    *</a>
+<a name="121"><span class="lineNum">     121 </span>            :    * @param path</a>
+<a name="122"><span class="lineNum">     122 </span>            :    * @return std::unique_ptr&lt;std::vector&lt;uint32_t&gt;&gt;</a>
+<a name="123"><span class="lineNum">     123 </span>            :    */</a>
+<a name="124"><span class="lineNum">     124 </span>            :   std::unique_ptr&lt;std::vector&lt;uint32_t&gt;&gt; loadShader(const std::string &amp;path);</a>
+<a name="125"><span class="lineNum">     125 </span>            : </a>
+<a name="126"><span class="lineNum">     126 </span>            : private:</a>
+<a name="127"><span class="lineNum">     127 </span>            :   std::optional&lt;unsigned int&gt; _pickQueueFamily();</a>
+<a name="128"><span class="lineNum">     128 </span>            :   std::optional&lt;VkPhysicalDevice&gt; _pickPhysicalDevice();</a>
+<a name="129"><span class="lineNum">     129 </span>            : </a>
+<a name="130"><span class="lineNum">     130 </span>            :   void _createCommandPool();</a>
+<a name="131"><span class="lineNum">     131 </span>            :   void _allocateCommandBuffers();</a>
+<a name="132"><span class="lineNum">     132 </span>            :   void _createBuffers();</a>
+<a name="133"><span class="lineNum">     133 </span>            :   void _createDescriptorSetLayout();</a>
+<a name="134"><span class="lineNum">     134 </span>            :   void _createDescriptorPool();</a>
+<a name="135"><span class="lineNum">     135 </span>            :   void _allocateDescriptorSets();</a>
+<a name="136"><span class="lineNum">     136 </span>            :   void _createPipelineLayout();</a>
+<a name="137"><span class="lineNum">     137 </span>            :   void _createFence();</a>
+<a name="138"><span class="lineNum">     138 </span>            :   void _createShaderModules();</a>
+<a name="139"><span class="lineNum">     139 </span>            :   void _createComputePipelines();</a>
+<a name="140"><span class="lineNum">     140 </span>            :   void _updateDescriptorSets();</a>
+<a name="141"><span class="lineNum">     141 </span>            : </a>
+<a name="142"><span class="lineNum">     142 </span>            :   std::shared_ptr&lt;Vulkan&gt; vulkan_ = nullptr;</a>
+<a name="143"><span class="lineNum">     143 </span>            :   size_t commandPoolSize_ = 1;</a>
+<a name="144"><span class="lineNum">     144 </span>            :   size_t maxNeighboosPerNeuron_ = 4;</a>
+<a name="145"><span class="lineNum">     145 </span>            :   bool enableDebugInfo_ = false;</a>
+<a name="146"><span class="lineNum">     146 </span>            : };</a>
+<a name="147"><span class="lineNum">     147 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>

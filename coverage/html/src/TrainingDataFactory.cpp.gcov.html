@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">79</td>
-            <td class="headerCovTableEntry">87</td>
-            <td class="headerCovTableEntryHi">90.8 %</td>
+            <td class="headerCovTableEntry">83</td>
+            <td class="headerCovTableEntry">93</td>
+            <td class="headerCovTableEntryMed">89.2 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-09 16:20:55</td>
+            <td class="headerValue">2024-05-22 21:03:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -94,10 +94,10 @@
 <a name="32"><span class="lineNum">      32 </span>            :   // load images paths</a>
 <a name="33"><span class="lineNum">      33 </span><span class="lineCov">          4 :   if (!app_params.training_data_file.empty()) {</span></a>
 <a name="34"><span class="lineNum">      34 </span><span class="lineCov">          1 :     datas = trainingDataReader_.loadTrainingDataPaths();</span></a>
-<a name="35"><span class="lineNum">      35 </span><span class="lineCov">          1 :     dataList_.type = DataListType::INPUT_TARGET;</span></a>
+<a name="35"><span class="lineNum">      35 </span><span class="lineCov">          1 :     dataListType_ = DataListType::INPUT_TARGET;</span></a>
 <a name="36"><span class="lineNum">      36 </span><span class="lineCov">          3 :   } else if (!app_params.training_data_folder.empty()) {</span></a>
 <a name="37"><span class="lineNum">      37 </span><span class="lineCov">          2 :     datas = trainingDataReader_.loadTrainingDataFolder();</span></a>
-<a name="38"><span class="lineNum">      38 </span><span class="lineCov">          2 :     dataList_.type = DataListType::TARGET_FOLDER;</span></a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineCov">          2 :     dataListType_ = DataListType::TARGET_FOLDER;</span></a>
 <a name="39"><span class="lineNum">      39 </span>            :   } else {</a>
 <a name="40"><span class="lineNum">      40 </span><span class="lineCov">          1 :     throw TrainingDataFactoryException(</span></a>
 <a name="41"><span class="lineNum">      41 </span><span class="lineCov">          2 :         &quot;Invalid training data file or data folder&quot;);</span></a>
@@ -161,45 +161,51 @@
 <a name="99"><span class="lineNum">      99 </span><span class="lineCov">        120 :       network_params.output_size_x, network_params.output_size_y);</span></a>
 <a name="100"><span class="lineNum">     100 </span>            : </a>
 <a name="101"><span class="lineNum">     101 </span>            :   // generate or load the input image</a>
-<a name="102"><span class="lineNum">     102 </span>            :   ImageParts inputImageParts =</a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">         60 :       dataList_.type == DataListType::TARGET_FOLDER</span></a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         60 :           ? imageHelper_.generateInputImage(</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         40 :                 targetImageParts, app_params.training_reduce_factor,</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         40 :                 network_params.input_size_x, network_params.input_size_y)</span></a>
-<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         20 :           : imageHelper_.loadImage(data.file_input, app_params.image_split,</span></a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         20 :                                    app_params.enable_padding,</span></a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         20 :                                    network_params.input_size_x,</span></a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">        120 :                                    network_params.input_size_y);</span></a>
-<a name="111"><span class="lineNum">     111 </span>            : </a>
-<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         60 :   (*index)++;</span></a>
-<a name="113"><span class="lineNum">     113 </span>            : </a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         60 :   if (app_params.bulk_loading) {</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :     data.img_input = inputImageParts;</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :     data.img_target = targetImageParts;</span></a>
-<a name="117"><span class="lineNum">     117 </span><span class="lineNoCov">          0 :     return std::make_shared&lt;Data&gt;(data);</span></a>
-<a name="118"><span class="lineNum">     118 </span>            :   } else {</a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineCov">         60 :     return std::make_shared&lt;Data&gt;(Data{</span></a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineCov">         60 :         .file_input = data.file_input,</span></a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineCov">         60 :         .file_output = data.file_output,</span></a>
-<a name="122"><span class="lineNum">     122 </span><span class="lineCov">         60 :         .file_target = data.file_target,</span></a>
-<a name="123"><span class="lineNum">     123 </span>            :         .img_input = inputImageParts,</a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         60 :         .img_output = data.img_output,</span></a>
-<a name="125"><span class="lineNum">     125 </span>            :         .img_target = targetImageParts,</a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         60 :     });</span></a>
-<a name="127"><span class="lineNum">     127 </span>            :   }</a>
-<a name="128"><span class="lineNum">     128 </span><span class="lineCov">         60 : }</span></a>
-<a name="129"><span class="lineNum">     129 </span>            : </a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         19 : void TrainingDataFactory::resetCounters() {</span></a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         19 :   currentTrainingIndex_ = 0;</span></a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         19 :   currentValidationIndex_ = 0;</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineCov">         19 : }</span></a>
-<a name="134"><span class="lineNum">     134 </span>            : </a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">          7 : void TrainingDataFactory::clear() {</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          7 :   dataList_.data_training.clear();</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          7 :   dataList_.data_validation.clear();</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">          7 :   resetCounters();</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineCov">          7 :   isLoaded_ = false;</span></a>
-<a name="140"><span class="lineNum">     140 </span><span class="lineCov">          7 : }</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         60 :   ImageParts inputImageParts;</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">         60 :   switch (dataListType_) {</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         40 :   case DataListType::TARGET_FOLDER:</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         40 :     inputImageParts = imageHelper_.generateInputImage(</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         40 :         targetImageParts, app_params.training_reduce_factor,</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         40 :         network_params.input_size_x, network_params.input_size_y);</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         40 :     break;</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         20 :   case DataListType::INPUT_TARGET:</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         20 :     inputImageParts = imageHelper_.loadImage(</span></a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         20 :         data.file_input, app_params.image_split, app_params.enable_padding,</span></a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         20 :         network_params.input_size_x, network_params.input_size_y);</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         20 :     break;</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :   default:</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :     throw TrainingDataFactoryException(&quot;Unimplemented DataListType&quot;);</span></a>
+<a name="116"><span class="lineNum">     116 </span>            :   }</a>
+<a name="117"><span class="lineNum">     117 </span>            : </a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">         60 :   (*index)++;</span></a>
+<a name="119"><span class="lineNum">     119 </span>            : </a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">         60 :   if (app_params.bulk_loading) {</span></a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :     data.img_input = inputImageParts;</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineNoCov">          0 :     data.img_target = targetImageParts;</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :     return std::make_shared&lt;Data&gt;(data);</span></a>
+<a name="124"><span class="lineNum">     124 </span>            :   } else {</a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">         60 :     return std::make_shared&lt;Data&gt;(Data{</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         60 :         .file_input = data.file_input,</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         60 :         .file_target = data.file_target,</span></a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">         60 :         .file_output = data.file_output,</span></a>
+<a name="129"><span class="lineNum">     129 </span>            :         .img_input = inputImageParts,</a>
+<a name="130"><span class="lineNum">     130 </span>            :         .img_target = targetImageParts,</a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         60 :         .img_output = data.img_output,</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         60 :     });</span></a>
+<a name="133"><span class="lineNum">     133 </span>            :   }</a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         60 : }</span></a>
+<a name="135"><span class="lineNum">     135 </span>            : </a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         19 : void TrainingDataFactory::resetCounters() {</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         19 :   currentTrainingIndex_ = 0;</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">         19 :   currentValidationIndex_ = 0;</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         19 : }</span></a>
+<a name="140"><span class="lineNum">     140 </span>            : </a>
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">          7 : void TrainingDataFactory::clear() {</span></a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">          7 :   dataList_.data_training.clear();</span></a>
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">          7 :   dataList_.data_validation.clear();</span></a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">          7 :   resetCounters();</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">          7 :   isLoaded_ = false;</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">          7 : }</span></a>
 </pre>
       </td>
     </tr>

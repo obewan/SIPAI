@@ -86,16 +86,37 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0e2142091726d4de3d13b066ac06551"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#ad0e2142091726d4de3d13b066ac06551">withDebugInfo</a> (bool enable=true)</td></tr>
 <tr class="memdesc:ad0e2142091726d4de3d13b066ac06551"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable debug infos (do not enable for production)  <a href="classsipai_1_1VulkanBuilder.html#ad0e2142091726d4de3d13b066ac06551">More...</a><br /></td></tr>
 <tr class="separator:ad0e2142091726d4de3d13b066ac06551"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa563e6b38e4ff1d82a40327a94b5bfd9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#aa563e6b38e4ff1d82a40327a94b5bfd9">build</a> (std::shared_ptr&lt; <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> &gt; vulkan)</td></tr>
-<tr class="memdesc:aa563e6b38e4ff1d82a40327a94b5bfd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">build the <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> controller  <a href="classsipai_1_1VulkanBuilder.html#aa563e6b38e4ff1d82a40327a94b5bfd9">More...</a><br /></td></tr>
-<tr class="separator:aa563e6b38e4ff1d82a40327a94b5bfd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae21fc686b7337a9ff5efda1480fc65ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#ae21fc686b7337a9ff5efda1480fc65ba">withVulkan</a> (std::shared_ptr&lt; <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> &gt; vulkan)</td></tr>
+<tr class="memdesc:ae21fc686b7337a9ff5efda1480fc65ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> struct  <a href="classsipai_1_1VulkanBuilder.html#ae21fc686b7337a9ff5efda1480fc65ba">More...</a><br /></td></tr>
+<tr class="separator:ae21fc686b7337a9ff5efda1480fc65ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3111ac92293672fe4b7d1e8f869a1810"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a3111ac92293672fe4b7d1e8f869a1810">build</a> ()</td></tr>
+<tr class="memdesc:a3111ac92293672fe4b7d1e8f869a1810"><td class="mdescLeft">&#160;</td><td class="mdescRight">build the <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> controller  <a href="classsipai_1_1VulkanBuilder.html#a3111ac92293672fe4b7d1e8f869a1810">More...</a><br /></td></tr>
+<tr class="separator:a3111ac92293672fe4b7d1e8f869a1810"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab851b9820461b56d6a12330f2bd0bf4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#ab851b9820461b56d6a12330f2bd0bf4e">mapBufferMemory</a> (<a class="el" href="structsipai_1_1Buffer.html">Buffer</a> &amp;buffer)</td></tr>
+<tr class="memdesc:ab851b9820461b56d6a12330f2bd0bf4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps a buffer's VRAM memory to CPU RAM memory. This allows the CPU to directly read from or write to the VRAM. Note: Proper synchronization must be ensured to prevent data races. Make sure any GPU operations using the buffer have completed before mapping.  <a href="classsipai_1_1VulkanBuilder.html#ab851b9820461b56d6a12330f2bd0bf4e">More...</a><br /></td></tr>
+<tr class="separator:ab851b9820461b56d6a12330f2bd0bf4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a965c9b5cd95028de33948766e7bff5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a1a965c9b5cd95028de33948766e7bff5">unmapBufferMemory</a> (<a class="el" href="structsipai_1_1Buffer.html">Buffer</a> &amp;buffer)</td></tr>
+<tr class="memdesc:a1a965c9b5cd95028de33948766e7bff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmaps a previously mapped buffer's VRAM memory from the CPU RAM memory. After this operation, the CPU will no longer have direct access to the buffer's memory. Note: Any writes to the memory should be completed before unmapping to ensure they are reflected in the buffer.  <a href="classsipai_1_1VulkanBuilder.html#a1a965c9b5cd95028de33948766e7bff5">More...</a><br /></td></tr>
+<tr class="separator:a1a965c9b5cd95028de33948766e7bff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34b3a63d7bc2d4dfb33662e83a9cb226"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a34b3a63d7bc2d4dfb33662e83a9cb226">initialize</a> ()</td></tr>
+<tr class="memdesc:a34b3a63d7bc2d4dfb33662e83a9cb226"><td class="mdescLeft">&#160;</td><td class="mdescRight">initialize the vulkan instance  <a href="classsipai_1_1VulkanBuilder.html#a34b3a63d7bc2d4dfb33662e83a9cb226">More...</a><br /></td></tr>
+<tr class="separator:a34b3a63d7bc2d4dfb33662e83a9cb226"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85fd2a086f245733939f5cf428d21089"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a85fd2a086f245733939f5cf428d21089">clear</a> ()</td></tr>
 <tr class="memdesc:a85fd2a086f245733939f5cf428d21089"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the vulkan instance  <a href="classsipai_1_1VulkanBuilder.html#a85fd2a086f245733939f5cf428d21089">More...</a><br /></td></tr>
 <tr class="separator:a85fd2a086f245733939f5cf428d21089"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea2e11e9074498b901576bfc223e64f1"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#aea2e11e9074498b901576bfc223e64f1">findMemoryType</a> (uint32_t typeFilter, VkMemoryPropertyFlags properties) const</td></tr>
+<tr class="memdesc:aea2e11e9074498b901576bfc223e64f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">find memory type  <a href="classsipai_1_1VulkanBuilder.html#aea2e11e9074498b901576bfc223e64f1">More...</a><br /></td></tr>
+<tr class="separator:aea2e11e9074498b901576bfc223e64f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b67b3a16c28ad3e5bda29c48043a3fe"><td class="memItemLeft" align="right" valign="top">VkMemoryPropertyFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a3b67b3a16c28ad3e5bda29c48043a3fe">getMemoryProperties</a> ()</td></tr>
+<tr class="memdesc:a3b67b3a16c28ad3e5bda29c48043a3fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Memory Properties flags.  <a href="classsipai_1_1VulkanBuilder.html#a3b67b3a16c28ad3e5bda29c48043a3fe">More...</a><br /></td></tr>
+<tr class="separator:a3b67b3a16c28ad3e5bda29c48043a3fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5370bd5f34dd32d61f26d963503b2a27"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">loadShader</a> (const std::string &amp;path)</td></tr>
+<tr class="memdesc:a5370bd5f34dd32d61f26d963503b2a27"><td class="mdescLeft">&#160;</td><td class="mdescRight">load a GLSL shader file and compile it into a uint32 vector  <a href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">More...</a><br /></td></tr>
+<tr class="separator:a5370bd5f34dd32d61f26d963503b2a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa563e6b38e4ff1d82a40327a94b5bfd9" name="aa563e6b38e4ff1d82a40327a94b5bfd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa563e6b38e4ff1d82a40327a94b5bfd9">&#9670;&nbsp;</a></span>build()</h2>
+<a id="a3111ac92293672fe4b7d1e8f869a1810" name="a3111ac92293672fe4b7d1e8f869a1810"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3111ac92293672fe4b7d1e8f869a1810">&#9670;&nbsp;</a></span>build()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -103,20 +124,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp; VulkanBuilder::build </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> &gt;&#160;</td>
-          <td class="paramname"><em>vulkan</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>build the <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> controller </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">vulkan</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a>&amp; </dd></dl>
 
 </div>
@@ -138,6 +152,163 @@ Public Member Functions</h2></td></tr>
 
 <p>clear the vulkan instance </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a>&amp; </dd></dl>
+
+</div>
+</div>
+<a id="aea2e11e9074498b901576bfc223e64f1" name="aea2e11e9074498b901576bfc223e64f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea2e11e9074498b901576bfc223e64f1">&#9670;&nbsp;</a></span>findMemoryType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t VulkanBuilder::findMemoryType </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>typeFilter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">VkMemoryPropertyFlags&#160;</td>
+          <td class="paramname"><em>properties</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>find memory type </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typeFilter</td><td></td></tr>
+    <tr><td class="paramname">properties</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>uint32_t </dd></dl>
+
+</div>
+</div>
+<a id="a3b67b3a16c28ad3e5bda29c48043a3fe" name="a3b67b3a16c28ad3e5bda29c48043a3fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b67b3a16c28ad3e5bda29c48043a3fe">&#9670;&nbsp;</a></span>getMemoryProperties()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the Memory Properties flags. </p>
+<dl class="section return"><dt>Returns</dt><dd>VkMemoryPropertyFlags </dd></dl>
+
+</div>
+</div>
+<a id="a34b3a63d7bc2d4dfb33662e83a9cb226" name="a34b3a63d7bc2d4dfb33662e83a9cb226"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34b3a63d7bc2d4dfb33662e83a9cb226">&#9670;&nbsp;</a></span>initialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp; VulkanBuilder::initialize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>initialize the vulkan instance </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a>&amp; </dd></dl>
+
+</div>
+</div>
+<a id="a5370bd5f34dd32d61f26d963503b2a27" name="a5370bd5f34dd32d61f26d963503b2a27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5370bd5f34dd32d61f26d963503b2a27">&#9670;&nbsp;</a></span>loadShader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt; VulkanBuilder::loadShader </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>load a GLSL shader file and compile it into a uint32 vector </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::unique_ptr&lt;std::vector&lt;uint32_t&gt;&gt; </dd></dl>
+
+</div>
+</div>
+<a id="ab851b9820461b56d6a12330f2bd0bf4e" name="ab851b9820461b56d6a12330f2bd0bf4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab851b9820461b56d6a12330f2bd0bf4e">&#9670;&nbsp;</a></span>mapBufferMemory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VulkanBuilder::mapBufferMemory </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsipai_1_1Buffer.html">Buffer</a> &amp;&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maps a buffer's VRAM memory to CPU RAM memory. This allows the CPU to directly read from or write to the VRAM. Note: Proper synchronization must be ensured to prevent data races. Make sure any GPU operations using the buffer have completed before mapping. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>The buffer whose memory is to be mapped. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1a965c9b5cd95028de33948766e7bff5" name="a1a965c9b5cd95028de33948766e7bff5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a965c9b5cd95028de33948766e7bff5">&#9670;&nbsp;</a></span>unmapBufferMemory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VulkanBuilder::unmapBufferMemory </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsipai_1_1Buffer.html">Buffer</a> &amp;&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unmaps a previously mapped buffer's VRAM memory from the CPU RAM memory. After this operation, the CPU will no longer have direct access to the buffer's memory. Note: Any writes to the memory should be completed before unmapping to ensure they are reflected in the buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>The buffer whose memory is to be unmapped. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -239,6 +410,41 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">size</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a>&amp; </dd></dl>
+
+</div>
+</div>
+<a id="ae21fc686b7337a9ff5efda1480fc65ba" name="ae21fc686b7337a9ff5efda1480fc65ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae21fc686b7337a9ff5efda1480fc65ba">&#9670;&nbsp;</a></span>withVulkan()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsipai_1_1VulkanBuilder.html">VulkanBuilder</a> &amp; sipai::VulkanBuilder::withVulkan </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> &gt;&#160;</td>
+          <td class="paramname"><em>vulkan</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> struct </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vulkan</td><td></td></tr>
   </table>
   </dd>
 </dl>

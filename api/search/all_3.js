@@ -7,7 +7,7 @@ var searchData=
   ['data_5fvalidation_4',['data_validation',['../structsipai_1_1DataList.html#aa29cc432c99d6039e1abcabc835d54a8',1,'sipai::DataList']]],
   ['datalist_5',['DataList',['../structsipai_1_1DataList.html',1,'sipai']]],
   ['datalist_2eh_6',['DataList.h',['../DataList_8h.html',1,'']]],
-  ['datalisttype_7',['DataListType',['../namespacesipai.html#a5f091453eb70ed195ed4db4d28b0d151',1,'sipai']]],
+  ['datalisttype_7',['DataListType',['../classsipai_1_1TrainingDataFactory.html#af7522665428e86b69c20d3a91c41bb11',1,'sipai::TrainingDataFactory']]],
   ['debug_8',['debug',['../classsipai_1_1SimpleLogger.html#a1cbdbc60b0f8c912cc6d27dfb4977b5b',1,'sipai::SimpleLogger']]],
   ['debug_9',['DEBUG',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0adc30ec20708ef7b0f641ef78b7880a15',1,'sipai']]],
   ['descriptorpool_10',['descriptorPool',['../structsipai_1_1Vulkan.html#ac8531941cf6561c506bd4c72f975dd69',1,'sipai::Vulkan']]],

@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">83</td>
-            <td class="headerCovTableEntry">90</td>
-            <td class="headerCovTableEntryHi">92.2 %</td>
+            <td class="headerCovTableEntry">82</td>
+            <td class="headerCovTableEntry">89</td>
+            <td class="headerCovTableEntryHi">92.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-09 16:20:55</td>
+            <td class="headerValue">2024-05-22 21:03:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -81,7 +81,7 @@
 <a name="19"><span class="lineNum">      19 </span>            :     const std::unique_ptr&lt;NeuralNetwork&gt; &amp;network,</a>
 <a name="20"><span class="lineNum">      20 </span>            :     const AppParams &amp;appParams) const {</a>
 <a name="21"><span class="lineNum">      21 </span>            :   // get the csv filename</a>
-<a name="22"><span class="lineNum">      22 </span><span class="lineCov">          4 :   std::string filename = getFilenameCsv(appParams.network_to_export);</span></a>
+<a name="22"><span class="lineNum">      22 </span><span class="lineCov">          4 :   std::string filename = Common::getFilenameCsv(appParams.network_to_export);</span></a>
 <a name="23"><span class="lineNum">      23 </span><span class="lineCov">          4 :   std::ofstream file(filename);</span></a>
 <a name="24"><span class="lineNum">      24 </span>            : </a>
 <a name="25"><span class="lineNum">      25 </span>            :   // Write the data</a>
@@ -126,7 +126,7 @@
 <a name="64"><span class="lineNum">      64 </span><span class="lineCov">         30 :   };</span></a>
 <a name="65"><span class="lineNum">      65 </span>            : </a>
 <a name="66"><span class="lineNum">      66 </span>            :   // get the csv filename</a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          1 :   std::string filename = getFilenameCsv(appParams.network_to_import);</span></a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          1 :   std::string filename = Common::getFilenameCsv(appParams.network_to_import);</span></a>
 <a name="68"><span class="lineNum">      68 </span><span class="lineCov">          1 :   std::ifstream file(filename);</span></a>
 <a name="69"><span class="lineNum">      69 </span><span class="lineCov">          1 :   if (!file.is_open()) {</span></a>
 <a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :     throw ImportExportException(&quot;Failed to open file: &quot; + filename);</span></a>
@@ -169,8 +169,8 @@
 <a name="107"><span class="lineNum">     107 </span>            :         }</a>
 <a name="108"><span class="lineNum">     108 </span><span class="lineCov">         75 :         i_cols++;</span></a>
 <a name="109"><span class="lineNum">     109 </span><span class="lineCov">         75 :         if (i_cols &gt;= weights_cols) {</span></a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         30 :           i_cols = 0;</span></a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         30 :           i_rows++;</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">         21 :           i_cols = 0;</span></a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         21 :           i_rows++;</span></a>
 <a name="112"><span class="lineNum">     112 </span>            :         }</a>
 <a name="113"><span class="lineNum">     113 </span>            :       }</a>
 <a name="114"><span class="lineNum">     114 </span><span class="lineCov">         15 :       network-&gt;layers.at(layer_index)</span></a>
@@ -193,20 +193,19 @@
 <a name="131"><span class="lineNum">     131 </span>            :         }</a>
 <a name="132"><span class="lineNum">     132 </span>            :       }</a>
 <a name="133"><span class="lineNum">     133 </span><span class="lineCov">         15 :       auto &amp;connections = network-&gt;layers.at(layer_index)</span></a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         15 :                               -&gt;neurons.at(neuron_row)</span></a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         15 :                               .at(neuron_col)</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         15 :                               .neighbors;</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         15 :       if (connections.size() != weights.size()) {</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :         throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                                     std::to_string(current_line_number) +</span></a>
-<a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :                                     &quot;): invalid column numbers&quot;);</span></a>
-<a name="141"><span class="lineNum">     141 </span>            :       }</a>
-<a name="142"><span class="lineNum">     142 </span><span class="lineCov">         53 :       for (size_t i = 0; i &lt; connections.size(); i++) {</span></a>
-<a name="143"><span class="lineNum">     143 </span><span class="lineCov">         38 :         connections.at(i).weight = weights.at(i);</span></a>
-<a name="144"><span class="lineNum">     144 </span>            :       }</a>
-<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         15 :     }</span></a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">         30 :   }</span></a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          1 : }</span></a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         15 :                               -&gt;neurons[neuron_row][neuron_col]</span></a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         15 :                               .neighbors;</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         15 :       if (connections.size() != weights.size()) {</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineNoCov">          0 :         throw ImportExportException(&quot;CSV parsing error at line (&quot; +</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :                                     std::to_string(current_line_number) +</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                                     &quot;): invalid column numbers&quot;);</span></a>
+<a name="140"><span class="lineNum">     140 </span>            :       }</a>
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">         53 :       for (size_t i = 0; i &lt; connections.size(); i++) {</span></a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">         38 :         connections.at(i).weight = weights.at(i);</span></a>
+<a name="143"><span class="lineNum">     143 </span>            :       }</a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">         15 :     }</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         30 :   }</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">          1 : }</span></a>
 </pre>
       </td>
     </tr>

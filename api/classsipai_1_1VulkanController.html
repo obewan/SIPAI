@@ -88,12 +88,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a025d283d4661fd9d38450138fcaa532b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e41f8c443f52895697c311b37710d8f"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#a2e41f8c443f52895697c311b37710d8f">IsInitialized</a> ()</td></tr>
 <tr class="separator:a2e41f8c443f52895697c311b37710d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca646c724c2a1fe182f643cd68ceac32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#aca646c724c2a1fe182f643cd68ceac32">forwardPropagation</a> (<a class="el" href="classsipai_1_1Layer.html">Layer</a> *previousLayer, <a class="el" href="classsipai_1_1Layer.html">Layer</a> *currentLayer)</td></tr>
-<tr class="memdesc:aca646c724c2a1fe182f643cd68ceac32"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> Forward Propagation.  <a href="classsipai_1_1VulkanController.html#aca646c724c2a1fe182f643cd68ceac32">More...</a><br /></td></tr>
-<tr class="separator:aca646c724c2a1fe182f643cd68ceac32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafa51929456d5df3e451b291a9d5105d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#aafa51929456d5df3e451b291a9d5105d">backwardPropagation</a> (<a class="el" href="classsipai_1_1Layer.html">Layer</a> *nextLayer, <a class="el" href="classsipai_1_1Layer.html">Layer</a> *currentLayer)</td></tr>
-<tr class="memdesc:aafa51929456d5df3e451b291a9d5105d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> Backward Propagation.  <a href="classsipai_1_1VulkanController.html#aafa51929456d5df3e451b291a9d5105d">More...</a><br /></td></tr>
-<tr class="separator:aafa51929456d5df3e451b291a9d5105d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd6abf1bf4fa903344fcbda403d1aa67"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">trainingMonitored</a> (const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;inputValues, const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;targetValues, const <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> &amp;phase)</td></tr>
+<tr class="memdesc:abd6abf1bf4fa903344fcbda403d1aa67"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> training or validation on an input image.  <a href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">More...</a><br /></td></tr>
+<tr class="separator:abd6abf1bf4fa903344fcbda403d1aa67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a316d648cf30fcfa3e00fd2b54aaddabb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#a316d648cf30fcfa3e00fd2b54aaddabb">destroy</a> ()</td></tr>
 <tr class="memdesc:a316d648cf30fcfa3e00fd2b54aaddabb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the device instance, cleaning ressources.  <a href="classsipai_1_1VulkanController.html#a316d648cf30fcfa3e00fd2b54aaddabb">More...</a><br /></td></tr>
 <tr class="separator:a316d648cf30fcfa3e00fd2b54aaddabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,6 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a43079eefe4e357de5201fe68ba9e41f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6df7454ed704dd900744df67c7e78fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsipai_1_1Shader.html">Shader</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#ad6df7454ed704dd900744df67c7e78fd">getShader</a> (const <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">EShader</a> &amp;shaderName)</td></tr>
 <tr class="separator:ad6df7454ed704dd900744df67c7e78fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4863122a608e966bef1f696188bbf295"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#a4863122a608e966bef1f696188bbf295">getVulkan</a> ()</td></tr>
+<tr class="separator:a4863122a608e966bef1f696188bbf295"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -166,43 +165,6 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aafa51929456d5df3e451b291a9d5105d" name="aafa51929456d5df3e451b291a9d5105d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafa51929456d5df3e451b291a9d5105d">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void VulkanController::backwardPropagation </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classsipai_1_1Layer.html">Layer</a> *&#160;</td>
-          <td class="paramname"><em>nextLayer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classsipai_1_1Layer.html">Layer</a> *&#160;</td>
-          <td class="paramname"><em>currentLayer</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> Backward Propagation. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">nextLayer</td><td></td></tr>
-    <tr><td class="paramname">currentLayer</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a316d648cf30fcfa3e00fd2b54aaddabb" name="a316d648cf30fcfa3e00fd2b54aaddabb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a316d648cf30fcfa3e00fd2b54aaddabb">&#9670;&nbsp;</a></span>destroy()</h2>
 
@@ -227,43 +189,6 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Destroy the device instance, cleaning ressources. </p>
-
-</div>
-</div>
-<a id="aca646c724c2a1fe182f643cd68ceac32" name="aca646c724c2a1fe182f643cd68ceac32"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca646c724c2a1fe182f643cd68ceac32">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void VulkanController::forwardPropagation </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classsipai_1_1Layer.html">Layer</a> *&#160;</td>
-          <td class="paramname"><em>previousLayer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classsipai_1_1Layer.html">Layer</a> *&#160;</td>
-          <td class="paramname"><em>currentLayer</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> Forward Propagation. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">previousLayer</td><td></td></tr>
-    <tr><td class="paramname">currentLayer</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -406,6 +331,31 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a4863122a608e966bef1f696188bbf295" name="a4863122a608e966bef1f696188bbf295"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4863122a608e966bef1f696188bbf295">&#9670;&nbsp;</a></span>getVulkan()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> &gt; sipai::VulkanController::getVulkan </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a025d283d4661fd9d38450138fcaa532b" name="a025d283d4661fd9d38450138fcaa532b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a025d283d4661fd9d38450138fcaa532b">&#9670;&nbsp;</a></span>initialize()</h2>
 
@@ -472,6 +422,43 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="abd6abf1bf4fa903344fcbda403d1aa67" name="abd6abf1bf4fa903344fcbda403d1aa67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd6abf1bf4fa903344fcbda403d1aa67">&#9670;&nbsp;</a></span>trainingMonitored()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float VulkanController::trainingMonitored </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>targetValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> &amp;&#160;</td>
+          <td class="paramname"><em>phase</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> training or validation on an input image. </p>
+<dl class="section return"><dt>Returns</dt><dd>float computed loss between the generated output and the expected images after the training or the validation </dd></dl>
 
 </div>
 </div>

@@ -7,7 +7,5 @@ var searchData=
   ['pipeline_4',['pipeline',['../structsipai_1_1Shader.html#ad3c39f09b692d93b94dcee3ec3f3004c',1,'sipai::Shader']]],
   ['pipelinelayout_5',['pipelineLayout',['../structsipai_1_1Vulkan.html#af4f9fb636e2fb2d6e1d6187cb801936d',1,'sipai::Vulkan']]],
   ['prelu_6',['PReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a474e0c94ac3a455d2b98a72feba8fba4',1,'sipai']]],
-  ['previouslayer_7',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]],
-  ['previouslayersizex_8',['previousLayerSizeX',['../structsipai_1_1GLSLParameters.html#a097db3ed9810bbbcf89ea1b14bc22023',1,'sipai::GLSLParameters']]],
-  ['previouslayersizey_9',['previousLayerSizeY',['../structsipai_1_1GLSLParameters.html#a6a227c6dbc0261afb1ba594f9d169226',1,'sipai::GLSLParameters']]]
+  ['previouslayer_7',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]]
 ];

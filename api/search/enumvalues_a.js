@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['relu_0',['ReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194add10d919fa85cf27fc78c0e06fe0b378',1,'sipai']]]
+  ['validation_0',['Validation',['../namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174a13148717f8faa9037f37d28971dfc219',1,'sipai']]]
 ];

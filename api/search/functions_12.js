@@ -5,5 +5,6 @@ var searchData=
   ['with_2',['with',['../classsipai_1_1NeuralNetworkBuilder.html#af289253c0f66270e0fbbe9b4257e489e',1,'sipai::NeuralNetworkBuilder::with(std::unique_ptr&lt; NeuralNetwork &gt; &amp;network)'],['../classsipai_1_1NeuralNetworkBuilder.html#a7c6ef27e546c3a38d02cd2fa2d7181a6',1,'sipai::NeuralNetworkBuilder::with(NeuralNetworkParams &amp;network_params)'],['../classsipai_1_1NeuralNetworkBuilder.html#aef929ba255d9ca2dec4820519cf907b6',1,'sipai::NeuralNetworkBuilder::with(const AppParams &amp;app_params)']]],
   ['withcommandpoolsize_3',['withCommandPoolSize',['../classsipai_1_1VulkanBuilder.html#adb2edb942ba2ce1c2ebe4bf29600f62d',1,'sipai::VulkanBuilder']]],
   ['withdebuginfo_4',['withDebugInfo',['../classsipai_1_1VulkanBuilder.html#ad0e2142091726d4de3d13b066ac06551',1,'sipai::VulkanBuilder']]],
-  ['withmaxneighboorsperneuron_5',['withMaxNeighboorsPerNeuron',['../classsipai_1_1VulkanBuilder.html#ae7afa10df70616cc0708d3773fdcc204',1,'sipai::VulkanBuilder']]]
+  ['withmaxneighboorsperneuron_5',['withMaxNeighboorsPerNeuron',['../classsipai_1_1VulkanBuilder.html#ae7afa10df70616cc0708d3773fdcc204',1,'sipai::VulkanBuilder']]],
+  ['withvulkan_6',['withVulkan',['../classsipai_1_1VulkanBuilder.html#ae21fc686b7337a9ff5efda1480fc65ba',1,'sipai::VulkanBuilder']]]
 ];

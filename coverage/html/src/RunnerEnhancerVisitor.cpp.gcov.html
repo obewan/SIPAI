@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-09 16:20:55</td>
+            <td class="headerValue">2024-05-22 21:03:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -99,8 +99,8 @@
 <a name="37"><span class="lineNum">      37 </span>            :     // Get output image parts by forward propagation</a>
 <a name="38"><span class="lineNum">      38 </span><span class="lineCov">          1 :     ImageParts outputParts;</span></a>
 <a name="39"><span class="lineNum">      39 </span><span class="lineCov">          2 :     for (const auto &amp;inputPart : inputImage) {</span></a>
-<a name="40"><span class="lineNum">      40 </span>            :       const auto &amp;outputData = manager.network-&gt;forwardPropagation(</a>
-<a name="41"><span class="lineNum">      41 </span><span class="lineCov">          1 :           inputPart-&gt;data, app_params.enable_vulkan);</span></a>
+<a name="40"><span class="lineNum">      40 </span>            :       const auto &amp;outputData =</a>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">          1 :           manager.network-&gt;forwardPropagation(inputPart-&gt;data);</span></a>
 <a name="42"><span class="lineNum">      42 </span>            :       Image output{.data = outputData,</a>
 <a name="43"><span class="lineNum">      43 </span><span class="lineCov">          2 :                    .orig_height = inputPart-&gt;orig_height,</span></a>
 <a name="44"><span class="lineNum">      44 </span><span class="lineCov">          2 :                    .orig_width = inputPart-&gt;orig_width,</span></a>

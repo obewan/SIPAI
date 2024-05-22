@@ -9,5 +9,6 @@ var searchData=
   ['output_5ffile_6',['output_file',['../structsipai_1_1AppParams.html#aca50bfed2557acec4d1d50c38a9736a7',1,'sipai::AppParams']]],
   ['output_5fscale_7',['output_scale',['../structsipai_1_1AppParams.html#a600f0e89aa9acc0b0c9d9131dc3115e7',1,'sipai::AppParams']]],
   ['output_5fsize_5fx_8',['output_size_x',['../structsipai_1_1NeuralNetworkParams.html#a5892a752119dd90f07f0e4fac4adcd4d',1,'sipai::NeuralNetworkParams']]],
-  ['output_5fsize_5fy_9',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]]
+  ['output_5fsize_5fy_9',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]],
+  ['outputvalues_10',['outputValues',['../structsipai_1_1GLSLOutputData.html#a59527ecdb57bf9056a46dba282d853ba',1,'sipai::GLSLOutputData']]]
 ];

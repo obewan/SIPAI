@@ -93,12 +93,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a72378481824cdc3f09c886ed8cde7198"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae970427ce00a31ca4095d39d9e15926a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html#ae970427ce00a31ca4095d39d9e15926a">LayerInput</a> (size_t <a class="el" href="classsipai_1_1Layer.html#aff064c69559cb4c04fef86d1fc60d57c">size_x</a>, size_t <a class="el" href="classsipai_1_1Layer.html#a6e45b06849bef6e4247a335de9169e03">size_y</a>)</td></tr>
 <tr class="separator:ae970427ce00a31ca4095d39d9e15926a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1d02664ba3ffe117b3d4181b4ed626f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html#ad1d02664ba3ffe117b3d4181b4ed626f">forwardPropagation</a> (const bool &amp;enable_vulkan=false) override</td></tr>
-<tr class="memdesc:ad1d02664ba3ffe117b3d4181b4ed626f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1LayerInput.html#ad1d02664ba3ffe117b3d4181b4ed626f">More...</a><br /></td></tr>
-<tr class="separator:ad1d02664ba3ffe117b3d4181b4ed626f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ae4516896fb8e32ddf3f5a82ea471aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html#a0ae4516896fb8e32ddf3f5a82ea471aa">backwardPropagation</a> (const bool &amp;enable_vulkan, const float &amp;error_min, const float &amp;error_max) override</td></tr>
-<tr class="memdesc:a0ae4516896fb8e32ddf3f5a82ea471aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1LayerInput.html#a0ae4516896fb8e32ddf3f5a82ea471aa">More...</a><br /></td></tr>
-<tr class="separator:a0ae4516896fb8e32ddf3f5a82ea471aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2e760229508b0065f37688e36af3642"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html#ae2e760229508b0065f37688e36af3642">forwardPropagation</a> () override</td></tr>
+<tr class="memdesc:ae2e760229508b0065f37688e36af3642"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1LayerInput.html#ae2e760229508b0065f37688e36af3642">More...</a><br /></td></tr>
+<tr class="separator:ae2e760229508b0065f37688e36af3642"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa798acafc383fa475112f2d8bce3006f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html#aa798acafc383fa475112f2d8bce3006f">backwardPropagation</a> (const float &amp;error_min, const float &amp;error_max) override</td></tr>
+<tr class="memdesc:aa798acafc383fa475112f2d8bce3006f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1LayerInput.html#aa798acafc383fa475112f2d8bce3006f">More...</a><br /></td></tr>
+<tr class="separator:aa798acafc383fa475112f2d8bce3006f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d699cc3f66c172349dc58075f51eff8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1LayerInput.html#a4d699cc3f66c172349dc58075f51eff8">updateWeights</a> (float learningRate) override</td></tr>
 <tr class="memdesc:a4d699cc3f66c172349dc58075f51eff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in this layer using the previous layer and a learning rate.  <a href="classsipai_1_1LayerInput.html#a4d699cc3f66c172349dc58075f51eff8">More...</a><br /></td></tr>
 <tr class="separator:a4d699cc3f66c172349dc58075f51eff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,12 +122,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0b05a6104ee243b4865ff2168ad7b269 inherit pub_methods_classsipai_1_1Layer"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269">apply</a> (Function operation)</td></tr>
 <tr class="memdesc:a0b05a6104ee243b4865ff2168ad7b269 inherit pub_methods_classsipai_1_1Layer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a function on all the layer neurons.  <a href="classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269">More...</a><br /></td></tr>
 <tr class="separator:a0b05a6104ee243b4865ff2168ad7b269 inherit pub_methods_classsipai_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add96ac8d77a2d770dd8ba7808b303ca1 inherit pub_methods_classsipai_1_1Layer"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#add96ac8d77a2d770dd8ba7808b303ca1">forwardPropagation</a> (const bool &amp;enable_vulkan)</td></tr>
-<tr class="memdesc:add96ac8d77a2d770dd8ba7808b303ca1 inherit pub_methods_classsipai_1_1Layer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1Layer.html#add96ac8d77a2d770dd8ba7808b303ca1">More...</a><br /></td></tr>
-<tr class="separator:add96ac8d77a2d770dd8ba7808b303ca1 inherit pub_methods_classsipai_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a844531b6eff9edb5b3c2afb030b1d63a inherit pub_methods_classsipai_1_1Layer"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a844531b6eff9edb5b3c2afb030b1d63a">backwardPropagation</a> (const bool &amp;enable_vulkan, const float &amp;error_min, const float &amp;error_max)</td></tr>
-<tr class="memdesc:a844531b6eff9edb5b3c2afb030b1d63a inherit pub_methods_classsipai_1_1Layer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1Layer.html#a844531b6eff9edb5b3c2afb030b1d63a">More...</a><br /></td></tr>
-<tr class="separator:a844531b6eff9edb5b3c2afb030b1d63a inherit pub_methods_classsipai_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0720cd219c9b3b0ae134f8328a0d5323 inherit pub_methods_classsipai_1_1Layer"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a0720cd219c9b3b0ae134f8328a0d5323">forwardPropagation</a> ()</td></tr>
+<tr class="memdesc:a0720cd219c9b3b0ae134f8328a0d5323 inherit pub_methods_classsipai_1_1Layer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation using the previous layer.  <a href="classsipai_1_1Layer.html#a0720cd219c9b3b0ae134f8328a0d5323">More...</a><br /></td></tr>
+<tr class="separator:a0720cd219c9b3b0ae134f8328a0d5323 inherit pub_methods_classsipai_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a617b2f78dd7866c2b4db09dda3dbd797 inherit pub_methods_classsipai_1_1Layer"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#a617b2f78dd7866c2b4db09dda3dbd797">backwardPropagation</a> (const float &amp;error_min, const float &amp;error_max)</td></tr>
+<tr class="memdesc:a617b2f78dd7866c2b4db09dda3dbd797 inherit pub_methods_classsipai_1_1Layer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation using the next layer.  <a href="classsipai_1_1Layer.html#a617b2f78dd7866c2b4db09dda3dbd797">More...</a><br /></td></tr>
+<tr class="separator:a617b2f78dd7866c2b4db09dda3dbd797 inherit pub_methods_classsipai_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae948800ea75dbfabddcb27a50f836c57 inherit pub_methods_classsipai_1_1Layer"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1Layer.html#ae948800ea75dbfabddcb27a50f836c57">updateWeights</a> (float learningRate)</td></tr>
 <tr class="memdesc:ae948800ea75dbfabddcb27a50f836c57 inherit pub_methods_classsipai_1_1Layer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in this layer using the previous layer and a learning rate.  <a href="classsipai_1_1Layer.html#ae948800ea75dbfabddcb27a50f836c57">More...</a><br /></td></tr>
 <tr class="separator:ae948800ea75dbfabddcb27a50f836c57 inherit pub_methods_classsipai_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -238,8 +238,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a0ae4516896fb8e32ddf3f5a82ea471aa" name="a0ae4516896fb8e32ddf3f5a82ea471aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ae4516896fb8e32ddf3f5a82ea471aa">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
+<a id="aa798acafc383fa475112f2d8bce3006f" name="aa798acafc383fa475112f2d8bce3006f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa798acafc383fa475112f2d8bce3006f">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,12 +250,6 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void sipai::LayerInput::backwardPropagation </td>
           <td>(</td>
-          <td class="paramtype">const bool &amp;&#160;</td>
-          <td class="paramname"><em>enable_vulkan</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const float &amp;&#160;</td>
           <td class="paramname"><em>error_min</em>, </td>
         </tr>
@@ -280,12 +274,12 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Performs backward propagation using the next layer. </p>
 
-<p>Reimplemented from <a class="el" href="classsipai_1_1Layer.html#a844531b6eff9edb5b3c2afb030b1d63a">sipai::Layer</a>.</p>
+<p>Reimplemented from <a class="el" href="classsipai_1_1Layer.html#a617b2f78dd7866c2b4db09dda3dbd797">sipai::Layer</a>.</p>
 
 </div>
 </div>
-<a id="ad1d02664ba3ffe117b3d4181b4ed626f" name="ad1d02664ba3ffe117b3d4181b4ed626f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1d02664ba3ffe117b3d4181b4ed626f">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
+<a id="ae2e760229508b0065f37688e36af3642" name="ae2e760229508b0065f37688e36af3642"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2e760229508b0065f37688e36af3642">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,8 +290,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void sipai::LayerInput::forwardPropagation </td>
           <td>(</td>
-          <td class="paramtype">const bool &amp;&#160;</td>
-          <td class="paramname"><em>enable_vulkan</em> = <code>false</code></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -310,7 +303,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Performs forward propagation using the previous layer. </p>
 
-<p>Reimplemented from <a class="el" href="classsipai_1_1Layer.html#add96ac8d77a2d770dd8ba7808b303ca1">sipai::Layer</a>.</p>
+<p>Reimplemented from <a class="el" href="classsipai_1_1Layer.html#a0720cd219c9b3b0ae134f8328a0d5323">sipai::Layer</a>.</p>
 
 </div>
 </div>

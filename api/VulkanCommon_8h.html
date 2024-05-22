@@ -79,6 +79,7 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;map&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;opencv2/opencv.hpp&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;vulkan/vulkan.hpp&gt;</code><br />
 </div>
@@ -86,9 +87,21 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLParameters.html">sipai::GLSLParameters</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeighbor.html">sipai::GLSLNeighbor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html">sipai::GLSLNeuron</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLParameters.html">sipai::GLSLParameters</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLInputData.html">sipai::GLSLInputData</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLOutputData.html">sipai::GLSLOutputData</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLInputLayer.html">sipai::GLSLInputLayer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLOutputLayer.html">sipai::GLSLOutputLayer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLHiddenLayer.html">sipai::GLSLHiddenLayer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Buffer.html">sipai::Buffer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,27 +118,26 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ac80e3de3115cc9e1d7f5f3de89351d4a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4a">sipai::EBuffer</a> { <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa50b4ab7c72924749a2c3a40206fa7c1e">sipai::CurrentLayerNeurons</a> = 0
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa5c6d00ddbba090aa8424d6e66fc600e1">sipai::CurrentLayerValues</a> = 1
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0ef2510b4cbde48e10e1d7dc5275b207">sipai::CurrentNeighborsErrors</a> = 2
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0786ea29475b07f08f13db33a30b9963">sipai::CurrentNeighborsWeights</a> = 3
+&#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa3225a10b07f1580f10dee4abc3779e6c">sipai::Parameters</a> = 0
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aae19b8d69e381495ab2dcfad0f947c5de">sipai::InputLayer</a> = 1
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa500cef5499f984f348ea5eabd57ee667">sipai::OutputLayer</a> = 2
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aafbdff2efb1851a8af3395e0772afbaa4">sipai::HiddenLayer1</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aab11c7e0b3c5c0a51be644bee9e276444">sipai::AdjacentLayerNeurons</a> = 4
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac02d81d145eb07f1e7c09af6f1ba5971">sipai::AdjacentLayerValues</a> = 5
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa47adbdcdac4aff13e3742c37741632d3">sipai::LayerWeights</a> = 6
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa3225a10b07f1580f10dee4abc3779e6c">sipai::Parameters</a> = 7
-, <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa29c2c02a361c9d7028472e5d92cd4a54">sipai::Output</a> = 8
+&#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aad22005abe164fc8047303060fae8fd7a">sipai::InputData</a> = 4
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b">sipai::OutputData</a> = 5
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f">sipai::OutputLoss</a> = 6
 <br />
  }</td></tr>
 <tr class="separator:ac80e3de3115cc9e1d7f5f3de89351d4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">sipai::EShader</a> { <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba67d2f6740a8eaebf4d5c6f79be8da481">sipai::Forward</a>
-, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbab3263eb38f8903efc271cc7a760da510">sipai::Backward</a>
+<tr class="memitem:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">sipai::EShader</a> { <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad8bd04dc25b6c9e78730ad78cbd8d074">sipai::TrainingMonitored</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbae1b849f9631ffc1829b2e31402373e3c">sipai::Test1</a>
  }</td></tr>
 <tr class="separator:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:ab26ebe09285bf70243b097816445c62b"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ab26ebe09285bf70243b097816445c62b">sipai::MAX_NEIGHBORS</a> = 4</td></tr>
+<tr class="separator:ab26ebe09285bf70243b097816445c62b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42ef752597f7d4aae69fda0b48c75bad"><td class="memItemLeft" align="right" valign="top">const std::map&lt; EBuffer, std::string, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a42ef752597f7d4aae69fda0b48c75bad">sipai::buffer_map</a></td></tr>
 <tr class="separator:a42ef752597f7d4aae69fda0b48c75bad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

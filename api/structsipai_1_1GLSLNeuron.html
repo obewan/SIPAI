@@ -81,12 +81,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aaebd41d9bee6ad73bfd681799ea54bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bf42f7d4604276ffea8c9e297d2f383"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html#a0bf42f7d4604276ffea8c9e297d2f383">index_y</a></td></tr>
 <tr class="separator:a0bf42f7d4604276ffea8c9e297d2f383"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cff1f55be32749e0836169df1f9901e"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html#a6cff1f55be32749e0836169df1f9901e">weightsIndex</a></td></tr>
-<tr class="separator:a6cff1f55be32749e0836169df1f9901e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0013b443ed92b31aa9c13639df0997f"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html#aa0013b443ed92b31aa9c13639df0997f">neighborsIndex</a></td></tr>
-<tr class="separator:aa0013b443ed92b31aa9c13639df0997f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf60d05e3dae4e6073c4a41e89803b95"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html#adf60d05e3dae4e6073c4a41e89803b95">neighborsSize</a></td></tr>
-<tr class="separator:adf60d05e3dae4e6073c4a41e89803b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a325191296088e17ba5dbca3bb295095d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; cv::Vec4f &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html#a325191296088e17ba5dbca3bb295095d">weights</a></td></tr>
+<tr class="separator:a325191296088e17ba5dbca3bb295095d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada306664449c6a19c966f0885980fb33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsipai_1_1GLSLNeighbor.html">GLSLNeighbor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html#ada306664449c6a19c966f0885980fb33">neighbors</a> [<a class="el" href="namespacesipai.html#ab26ebe09285bf70243b097816445c62b">MAX_NEIGHBORS</a>]</td></tr>
+<tr class="separator:ada306664449c6a19c966f0885980fb33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="aaebd41d9bee6ad73bfd681799ea54bd2" name="aaebd41d9bee6ad73bfd681799ea54bd2"></a>
@@ -117,42 +115,28 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa0013b443ed92b31aa9c13639df0997f" name="aa0013b443ed92b31aa9c13639df0997f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0013b443ed92b31aa9c13639df0997f">&#9670;&nbsp;</a></span>neighborsIndex</h2>
+<a id="ada306664449c6a19c966f0885980fb33" name="ada306664449c6a19c966f0885980fb33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada306664449c6a19c966f0885980fb33">&#9670;&nbsp;</a></span>neighbors</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint sipai::GLSLNeuron::neighborsIndex</td>
+          <td class="memname"><a class="el" href="structsipai_1_1GLSLNeighbor.html">GLSLNeighbor</a> sipai::GLSLNeuron::neighbors[<a class="el" href="namespacesipai.html#ab26ebe09285bf70243b097816445c62b">MAX_NEIGHBORS</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="adf60d05e3dae4e6073c4a41e89803b95" name="adf60d05e3dae4e6073c4a41e89803b95"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf60d05e3dae4e6073c4a41e89803b95">&#9670;&nbsp;</a></span>neighborsSize</h2>
+<a id="a325191296088e17ba5dbca3bb295095d" name="a325191296088e17ba5dbca3bb295095d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a325191296088e17ba5dbca3bb295095d">&#9670;&nbsp;</a></span>weights</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint sipai::GLSLNeuron::neighborsSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6cff1f55be32749e0836169df1f9901e" name="a6cff1f55be32749e0836169df1f9901e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6cff1f55be32749e0836169df1f9901e">&#9670;&nbsp;</a></span>weightsIndex</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint sipai::GLSLNeuron::weightsIndex</td>
+          <td class="memname">std::vector&lt;std::vector&lt;cv::Vec4f&gt; &gt; sipai::GLSLNeuron::weights</td>
         </tr>
       </table>
 </div><div class="memdoc">

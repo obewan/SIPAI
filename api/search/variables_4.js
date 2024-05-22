@@ -10,7 +10,7 @@ var searchData=
   ['epoch_5fautosave_7',['epoch_autosave',['../structsipai_1_1AppParams.html#a16dba5a5773057267b97b31ba197b9d5',1,'sipai::AppParams']]],
   ['error_5fmax_8',['error_max',['../structsipai_1_1NeuralNetworkParams.html#a8d2cb6f17259022358c396cbb2058b67',1,'sipai::NeuralNetworkParams::error_max()'],['../structsipai_1_1GLSLParameters.html#ab7701f0794176a5a373c8876d18fce06',1,'sipai::GLSLParameters::error_max()']]],
   ['error_5fmin_9',['error_min',['../structsipai_1_1NeuralNetworkParams.html#a348f07543dd36650871ac13855acab92',1,'sipai::NeuralNetworkParams::error_min()'],['../structsipai_1_1GLSLParameters.html#af13ccc0d87ee8fa26c60164362b9c0f9',1,'sipai::GLSLParameters::error_min()']]],
-  ['errors_10',['errors',['../classsipai_1_1Layer.html#afa236a0fb78ae15af18be6f572af586d',1,'sipai::Layer']]],
+  ['errors_10',['errors',['../classsipai_1_1Layer.html#afa236a0fb78ae15af18be6f572af586d',1,'sipai::Layer::errors()'],['../structsipai_1_1GLSLOutputLayer.html#a0655a6bda4218e942e01c703b27dc554',1,'sipai::GLSLOutputLayer::errors()'],['../structsipai_1_1GLSLHiddenLayer.html#a950d35d6fe7c05c463188a637fc26bf2',1,'sipai::GLSLHiddenLayer::errors()']]],
   ['exit_5fhelp_11',['EXIT_HELP',['../classSIPAI.html#a7b10521718bb6554476359639e2ffe0d',1,'SIPAI']]],
   ['exit_5fversion_12',['EXIT_VERSION',['../classSIPAI.html#a8240208e9d64cd499cfdc70e3f70a2f2',1,'SIPAI']]]
 ];

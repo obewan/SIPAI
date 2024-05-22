@@ -7,12 +7,14 @@ var searchData=
   ['manager_2eh_4',['Manager.h',['../Manager_8h.html',1,'']]],
   ['managerexception_5',['ManagerException',['../classsipai_1_1ManagerException.html#a522527139da1a978a18602c77748a269',1,'sipai::ManagerException::ManagerException()'],['../classsipai_1_1ManagerException.html',1,'sipai::ManagerException']]],
   ['managerexception_2eh_6',['ManagerException.h',['../ManagerException_8h.html',1,'']]],
-  ['mat_5fclamp4f_7',['mat_clamp4f',['../namespacesipai.html#adb84e5ffc5ff4468bf8323d4eeeea199',1,'sipai']]],
-  ['max_5fepochs_8',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
-  ['max_5fepochs_5fwithout_5fimprovement_9',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5',1,'sipai::AppParams']]],
-  ['max_5ferrors_10',['MAX_ERRORS',['../TrainingDataReader_8cpp.html#a4fbc7739949e2cf1fe2916569abb992f',1,'TrainingDataReader.cpp']]],
-  ['max_5fweights_11',['max_weights',['../classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9',1,'sipai::NeuralNetwork']]],
-  ['memory_12',['memory',['../structsipai_1_1Buffer.html#acb8160165313ca63e02bdfb89cfdb140',1,'sipai::Buffer']]],
-  ['mode_5fmap_13',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]],
-  ['module_14',['module',['../structsipai_1_1Shader.html#a4907a69fd761e7717fd3e28d4137fd76',1,'sipai::Shader']]]
+  ['mapbuffermemory_7',['mapBufferMemory',['../classsipai_1_1VulkanBuilder.html#ab851b9820461b56d6a12330f2bd0bf4e',1,'sipai::VulkanBuilder']]],
+  ['mat_5fclamp4f_8',['mat_clamp4f',['../classsipai_1_1Common.html#aba8744f52f9f83b229a3df00a99a1b9c',1,'sipai::Common']]],
+  ['max_5fepochs_9',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
+  ['max_5fepochs_5fwithout_5fimprovement_10',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5',1,'sipai::AppParams']]],
+  ['max_5ferrors_11',['MAX_ERRORS',['../TrainingDataReader_8cpp.html#a4fbc7739949e2cf1fe2916569abb992f',1,'TrainingDataReader.cpp']]],
+  ['max_5fneighbors_12',['MAX_NEIGHBORS',['../namespacesipai.html#ab26ebe09285bf70243b097816445c62b',1,'sipai']]],
+  ['max_5fweights_13',['max_weights',['../classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9',1,'sipai::NeuralNetwork']]],
+  ['memory_14',['memory',['../structsipai_1_1Buffer.html#acb8160165313ca63e02bdfb89cfdb140',1,'sipai::Buffer']]],
+  ['mode_5fmap_15',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]],
+  ['module_16',['module',['../structsipai_1_1Shader.html#a4907a69fd761e7717fd3e28d4137fd76',1,'sipai::Shader']]]
 ];

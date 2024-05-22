@@ -94,12 +94,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5b562c8eb067e28c90f15a077dab5d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2cd9852cf13fe56c395dd7e5c11e35e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#aa2cd9852cf13fe56c395dd7e5c11e35e">~NeuralNetwork</a> ()</td></tr>
 <tr class="separator:aa2cd9852cf13fe56c395dd7e5c11e35e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91665466079e8eb2595b36a8cfb897d9"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a91665466079e8eb2595b36a8cfb897d9">forwardPropagation</a> (const cv::Mat &amp;inputValues, const bool &amp;enable_vulkan)</td></tr>
-<tr class="memdesc:a91665466079e8eb2595b36a8cfb897d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation on the network using the given input values.  <a href="classsipai_1_1NeuralNetwork.html#a91665466079e8eb2595b36a8cfb897d9">More...</a><br /></td></tr>
-<tr class="separator:a91665466079e8eb2595b36a8cfb897d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60b7812bdf55fbdf77978cfa52b0575d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a60b7812bdf55fbdf77978cfa52b0575d">backwardPropagation</a> (const cv::Mat &amp;expectedValues, const bool &amp;enable_vulkan, const float &amp;error_min, const float &amp;error_max)</td></tr>
-<tr class="memdesc:a60b7812bdf55fbdf77978cfa52b0575d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation on the network using the given expected values.  <a href="classsipai_1_1NeuralNetwork.html#a60b7812bdf55fbdf77978cfa52b0575d">More...</a><br /></td></tr>
-<tr class="separator:a60b7812bdf55fbdf77978cfa52b0575d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55ebb37367c4362c029a921f9ae1a37b"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a55ebb37367c4362c029a921f9ae1a37b">forwardPropagation</a> (const cv::Mat &amp;inputValues)</td></tr>
+<tr class="memdesc:a55ebb37367c4362c029a921f9ae1a37b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs forward propagation on the network using the given input values.  <a href="classsipai_1_1NeuralNetwork.html#a55ebb37367c4362c029a921f9ae1a37b">More...</a><br /></td></tr>
+<tr class="separator:a55ebb37367c4362c029a921f9ae1a37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a533747dede8d9ea5c522cde2687515a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a533747dede8d9ea5c522cde2687515a4">backwardPropagation</a> (const cv::Mat &amp;expectedValues, const float &amp;error_min, const float &amp;error_max)</td></tr>
+<tr class="memdesc:a533747dede8d9ea5c522cde2687515a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs backward propagation on the network using the given expected values.  <a href="classsipai_1_1NeuralNetwork.html#a533747dede8d9ea5c522cde2687515a4">More...</a><br /></td></tr>
+<tr class="separator:a533747dede8d9ea5c522cde2687515a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a985433dc857ad5905f1e060806a3a672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672">updateWeights</a> (float learning_rate)</td></tr>
 <tr class="memdesc:a985433dc857ad5905f1e060806a3a672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the weights of the neurons in the network using the learning rate.  <a href="classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672">More...</a><br /></td></tr>
 <tr class="separator:a985433dc857ad5905f1e060806a3a672"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -221,8 +221,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a60b7812bdf55fbdf77978cfa52b0575d" name="a60b7812bdf55fbdf77978cfa52b0575d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60b7812bdf55fbdf77978cfa52b0575d">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
+<a id="a533747dede8d9ea5c522cde2687515a4" name="a533747dede8d9ea5c522cde2687515a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a533747dede8d9ea5c522cde2687515a4">&#9670;&nbsp;</a></span>backwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -232,12 +232,6 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const cv::Mat &amp;&#160;</td>
           <td class="paramname"><em>expectedValues</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const bool &amp;&#160;</td>
-          <td class="paramname"><em>enable_vulkan</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -263,7 +257,6 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">expectedValues</td><td>The expected values for backward propagation. </td></tr>
-    <tr><td class="paramname">enable_vulkan</td><td>enable vulkan GPU acceleration </td></tr>
     <tr><td class="paramname">error_min</td><td>error minimum </td></tr>
     <tr><td class="paramname">error_max</td><td>error maximum </td></tr>
   </table>
@@ -272,8 +265,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a91665466079e8eb2595b36a8cfb897d9" name="a91665466079e8eb2595b36a8cfb897d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91665466079e8eb2595b36a8cfb897d9">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
+<a id="a55ebb37367c4362c029a921f9ae1a37b" name="a55ebb37367c4362c029a921f9ae1a37b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55ebb37367c4362c029a921f9ae1a37b">&#9670;&nbsp;</a></span>forwardPropagation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -282,18 +275,8 @@ Public Attributes</h2></td></tr>
           <td class="memname">cv::Mat NeuralNetwork::forwardPropagation </td>
           <td>(</td>
           <td class="paramtype">const cv::Mat &amp;&#160;</td>
-          <td class="paramname"><em>inputValues</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>inputValues</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const bool &amp;&#160;</td>
-          <td class="paramname"><em>enable_vulkan</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -302,7 +285,6 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">inputValues</td><td>The input values for forward propagation. </td></tr>
-    <tr><td class="paramname">enable_vulkan</td><td>enable vulkan GPU acceleration </td></tr>
   </table>
   </dd>
 </dl>
