@@ -14,7 +14,8 @@ namespace sipai {
 class RunnerTrainingVulkanVisitor : public RunnerTrainingVisitor {
 public:
   void visit() const override;
+  void saveNetwork(bool &hasLastEpochBeenSaved) const override;
 
-  float computeLoss(size_t epoch, TrainingPhase phase) const;
+  float trainingMonitored(size_t epoch, TrainingPhase phase) const override;
 };
 } // namespace sipai

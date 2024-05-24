@@ -56,12 +56,13 @@ void RunnerTrainingVulkanVisitor::visit() const {
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
-      float trainingLoss = computeLoss(epoch, TrainingPhase::Training);
+      float trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
       }
 
-      float validationLoss = computeLoss(epoch, TrainingPhase::Validation);
+      float validationLoss =
+          trainingMonitored(epoch, TrainingPhase::Validation);
       if (stopTrainingNow) {
         break;
       }
@@ -113,8 +114,13 @@ void RunnerTrainingVulkanVisitor::visit() const {
   }
 }
 
-float RunnerTrainingVulkanVisitor::computeLoss(size_t epoch,
-                                               TrainingPhase phase) const {
+void RunnerTrainingVulkanVisitor::saveNetwork(
+    bool &hasLastEpochBeenSaved) const {
+  // TODO: implement saveNetwork with retrieving Vulkan layers first.
+}
+
+float RunnerTrainingVulkanVisitor::trainingMonitored(
+    size_t epoch, TrainingPhase phase) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;

@@ -62,12 +62,13 @@ void RunnerTrainingOpenCVVisitor::visit() const {
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
-      float trainingLoss = computeLoss(epoch, TrainingPhase::Training);
+      float trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
       }
 
-      float validationLoss = computeLoss(epoch, TrainingPhase::Validation);
+      float validationLoss =
+          trainingMonitored(epoch, TrainingPhase::Validation);
       if (stopTrainingNow) {
         break;
       }
@@ -119,8 +120,8 @@ void RunnerTrainingOpenCVVisitor::visit() const {
   }
 }
 
-float RunnerTrainingOpenCVVisitor::computeLoss(size_t epoch,
-                                               TrainingPhase phase) const {
+float RunnerTrainingOpenCVVisitor::trainingMonitored(
+    size_t epoch, TrainingPhase phase) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;
@@ -152,7 +153,7 @@ float RunnerTrainingOpenCVVisitor::computeLoss(size_t epoch,
     isLossFrequency = counter % lossFrequency == 0 ? true : false;
 
     // Compute the image parts loss
-    float imageLoss = _computeLoss(epoch, data, phase, isLossFrequency);
+    float imageLoss = _trainingMonitored(epoch, data, phase, isLossFrequency);
     if (stopTrainingNow) {
       break;
     }
@@ -172,10 +173,9 @@ float RunnerTrainingOpenCVVisitor::computeLoss(size_t epoch,
   return (loss / static_cast<float>(lossComputed));
 }
 
-float RunnerTrainingOpenCVVisitor::_computeLoss(size_t epoch,
-                                                std::shared_ptr<Data> data,
-                                                TrainingPhase phase,
-                                                bool isLossFrequency) const {
+float RunnerTrainingOpenCVVisitor::_trainingMonitored(
+    size_t epoch, std::shared_ptr<Data> data, TrainingPhase phase,
+    bool isLossFrequency) const {
   if (data->img_input.size() != data->img_target.size()) {
     throw ImageHelperException(
         "internal exception: input and target parts have different sizes.");
