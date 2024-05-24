@@ -109,14 +109,19 @@ void RunnerTrainingVulkanVisitor::visit() const {
     SimpleLogger::LOG_INFO("Elapsed time: ", hms[0], "h ", hms[1], "m ", hms[2],
                            "s");
 
-  } catch (std::exception &ex) {
+  } catch (const std::exception &ex) {
     throw RunnerVisitorException(ex.what());
   }
 }
 
 void RunnerTrainingVulkanVisitor::saveNetwork(
     bool &hasLastEpochBeenSaved) const {
-  // TODO: implement saveNetwork with retrieving Vulkan layers first.
+  try {
+    VulkanController::getInstance().updateNeuralNetwork();
+    RunnerTrainingVisitor::saveNetwork(hasLastEpochBeenSaved);
+  } catch (const std::exception &ex) {
+    throw RunnerVisitorException(ex.what());
+  }
 }
 
 float RunnerTrainingVulkanVisitor::trainingMonitored(

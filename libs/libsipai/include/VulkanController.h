@@ -49,6 +49,12 @@ public:
                           const TrainingPhase &phase);
 
   /**
+   * @brief Update the Neural Network with values from Vulkan.
+   *
+   */
+  void updateNeuralNetwork();
+
+  /**
    * @brief Destroy the device instance, cleaning ressources
    *
    */

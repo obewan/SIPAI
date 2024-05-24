@@ -88,6 +88,10 @@ float VulkanController::trainingMonitored(
   return result->loss;
 }
 
+void VulkanController::updateNeuralNetwork() {
+  // TODO: Implement
+}
+
 void VulkanController::_computeShader(VkPipeline &pipeline) {
   auto commandBuffer = helper_.beginSingleTimeCommands();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
