@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
 using namespace sipai;
@@ -335,6 +336,8 @@ void VulkanBuilder::_createBuffers() {
     VkDeviceSize size = 0;
     uint output_neuron_weights = 0;
     uint hidden1_neuron_weights = 0;
+    size_t neuronSize = 0;
+    size_t alignedNeuronSize = 0;
     switch (ebuffer) {
     case EBuffer::Parameters:
       size = sizeof(GLSLParameters);
@@ -342,8 +345,10 @@ void VulkanBuilder::_createBuffers() {
     case EBuffer::InputData:
       size = sizeof(cv::Vec4f) * network_param.input_size_x *
              network_param.input_size_y; // inputValues
+      size = alignedSize(size, 16);      // Align
       size += sizeof(cv::Vec4f) * network_param.output_size_x *
               network_param.output_size_y; // targetValues
+      size = alignedSize(size, 16);        // Align
       size += sizeof(bool);                // is_validation
       break;
     case EBuffer::OutputData:
@@ -360,24 +365,34 @@ void VulkanBuilder::_createBuffers() {
       output_neuron_weights =
           (uint)(sizeof(cv::Vec4f) * network_param.hidden_size_x *
                  network_param.hidden_size_y);
-      size = (sizeof(GLSLNeuron) + output_neuron_weights) *
-             network_param.output_size_x *
+      neuronSize = sizeof(GLSLNeuron) + output_neuron_weights;
+      alignedNeuronSize = alignedSize(neuronSize, 16); // Align to 16 bytes
+      size = alignedNeuronSize * network_param.output_size_x *
              network_param.output_size_y; // OutputNeuron neurons[][]
+
       size += sizeof(cv::Vec4f) * network_param.output_size_x *
-              network_param.output_size_y;        // vec4 errors[][]
+              network_param.output_size_y; // vec4 errors[][]
+      size = alignedSize(size, 16);        // Align errors[][]
+
       size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
     case EBuffer::HiddenLayer1:
       hidden1_neuron_weights =
           (uint)(sizeof(cv::Vec4f) * network_param.input_size_x *
                  network_param.input_size_y);
-      size = (sizeof(GLSLNeuron) + hidden1_neuron_weights) *
-             network_param.hidden_size_x *
+      neuronSize = sizeof(GLSLNeuron) + hidden1_neuron_weights;
+      alignedNeuronSize = alignedSize(neuronSize, 16); // Align to 16 bytes
+      size = alignedNeuronSize * network_param.hidden_size_x *
              network_param.hidden_size_y; // HiddenNeuron neurons[][]
+
       size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
               network_param.hidden_size_y; // vec4 values[][]
+      size = alignedSize(size, 16);        // Align values[][]
+
       size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
-              network_param.hidden_size_y;        // vec4 errors[][]
+              network_param.hidden_size_y; // vec4 errors[][]
+      size = alignedSize(size, 16);        // Align errors[][]
+
       size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
     default:

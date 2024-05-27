@@ -115,12 +115,11 @@ public:
    */
   template <typename T>
   T getValueFromBuffer(const uint8_t *bufferData, uint32_t &offset) {
-    alignas(T) uint8_t alignedStorage[sizeof(T)];
-    std::memcpy(alignedStorage, bufferData + offset, sizeof(T));
+    alignas(T) const T *alignedPtr =
+        reinterpret_cast<const T *>(bufferData + offset);
     offset += sizeof(T);
 
-    T value;
-    std::memcpy(&value, alignedStorage, sizeof(T));
+    T value = *alignedPtr;
 
     // Handle endianness if necessary
     // value = le32toh(value);

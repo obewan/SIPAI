@@ -8,6 +8,7 @@
  *
  */
 #pragma once
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <opencv2/opencv.hpp>
@@ -49,46 +50,46 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::OutputData, "OutputData"},
     {EBuffer::OutputLoss, "OutputLoss"}};
 
-struct GLSLParameters {
+struct alignas(16) GLSLParameters {
   float learning_rate;
   float error_min;
   float error_max;
 };
 
-struct GLSLNeighbor {
+struct alignas(16) GLSLNeighbor {
   bool is_used;
   uint index_x;
   uint index_y;
-  cv::Vec4f weight;
+  std::vector<float> weight;
 };
 
-struct GLSLNeuron {
+struct alignas(16) GLSLNeuron {
   uint index_x;
   uint index_y;
-  std::vector<std::vector<cv::Vec4f>> weights;
+  std::vector<std::vector<std::vector<float>>> weights;
   GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
-struct GLSLInputData {
+struct alignas(16) GLSLInputData {
   std::vector<std::vector<cv::Vec4f>> inputValues;
   std::vector<std::vector<cv::Vec4f>> targetValues;
   bool is_validation;
 };
 
 // special format after transformations and merge
-struct GLSLOutputData {
+struct alignas(16) GLSLOutputData {
   cv::Mat outputValues;
   float loss;
 };
 
-struct GLSLInputLayer {
+struct alignas(16) GLSLInputLayer {
   float activation_alpha;
   uint activation_function;
   uint size_x;
   uint size_y;
 };
 
-struct GLSLOutputLayer {
+struct alignas(16) GLSLOutputLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
   std::vector<std::vector<cv::Vec4f>> errors;
   float activation_alpha;
@@ -97,10 +98,10 @@ struct GLSLOutputLayer {
   uint size_y;
 };
 
-struct GLSLHiddenLayer {
+struct alignas(16) GLSLHiddenLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
-  std::vector<std::vector<cv::Vec4f>> values;
-  std::vector<std::vector<cv::Vec4f>> errors;
+  std::vector<std::vector<std::vector<float>>> values;
+  std::vector<std::vector<std::vector<float>>> errors;
   float activation_alpha;
   uint activation_function;
   uint size_x;
