@@ -89,7 +89,8 @@ float VulkanController::trainingMonitored(
 }
 
 void VulkanController::updateNeuralNetwork() {
-  // TODO: Implement
+  _readBackHiddenLayer1();
+  _readBackOutputLayer();
 }
 
 void VulkanController::_computeShader(VkPipeline &pipeline) {
@@ -100,6 +101,100 @@ void VulkanController::_computeShader(VkPipeline &pipeline) {
                           &vulkan_->descriptorSet, 0, nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
   helper_.endSingleTimeCommands(commandBuffer);
+}
+
+void VulkanController::_readBackHiddenLayer1() {
+  auto &network = Manager::getInstance().network;
+  if (!network || network->layers.size() < 2 ||
+      network->layers.at(1)->layerType != LayerType::LayerHidden) {
+    throw VulkanControllerException("invalid neural network");
+  }
+  auto &hiddenLayer = network->layers.at(1);
+  auto &bufferHiddenLayer = getBuffer(EBuffer::HiddenLayer1);
+
+  builder_.mapBufferMemory(bufferHiddenLayer);
+
+  uint8_t *bufferData = reinterpret_cast<uint8_t *>(bufferHiddenLayer.data);
+  if (!bufferData) {
+    builder_.unmapBufferMemory(bufferHiddenLayer);
+    throw VulkanControllerException(
+        "Invalid data pointer after mapping buffer memory");
+  }
+
+  uint offset = 0;
+
+  // Read neurons
+  for (size_t y = 0; y < hiddenLayer->size_y; ++y) {
+    for (size_t x = 0; x < hiddenLayer->size_x; ++x) {
+      auto &dstNeuron = hiddenLayer->neurons[y][x];
+
+      // Check index_x and index_y
+      uint32_t index_x = getValueFromBuffer<uint32_t>(bufferData, offset);
+      uint32_t index_y = getValueFromBuffer<uint32_t>(bufferData, offset);
+      if (dstNeuron.index_x != index_x || dstNeuron.index_y != index_y) {
+        builder_.unmapBufferMemory(bufferHiddenLayer);
+        throw VulkanControllerException("Invalid data buffer memory");
+      }
+
+      // Get weights
+      for (int i = 0; i < dstNeuron.weights.rows; ++i) {
+        for (int j = 0; j < dstNeuron.weights.cols; ++j) {
+          dstNeuron.weights.at<cv::Vec4f>(i, j) =
+              cv::Vec4f(getValueFromBuffer<float>(bufferData, offset),
+                        getValueFromBuffer<float>(bufferData, offset),
+                        getValueFromBuffer<float>(bufferData, offset),
+                        getValueFromBuffer<float>(bufferData, offset));
+        }
+      }
+
+      // Get neighbors
+      for (int i = 0; i < MAX_NEIGHBORS; i++) {
+        bool isUsed = getValueFromBuffer<bool>(bufferData, offset);
+        uint32_t neigh_index_x =
+            getValueFromBuffer<uint32_t>(bufferData, offset);
+        uint32_t neigh_index_y =
+            getValueFromBuffer<uint32_t>(bufferData, offset);
+
+        // Some checks
+        if (dstNeuron.neighbors[i].neuron->index_x != neigh_index_x ||
+            dstNeuron.neighbors[i].neuron->index_y != neigh_index_y) {
+          builder_.unmapBufferMemory(bufferHiddenLayer);
+          throw VulkanControllerException("Invalid data buffer memory");
+        }
+        if ((isUsed && i + 1 > dstNeuron.neighbors.size()) ||
+            (!isUsed && i + 1 < dstNeuron.neighbors.size())) {
+          builder_.unmapBufferMemory(bufferHiddenLayer);
+          throw VulkanControllerException("Invalid data buffer memory");
+        }
+
+        // Get connection weight
+        auto weight = cv::Vec4f(getValueFromBuffer<float>(bufferData, offset),
+                                getValueFromBuffer<float>(bufferData, offset),
+                                getValueFromBuffer<float>(bufferData, offset),
+                                getValueFromBuffer<float>(bufferData, offset));
+        if (isUsed) {
+          dstNeuron.neighbors[i].weight = weight;
+        }
+      }
+    }
+  }
+
+  builder_.unmapBufferMemory(bufferHiddenLayer);
+}
+
+void VulkanController::_readBackOutputLayer() {
+  auto &network = Manager::getInstance().network;
+  if (!network || network->layers.size() < 2 ||
+      network->layers.back()->layerType != LayerType::LayerOutput) {
+    throw VulkanControllerException("invalid neural network");
+  }
+  auto &outputLayer = network->layers.back();
+
+  auto &bufferOutputLayer = getBuffer(EBuffer::OutputLayer);
+
+  // TODO readBackOutputLayer()
+  // builder_.mapBufferMemory(bufferOutputLayer);
+  // builder_.unmapBufferMemory(bufferOutputLayer);
 }
 
 void VulkanController::_copyParameters() {

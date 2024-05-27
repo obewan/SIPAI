@@ -104,6 +104,30 @@ public:
 
   std::shared_ptr<Vulkan> getVulkan() { return vulkan_; }
 
+  /**
+   * @brief Helper function to copy data from the buffer with proper alignment
+   * and endianness
+   *
+   * @tparam T
+   * @param bufferData
+   * @param offset
+   * @return T
+   */
+  template <typename T>
+  T getValueFromBuffer(const uint8_t *bufferData, uint32_t &offset) {
+    alignas(T) uint8_t alignedStorage[sizeof(T)];
+    std::memcpy(alignedStorage, bufferData + offset, sizeof(T));
+    offset += sizeof(T);
+
+    T value;
+    std::memcpy(&value, alignedStorage, sizeof(T));
+
+    // Handle endianness if necessary
+    // value = le32toh(value);
+
+    return value;
+  }
+
 private:
   VulkanController() {
     vulkan_ = std::make_shared<Vulkan>();
@@ -112,6 +136,8 @@ private:
   static std::unique_ptr<VulkanController> controllerInstance_;
 
   void _computeShader(VkPipeline &pipeline);
+  void _readBackHiddenLayer1();
+  void _readBackOutputLayer();
 
   void _copyParameters();
   void _copyInputLayer();
