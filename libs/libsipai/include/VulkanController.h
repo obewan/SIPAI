@@ -115,16 +115,21 @@ public:
    */
   template <typename T>
   T getValueFromBuffer(const uint8_t *bufferData, uint32_t &offset) {
-    alignas(32) const T *alignedPtr =
-        reinterpret_cast<const T *>(bufferData + offset);
+    // Calculate the alignment for the type T
+    constexpr size_t alignment = alignof(T);
+    // Calculate the next aligned address
+    const uintptr_t alignedAddress =
+        (reinterpret_cast<uintptr_t>(bufferData + offset) + alignment - 1) &
+        ~(alignment - 1);
+    // Update the offset to the next aligned address
+    offset = static_cast<uint32_t>(alignedAddress -
+                                   reinterpret_cast<uintptr_t>(bufferData));
+    // Cast the aligned address back to the pointer of type T
+    const T *alignedPtr = reinterpret_cast<const T *>(alignedAddress);
+    // Increment the offset by the size of T
     offset += sizeof(T);
-
-    T value = *alignedPtr;
-
-    // Handle endianness if necessary
-    // value = le32toh(value);
-
-    return value;
+    // Return the value
+    return *alignedPtr;
   }
 
 private:

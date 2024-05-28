@@ -148,7 +148,7 @@ void VulkanController::_readBackHiddenLayer1() {
 
       // Get neighbors
       for (int i = 0; i < MAX_NEIGHBORS; i++) {
-        bool isUsed = getValueFromBuffer<bool>(bufferData, offset);
+        bool isUsed = getValueFromBuffer<uint16_t>(bufferData, offset);
         uint32_t neigh_index_x =
             getValueFromBuffer<uint32_t>(bufferData, offset);
         uint32_t neigh_index_y =
@@ -159,6 +159,7 @@ void VulkanController::_readBackHiddenLayer1() {
             (dstNeuron.neighbors[i].neuron->index_x != neigh_index_x ||
              dstNeuron.neighbors[i].neuron->index_y != neigh_index_y)) {
           builder_.unmapBufferMemory(bufferHiddenLayer);
+
           throw VulkanControllerException("Invalid data buffer memory");
         }
         if ((isUsed && i + 1 > dstNeuron.neighbors.size()) ||
@@ -265,7 +266,7 @@ void VulkanController::_copyInputLayer() {
 
 void VulkanController::_copyOutputLayer() {
 
-  struct _Attribs {
+  struct alignas(32) _Attribs {
     float activation_alpha;
     uint activation_function;
     uint size_x;
@@ -358,7 +359,7 @@ void VulkanController::_copyOutputLayer() {
 
 void VulkanController::_copyHiddenLayer1() {
 
-  struct _Attribs {
+  struct alignas(32) _Attribs {
     float activation_alpha;
     uint activation_function;
     uint size_x;
@@ -385,13 +386,13 @@ void VulkanController::_copyHiddenLayer1() {
     for (const auto &row : hiddenLayer1->neurons) {
       for (const auto &neuron : row) {
         // index_x
-        size_t size = sizeof(uint);
+        size_t size = sizeof(uint32_t);
         memcpy(bufferPtr, &neuron.index_x, size);
         bufferPtr += size;
         totalSize += size;
 
         // index_y
-        size = sizeof(uint);
+        size = sizeof(uint32_t);
         memcpy(bufferPtr, &neuron.index_y, size);
         bufferPtr += size;
         totalSize += size;
@@ -405,12 +406,12 @@ void VulkanController::_copyHiddenLayer1() {
         // neighbors
         GLSLNeighbor neighbors[MAX_NEIGHBORS];
         for (int i = 0; i < neuron.neighbors.size(); i++) {
-          neighbors[i].index_x = (uint)neuron.neighbors[i].neuron->index_x;
-          neighbors[i].index_y = (uint)neuron.neighbors[i].neuron->index_y;
+          neighbors[i].is_used = true;
+          neighbors[i].index_x = (uint32_t)neuron.neighbors[i].neuron->index_x;
+          neighbors[i].index_y = (uint32_t)neuron.neighbors[i].neuron->index_y;
           for (int k = 0; k < 4; k++) {
             neighbors[i].weight.push_back(neuron.neighbors[i].weight[k]);
           }
-          neighbors[i].is_used = true;
         }
         size = MAX_NEIGHBORS * sizeof(GLSLNeighbor);
         memcpy(bufferPtr, &neighbors, size);
@@ -434,9 +435,9 @@ void VulkanController::_copyHiddenLayer1() {
     // Copy the attributes
     _Attribs attribs{
         .activation_alpha = hiddenLayer1->activationFunctionAlpha,
-        .activation_function = (uint)hiddenLayer1->eactivationFunction,
-        .size_x = (uint)hiddenLayer1->size_x,
-        .size_y = (uint)hiddenLayer1->size_y,
+        .activation_function = (uint32_t)hiddenLayer1->eactivationFunction,
+        .size_x = (uint32_t)hiddenLayer1->size_x,
+        .size_y = (uint32_t)hiddenLayer1->size_y,
     };
     size = sizeof(_Attribs);
     memcpy(bufferPtr, &attribs, size);
