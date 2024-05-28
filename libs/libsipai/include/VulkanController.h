@@ -115,7 +115,7 @@ public:
    */
   template <typename T>
   T getValueFromBuffer(const uint8_t *bufferData, uint32_t &offset) {
-    alignas(T) const T *alignedPtr =
+    alignas(32) const T *alignedPtr =
         reinterpret_cast<const T *>(bufferData + offset);
     offset += sizeof(T);
 

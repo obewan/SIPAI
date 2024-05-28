@@ -345,55 +345,61 @@ void VulkanBuilder::_createBuffers() {
     case EBuffer::InputData:
       size = sizeof(cv::Vec4f) * network_param.input_size_x *
              network_param.input_size_y; // inputValues
-      size = alignedSize(size, 16);      // Align
+      size = alignedSize(size, 32);      // Align
       size += sizeof(cv::Vec4f) * network_param.output_size_x *
               network_param.output_size_y; // targetValues
-      size = alignedSize(size, 16);        // Align
+      size = alignedSize(size, 32);        // Align
       size += sizeof(bool);                // is_validation
+      size = alignedSize(size, 32);
       break;
     case EBuffer::OutputData:
       size = sizeof(cv::Vec4f) * network_param.output_size_x *
              network_param.output_size_y; // outputValues
+      size = alignedSize(size, 32);
       break;
     case EBuffer::OutputLoss:
       size = sizeof(float); // loss
+      size = alignedSize(size, 32);
       break;
     case EBuffer::InputLayer:
       size = sizeof(float) + (3 * sizeof(uint)); // attributes
+      size = alignedSize(size, 32);
       break;
     case EBuffer::OutputLayer:
       output_neuron_weights =
           (uint)(sizeof(cv::Vec4f) * network_param.hidden_size_x *
                  network_param.hidden_size_y);
       neuronSize = sizeof(GLSLNeuron) + output_neuron_weights;
-      alignedNeuronSize = alignedSize(neuronSize, 16); // Align to 16 bytes
+      alignedNeuronSize = alignedSize(neuronSize, 32); // Align to 16 bytes
       size = alignedNeuronSize * network_param.output_size_x *
              network_param.output_size_y; // OutputNeuron neurons[][]
 
       size += sizeof(cv::Vec4f) * network_param.output_size_x *
               network_param.output_size_y; // vec4 errors[][]
-      size = alignedSize(size, 16);        // Align errors[][]
+      size = alignedSize(size, 32);        // Align errors[][]
 
       size += sizeof(float) + (3 * sizeof(uint)); // others attributes
+      size = alignedSize(size, 32);
       break;
     case EBuffer::HiddenLayer1:
       hidden1_neuron_weights =
           (uint)(sizeof(cv::Vec4f) * network_param.input_size_x *
                  network_param.input_size_y);
       neuronSize = sizeof(GLSLNeuron) + hidden1_neuron_weights;
-      alignedNeuronSize = alignedSize(neuronSize, 16); // Align to 16 bytes
+      alignedNeuronSize = alignedSize(neuronSize, 32); // Align to 16 bytes
       size = alignedNeuronSize * network_param.hidden_size_x *
              network_param.hidden_size_y; // HiddenNeuron neurons[][]
 
       size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
               network_param.hidden_size_y; // vec4 values[][]
-      size = alignedSize(size, 16);        // Align values[][]
+      size = alignedSize(size, 32);        // Align values[][]
 
       size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
               network_param.hidden_size_y; // vec4 errors[][]
-      size = alignedSize(size, 16);        // Align errors[][]
+      size = alignedSize(size, 32);        // Align errors[][]
 
       size += sizeof(float) + (3 * sizeof(uint)); // others attributes
+      size = alignedSize(size, 32);
       break;
     default:
       throw VulkanBuilderException("Buffer not implemented.");

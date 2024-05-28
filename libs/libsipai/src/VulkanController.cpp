@@ -114,14 +114,13 @@ void VulkanController::_readBackHiddenLayer1() {
 
   builder_.mapBufferMemory(bufferHiddenLayer);
 
+  uint offset = 0;
   uint8_t *bufferData = reinterpret_cast<uint8_t *>(bufferHiddenLayer.data);
   if (!bufferData) {
     builder_.unmapBufferMemory(bufferHiddenLayer);
     throw VulkanControllerException(
         "Invalid data pointer after mapping buffer memory");
   }
-
-  uint offset = 0;
 
   // Read neurons
   for (size_t y = 0; y < hiddenLayer->size_y; ++y) {
@@ -177,7 +176,35 @@ void VulkanController::_readBackHiddenLayer1() {
           dstNeuron.neighbors[i].weight = weight;
         }
       }
+    } // end read neurons
+
+    // Get values
+    for (int y = 0; y < hiddenLayer->values.rows; ++y) {
+      for (int x = 0; x < hiddenLayer->values.cols; ++x) {
+        auto value = cv::Vec4f(getValueFromBuffer<float>(bufferData, offset),
+                               getValueFromBuffer<float>(bufferData, offset),
+                               getValueFromBuffer<float>(bufferData, offset),
+                               getValueFromBuffer<float>(bufferData, offset));
+        hiddenLayer->values.at<cv::Vec4f>(y, x) = value;
+      }
     }
+
+    // Get errors
+    for (int y = 0; y < hiddenLayer->errors.rows; ++y) {
+      for (int x = 0; x < hiddenLayer->errors.cols; ++x) {
+        auto error = cv::Vec4f(getValueFromBuffer<float>(bufferData, offset),
+                               getValueFromBuffer<float>(bufferData, offset),
+                               getValueFromBuffer<float>(bufferData, offset),
+                               getValueFromBuffer<float>(bufferData, offset));
+        hiddenLayer->errors.at<cv::Vec4f>(y, x) = error;
+      }
+    }
+
+    // Get others attributes (offset update)
+    getValueFromBuffer<float>(bufferData, offset); // activation_alpha
+    getValueFromBuffer<uint>(bufferData, offset);  // activation_function
+    getValueFromBuffer<uint>(bufferData, offset);  // size_x
+    getValueFromBuffer<uint>(bufferData, offset);  // size_y
   }
 
   builder_.unmapBufferMemory(bufferHiddenLayer);

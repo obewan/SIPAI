@@ -50,46 +50,46 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::OutputData, "OutputData"},
     {EBuffer::OutputLoss, "OutputLoss"}};
 
-struct alignas(16) GLSLParameters {
+struct alignas(32) GLSLParameters {
   float learning_rate;
   float error_min;
   float error_max;
 };
 
-struct alignas(16) GLSLNeighbor {
+struct alignas(32) GLSLNeighbor {
   bool is_used;
   uint index_x;
   uint index_y;
   std::vector<float> weight;
 };
 
-struct alignas(16) GLSLNeuron {
+struct alignas(32) GLSLNeuron {
   uint index_x;
   uint index_y;
   std::vector<std::vector<std::vector<float>>> weights;
   GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
-struct alignas(16) GLSLInputData {
+struct alignas(32) GLSLInputData {
   std::vector<std::vector<cv::Vec4f>> inputValues;
   std::vector<std::vector<cv::Vec4f>> targetValues;
   bool is_validation;
 };
 
 // special format after transformations and merge
-struct alignas(16) GLSLOutputData {
+struct alignas(32) GLSLOutputData {
   cv::Mat outputValues;
   float loss;
 };
 
-struct alignas(16) GLSLInputLayer {
+struct alignas(32) GLSLInputLayer {
   float activation_alpha;
   uint activation_function;
   uint size_x;
   uint size_y;
 };
 
-struct alignas(16) GLSLOutputLayer {
+struct alignas(32) GLSLOutputLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
   std::vector<std::vector<cv::Vec4f>> errors;
   float activation_alpha;
@@ -98,7 +98,7 @@ struct alignas(16) GLSLOutputLayer {
   uint size_y;
 };
 
-struct alignas(16) GLSLHiddenLayer {
+struct alignas(32) GLSLHiddenLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
   std::vector<std::vector<std::vector<float>>> values;
   std::vector<std::vector<std::vector<float>>> errors;
