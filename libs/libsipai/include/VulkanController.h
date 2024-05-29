@@ -122,7 +122,8 @@ public:
 
   // Specialization for uint32_t
   template <>
-  uint32_t getDataFromBuffer(const void *bufferData, uint32_t &offset) {
+  uint32_t getDataFromBuffer<uint32_t>(const void *bufferData,
+                                       uint32_t &offset) {
     const uint32_t *typedBufferData =
         reinterpret_cast<const uint32_t *>(bufferData);
     uint32_t value = *(typedBufferData + offset / sizeof(uint32_t));
@@ -145,7 +146,8 @@ public:
   }
 
   // Specialization for uint32_t
-  template <> uint8_t *copyToBuffer(uint8_t *buffer, const uint32_t &data) {
+  template <>
+  uint8_t *copyToBuffer<uint32_t>(uint8_t *buffer, const uint32_t &data) {
     // uint32_t swap = swapEndian(data);
     // memcpy(buffer, &swap, sizeof(uint32_t));
     memcpy(buffer, &data, sizeof(uint32_t));
