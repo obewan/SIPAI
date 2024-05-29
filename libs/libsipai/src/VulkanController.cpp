@@ -255,31 +255,33 @@ void VulkanController::_copyInputLayer() {
   if (inputLayer->layerType != LayerType::LayerInput) {
     throw VulkanControllerException("Invalid Input layer type.");
   }
-  GLSLInputLayer glslInputLayer{
-      .activation_alpha = inputLayer->activationFunctionAlpha,
-      .activation_function = (uint)inputLayer->eactivationFunction,
-      .size_x = (uint)inputLayer->size_x,
-      .size_y = (uint)inputLayer->size_y,
-  };
-  auto &buffer = getBuffer(EBuffer::InputLayer);
-  if (sizeof(GLSLInputLayer) > (size_t)buffer.info.size) {
-    throw VulkanControllerException("copy buffer overflow");
+
+  try {
+    auto &buffer = getBuffer(EBuffer::InputLayer);
+
+    builder_.mapBufferMemory(buffer);
+    memset(buffer.data, 0, (size_t)buffer.info.size);
+    uint8_t *bufferPtr = static_cast<uint8_t *>(buffer.data);
+    uint8_t *bufferStart = bufferPtr;
+    bufferPtr =
+        copyToBuffer<float>(bufferPtr, inputLayer->activationFunctionAlpha);
+    bufferPtr = copyToBuffer<uint32_t>(
+        bufferPtr, (uint32_t)inputLayer->eactivationFunction);
+    bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)inputLayer->size_x);
+    bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)inputLayer->size_y);
+    builder_.unmapBufferMemory(buffer);
+
+    size_t totalBytesCopied = bufferPtr - bufferStart;
+    if (totalBytesCopied > (size_t)buffer.info.size) {
+      throw VulkanControllerException("copy buffer overflow");
+    }
+  } catch (std::exception &ex) {
+    throw VulkanControllerException("Input layer copy error: " +
+                                    std::string(ex.what()));
   }
-  builder_.mapBufferMemory(buffer);
-  memset(buffer.data, 0, (size_t)buffer.info.size);
-  memcpy(buffer.data, &glslInputLayer, sizeof(GLSLInputLayer));
-  builder_.unmapBufferMemory(buffer);
 }
 
 void VulkanController::_copyOutputLayer() {
-
-  struct _Attribs {
-    float activation_alpha;
-    uint activation_function;
-    uint size_x;
-    uint size_y;
-  };
-
   const auto &layers = Manager::getConstInstance().network->layers;
   const auto &outputLayer = layers.back();
   if (outputLayer->layerType != LayerType::LayerOutput) {
@@ -291,71 +293,79 @@ void VulkanController::_copyOutputLayer() {
     auto &buffer = getBuffer(EBuffer::OutputLayer);
     builder_.mapBufferMemory(buffer);
     memset(buffer.data, 0, (size_t)buffer.info.size);
-    size_t totalSize = 0;
-    char *bufferPtr = static_cast<char *>(buffer.data);
+    uint8_t *bufferPtr = static_cast<uint8_t *>(buffer.data);
+    uint8_t *bufferStart = bufferPtr;
 
     // Copy the neurons
     for (const auto &row : outputLayer->neurons) {
       for (const auto &neuron : row) {
-        // Align bufferPtr to 16-byte boundary:
-        size_t padding = (16 - ((uintptr_t)bufferPtr % 16)) % 16;
-        bufferPtr += padding;
+        // index_xy
+        bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)neuron.index_x);
+        bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)neuron.index_y);
 
-        size_t size = sizeof(uint);
-        memcpy(bufferPtr, &neuron.index_x, size);
-        bufferPtr += size;
-        totalSize += size;
-
-        size = sizeof(uint);
-        memcpy(bufferPtr, &neuron.index_y, size);
-        bufferPtr += size;
-        totalSize += size;
-
-        size = neuron.weights.total() * sizeof(cv::Vec4f);
-        memcpy(bufferPtr, neuron.weights.data, size);
-        bufferPtr += size;
-        totalSize += size;
-
-        for (int i = 0; i < MAX_NEIGHBORS; i++) {
-          GLSLNeighbor *launderedPtr =
-              std::launder(reinterpret_cast<GLSLNeighbor *>(bufferPtr));
-          if (i < neuron.neighbors.size()) {
-            launderedPtr->is_used = true;
-            launderedPtr->index_x = (uint)neuron.neighbors[i].neuron->index_x;
-            launderedPtr->index_y = (uint)neuron.neighbors[i].neuron->index_y;
+        // weights
+        for (int y = 0; y < neuron.weights.rows; y++) {
+          for (int x = 0; x < neuron.weights.cols; x++) {
             for (int k = 0; k < 4; k++) {
-              launderedPtr->weight.push_back(neuron.neighbors[i].weight[k]);
+              bufferPtr = copyToBuffer<float>(
+                  bufferPtr, neuron.weights.at<cv::Vec4f>(y, x)[k]);
+            }
+          }
+        }
+
+        // neighbors
+        bool isUsed = false;
+        for (int i = 0; i < MAX_NEIGHBORS; i++) {
+          if (i < neuron.neighbors.size()) {
+            isUsed = true;
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
+                                               static_cast<uint32_t>(isUsed));
+            bufferPtr = copyToBuffer<uint32_t>(
+                bufferPtr, (uint32_t)neuron.neighbors[i].neuron->index_x);
+            bufferPtr = copyToBuffer<uint32_t>(
+                bufferPtr, (uint32_t)neuron.neighbors[i].neuron->index_y);
+            for (int k = 0; k < 4; k++) {
+              bufferPtr =
+                  copyToBuffer<float>(bufferPtr, neuron.neighbors[i].weight[k]);
             }
           } else {
-            launderedPtr->is_used = false;
+            isUsed = false;
+            bufferPtr =
+                copyToBuffer<bool>(bufferPtr, static_cast<uint32_t>(isUsed));
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
+            for (int k = 0; k < 4; k++) {
+              bufferPtr = copyToBuffer<float>(bufferPtr, 0.0f);
+            }
           }
-          bufferPtr += sizeof(GLSLNeighbor);
-          totalSize += sizeof(GLSLNeighbor);
         }
       }
     }
 
     // Copy the errors
-    size_t size = outputLayer->errors.total() * sizeof(cv::Vec4f);
-    memcpy(bufferPtr, outputLayer->errors.data, size);
-    bufferPtr += size;
-    totalSize += size;
+    for (int y = 0; y < outputLayer->errors.rows; y++) {
+      for (int x = 0; x < outputLayer->errors.cols; x++) {
+        for (int k = 0; k < 4; k++) {
+          bufferPtr = copyToBuffer<float>(
+              bufferPtr, outputLayer->errors.at<cv::Vec4f>(y, x)[k]);
+        }
+      }
+    }
 
     // Copy the attributes
-    _Attribs attribs{
-        .activation_alpha = outputLayer->activationFunctionAlpha,
-        .activation_function = (uint)outputLayer->eactivationFunction,
-        .size_x = (uint)outputLayer->size_x,
-        .size_y = (uint)outputLayer->size_y,
-    };
-    size = sizeof(_Attribs);
-    memcpy(bufferPtr, &attribs, size);
-    bufferPtr += size;
-    totalSize += size;
+    bufferPtr =
+        copyToBuffer<float>(bufferPtr, outputLayer->activationFunctionAlpha);
+    bufferPtr = copyToBuffer<uint32_t>(
+        bufferPtr, (uint32_t)outputLayer->eactivationFunction);
+    bufferPtr =
+        copyToBuffer<uint32_t>(bufferPtr, (uint32_t)outputLayer->size_x);
+    bufferPtr =
+        copyToBuffer<uint32_t>(bufferPtr, (uint32_t)outputLayer->size_y);
 
     builder_.unmapBufferMemory(buffer);
 
-    if (totalSize > (size_t)buffer.info.size) {
+    size_t totalBytesCopied = bufferPtr - bufferStart;
+    if (totalBytesCopied > (size_t)buffer.info.size) {
       throw VulkanControllerException("copy buffer overflow");
     }
   } catch (std::exception &ex) {
@@ -477,27 +487,36 @@ void VulkanController::_copyInputData(const cv::Mat &inputValues,
     auto &buffer = getBuffer(EBuffer::InputData);
     builder_.mapBufferMemory(buffer);
     memset(buffer.data, 0, (size_t)buffer.info.size);
-    char *bufferPtr = static_cast<char *>(buffer.data);
-    size_t totalSize = 0;
+    uint8_t *bufferPtr = static_cast<uint8_t *>(buffer.data);
+    uint8_t *bufferStart = bufferPtr;
 
-    size_t size = inputValues.total() * sizeof(cv::Vec4f);
-    memcpy(bufferPtr, inputValues.data, size);
-    bufferPtr += size;
-    totalSize += size;
+    // Copy the inputValues
+    for (int y = 0; y < inputValues.rows; y++) {
+      for (int x = 0; x < inputValues.cols; x++) {
+        for (int k = 0; k < 4; k++) {
+          bufferPtr = copyToBuffer<float>(bufferPtr,
+                                          inputValues.at<cv::Vec4f>(y, x)[k]);
+        }
+      }
+    }
 
-    size = targetValues.total() * sizeof(cv::Vec4f);
-    memcpy(bufferPtr, targetValues.data, size);
-    bufferPtr += size;
-    totalSize += size;
+    // Copy the targetValues
+    for (int y = 0; y < targetValues.rows; y++) {
+      for (int x = 0; x < targetValues.cols; x++) {
+        for (int k = 0; k < 4; k++) {
+          bufferPtr = copyToBuffer<float>(bufferPtr,
+                                          targetValues.at<cv::Vec4f>(y, x)[k]);
+        }
+      }
+    }
 
-    size = sizeof(bool);
-    memcpy(bufferPtr, &is_validation, size);
-    bufferPtr += size;
-    totalSize += size;
+    // Copy is_validation
+    bufferPtr = copyToBuffer<bool>(bufferPtr, is_validation);
 
     builder_.unmapBufferMemory(buffer);
 
-    if (totalSize > (size_t)buffer.info.size) {
+    size_t totalBytesCopied = bufferPtr - bufferStart;
+    if (totalBytesCopied > (size_t)buffer.info.size) {
       throw VulkanControllerException("copy buffer overflow");
     }
   } catch (std::exception &ex) {
