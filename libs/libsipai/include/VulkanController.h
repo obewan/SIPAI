@@ -34,7 +34,7 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
-  bool initialize(bool enableDebug = false);
+  bool initialize();
 
   const bool IsInitialized() { return vulkan_->isInitialized; }
 

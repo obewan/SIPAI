@@ -41,7 +41,7 @@ uint8_t *VulkanController::copyToBuffer<uint32_t>(uint8_t *buffer,
   return buffer + sizeof(uint32_t);
 }
 
-bool VulkanController::initialize(bool enableDebug) {
+bool VulkanController::initialize() {
   if (vulkan_->isInitialized) {
     return true;
   }
@@ -66,13 +66,15 @@ bool VulkanController::initialize(bool enableDebug) {
     SimpleLogger::LOG_ERROR("Templated shader build error.");
     return false;
   }
+
+  // add more shaders there
   vulkan_->shaders.push_back(
       {.shadername = EShader::TrainingMonitored,
        .filename = manager.app_params.trainingMonitoredShader});
 
   builder_.withCommandPoolSize(1)
       .withMaxNeighboorsPerNeuron(4)
-      .withDebugInfo(enableDebug)
+      .withDebugInfo(manager.app_params.verbose_debug)
       .withVulkan(vulkan_)
       .build();
 
@@ -235,7 +237,7 @@ void VulkanController::_readBackHiddenLayer1() {
                             offset); // activation_function
     getDataFromBuffer<uint>(bufferHiddenLayer.data, offset); // size_x
     getDataFromBuffer<uint>(bufferHiddenLayer.data, offset); // size_y
-  }
+  } // End for Read neurons
 
   builder_.unmapBufferMemory(bufferHiddenLayer);
 }

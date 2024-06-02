@@ -34,9 +34,44 @@ public:
   void operator=(VulkanControllerTest const &) = delete;
   ~VulkanControllerTest() { destroy(); }
 
-  float test1();
+  struct ResultTest2 {
+    Layer *layer;
+    float loss;
+  };
 
-  bool initialize(bool enableDebug = false);
+  /**
+   * @brief Helper function to copy data from the buffer
+   *
+   * @tparam T
+   * @param bufferData
+   * @param offset
+   * @return T
+   */
+  template <typename T>
+  T getDataFromBuffer(const void *bufferData, uint32_t &offset) {
+    const T *typedBufferData = reinterpret_cast<const T *>(bufferData);
+    T value = *(typedBufferData + offset / sizeof(T));
+    offset += sizeof(T);
+    return value;
+  }
+
+  /**
+   * @brief Set the Data To Buffer
+   *
+   * @tparam T
+   * @param buffer
+   * @param data
+   * @return size_t buffer new position
+   */
+  template <typename T> uint8_t *copyToBuffer(uint8_t *buffer, const T &data) {
+    memcpy(buffer, &data, sizeof(T));
+    return buffer + sizeof(T);
+  }
+
+  float test1();
+  ResultTest2 test2();
+
+  bool initialize();
 
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
@@ -76,6 +111,7 @@ public:
   std::shared_ptr<Vulkan> getVulkan() { return vulkan_; }
 
   std::string testFile1 = "../../test/data/shaders/shader_test1.comp";
+  std::string testFile2 = "../../test/data/shaders/shader_test2.comp";
 
 private:
   VulkanControllerTest() {
@@ -93,6 +129,7 @@ private:
   void _copyInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
                       bool is_validation);
   std::unique_ptr<GLSLOutputData> _getOutputData();
+  Layer *_getHiddenLayer1();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;

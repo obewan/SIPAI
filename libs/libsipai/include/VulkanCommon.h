@@ -38,7 +38,9 @@ enum class EShader {
   TrainingMonitored,
 
   // For Testing
-  Test1
+  // TODO: to remove and cleanup after testing
+  Test1,
+  Test2
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
@@ -121,7 +123,7 @@ struct Buffer {
 struct Shader {
   EShader shadername;
   std::string filename;
-  std::unique_ptr<std::vector<uint32_t>> shader;
+  std::unique_ptr<std::vector<uint32_t>> shader = nullptr;
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info = {};
