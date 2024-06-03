@@ -34,7 +34,7 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
-  bool initialize(bool enableDebug = false);
+  bool initialize();
 
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
@@ -105,8 +105,7 @@ public:
   std::shared_ptr<Vulkan> getVulkan() { return vulkan_; }
 
   /**
-   * @brief Helper function to copy data from the buffer with proper alignment
-   * and endianness
+   * @brief Helper function to copy data from the buffer
    *
    * @tparam T
    * @param bufferData
@@ -114,22 +113,35 @@ public:
    * @return T
    */
   template <typename T>
-  T getValueFromBuffer(const uint8_t *bufferData, uint32_t &offset) {
-    // Calculate the alignment for the type T
-    constexpr size_t alignment = alignof(T);
-    // Calculate the next aligned address
-    const uintptr_t alignedAddress =
-        (reinterpret_cast<uintptr_t>(bufferData + offset) + alignment - 1) &
-        ~(alignment - 1);
-    // Update the offset to the next aligned address
-    offset = static_cast<uint32_t>(alignedAddress -
-                                   reinterpret_cast<uintptr_t>(bufferData));
-    // Cast the aligned address back to the pointer of type T
-    const T *alignedPtr = reinterpret_cast<const T *>(alignedAddress);
-    // Increment the offset by the size of T
+  T getDataFromBuffer(const void *bufferData, uint32_t &offset) {
+    const T *typedBufferData = reinterpret_cast<const T *>(bufferData);
+    T value = *(typedBufferData + offset / sizeof(T));
     offset += sizeof(T);
-    // Return the value
-    return *alignedPtr;
+    return value;
+  }
+
+  /**
+   * @brief Set the Data To Buffer
+   *
+   * @tparam T
+   * @param buffer
+   * @param data
+   * @return size_t buffer new position
+   */
+  template <typename T> uint8_t *copyToBuffer(uint8_t *buffer, const T &data) {
+    memcpy(buffer, &data, sizeof(T));
+    return buffer + sizeof(T);
+  }
+
+  /**
+   * @brief Swap Endianess
+   *
+   * @param value
+   * @return uint32_t
+   */
+  uint32_t swapEndian(uint32_t value) {
+    return ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8) |
+           ((value & 0x00FF0000) >> 8) | ((value & 0xFF000000) >> 24);
   }
 
 private:

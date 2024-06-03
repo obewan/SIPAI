@@ -38,7 +38,9 @@ enum class EShader {
   TrainingMonitored,
 
   // For Testing
-  Test1
+  // TODO: to remove and cleanup after testing
+  Test1,
+  Test2
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
@@ -50,46 +52,46 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::OutputData, "OutputData"},
     {EBuffer::OutputLoss, "OutputLoss"}};
 
-struct alignas(32) GLSLParameters {
+struct GLSLParameters {
   float learning_rate;
   float error_min;
   float error_max;
 };
 
-struct alignas(32) GLSLNeighbor {
+struct GLSLNeighbor {
   bool is_used;
   uint index_x;
   uint index_y;
   std::vector<float> weight;
 };
 
-struct alignas(32) GLSLNeuron {
+struct GLSLNeuron {
   uint index_x;
   uint index_y;
   std::vector<std::vector<std::vector<float>>> weights;
   GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
-struct alignas(32) GLSLInputData {
+struct GLSLInputData {
   std::vector<std::vector<cv::Vec4f>> inputValues;
   std::vector<std::vector<cv::Vec4f>> targetValues;
   bool is_validation;
 };
 
 // special format after transformations and merge
-struct alignas(32) GLSLOutputData {
+struct GLSLOutputData {
   cv::Mat outputValues;
   float loss;
 };
 
-struct alignas(32) GLSLInputLayer {
+struct GLSLInputLayer {
   float activation_alpha;
   uint activation_function;
   uint size_x;
   uint size_y;
 };
 
-struct alignas(32) GLSLOutputLayer {
+struct GLSLOutputLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
   std::vector<std::vector<cv::Vec4f>> errors;
   float activation_alpha;
@@ -98,7 +100,7 @@ struct alignas(32) GLSLOutputLayer {
   uint size_y;
 };
 
-struct alignas(32) GLSLHiddenLayer {
+struct GLSLHiddenLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
   std::vector<std::vector<std::vector<float>>> values;
   std::vector<std::vector<std::vector<float>>> errors;
@@ -121,7 +123,7 @@ struct Buffer {
 struct Shader {
   EShader shadername;
   std::string filename;
-  std::unique_ptr<std::vector<uint32_t>> shader;
+  std::unique_ptr<std::vector<uint32_t>> shader = nullptr;
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info = {};
