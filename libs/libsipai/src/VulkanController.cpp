@@ -59,19 +59,20 @@ bool VulkanController::initialize() {
     return false;
   }
 
-  vulkan_->shaders.clear();
-  if (!helper_.replaceTemplateParameters(
-          manager.app_params.trainingMonitoredShaderTemplate,
-          manager.app_params.trainingMonitoredShader)) {
-    SimpleLogger::LOG_ERROR("Templated shader build error.");
-    return false;
+  // add more shaders there
+  if (vulkan_->shaders.empty()) {
+    if (!helper_.replaceTemplateParameters(
+            manager.app_params.trainingMonitoredShaderTemplate,
+            manager.app_params.trainingMonitoredShader)) {
+      SimpleLogger::LOG_ERROR("Templated shader build error.");
+      return false;
+    }
+    vulkan_->shaders.push_back(
+        {.shadername = EShader::TrainingMonitored,
+         .filename = manager.app_params.trainingMonitoredShader});
   }
 
-  // add more shaders there
-  vulkan_->shaders.push_back(
-      {.shadername = EShader::TrainingMonitored,
-       .filename = manager.app_params.trainingMonitoredShader});
-
+  // Vulkan builder
   builder_.withCommandPoolSize(1)
       .withMaxNeighboorsPerNeuron(4)
       .withDebugInfo(manager.app_params.verbose_debug)

@@ -38,13 +38,13 @@ bool VulkanControllerTest::initialize() {
     return false;
   }
 
-  vulkan_->shaders.clear();
-
-  // add more shaders there
-  vulkan_->shaders.push_back(
-      {.shadername = EShader::Test1, .filename = testFile1});
-  vulkan_->shaders.push_back(
-      {.shadername = EShader::Test2, .filename = testFile2});
+  if (vulkan_->shaders.empty()) {
+    // add more shaders there
+    vulkan_->shaders.push_back(
+        {.shadername = EShader::Test1, .filename = testFile1});
+    vulkan_->shaders.push_back(
+        {.shadername = EShader::Test2, .filename = testFile2});
+  }
 
   builder_.withCommandPoolSize(1)
       .withMaxNeighboorsPerNeuron(4)
@@ -177,8 +177,8 @@ void VulkanControllerTest::_copyHiddenLayer1() {
             }
           } else {
             isUsed = false;
-            bufferPtr =
-                copyToBuffer<bool>(bufferPtr, static_cast<uint32_t>(isUsed));
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
+                                               static_cast<uint32_t>(isUsed));
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
             for (int k = 0; k < 4; k++) {

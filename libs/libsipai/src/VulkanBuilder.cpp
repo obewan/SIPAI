@@ -300,11 +300,12 @@ VulkanBuilder::loadShader(const std::string &path) {
     throw VulkanBuilderException("GLSL file does not exist: " + path);
   }
   // Use glslangValidator to compile the GLSL shader to SPIR-V
+  // -gVS: debugging infos, -V: GLSL Vulkan (-D: HLSL)
   std::stringstream sst;
 #ifdef _WIN32
-  sst << "glslangValidator.exe -V " << path << " -o shader.spv";
+  sst << "glslangValidator.exe -gVS -V -o shader.spv " << path;
 #else
-  sst << "glslangValidator -V " << path << " -o shader.spv";
+  sst << "glslangValidator -gVS -V -o shader.spv " << path;
 #endif
   system(sst.str().c_str());
 
