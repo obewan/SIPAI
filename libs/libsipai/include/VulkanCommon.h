@@ -8,6 +8,7 @@
  *
  */
 #pragma once
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <opencv2/opencv.hpp>
@@ -37,7 +38,9 @@ enum class EShader {
   TrainingMonitored,
 
   // For Testing
-  Test1
+  // TODO: to remove and cleanup after testing
+  Test1,
+  Test2
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
@@ -59,13 +62,13 @@ struct GLSLNeighbor {
   bool is_used;
   uint index_x;
   uint index_y;
-  cv::Vec4f weight;
+  std::vector<float> weight;
 };
 
 struct GLSLNeuron {
   uint index_x;
   uint index_y;
-  std::vector<std::vector<cv::Vec4f>> weights;
+  std::vector<std::vector<std::vector<float>>> weights;
   GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
@@ -99,8 +102,8 @@ struct GLSLOutputLayer {
 
 struct GLSLHiddenLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
-  std::vector<std::vector<cv::Vec4f>> values;
-  std::vector<std::vector<cv::Vec4f>> errors;
+  std::vector<std::vector<std::vector<float>>> values;
+  std::vector<std::vector<std::vector<float>>> errors;
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -120,7 +123,7 @@ struct Buffer {
 struct Shader {
   EShader shadername;
   std::string filename;
-  std::unique_ptr<std::vector<uint32_t>> shader;
+  std::unique_ptr<std::vector<uint32_t>> shader = nullptr;
   VkShaderModule module = VK_NULL_HANDLE;
   VkPipeline pipeline = VK_NULL_HANDLE;
   VkComputePipelineCreateInfo info = {};

@@ -34,7 +34,7 @@ public:
   void operator=(VulkanController const &) = delete;
   ~VulkanController() { destroy(); }
 
-  bool initialize(bool enableDebug = false);
+  bool initialize();
 
   const bool IsInitialized() { return vulkan_->isInitialized; }
 
@@ -47,6 +47,12 @@ public:
   float trainingMonitored(const std::shared_ptr<sipai::Image> &inputValues,
                           const std::shared_ptr<sipai::Image> &targetValues,
                           const TrainingPhase &phase);
+
+  /**
+   * @brief Update the Neural Network with values from Vulkan.
+   *
+   */
+  void updateNeuralNetwork();
 
   /**
    * @brief Destroy the device instance, cleaning ressources
@@ -98,6 +104,46 @@ public:
 
   std::shared_ptr<Vulkan> getVulkan() { return vulkan_; }
 
+  /**
+   * @brief Helper function to copy data from the buffer
+   *
+   * @tparam T
+   * @param bufferData
+   * @param offset
+   * @return T
+   */
+  template <typename T>
+  T getDataFromBuffer(const void *bufferData, uint32_t &offset) {
+    const T *typedBufferData = reinterpret_cast<const T *>(bufferData);
+    T value = *(typedBufferData + offset / sizeof(T));
+    offset += sizeof(T);
+    return value;
+  }
+
+  /**
+   * @brief Set the Data To Buffer
+   *
+   * @tparam T
+   * @param buffer
+   * @param data
+   * @return size_t buffer new position
+   */
+  template <typename T> uint8_t *copyToBuffer(uint8_t *buffer, const T &data) {
+    memcpy(buffer, &data, sizeof(T));
+    return buffer + sizeof(T);
+  }
+
+  /**
+   * @brief Swap Endianess
+   *
+   * @param value
+   * @return uint32_t
+   */
+  uint32_t swapEndian(uint32_t value) {
+    return ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8) |
+           ((value & 0x00FF0000) >> 8) | ((value & 0xFF000000) >> 24);
+  }
+
 private:
   VulkanController() {
     vulkan_ = std::make_shared<Vulkan>();
@@ -106,6 +152,8 @@ private:
   static std::unique_ptr<VulkanController> controllerInstance_;
 
   void _computeShader(VkPipeline &pipeline);
+  void _readBackHiddenLayer1();
+  void _readBackOutputLayer();
 
   void _copyParameters();
   void _copyInputLayer();

@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
 using namespace sipai;
@@ -102,7 +103,7 @@ VulkanBuilder &VulkanBuilder::initialize() {
   float queuePriority = 1.0f;
   queueCreateInfo.pQueuePriorities = &queuePriority;
 
-  VkPhysicalDeviceFeatures deviceFeatures{};
+  VkPhysicalDeviceFeatures deviceFeatures = {};
 
   std::vector<const char *> deviceExtensions = {};
 
@@ -299,11 +300,12 @@ VulkanBuilder::loadShader(const std::string &path) {
     throw VulkanBuilderException("GLSL file does not exist: " + path);
   }
   // Use glslangValidator to compile the GLSL shader to SPIR-V
+  // -gVS: debugging infos, -V: GLSL Vulkan (-D: HLSL)
   std::stringstream sst;
 #ifdef _WIN32
-  sst << "glslangValidator.exe -V " << path << " -o shader.spv";
+  sst << "glslangValidator.exe -gVS -V -o shader.spv " << path;
 #else
-  sst << "glslangValidator -V " << path << " -o shader.spv";
+  sst << "glslangValidator -gVS -V -o shader.spv " << path;
 #endif
   system(sst.str().c_str());
 
@@ -335,6 +337,8 @@ void VulkanBuilder::_createBuffers() {
     VkDeviceSize size = 0;
     uint output_neuron_weights = 0;
     uint hidden1_neuron_weights = 0;
+    size_t neuronSize = 0;
+
     switch (ebuffer) {
     case EBuffer::Parameters:
       size = sizeof(GLSLParameters);
@@ -360,8 +364,8 @@ void VulkanBuilder::_createBuffers() {
       output_neuron_weights =
           (uint)(sizeof(cv::Vec4f) * network_param.hidden_size_x *
                  network_param.hidden_size_y);
-      size = (sizeof(GLSLNeuron) + output_neuron_weights) *
-             network_param.output_size_x *
+      neuronSize = sizeof(GLSLNeuron) + output_neuron_weights;
+      size = neuronSize * network_param.output_size_x *
              network_param.output_size_y; // OutputNeuron neurons[][]
       size += sizeof(cv::Vec4f) * network_param.output_size_x *
               network_param.output_size_y;        // vec4 errors[][]
@@ -371,8 +375,8 @@ void VulkanBuilder::_createBuffers() {
       hidden1_neuron_weights =
           (uint)(sizeof(cv::Vec4f) * network_param.input_size_x *
                  network_param.input_size_y);
-      size = (sizeof(GLSLNeuron) + hidden1_neuron_weights) *
-             network_param.hidden_size_x *
+      neuronSize = sizeof(GLSLNeuron) + hidden1_neuron_weights;
+      size = neuronSize * network_param.hidden_size_x *
              network_param.hidden_size_y; // HiddenNeuron neurons[][]
       size += sizeof(cv::Vec4f) * network_param.hidden_size_x *
               network_param.hidden_size_y; // vec4 values[][]
@@ -619,18 +623,17 @@ void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   }
   buffer.isMemoryMapped = true;
   // Validation (disable for perfs or enable for safety)
-  // VkMappedMemoryRange memoryRange{};
-  // memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-  // memoryRange.memory = buffer.memory; // The device memory object
-  // memoryRange.offset = 0;             // Starting offset within the memory
-  // memoryRange.size = VK_WHOLE_SIZE;   // Size of the memory range
-  // VkResult result =
-  //     vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1,
-  //     &memoryRange);
-  // if (result != VK_SUCCESS) {
-  //   throw VulkanBuilderException("Failed to validate memory for " +
-  //                                buffer_map.at(buffer.name));
-  // }
+  VkMappedMemoryRange memoryRange{};
+  memoryRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+  memoryRange.memory = buffer.memory; // The device memory object
+  memoryRange.offset = 0;             // Starting offset within the memory
+  memoryRange.size = VK_WHOLE_SIZE;   // Size of the memory range
+  VkResult result =
+      vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
+  if (result != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to validate memory for " +
+                                 buffer_map.at(buffer.name));
+  }
 }
 
 void VulkanBuilder::unmapBufferMemory(Buffer &buffer) {

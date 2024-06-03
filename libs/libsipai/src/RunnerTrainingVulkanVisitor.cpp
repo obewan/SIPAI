@@ -56,12 +56,13 @@ void RunnerTrainingVulkanVisitor::visit() const {
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
-      float trainingLoss = computeLoss(epoch, TrainingPhase::Training);
+      float trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
       }
 
-      float validationLoss = computeLoss(epoch, TrainingPhase::Validation);
+      float validationLoss =
+          trainingMonitored(epoch, TrainingPhase::Validation);
       if (stopTrainingNow) {
         break;
       }
@@ -108,13 +109,23 @@ void RunnerTrainingVulkanVisitor::visit() const {
     SimpleLogger::LOG_INFO("Elapsed time: ", hms[0], "h ", hms[1], "m ", hms[2],
                            "s");
 
-  } catch (std::exception &ex) {
+  } catch (const std::exception &ex) {
     throw RunnerVisitorException(ex.what());
   }
 }
 
-float RunnerTrainingVulkanVisitor::computeLoss(size_t epoch,
-                                               TrainingPhase phase) const {
+void RunnerTrainingVulkanVisitor::saveNetwork(
+    bool &hasLastEpochBeenSaved) const {
+  try {
+    VulkanController::getInstance().updateNeuralNetwork();
+    RunnerTrainingVisitor::saveNetwork(hasLastEpochBeenSaved);
+  } catch (const std::exception &ex) {
+    throw RunnerVisitorException(ex.what());
+  }
+}
+
+float RunnerTrainingVulkanVisitor::trainingMonitored(
+    size_t epoch, TrainingPhase phase) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;

@@ -123,6 +123,28 @@ public:
    */
   std::unique_ptr<std::vector<uint32_t>> loadShader(const std::string &path);
 
+  /**
+   * @brief alignment, from VulkanTools.cpp
+   *
+   * @param value
+   * @param alignment
+   * @return uint32_t
+   */
+  uint32_t alignedSize(uint32_t value, uint32_t alignment) {
+    return (value + alignment - 1) & ~(alignment - 1);
+  }
+
+  /**
+   * @brief alignment, from VulkanTools.cpp
+   *
+   * @param value
+   * @param alignment
+   * @return uint32_t
+   */
+  size_t alignedSize(size_t value, size_t alignment) {
+    return (value + alignment - 1) & ~(alignment - 1);
+  }
+
 private:
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
