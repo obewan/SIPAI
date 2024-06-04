@@ -135,7 +135,6 @@ float RunnerTrainingVulkanVisitor::trainingMonitored(
   float loss = 0.0f;
   size_t lossComputed = 0;
   size_t counter = 0;
-  bool isLossFrequency = false;
   auto &trainingDataFactory = TrainingDataFactory::getInstance();
   trainingDataFactory.resetCounters();
   const auto &app_params = Manager::getConstInstance().app_params;

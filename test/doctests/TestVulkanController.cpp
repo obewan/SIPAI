@@ -212,7 +212,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     allocInfo2.memoryTypeIndex = builder.findMemoryType(
         memRequirements2.memoryTypeBits, memoryPropertiesFlags);
     VkDeviceMemory outputLossBufferMemory;
-    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo, nullptr,
+    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo2, nullptr,
                               &outputLossBufferMemory);
     CHECK(result == VK_SUCCESS);
     result = vkBindBufferMemory(vulkan->logicalDevice, outputLossBuffer,
@@ -484,7 +484,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     allocInfo2.memoryTypeIndex = builder.findMemoryType(
         memRequirements2.memoryTypeBits, memoryPropertiesFlags);
     VkDeviceMemory outputLossBufferMemory;
-    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo, nullptr,
+    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo2, nullptr,
                               &outputLossBufferMemory);
     CHECK(result == VK_SUCCESS);
     result = vkBindBufferMemory(vulkan->logicalDevice, outputLossBuffer,

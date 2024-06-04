@@ -163,7 +163,7 @@ void VulkanControllerTest::_copyHiddenLayer1() {
         // neighbors
         bool isUsed = false;
         for (int i = 0; i < MAX_NEIGHBORS; i++) {
-          if (i < neuron.neighbors.size()) {
+          if (i < (int)neuron.neighbors.size()) {
             isUsed = true;
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
                                                static_cast<uint32_t>(isUsed));
@@ -307,8 +307,8 @@ Layer *VulkanControllerTest::_getHiddenLayer1() {
           builder_.unmapBufferMemory(bufferHiddenLayer);
           throw VulkanControllerException("Invalid data buffer memory");
         }
-        if ((isUsed && i + 1 > dstNeuron.neighbors.size()) ||
-            (!isUsed && i + 1 < dstNeuron.neighbors.size())) {
+        if ((isUsed && i + 1 > (int)dstNeuron.neighbors.size()) ||
+            (!isUsed && i + 1 < (int)dstNeuron.neighbors.size())) {
           builder_.unmapBufferMemory(bufferHiddenLayer);
           throw VulkanControllerException("Invalid data buffer memory");
         }

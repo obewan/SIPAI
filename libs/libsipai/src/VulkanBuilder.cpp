@@ -332,7 +332,6 @@ void VulkanBuilder::_createBuffers() {
   VkMemoryPropertyFlags memoryPropertiesFlags = getMemoryProperties();
 
   const auto &network_param = Manager::getConstInstance().network_params;
-  const auto &max_size = Manager::getConstInstance().network->max_weights;
   for (auto [ebuffer, bufferName] : buffer_map) {
     VkDeviceSize size = 0;
     uint output_neuron_weights = 0;
