@@ -4,8 +4,12 @@
 #include "TrainingDataFactory.h"
 #include "VulkanController.h"
 #include "exception/RunnerVisitorException.h"
+#include <GL/glew.h>
 #include <cstddef>
 #include <memory>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
+
 
 using namespace sipai;
 

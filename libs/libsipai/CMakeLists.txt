@@ -30,6 +30,11 @@ find_package(TBB REQUIRED)
 find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
+# Add GLEW
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+include_directories(${GLEW_INCLUDE_DIRS})
+
 # Add included libs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libjson nlohmann-json)
