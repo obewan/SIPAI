@@ -721,7 +721,7 @@ void VulkanBuilder::_createSurface() {
   createInfo.window = win;
 
   if (vkCreateXlibSurfaceKHR(vulkan_->instance, &createInfo, nullptr,
-                             &surface) != VK_SUCCESS) {
+                             &vulkan_->surface) != VK_SUCCESS) {
     throw VulkanBuilderException("Failed to create Xlib surface");
   }
 #endif
