@@ -5,8 +5,22 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan_core.h>
+#include <opencv2/highgui/highgui_c.h>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN // Reduce windows.h includes
+#define NOMINMAX // Prevent windows.h from defining min and max macros
+#include <windows.h>
+#endif
+
+#ifdef _WIN32
+#define VK_PROTOTYPES
+#define VK_USE_PLATFORM_WIN32_KHR
+#include <vulkan/vulkan_win32.h>
+#else
+#include <X11/Xlib.h>
+#include <vulkan/vulkan_xcb.h>
+#endif
 
 using namespace sipai;
 
@@ -34,6 +48,10 @@ VulkanBuilder &VulkanBuilder::build() {
   _createCommandPool();
   _allocateCommandBuffers();
   _createFence();
+  _createSurface();
+  _createSwapChain();
+  _createImageViews();
+  _createFramebuffers();
 
   return *this;
 }
@@ -54,13 +72,52 @@ VulkanBuilder &VulkanBuilder::initialize() {
   appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
   appInfo.apiVersion = VK_API_VERSION_1_0;
 
-  // extensions
+  // get instance extensions
+  uint32_t instanceExtensionCount = 0;
+  vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCount,
+                                         nullptr);
+
+  std::vector<VkExtensionProperties> availableInstanceExtensions(
+      instanceExtensionCount);
+  vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCount,
+                                         availableInstanceExtensions.data());
+
+  bool extensionSurface = false;
+  bool extensionWindowsSurface = false;
+
+  for (const auto &extension : availableInstanceExtensions) {
+    if (strcmp(VK_KHR_SURFACE_EXTENSION_NAME, extension.extensionName) == 0) {
+      extensionSurface = true;
+    }
+#ifdef _WIN32
+    if (strcmp(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, extension.extensionName) ==
+        0) {
+      extensionWindowsSurface = true;
+    }
+#endif
+  }
+
+  if (!extensionSurface) {
+    throw VulkanBuilderException("Surface extension not found.");
+  }
+
+#ifdef _WIN32
+  if (!extensionWindowsSurface) {
+    throw VulkanBuilderException("Windows surface extension not found.");
+  }
+#endif
+
   const std::vector<const char *> validationLayers = {
       "VK_LAYER_KHRONOS_validation"};
 
   const std::vector<const char *> instanceExtensions = {
       VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME};
+      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
+      VK_KHR_SURFACE_EXTENSION_NAME,
+#ifdef _WIN32
+      VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+#endif
+  };
 
   VkInstanceCreateInfo createInfoInstance{};
   createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -75,7 +132,7 @@ VulkanBuilder &VulkanBuilder::initialize() {
   createInfoInstance.ppEnabledLayerNames = validationLayers.data();
 
   // create instance
-  if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->vkInstance) !=
+  if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->instance) !=
       VK_SUCCESS) {
     throw VulkanBuilderException("failed to create instance.");
   }
@@ -105,7 +162,27 @@ VulkanBuilder &VulkanBuilder::initialize() {
 
   VkPhysicalDeviceFeatures deviceFeatures = {};
 
-  std::vector<const char *> deviceExtensions = {};
+  // Get device extensions
+  uint32_t deviceExtensionCount = 0;
+  vkEnumerateDeviceExtensionProperties(vulkan_->physicalDevice, nullptr,
+                                       &deviceExtensionCount, nullptr);
+
+  std::vector<VkExtensionProperties> availableExtensions(deviceExtensionCount);
+  vkEnumerateDeviceExtensionProperties(vulkan_->physicalDevice, nullptr,
+                                       &deviceExtensionCount,
+                                       availableExtensions.data());
+  bool extensionSwapChain = false;
+  for (const auto &extension : availableExtensions) {
+    if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, extension.extensionName) == 0) {
+      extensionSwapChain = true;
+    }
+  }
+
+  if (!extensionSwapChain) {
+    throw VulkanBuilderException("SwapChain extension not found.");
+  }
+  std::vector<const char *> deviceExtensions = {
+      VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -185,12 +262,12 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
   };
 
   uint32_t deviceCount = 0;
-  vkEnumeratePhysicalDevices(vulkan_->vkInstance, &deviceCount, nullptr);
+  vkEnumeratePhysicalDevices(vulkan_->instance, &deviceCount, nullptr);
   if (deviceCount == 0) {
     throw std::runtime_error("failed to find GPUs with Vulkan support!");
   }
   std::vector<VkPhysicalDevice> devices(deviceCount);
-  vkEnumeratePhysicalDevices(vulkan_->vkInstance, &deviceCount, devices.data());
+  vkEnumeratePhysicalDevices(vulkan_->instance, &deviceCount, devices.data());
   std::vector<std::pair<VkPhysicalDevice, int>> scores;
   for (const auto &device : devices) {
     scores.emplace_back(device, getDeviceSuitableScore(device));
@@ -608,6 +685,123 @@ void VulkanBuilder::_createFence() {
   }
 }
 
+void VulkanBuilder::_createSurface() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+#ifdef _WIN32
+  HWND hwnd = (HWND)cvGetWindowHandle(cvWindowTitle);
+  HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+
+  // Create Win32 surface (Windows-specific)
+  VkWin32SurfaceCreateInfoKHR createInfo = {};
+  createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+  createInfo.hwnd = hwnd;
+  createInfo.hinstance = hInstance;
+
+  if (vkCreateWin32SurfaceKHR(vulkan_->instance, &createInfo, nullptr,
+                              &vulkan_->surface) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create Win32 surface");
+  }
+#else
+  Display *dpy = XOpenDisplay(nullptr);
+  Window win = (Window)cvGetWindowHandle(cvWindowTitle);
+
+  // Create Xlib surface (Linux-specific)
+  VkXlibSurfaceCreateInfoKHR createInfo = {};
+  createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+  createInfo.dpy = dpy;
+  createInfo.window = win;
+
+  if (vkCreateXlibSurfaceKHR(instance, &createInfo, nullptr, &surface) !=
+      VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create Xlib surface");
+  }
+#endif
+}
+
+void VulkanBuilder::_createSwapChain() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkSwapchainCreateInfoKHR createInfo = {};
+  createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+  createInfo.surface = vulkan_->surface;
+  createInfo.minImageCount = 2;
+  createInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+  createInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+  createInfo.imageExtent = {800, 600};
+  createInfo.imageArrayLayers = 1;
+  createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+  if (vkCreateSwapchainKHR(vulkan_->logicalDevice, &createInfo, nullptr,
+                           &vulkan_->swapChain) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create swap chain");
+  }
+
+  uint32_t imageCount;
+  vkGetSwapchainImagesKHR(vulkan_->logicalDevice, vulkan_->swapChain,
+                          &imageCount, nullptr);
+  vulkan_->swapChainImages.resize(imageCount);
+  vkGetSwapchainImagesKHR(vulkan_->logicalDevice, vulkan_->swapChain,
+                          &imageCount, vulkan_->swapChainImages.data());
+
+  vulkan_->swapChainImageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+  vulkan_->swapChainExtent = {800, 600};
+}
+
+void VulkanBuilder::_createImageViews() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  vulkan_->swapChainImageViews.resize(vulkan_->swapChainImages.size());
+
+  for (size_t i = 0; i < vulkan_->swapChainImages.size(); i++) {
+    VkImageViewCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    createInfo.image = vulkan_->swapChainImages[i];
+    createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    createInfo.format = vulkan_->swapChainImageFormat;
+    createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+    createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+    createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+    createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+    createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    createInfo.subresourceRange.baseMipLevel = 0;
+    createInfo.subresourceRange.levelCount = 1;
+    createInfo.subresourceRange.baseArrayLayer = 0;
+    createInfo.subresourceRange.layerCount = 1;
+
+    if (vkCreateImageView(vulkan_->logicalDevice, &createInfo, nullptr,
+                          &vulkan_->swapChainImageViews[i]) != VK_SUCCESS) {
+      throw VulkanBuilderException("Failed to create image views");
+    }
+  }
+}
+
+void VulkanBuilder::_createFramebuffers() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  vulkan_->swapChainFramebuffers.resize(vulkan_->swapChainImageViews.size());
+
+  for (size_t i = 0; i < vulkan_->swapChainImageViews.size(); i++) {
+    VkFramebufferCreateInfo framebufferInfo = {};
+    framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    framebufferInfo.renderPass = vulkan_->renderPass;
+    framebufferInfo.attachmentCount = 1;
+    framebufferInfo.pAttachments = &vulkan_->swapChainImageViews[i];
+    framebufferInfo.width = vulkan_->swapChainExtent.width;
+    framebufferInfo.height = vulkan_->swapChainExtent.height;
+    framebufferInfo.layers = 1;
+
+    if (vkCreateFramebuffer(vulkan_->logicalDevice, &framebufferInfo, nullptr,
+                            &vulkan_->swapChainFramebuffers[i]) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to create framebuffer");
+    }
+  }
+}
+
 void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
@@ -672,6 +866,24 @@ VulkanBuilder &VulkanBuilder::clear() {
   }
   vulkan_->shaders.clear();
 
+  for (auto framebuffer : vulkan_->swapChainFramebuffers) {
+    vkDestroyFramebuffer(vulkan_->logicalDevice, framebuffer, nullptr);
+  }
+
+  for (auto imageView : vulkan_->swapChainImageViews) {
+    vkDestroyImageView(vulkan_->logicalDevice, imageView, nullptr);
+  }
+
+  if (vulkan_->swapChain != VK_NULL_HANDLE) {
+    vkDestroySwapchainKHR(vulkan_->logicalDevice, vulkan_->swapChain, nullptr);
+    vulkan_->swapChain = VK_NULL_HANDLE;
+  }
+
+  if (vulkan_->surface != VK_NULL_HANDLE) {
+    vkDestroySurfaceKHR(vulkan_->instance, vulkan_->surface, nullptr);
+    vulkan_->surface = VK_NULL_HANDLE;
+  }
+
   for (auto &buffer : vulkan_->buffers) {
     freeBuffer(vulkan_, buffer);
   }
@@ -715,9 +927,9 @@ VulkanBuilder &VulkanBuilder::clear() {
     // queue is destroyed with the logical device
     vulkan_->queue = VK_NULL_HANDLE;
   }
-  if (vulkan_->vkInstance != VK_NULL_HANDLE) {
-    vkDestroyInstance(vulkan_->vkInstance, nullptr);
-    vulkan_->vkInstance = VK_NULL_HANDLE;
+  if (vulkan_->instance != VK_NULL_HANDLE) {
+    vkDestroyInstance(vulkan_->instance, nullptr);
+    vulkan_->instance = VK_NULL_HANDLE;
     // physical device is destroyed with the instance
     vulkan_->physicalDevice = VK_NULL_HANDLE;
   }

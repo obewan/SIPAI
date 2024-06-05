@@ -13,7 +13,7 @@
 #include <memory>
 #include <opencv2/opencv.hpp>
 #include <vector>
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_core.h>
 
 #if defined(_MSC_VER)
 using uint = unsigned int;
@@ -21,7 +21,8 @@ using uint = unsigned int;
 
 namespace sipai {
 
-const int MAX_NEIGHBORS = 4;
+inline constexpr const char *cvWindowTitle = "Neural Network Progress";
+inline constexpr const int MAX_NEIGHBORS = 4;
 
 // numbers must match the GLSL bindings
 enum class EBuffer {
@@ -131,19 +132,27 @@ struct Shader {
 };
 
 struct Vulkan {
-  VkInstance vkInstance = VK_NULL_HANDLE;
-  VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-  VkDevice logicalDevice = VK_NULL_HANDLE;
   VkCommandPool commandPool = VK_NULL_HANDLE;
-  VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
   VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
   VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+  VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
+  VkDevice logicalDevice = VK_NULL_HANDLE;
+  VkFence computeFence = VK_NULL_HANDLE;
+  VkInstance instance = VK_NULL_HANDLE;
+  VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
   VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
   VkQueue queue = VK_NULL_HANDLE;
-  VkFence computeFence = VK_NULL_HANDLE;
-  std::vector<Shader> shaders;
+  VkRenderPass renderPass = VK_NULL_HANDLE;
+  VkSurfaceKHR surface = VK_NULL_HANDLE;
+  VkSwapchainKHR swapChain = VK_NULL_HANDLE;
+  VkFormat swapChainImageFormat;
+  VkExtent2D swapChainExtent;
   std::vector<Buffer> buffers;
+  std::vector<Shader> shaders;
   std::vector<VkCommandBuffer> commandBufferPool;
+  std::vector<VkFramebuffer> swapChainFramebuffers;
+  std::vector<VkImage> swapChainImages;
+  std::vector<VkImageView> swapChainImageViews;
   unsigned int queueFamilyIndex = 0;
   bool isInitialized = false;
 };

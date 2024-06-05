@@ -4,19 +4,16 @@
 #include "TrainingDataFactory.h"
 #include "VulkanController.h"
 #include "exception/RunnerVisitorException.h"
-#include <GL/glew.h>
 #include <cstddef>
 #include <memory>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
-
 
 using namespace sipai;
 
 void RunnerTrainingVulkanVisitor::visit() const {
   SimpleLogger::LOG_INFO("Starting training monitored (Vulkan), press (CTRL+C) "
                          "to stop at anytime...");
-
   auto &manager = Manager::getInstance();
   if (!manager.network) {
     throw RunnerVisitorException("No neural network. Aborting.");
@@ -57,7 +54,10 @@ void RunnerTrainingVulkanVisitor::visit() const {
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
     while (!stopTraining && !stopTrainingNow &&
-           shouldContinueTraining(epoch, epochsWithoutImprovement, appParams)) {
+           shouldContinueTraining(epoch, epochsWithoutImprovement, appParams) &&
+           cv::waitKey(30) != 27) {
+      cv::imshow(cvWindowTitle, cv::Mat::zeros(600, 800, CV_8UC3));
+
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
       float trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);

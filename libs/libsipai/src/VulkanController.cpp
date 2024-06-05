@@ -72,6 +72,13 @@ bool VulkanController::initialize() {
          .filename = manager.app_params.trainingMonitoredShader});
   }
 
+  // initialize opencv window (before builder)
+  // !!! OpenCV must be built with OpenGL support
+  // https://answers.opencv.org/question/10592/opencv-error-no-opengl-support/
+  cv::namedWindow(cvWindowTitle, (int)cv::WINDOW_OPENGL);
+  cv::resizeWindow(cvWindowTitle, 800, 600);
+  cv::imshow(cvWindowTitle, cv::Mat::zeros(600, 800, CV_8UC3));
+
   // Vulkan builder
   builder_.withCommandPoolSize(1)
       .withMaxNeighboorsPerNeuron(4)

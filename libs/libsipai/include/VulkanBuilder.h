@@ -149,16 +149,20 @@ private:
   std::optional<unsigned int> _pickQueueFamily();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 
-  void _createCommandPool();
   void _allocateCommandBuffers();
-  void _createBuffers();
-  void _createDescriptorSetLayout();
-  void _createDescriptorPool();
   void _allocateDescriptorSets();
-  void _createPipelineLayout();
-  void _createFence();
-  void _createShaderModules();
+  void _createBuffers();
+  void _createCommandPool();
   void _createComputePipelines();
+  void _createDescriptorPool();
+  void _createDescriptorSetLayout();
+  void _createFence();
+  void _createFramebuffers();
+  void _createImageViews();
+  void _createPipelineLayout();
+  void _createShaderModules();
+  void _createSurface();
+  void _createSwapChain();
   void _updateDescriptorSets();
 
   std::shared_ptr<Vulkan> vulkan_ = nullptr;
