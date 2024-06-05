@@ -19,7 +19,9 @@
 #include <vulkan/vulkan_win32.h>
 #else
 #include <X11/Xlib.h>
-#include <vulkan/vulkan_xcb.h>
+#define VK_PROTOTYPES
+#define VK_USE_PLATFORM_XLIB_KHR
+#include <vulkan/vulkan_xlib.h>
 #endif
 
 using namespace sipai;
@@ -83,7 +85,7 @@ VulkanBuilder &VulkanBuilder::initialize() {
                                          availableInstanceExtensions.data());
 
   bool extensionSurface = false;
-  bool extensionWindowsSurface = false;
+  bool extensionPlateformSurface = false;
 
   for (const auto &extension : availableInstanceExtensions) {
     if (strcmp(VK_KHR_SURFACE_EXTENSION_NAME, extension.extensionName) == 0) {
@@ -92,7 +94,12 @@ VulkanBuilder &VulkanBuilder::initialize() {
 #ifdef _WIN32
     if (strcmp(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, extension.extensionName) ==
         0) {
-      extensionWindowsSurface = true;
+      extensionPlateformSurface = true;
+    }
+#else
+    if (strcmp(VK_KHR_XLIB_SURFACE_EXTENSION_NAME, extension.extensionName) ==
+        0) {
+      extensionPlateformSurface = true;
     }
 #endif
   }
@@ -101,11 +108,9 @@ VulkanBuilder &VulkanBuilder::initialize() {
     throw VulkanBuilderException("Surface extension not found.");
   }
 
-#ifdef _WIN32
-  if (!extensionWindowsSurface) {
-    throw VulkanBuilderException("Windows surface extension not found.");
+  if (!extensionPlateformSurface) {
+    throw VulkanBuilderException("Plateform surface extension not found.");
   }
-#endif
 
   const std::vector<const char *> validationLayers = {
       "VK_LAYER_KHRONOS_validation"};
@@ -116,6 +121,8 @@ VulkanBuilder &VulkanBuilder::initialize() {
       VK_KHR_SURFACE_EXTENSION_NAME,
 #ifdef _WIN32
       VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+#else
+      VK_KHR_XLIB_SURFACE_EXTENSION_NAME,
 #endif
   };
 
@@ -713,8 +720,8 @@ void VulkanBuilder::_createSurface() {
   createInfo.dpy = dpy;
   createInfo.window = win;
 
-  if (vkCreateXlibSurfaceKHR(instance, &createInfo, nullptr, &surface) !=
-      VK_SUCCESS) {
+  if (vkCreateXlibSurfaceKHR(vulkan_->instance, &createInfo, nullptr,
+                             &surface) != VK_SUCCESS) {
     throw VulkanBuilderException("Failed to create Xlib surface");
   }
 #endif
