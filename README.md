@@ -19,9 +19,9 @@ WARNING : Vulkan feature is very experimental, and is currently limited to one h
 Requirements for compiling the source code:
 
 - A C++20 compiler (like the GNU C++ `g++-12` on Linux or Visual Studio and its compiler on Windows)
-- The [OpenCV](https://opencv.org/get-started/) library (on Windows, check [how to update the system path for OpenCV](https://docs.opencv.org/4.x/d3/d52/tutorial_windows_install.html#tutorial_windows_install_path), you must also add an `OpenCV_BUILD` env variable that refer to the `opencv build` directory.
+- The [OpenCV](https://opencv.org/get-started/) library (if using Vulkan: with OpenGL support). On Windows check [how to update the system path for OpenCV](https://docs.opencv.org/4.x/d3/d52/tutorial_windows_install.html#tutorial_windows_install_path), you must also add an `OpenCV_BUILD` env variable that refer to the `opencv build` directory.
 - The [Intel TBB](https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#onetbb) library
-- The [Vulkan](https://www.vulkan.org/) library (on Debian: `sudo apt-get -y install libvulkan1 libvulkan-dev mesa-vulkan-drivers vulkan-tools`, on Windows: https://vulkan.lunarg.com/sdk/home#windows).
+- The [Vulkan SDK](https://www.vulkan.org/) library (on Debian: `sudo apt-get -y install libvulkan1 libvulkan-dev mesa-vulkan-drivers vulkan-tools`, on Windows: https://vulkan.lunarg.com/sdk/home#windows).
 - The GLSL tools to use with Vulkan (on Debian: `sudo apt-get -y install glslang-tools spirv-tools`)
 - [CMake](https://cmake.org/)
 - on Windows:
