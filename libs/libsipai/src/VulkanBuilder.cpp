@@ -38,7 +38,7 @@ VulkanBuilder &VulkanBuilder::build() {
     shader.shader = loadShader(shader.filename);
   }
 
-  // create other stuff
+  // create buffers, pipelines and others.
   _createBuffers();
   _createDescriptorPool();
   _createDescriptorSetLayout();
@@ -53,6 +53,7 @@ VulkanBuilder &VulkanBuilder::build() {
   _createSurface();
   _createSwapChain();
   _createImageViews();
+  _createRenderPass();
   _createFramebuffers();
 
   return *this;
@@ -66,6 +67,39 @@ VulkanBuilder &VulkanBuilder::initialize() {
     return *this;
   }
 
+  // Get Vulkan instance
+  _createInstance();
+
+  // Get a physical device
+  vulkan_->physicalDevice = _pickPhysicalDevice().value_or(VK_NULL_HANDLE);
+  if (vulkan_->physicalDevice == VK_NULL_HANDLE) {
+    throw VulkanBuilderException("failed to find a suitable GPU!");
+  }
+
+  // Get a queue family
+  auto queueFamilyIndex = _pickQueueFamily();
+  if (!queueFamilyIndex.has_value()) {
+    throw VulkanBuilderException(
+        "failed to find GPUs with Vulkan queue support!");
+  }
+  vulkan_->queueFamilyIndex = queueFamilyIndex.value();
+
+  // Create a logical device
+  _createLogicalDevice();
+
+  // Get a queue device
+  vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueFamilyIndex, 0,
+                   &vulkan_->queue);
+
+  // Check some properties
+  bool isValid = _checkDeviceProperties();
+
+  vulkan_->isInitialized = isValid;
+
+  return *this;
+}
+
+void VulkanBuilder::_createInstance() {
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "SIPAI";
@@ -78,15 +112,12 @@ VulkanBuilder &VulkanBuilder::initialize() {
   uint32_t instanceExtensionCount = 0;
   vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCount,
                                          nullptr);
-
   std::vector<VkExtensionProperties> availableInstanceExtensions(
       instanceExtensionCount);
   vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCount,
                                          availableInstanceExtensions.data());
-
   bool extensionSurface = false;
   bool extensionPlateformSurface = false;
-
   for (const auto &extension : availableInstanceExtensions) {
     if (strcmp(VK_KHR_SURFACE_EXTENSION_NAME, extension.extensionName) == 0) {
       extensionSurface = true;
@@ -103,17 +134,12 @@ VulkanBuilder &VulkanBuilder::initialize() {
     }
 #endif
   }
-
   if (!extensionSurface) {
     throw VulkanBuilderException("Surface extension not found.");
   }
-
   if (!extensionPlateformSurface) {
     throw VulkanBuilderException("Plateform surface extension not found.");
   }
-
-  const std::vector<const char *> validationLayers = {
-      "VK_LAYER_KHRONOS_validation"};
 
   const std::vector<const char *> instanceExtensions = {
       VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
@@ -133,7 +159,9 @@ VulkanBuilder &VulkanBuilder::initialize() {
       static_cast<uint32_t>(instanceExtensions.size());
   createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
 
-  // FOR DEBUGGING ONLY
+  // TODO: FOR DEBUGGING ONLY (remove before a release)
+  const std::vector<const char *> validationLayers = {
+      "VK_LAYER_KHRONOS_validation"};
   createInfoInstance.enabledLayerCount =
       static_cast<uint32_t>(validationLayers.size());
   createInfoInstance.ppEnabledLayerNames = validationLayers.data();
@@ -143,37 +171,21 @@ VulkanBuilder &VulkanBuilder::initialize() {
       VK_SUCCESS) {
     throw VulkanBuilderException("failed to create instance.");
   }
+}
 
-  // Get a device
-  auto physicalDevice = _pickPhysicalDevice();
-  if (!physicalDevice.has_value()) {
-    throw VulkanBuilderException("failed to find a suitable GPU!");
-  }
-  vulkan_->physicalDevice = physicalDevice.value();
-
-  // Get a queue family
-  auto queueFamilyIndex = _pickQueueFamily();
-  if (!queueFamilyIndex.has_value()) {
-    throw VulkanBuilderException(
-        "failed to find GPUs with Vulkan queue support!");
-  }
-  vulkan_->queueFamilyIndex = queueFamilyIndex.value();
-
-  // Create a logical device
+void VulkanBuilder::_createLogicalDevice() {
   VkDeviceQueueCreateInfo queueCreateInfo{};
   queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
   queueCreateInfo.queueFamilyIndex = vulkan_->queueFamilyIndex;
   queueCreateInfo.queueCount = 1;
   float queuePriority = 1.0f;
   queueCreateInfo.pQueuePriorities = &queuePriority;
-
   VkPhysicalDeviceFeatures deviceFeatures = {};
 
-  // Get device extensions
+  // Get logical device extensions
   uint32_t deviceExtensionCount = 0;
   vkEnumerateDeviceExtensionProperties(vulkan_->physicalDevice, nullptr,
                                        &deviceExtensionCount, nullptr);
-
   std::vector<VkExtensionProperties> availableExtensions(deviceExtensionCount);
   vkEnumerateDeviceExtensionProperties(vulkan_->physicalDevice, nullptr,
                                        &deviceExtensionCount,
@@ -184,7 +196,6 @@ VulkanBuilder &VulkanBuilder::initialize() {
       extensionSwapChain = true;
     }
   }
-
   if (!extensionSwapChain) {
     throw VulkanBuilderException("SwapChain extension not found.");
   }
@@ -203,11 +214,9 @@ VulkanBuilder &VulkanBuilder::initialize() {
                      &vulkan_->logicalDevice) != VK_SUCCESS) {
     throw VulkanBuilderException("failed to create logical device!");
   }
+}
 
-  // Get a queue device
-  vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueFamilyIndex, 0,
-                   &vulkan_->queue);
-
+bool VulkanBuilder::_checkDeviceProperties() {
   const auto &network_param = Manager::getConstInstance().network_params;
   VkPhysicalDeviceProperties deviceProperties;
   vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
@@ -233,10 +242,9 @@ VulkanBuilder &VulkanBuilder::initialize() {
         maxComputeWorkGroupInvocations,
         ", neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
         maxSizeX, "*", maxSizeY, "): FAILURE.");
+    return false;
   }
-
-  vulkan_->isInitialized = true;
-  return *this;
+  return true;
 }
 
 std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
@@ -786,6 +794,42 @@ void VulkanBuilder::_createImageViews() {
   }
 }
 
+void VulkanBuilder::_createRenderPass() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkAttachmentDescription colorAttachment{};
+  colorAttachment.format = vulkan_->swapChainImageFormat;
+  colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+  VkAttachmentReference colorAttachmentRef{};
+  colorAttachmentRef.attachment = 0;
+  colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+  VkSubpassDescription subpass{};
+  subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+  subpass.colorAttachmentCount = 1;
+  subpass.pColorAttachments = &colorAttachmentRef;
+
+  VkRenderPassCreateInfo renderPassInfo{};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+  renderPassInfo.attachmentCount = 1;
+  renderPassInfo.pAttachments = &colorAttachment;
+  renderPassInfo.subpassCount = 1;
+  renderPassInfo.pSubpasses = &subpass;
+
+  if (vkCreateRenderPass(vulkan_->logicalDevice, &renderPassInfo, nullptr,
+                         &vulkan_->renderPass) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create render pass");
+  }
+}
+
 void VulkanBuilder::_createFramebuffers() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
@@ -875,6 +919,11 @@ VulkanBuilder &VulkanBuilder::clear() {
 
   for (auto framebuffer : vulkan_->swapChainFramebuffers) {
     vkDestroyFramebuffer(vulkan_->logicalDevice, framebuffer, nullptr);
+  }
+
+  if (vulkan_->renderPass != VK_NULL_HANDLE) {
+    vkDestroyRenderPass(vulkan_->logicalDevice, vulkan_->renderPass, nullptr);
+    vulkan_->renderPass = VK_NULL_HANDLE;
   }
 
   for (auto imageView : vulkan_->swapChainImageViews) {

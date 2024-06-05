@@ -21,7 +21,7 @@ using uint = unsigned int;
 
 namespace sipai {
 
-inline constexpr const char *cvWindowTitle = "Neural Network Progress";
+inline constexpr const char *cvWindowTitle = "SIPAI";
 inline constexpr const int MAX_NEIGHBORS = 4;
 
 // numbers must match the GLSL bindings

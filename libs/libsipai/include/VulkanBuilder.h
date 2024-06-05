@@ -159,11 +159,16 @@ private:
   void _createFence();
   void _createFramebuffers();
   void _createImageViews();
+  void _createInstance();
+  void _createLogicalDevice();
   void _createPipelineLayout();
+  void _createRenderPass();
   void _createShaderModules();
   void _createSurface();
   void _createSwapChain();
   void _updateDescriptorSets();
+
+  bool _checkDeviceProperties();
 
   std::shared_ptr<Vulkan> vulkan_ = nullptr;
   size_t commandPoolSize_ = 1;
