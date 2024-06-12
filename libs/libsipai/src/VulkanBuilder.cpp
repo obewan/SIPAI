@@ -46,7 +46,7 @@ VulkanBuilder &VulkanBuilder::build() {
   _updateDescriptorSets();
   _createShaderModules();
   _createPipelineLayout();
-  _createComputePipelines();
+  _createShaderPipelines();
   _createCommandPool();
   _allocateCommandBuffers();
   _createFence();
@@ -261,17 +261,20 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
     if (deviceFeatures.logicOp) {
       score++;
     }
+    if (deviceFeatures.geometryShader) {
+      score++;
+    }
     if (deviceFeatures.shaderFloat64) {
       score++;
     }
     if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
-      score += 3;
+      score += 4;
     }
     if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) {
-      score += 2;
+      score += 3;
     }
     if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU) {
-      score += 1;
+      score += 2;
     }
     return score;
   };
@@ -632,28 +635,72 @@ void VulkanBuilder::_createPipelineLayout() {
   }
 }
 
-void VulkanBuilder::_createComputePipelines() {
+void VulkanBuilder::_createShaderPipelines() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
+  std::vector<VkPipelineShaderStageCreateInfo> shaderGraphicsStages;
+  VkPipelineShaderStageCreateInfo computeShaderStageInfo = {};
   for (auto &shader : vulkan_->shaders) {
-    // forward shader
-    shader.info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    shader.info.stage.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    shader.info.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-    shader.info.stage.module = shader.module;
-    shader.info.stage.pName = "main";
-    shader.info.layout = vulkan_->pipelineLayout;
-    shader.info.basePipelineHandle = VK_NULL_HANDLE;
-    shader.info.basePipelineIndex = 0;
-    if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
-                                 &shader.info, nullptr,
-                                 &shader.pipeline) != VK_SUCCESS) {
-      throw VulkanBuilderException(
-          "Failed to create shader compute pipelines for " + shader.filename);
-    };
+    switch (shader.shadername) {
+    // vertex shader
+    case (EShader::VertexShader): {
+      VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+      vertShaderStageInfo.sType =
+          VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+      vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+      vertShaderStageInfo.module = shader.module;
+      vertShaderStageInfo.pName = "main";
+      shaderGraphicsStages.push_back(vertShaderStageInfo);
+    } break;
+    // fragment shader
+    case (EShader::FragmentShader): {
+      VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+      fragShaderStageInfo.sType =
+          VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+      fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+      fragShaderStageInfo.module = shader.module;
+      fragShaderStageInfo.pName = "main";
+      shaderGraphicsStages.push_back(fragShaderStageInfo);
+    } break;
+    // compute shader
+    case (EShader::Test1): // TODO: remove Test1 Test2 after tests
+    case (EShader::Test2):
+    case (EShader::TrainingMonitoredShader): {
+      computeShaderStageInfo.sType =
+          VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+      computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+      computeShaderStageInfo.module = shader.module;
+      computeShaderStageInfo.pName = "main";
+    } break;
+    default:
+      break;
+    }
   }
+  // create graphic pipelines
+  vulkan_->infoGraphics.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+  vulkan_->infoGraphics.stageCount = shaderGraphicsStages.size();
+  vulkan_->infoGraphics.pStages = shaderGraphicsStages.data();
+  vulkan_->infoGraphics.layout = vulkan_->pipelineLayout;
+  vulkan_->infoGraphics.basePipelineHandle = VK_NULL_HANDLE;
+  vulkan_->infoGraphics.basePipelineIndex = 0;
+  if (vkCreateGraphicsPipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
+                                &vulkan_->infoGraphics, nullptr,
+                                &vulkan_->pipelineGraphic) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create graphics pipeline");
+  }
+
+  // create compute pipelines
+  vulkan_->infoCompute.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  vulkan_->infoCompute.stage = computeShaderStageInfo;
+  vulkan_->infoCompute.layout = vulkan_->pipelineLayout;
+  vulkan_->infoCompute.basePipelineHandle = VK_NULL_HANDLE;
+  vulkan_->infoCompute.basePipelineIndex = 0;
+  if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
+                               &vulkan_->infoCompute, nullptr,
+                               &vulkan_->pipelineCompute) != VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create compute pipeline");
+  };
 }
 
 void VulkanBuilder::_createCommandPool() {
@@ -910,12 +957,20 @@ VulkanBuilder &VulkanBuilder::clear() {
       vkDestroyShaderModule(vulkan_->logicalDevice, shader.module, nullptr);
       shader.module = VK_NULL_HANDLE;
     }
-    if (shader.pipeline != VK_NULL_HANDLE) {
-      vkDestroyPipeline(vulkan_->logicalDevice, shader.pipeline, nullptr);
-      shader.pipeline = VK_NULL_HANDLE;
-    }
   }
   vulkan_->shaders.clear();
+
+  if (vulkan_->pipelineGraphic != VK_NULL_HANDLE) {
+    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineGraphic,
+                      nullptr);
+    vulkan_->pipelineGraphic = VK_NULL_HANDLE;
+  }
+
+  if (vulkan_->pipelineCompute != VK_NULL_HANDLE) {
+    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineCompute,
+                      nullptr);
+    vulkan_->pipelineCompute = VK_NULL_HANDLE;
+  }
 
   for (auto framebuffer : vulkan_->swapChainFramebuffers) {
     vkDestroyFramebuffer(vulkan_->logicalDevice, framebuffer, nullptr);

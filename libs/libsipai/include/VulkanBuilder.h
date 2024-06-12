@@ -153,7 +153,7 @@ private:
   void _allocateDescriptorSets();
   void _createBuffers();
   void _createCommandPool();
-  void _createComputePipelines();
+  void _createShaderPipelines();
   void _createDescriptorPool();
   void _createDescriptorSetLayout();
   void _createFence();

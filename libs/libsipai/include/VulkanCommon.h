@@ -36,7 +36,9 @@ enum class EBuffer {
 };
 
 enum class EShader {
-  TrainingMonitored,
+  TrainingMonitoredShader,
+  VertexShader,
+  FragmentShader,
 
   // For Testing
   // TODO: to remove and cleanup after testing
@@ -126,8 +128,6 @@ struct Shader {
   std::string filename;
   std::unique_ptr<std::vector<uint32_t>> shader = nullptr;
   VkShaderModule module = VK_NULL_HANDLE;
-  VkPipeline pipeline = VK_NULL_HANDLE;
-  VkComputePipelineCreateInfo info = {};
   bool isReady = false;
 };
 
@@ -147,6 +147,10 @@ struct Vulkan {
   VkSwapchainKHR swapChain = VK_NULL_HANDLE;
   VkFormat swapChainImageFormat;
   VkExtent2D swapChainExtent;
+  VkComputePipelineCreateInfo infoCompute = {};
+  VkGraphicsPipelineCreateInfo infoGraphics = {};
+  VkPipeline pipelineGraphic = VK_NULL_HANDLE;
+  VkPipeline pipelineCompute = VK_NULL_HANDLE;
   std::vector<Buffer> buffers;
   std::vector<Shader> shaders;
   std::vector<VkCommandBuffer> commandBufferPool;

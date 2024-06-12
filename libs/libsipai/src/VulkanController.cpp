@@ -59,17 +59,23 @@ bool VulkanController::initialize() {
     return false;
   }
 
-  // add more shaders there
   if (vulkan_->shaders.empty()) {
+    // templated shaders
     if (!helper_.replaceTemplateParameters(
-            manager.app_params.trainingMonitoredShaderTemplate,
-            manager.app_params.trainingMonitoredShader)) {
+            manager.app_params.shaderTrainingMonitoredTemplate,
+            manager.app_params.shaderTrainingMonitored)) {
       SimpleLogger::LOG_ERROR("Templated shader build error.");
       return false;
     }
+
+    // shaders list
     vulkan_->shaders.push_back(
-        {.shadername = EShader::TrainingMonitored,
-         .filename = manager.app_params.trainingMonitoredShader});
+        {.shadername = EShader::TrainingMonitoredShader,
+         .filename = manager.app_params.shaderTrainingMonitored});
+    vulkan_->shaders.push_back({.shadername = EShader::VertexShader,
+                                .filename = manager.app_params.shaderVertex});
+    vulkan_->shaders.push_back({.shadername = EShader::FragmentShader,
+                                .filename = manager.app_params.shaderFragment});
   }
 
   // initialize opencv window (before builder)
@@ -96,7 +102,7 @@ float VulkanController::trainingMonitored(
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
-  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitored);
+  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitoredShader);
 
   _copyParameters();
 
@@ -112,7 +118,7 @@ float VulkanController::trainingMonitored(
                  phase == TrainingPhase::Validation);
 
   // Run the shader
-  _computeShader(trainingMonitoredShader.pipeline);
+  _computeShader(vulkan_->pipelineCompute);
 
   // Get the results
   const auto result = _getOutputData();
