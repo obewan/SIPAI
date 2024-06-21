@@ -119,15 +119,18 @@ void VulkanBuilder::_createInstance() {
   bool extensionSurface = false;
   bool extensionPlateformSurface = false;
   for (const auto &extension : availableInstanceExtensions) {
+    // Generic surface extension
     if (strcmp(VK_KHR_SURFACE_EXTENSION_NAME, extension.extensionName) == 0) {
       extensionSurface = true;
     }
+    // Windows surface extension
 #ifdef _WIN32
     if (strcmp(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, extension.extensionName) ==
         0) {
       extensionPlateformSurface = true;
     }
 #else
+    // Linux surface extension
     if (strcmp(VK_KHR_XLIB_SURFACE_EXTENSION_NAME, extension.extensionName) ==
         0) {
       extensionPlateformSurface = true;
@@ -191,16 +194,27 @@ void VulkanBuilder::_createLogicalDevice() {
                                        &deviceExtensionCount,
                                        availableExtensions.data());
   bool extensionSwapChain = false;
+  bool extensionNonSemanticInfo = false;
   for (const auto &extension : availableExtensions) {
+    // SwapChain extension
     if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, extension.extensionName) == 0) {
       extensionSwapChain = true;
+    }
+    // Non-semantic info extension
+    if (strcmp(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
+               extension.extensionName) == 0) {
+      extensionNonSemanticInfo = true;
     }
   }
   if (!extensionSwapChain) {
     throw VulkanBuilderException("SwapChain extension not found.");
   }
+  if (!extensionNonSemanticInfo) {
+    throw VulkanBuilderException("Non-semantic info extension not found.");
+  }
   std::vector<const char *> deviceExtensions = {
-      VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+      VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+      VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME};
 
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -677,9 +691,10 @@ void VulkanBuilder::_createShaderPipelines() {
       break;
     }
   }
+
   // create graphic pipelines
   vulkan_->infoGraphics.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-  vulkan_->infoGraphics.stageCount = shaderGraphicsStages.size();
+  vulkan_->infoGraphics.stageCount = (uint32_t)shaderGraphicsStages.size();
   vulkan_->infoGraphics.pStages = shaderGraphicsStages.data();
   vulkan_->infoGraphics.layout = vulkan_->pipelineLayout;
   vulkan_->infoGraphics.basePipelineHandle = VK_NULL_HANDLE;
