@@ -33,6 +33,9 @@ VulkanBuilder &VulkanBuilder::build() {
     throw VulkanBuilderException("Vulkan initialization failure.");
   }
 
+  // add vertices
+  vulkan_->vertices = vertices;
+
   // load shaders
   for (auto &shader : vulkan_->shaders) {
     shader.shader = loadShader(shader.filename);
@@ -442,11 +445,18 @@ void VulkanBuilder::_createBuffers() {
 
   const auto &network_param = Manager::getConstInstance().network_params;
   for (auto [ebuffer, bufferName] : buffer_map) {
-    VkDeviceSize size = 0;
     uint output_neuron_weights = 0;
     uint hidden1_neuron_weights = 0;
     size_t neuronSize = 0;
+    Buffer buffer = {.name = ebuffer, .binding = (uint)ebuffer};
+    buffer.info.usage =
+        VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // SSBO storage buffers (default)
+    buffer.info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer.info.sharingMode =
+        VK_SHARING_MODE_EXCLUSIVE; // one queue family at a time
 
+    // Get the buffer max bytes size
+    VkDeviceSize size = 0;
     switch (ebuffer) {
     case EBuffer::Parameters:
       size = sizeof(GLSLParameters);
@@ -492,15 +502,17 @@ void VulkanBuilder::_createBuffers() {
               network_param.hidden_size_y;        // vec4 errors[][]
       size += sizeof(float) + (3 * sizeof(uint)); // others attributes
       break;
+    case EBuffer::Vertex:
+      size = sizeof(Vertex) * vulkan_->vertices.size();
+      buffer.info.usage =
+          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT; // Vertex buffer here
+      break;
     default:
       throw VulkanBuilderException("Buffer not implemented.");
     }
-    Buffer buffer = {.name = ebuffer, .binding = (uint)ebuffer};
+
     buffer.info.size = size;
-    buffer.info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    buffer.info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // Storage buffers
-    buffer.info.sharingMode =
-        VK_SHARING_MODE_EXCLUSIVE; // one queue family at a time
+
     if (vkCreateBuffer(vulkan_->logicalDevice, &buffer.info, nullptr,
                        &buffer.buffer) != VK_SUCCESS) {
       throw VulkanBuilderException("Failed to create buffer!");

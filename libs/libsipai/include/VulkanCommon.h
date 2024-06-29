@@ -32,7 +32,8 @@ enum class EBuffer {
   HiddenLayer1 = 3,
   InputData = 4,
   OutputData = 5,
-  OutputLoss = 6
+  OutputLoss = 6,
+  Vertex = 7,
 };
 
 enum class EShader {
@@ -54,6 +55,11 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::InputData, "InputData"},
     {EBuffer::OutputData, "OutputData"},
     {EBuffer::OutputLoss, "OutputLoss"}};
+
+struct Vertex {
+  float pos[2];
+  float color[3];
+};
 
 struct GLSLParameters {
   float learning_rate;
@@ -151,6 +157,7 @@ struct Vulkan {
   VkGraphicsPipelineCreateInfo infoGraphics = {};
   VkPipeline pipelineGraphic = VK_NULL_HANDLE;
   VkPipeline pipelineCompute = VK_NULL_HANDLE;
+  std::vector<Vertex> vertices;
   std::vector<Buffer> buffers;
   std::vector<Shader> shaders;
   std::vector<VkCommandBuffer> commandBufferPool;
