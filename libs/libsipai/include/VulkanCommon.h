@@ -166,11 +166,14 @@ struct Vulkan {
   VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
   VkDevice logicalDevice = VK_NULL_HANDLE;
   VkFence computeFence = VK_NULL_HANDLE;
+  VkFence inFlightFence = VK_NULL_HANDLE;
   VkInstance instance = VK_NULL_HANDLE;
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
   VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
   VkQueue queue = VK_NULL_HANDLE;
   VkRenderPass renderPass = VK_NULL_HANDLE;
+  VkSemaphore imageAvailableSemaphore = VK_NULL_HANDLE;
+  VkSemaphore renderFinishedSemaphore = VK_NULL_HANDLE;
   VkSurfaceKHR surface = VK_NULL_HANDLE;
   VkSwapchainKHR swapChain = VK_NULL_HANDLE;
   VkFormat swapChainImageFormat;

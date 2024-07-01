@@ -165,6 +165,7 @@ private:
   void _createRenderPass();
   void _createShaderModules();
   void _createSurface();
+  void _createSyncObjects();
   void _createSwapChain();
   void _updateDescriptorSets();
 

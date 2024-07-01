@@ -42,6 +42,7 @@ VulkanBuilder &VulkanBuilder::build() {
   }
 
   // create buffers, pipelines and others.
+  _createSyncObjects();
   _createBuffers();
   _createDescriptorPool();
   _createDescriptorSetLayout();
@@ -1008,6 +1009,27 @@ void VulkanBuilder::_createFramebuffers() {
   }
 }
 
+void VulkanBuilder::_createSyncObjects() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+  VkSemaphoreCreateInfo semaphoreInfo = {};
+  semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+  VkFenceCreateInfo fenceInfo = {};
+  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+  fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+  if (vkCreateSemaphore(vulkan_->logicalDevice, &semaphoreInfo, nullptr,
+                        &vulkan_->imageAvailableSemaphore) != VK_SUCCESS ||
+      vkCreateSemaphore(vulkan_->logicalDevice, &semaphoreInfo, nullptr,
+                        &vulkan_->renderFinishedSemaphore) != VK_SUCCESS ||
+      vkCreateFence(vulkan_->logicalDevice, &fenceInfo, nullptr,
+                    &vulkan_->inFlightFence) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create synchronization objects");
+  }
+}
+
 void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
@@ -1114,6 +1136,22 @@ VulkanBuilder &VulkanBuilder::clear() {
                            &commandBuffer);
     }
     commandBuffer = VK_NULL_HANDLE;
+  }
+
+  if (vulkan_->imageAvailableSemaphore != VK_NULL_HANDLE) {
+    vkDestroySemaphore(vulkan_->logicalDevice, vulkan_->imageAvailableSemaphore,
+                       nullptr);
+    vulkan_->imageAvailableSemaphore = VK_NULL_HANDLE;
+  }
+  if (vulkan_->renderFinishedSemaphore != VK_NULL_HANDLE) {
+    vkDestroySemaphore(vulkan_->logicalDevice, vulkan_->renderFinishedSemaphore,
+                       nullptr);
+    vulkan_->renderFinishedSemaphore = VK_NULL_HANDLE;
+  }
+
+  if (vulkan_->inFlightFence != VK_NULL_HANDLE) {
+    vkDestroyFence(vulkan_->logicalDevice, vulkan_->inFlightFence, nullptr);
+    vulkan_->inFlightFence = VK_NULL_HANDLE;
   }
   if (vulkan_->computeFence != VK_NULL_HANDLE) {
     vkDestroyFence(vulkan_->logicalDevice, vulkan_->computeFence, nullptr);

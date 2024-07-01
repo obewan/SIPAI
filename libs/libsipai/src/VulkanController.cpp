@@ -117,7 +117,10 @@ float VulkanController::trainingMonitored(
   _copyInputData(inputValues->data, targetValues->data,
                  phase == TrainingPhase::Validation);
 
-  // Run the shader
+  // Draw 3D frame
+  _drawFrame(vulkan_->pipelineGraphic);
+
+  // Run the compute shader
   _computeShader(vulkan_->pipelineCompute);
 
   // Get the results
@@ -129,6 +132,42 @@ float VulkanController::trainingMonitored(
 void VulkanController::updateNeuralNetwork() {
   _readBackHiddenLayer1();
   _readBackOutputLayer();
+}
+
+void VulkanController::_drawFrame(VkPipeline &pipeline) {
+  uint32_t imageIndex;
+  vkAcquireNextImageKHR(vulkan_->logicalDevice, vulkan_->swapChain, UINT64_MAX,
+                        vulkan_->imageAvailableSemaphore, VK_NULL_HANDLE,
+                        &imageIndex);
+
+  auto commandBuffer = helper_.beginSingleTimeCommands();
+
+  VkRenderPassBeginInfo renderPassInfo = {};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  renderPassInfo.renderPass = vulkan_->renderPass;
+  renderPassInfo.framebuffer = vulkan_->swapChainFramebuffers[imageIndex];
+  renderPassInfo.renderArea.offset = {0, 0};
+  renderPassInfo.renderArea.extent = vulkan_->swapChainExtent;
+
+  VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+  renderPassInfo.clearValueCount = 1;
+  renderPassInfo.pClearValues = &clearColor;
+
+  vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
+                       VK_SUBPASS_CONTENTS_INLINE);
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+
+  auto &vertexBuffer = getBuffer(EBuffer::Vertex);
+  VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
+  VkDeviceSize offsets[] = {0};
+  vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+  vkCmdDraw(commandBuffer, static_cast<uint32_t>(vulkan_->vertices.size()), 1,
+            0, 0);
+
+  vkCmdEndRenderPass(commandBuffer);
+
+  helper_.endSingleTimeCommands(commandBuffer);
 }
 
 void VulkanController::_computeShader(VkPipeline &pipeline) {

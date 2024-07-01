@@ -151,6 +151,7 @@ private:
   };
   static std::unique_ptr<VulkanController> controllerInstance_;
 
+  void _drawFrame(VkPipeline &pipeline);
   void _computeShader(VkPipeline &pipeline);
   void _readBackHiddenLayer1();
   void _readBackOutputLayer();
