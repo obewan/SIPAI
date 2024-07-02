@@ -53,10 +53,14 @@ void RunnerTrainingVulkanVisitor::visit() const {
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
+    const auto &vulkan = VulkanController::getInstance().getVulkan();
+
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams) &&
            cv::waitKey(30) != 27) {
-      cv::imshow(cvWindowTitle, cv::Mat::zeros(600, 800, CV_8UC3));
+      cv::imshow(cvWindowTitle,
+                 cv::Mat::zeros(vulkan->window_height, vulkan->window_width,
+                                CV_8UC3)); // rows, cols, type
 
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 

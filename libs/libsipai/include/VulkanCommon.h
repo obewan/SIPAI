@@ -54,7 +54,8 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::HiddenLayer1, "HiddenLayer1"},
     {EBuffer::InputData, "InputData"},
     {EBuffer::OutputData, "OutputData"},
-    {EBuffer::OutputLoss, "OutputLoss"}};
+    {EBuffer::OutputLoss, "OutputLoss"},
+    {EBuffer::Vertex, "Vertex"}};
 
 struct Vertex {
   float pos[2];
@@ -190,6 +191,8 @@ struct Vulkan {
   std::vector<VkImage> swapChainImages;
   std::vector<VkImageView> swapChainImageViews;
   unsigned int queueFamilyIndex = 0;
+  unsigned int window_width = 800;
+  unsigned int window_height = 600;
   bool isInitialized = false;
 };
 

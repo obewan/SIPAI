@@ -901,7 +901,7 @@ void VulkanBuilder::_createSwapChain() {
   createInfo.minImageCount = 2;
   createInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
   createInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-  createInfo.imageExtent = {800, 600};
+  createInfo.imageExtent = {vulkan_->window_width, vulkan_->window_height};
   createInfo.imageArrayLayers = 1;
   createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
@@ -918,7 +918,7 @@ void VulkanBuilder::_createSwapChain() {
                           &imageCount, vulkan_->swapChainImages.data());
 
   vulkan_->swapChainImageFormat = VK_FORMAT_B8G8R8A8_UNORM;
-  vulkan_->swapChainExtent = {800, 600};
+  vulkan_->swapChainExtent = {vulkan_->window_width, vulkan_->window_height};
 }
 
 void VulkanBuilder::_createImageViews() {
