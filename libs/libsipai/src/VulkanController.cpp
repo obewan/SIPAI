@@ -216,7 +216,7 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
 
   if (vkQueueSubmit(vulkan_->queue, 1, &submitInfo, vulkan_->inFlightFence) !=
       VK_SUCCESS) {
-    throw std::runtime_error("Failed to submit draw command buffer");
+    throw VulkanControllerException("Failed to submit draw command buffer");
   }
 
   // Present the image
@@ -238,6 +238,15 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
 
   // Wait for the presentation to be done
   vkQueueWaitIdle(vulkan_->queue);
+
+  // Reset the command buffer
+  result = vkResetCommandBuffer(commandBuffer, 0);
+  if (result != VK_SUCCESS) {
+    throw VulkanControllerException("Vulkan command buffer reset error.");
+  }
+
+  // Push back the command buffer in the pool
+  vulkan_->commandBufferPool.push_back(commandBuffer);
 }
 
 void VulkanController::_computeShader(VkPipeline &pipeline) {
