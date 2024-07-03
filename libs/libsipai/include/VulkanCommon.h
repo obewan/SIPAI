@@ -171,7 +171,8 @@ struct Vulkan {
   VkInstance instance = VK_NULL_HANDLE;
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
   VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-  VkQueue queue = VK_NULL_HANDLE;
+  VkQueue queueCompute = VK_NULL_HANDLE;
+  VkQueue queueGraphics = VK_NULL_HANDLE;
   VkRenderPass renderPass = VK_NULL_HANDLE;
   VkSemaphore imageAvailableSemaphore = VK_NULL_HANDLE;
   VkSemaphore renderFinishedSemaphore = VK_NULL_HANDLE;
@@ -190,7 +191,8 @@ struct Vulkan {
   std::vector<VkFramebuffer> swapChainFramebuffers;
   std::vector<VkImage> swapChainImages;
   std::vector<VkImageView> swapChainImageViews;
-  unsigned int queueFamilyIndex = 0;
+  unsigned int queueComputeIndex = 0;
+  unsigned int queueGraphicsIndex = 0;
   unsigned int window_width = 800;
   unsigned int window_height = 600;
   bool isInitialized = false;

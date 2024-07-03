@@ -80,20 +80,8 @@ VulkanBuilder &VulkanBuilder::initialize() {
     throw VulkanBuilderException("failed to find a suitable GPU!");
   }
 
-  // Get a queue family
-  auto queueFamilyIndex = _pickQueueFamily();
-  if (!queueFamilyIndex.has_value()) {
-    throw VulkanBuilderException(
-        "failed to find GPUs with Vulkan queue support!");
-  }
-  vulkan_->queueFamilyIndex = queueFamilyIndex.value();
-
-  // Create a logical device
+  // Create a logical device with its queues
   _createLogicalDevice();
-
-  // Get a queue device
-  vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueFamilyIndex, 0,
-                   &vulkan_->queue);
 
   // Check some properties
   bool isValid = _checkDeviceProperties();
@@ -181,12 +169,35 @@ void VulkanBuilder::_createInstance() {
 }
 
 void VulkanBuilder::_createLogicalDevice() {
-  VkDeviceQueueCreateInfo queueCreateInfo{};
-  queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-  queueCreateInfo.queueFamilyIndex = vulkan_->queueFamilyIndex;
-  queueCreateInfo.queueCount = 1;
+  // Pick graphics and compute queues
   float queuePriority = 1.0f;
-  queueCreateInfo.pQueuePriorities = &queuePriority;
+  std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+  auto graphicsQueueIndexOpt = _pickQueueGraphics();
+  auto computeQueueIndexOpt = _pickQueueCompute();
+  if (!graphicsQueueIndexOpt.has_value() || !computeQueueIndexOpt.has_value()) {
+    throw VulkanBuilderException("Failed to find required queue families");
+  }
+  vulkan_->queueGraphicsIndex = graphicsQueueIndexOpt.value();
+  vulkan_->queueComputeIndex = computeQueueIndexOpt.value();
+
+  VkDeviceQueueCreateInfo graphicsQueueCreateInfo{};
+  graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+  graphicsQueueCreateInfo.queueFamilyIndex = vulkan_->queueGraphicsIndex;
+  graphicsQueueCreateInfo.queueCount = 1;
+  graphicsQueueCreateInfo.pQueuePriorities = &queuePriority;
+  queueCreateInfos.push_back(graphicsQueueCreateInfo);
+
+  // If the compute queue index is different from the graphics queue index,
+  // create a separate queue
+  if (vulkan_->queueComputeIndex != vulkan_->queueGraphicsIndex) {
+    VkDeviceQueueCreateInfo computeQueueCreateInfo{};
+    computeQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    computeQueueCreateInfo.queueFamilyIndex = vulkan_->queueComputeIndex;
+    computeQueueCreateInfo.queueCount = 1;
+    computeQueueCreateInfo.pQueuePriorities = &queuePriority;
+    queueCreateInfos.push_back(computeQueueCreateInfo);
+  }
+
   VkPhysicalDeviceFeatures deviceFeatures = {};
 
   // Get logical device extensions
@@ -197,14 +208,13 @@ void VulkanBuilder::_createLogicalDevice() {
   vkEnumerateDeviceExtensionProperties(vulkan_->physicalDevice, nullptr,
                                        &deviceExtensionCount,
                                        availableExtensions.data());
+
   bool extensionSwapChain = false;
   bool extensionNonSemanticInfo = false;
   for (const auto &extension : availableExtensions) {
-    // SwapChain extension
     if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, extension.extensionName) == 0) {
       extensionSwapChain = true;
     }
-    // Non-semantic info extension
     if (strcmp(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
                extension.extensionName) == 0) {
       extensionNonSemanticInfo = true;
@@ -222,16 +232,23 @@ void VulkanBuilder::_createLogicalDevice() {
 
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-  createInfoDevice.pQueueCreateInfos = &queueCreateInfo;
-  createInfoDevice.queueCreateInfoCount = 1;
+  createInfoDevice.pQueueCreateInfos = queueCreateInfos.data();
+  createInfoDevice.queueCreateInfoCount =
+      static_cast<uint32_t>(queueCreateInfos.size());
   createInfoDevice.pEnabledFeatures = &deviceFeatures;
   createInfoDevice.enabledExtensionCount =
       static_cast<uint32_t>(deviceExtensions.size());
   createInfoDevice.ppEnabledExtensionNames = deviceExtensions.data();
+
   if (vkCreateDevice(vulkan_->physicalDevice, &createInfoDevice, nullptr,
                      &vulkan_->logicalDevice) != VK_SUCCESS) {
-    throw VulkanBuilderException("failed to create logical device!");
+    throw VulkanBuilderException("Failed to create logical device!");
   }
+
+  vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueGraphicsIndex, 0,
+                   &vulkan_->queueGraphics);
+  vkGetDeviceQueue(vulkan_->logicalDevice, vulkan_->queueComputeIndex, 0,
+                   &vulkan_->queueCompute);
 }
 
 bool VulkanBuilder::_checkDeviceProperties() {
@@ -379,7 +396,32 @@ VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
   return memoryPropertiesFlags;
 }
 
-std::optional<unsigned int> VulkanBuilder::_pickQueueFamily() {
+std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics() {
+  if (vulkan_ == nullptr) {
+    throw VulkanBuilderException("null vulkan pointer.");
+  }
+
+  uint32_t queueFamilyCount = 0;
+  vkGetPhysicalDeviceQueueFamilyProperties(vulkan_->physicalDevice,
+                                           &queueFamilyCount, nullptr);
+  if (queueFamilyCount == 0) {
+    throw VulkanBuilderException(
+        "failed to find GPUs with Vulkan queue support!");
+  }
+  std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+  vkGetPhysicalDeviceQueueFamilyProperties(
+      vulkan_->physicalDevice, &queueFamilyCount, queueFamilies.data());
+  unsigned int i = 0;
+  for (const auto &queueFamily : queueFamilies) {
+    if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+      return i;
+    }
+    i++;
+  }
+  return std::nullopt;
+}
+
+std::optional<unsigned int> VulkanBuilder::_pickQueueCompute() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
@@ -818,7 +860,7 @@ void VulkanBuilder::_createCommandPool() {
   }
   VkCommandPoolCreateInfo poolInfo = {};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-  poolInfo.queueFamilyIndex = vulkan_->queueFamilyIndex;
+  poolInfo.queueFamilyIndex = vulkan_->queueComputeIndex;
   poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
   if (vkCreateCommandPool(vulkan_->logicalDevice, &poolInfo, nullptr,
                           &vulkan_->commandPool) != VK_SUCCESS) {
@@ -1182,7 +1224,7 @@ VulkanBuilder &VulkanBuilder::clear() {
     vkDestroyDevice(vulkan_->logicalDevice, nullptr);
     vulkan_->logicalDevice = VK_NULL_HANDLE;
     // queue is destroyed with the logical device
-    vulkan_->queue = VK_NULL_HANDLE;
+    vulkan_->queueCompute = VK_NULL_HANDLE;
   }
   if (vulkan_->instance != VK_NULL_HANDLE) {
     vkDestroyInstance(vulkan_->instance, nullptr);

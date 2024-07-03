@@ -106,7 +106,8 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-  result = vkQueueSubmit(vulkan_->queue, 1, &submitInfo, vulkan_->computeFence);
+  result = vkQueueSubmit(vulkan_->queueCompute, 1, &submitInfo,
+                         vulkan_->computeFence);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan queue submit error.");
   }

@@ -214,8 +214,8 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores = signalSemaphores;
 
-  if (vkQueueSubmit(vulkan_->queue, 1, &submitInfo, vulkan_->inFlightFence) !=
-      VK_SUCCESS) {
+  if (vkQueueSubmit(vulkan_->queueGraphics, 1, &submitInfo,
+                    vulkan_->inFlightFence) != VK_SUCCESS) {
     throw VulkanControllerException("Failed to submit draw command buffer");
   }
 
@@ -231,13 +231,13 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
   presentInfo.pSwapchains = swapChains;
   presentInfo.pImageIndices = &imageIndex;
 
-  result = vkQueuePresentKHR(vulkan_->queue, &presentInfo);
+  result = vkQueuePresentKHR(vulkan_->queueGraphics, &presentInfo);
   if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
     throw std::runtime_error("Failed to present swap chain image");
   }
 
   // Wait for the presentation to be done
-  vkQueueWaitIdle(vulkan_->queue);
+  vkQueueWaitIdle(vulkan_->queueGraphics);
 
   // Reset the command buffer
   result = vkResetCommandBuffer(commandBuffer, 0);

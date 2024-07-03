@@ -146,7 +146,8 @@ public:
   }
 
 private:
-  std::optional<unsigned int> _pickQueueFamily();
+  std::optional<unsigned int> _pickQueueCompute();
+  std::optional<unsigned int> _pickQueueGraphics();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 
   void _allocateCommandBuffers();

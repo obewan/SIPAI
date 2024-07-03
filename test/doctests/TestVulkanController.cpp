@@ -336,7 +336,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     // Create command pool
     VkCommandPoolCreateInfo poolInfoCMD = {};
     poolInfoCMD.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfoCMD.queueFamilyIndex = vulkan->queueFamilyIndex;
+    poolInfoCMD.queueFamilyIndex = vulkan->queueComputeIndex;
     poolInfoCMD.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(vulkan->logicalDevice, &poolInfoCMD, nullptr,
                                  &vulkan->commandPool);
@@ -381,8 +381,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(vulkan->queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(vulkan->queue);
+    vkQueueSubmit(vulkan->queueCompute, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(vulkan->queueCompute);
 
     // Read data from buffer
     OutputLoss outputLoss{.loss = 0.0f};
@@ -597,7 +597,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     // Create command pool
     VkCommandPoolCreateInfo poolInfoCMD = {};
     poolInfoCMD.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfoCMD.queueFamilyIndex = vulkan->queueFamilyIndex;
+    poolInfoCMD.queueFamilyIndex = vulkan->queueComputeIndex;
     poolInfoCMD.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(vulkan->logicalDevice, &poolInfoCMD, nullptr,
                                  &vulkan->commandPool);
@@ -642,8 +642,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(vulkan->queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(vulkan->queue);
+    vkQueueSubmit(vulkan->queueCompute, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(vulkan->queueCompute);
 
     // Read data from buffer
     OutputLoss outputLoss{.loss = 0.0f};
