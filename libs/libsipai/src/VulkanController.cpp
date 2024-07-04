@@ -151,6 +151,11 @@ void VulkanController::_drawFrame() {
     throw VulkanControllerException("Failed to acquire swap chain image");
   }
 
+  // Pause for RenderDoc frame capture
+  // TODO: to remove after tests
+  std::cout << "Press Enter to continue...";
+  std::cin.get();
+
   // Begin recording commands in a single-time command buffer
   auto commandBuffer = helper_.commandsBegin();
 
