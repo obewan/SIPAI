@@ -47,5 +47,6 @@ struct AppParams {
   bool enable_padding = false;
   bool verbose = false;
   bool verbose_debug = false;
+  bool vulkan_debug = false;
 };
 } // namespace sipai

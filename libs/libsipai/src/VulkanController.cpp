@@ -152,7 +152,7 @@ void VulkanController::_drawFrame() {
   }
 
   // Pause for RenderDoc frame capture
-  // TODO: to remove after tests
+  // TODO: use vulkan_debug flag
   std::cout << "Press Enter to continue...";
   std::cin.get();
 
