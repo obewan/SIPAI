@@ -27,6 +27,8 @@
 using namespace sipai;
 
 VulkanBuilder &VulkanBuilder::build() {
+  const auto &app_params = Manager::getConstInstance().app_params;
+
   // initialize
   initialize();
   if (!vulkan_->isInitialized) {
@@ -50,15 +52,19 @@ VulkanBuilder &VulkanBuilder::build() {
   _updateDescriptorSets();
   _createShaderModules();
   _createPipelineLayout();
-  _createSurface();
-  _createSwapChain();
-  _createRenderPass();
+  if (app_params.vulkan_debug) {
+    _createSurface();
+    _createSwapChain();
+    _createRenderPass();
+  }
   _createShaderPipelines();
   _createCommandPool();
   _allocateCommandBuffers();
   _createFence();
-  _createImageViews();
-  _createFramebuffers();
+  if (app_params.vulkan_debug) {
+    _createImageViews();
+    _createFramebuffers();
+  }
 
   return *this;
 }
@@ -136,16 +142,19 @@ void VulkanBuilder::_createInstance() {
     throw VulkanBuilderException("Plateform surface extension not found.");
   }
 
-  const std::vector<const char *> instanceExtensions = {
-      VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-      VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
-      VK_KHR_SURFACE_EXTENSION_NAME,
+  const auto &app_params = Manager::getConstInstance().app_params;
+
+  std::vector<const char *> instanceExtensions;
+  if (app_params.vulkan_debug) {
+    instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    instanceExtensions.push_back(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+    instanceExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
 #ifdef _WIN32
-      VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+    instanceExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #else
-      VK_KHR_XLIB_SURFACE_EXTENSION_NAME,
+    instanceExtensions.push_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
 #endif
-  };
+  }
 
   VkInstanceCreateInfo createInfoInstance{};
   createInfoInstance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -154,9 +163,10 @@ void VulkanBuilder::_createInstance() {
       static_cast<uint32_t>(instanceExtensions.size());
   createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
 
-  // TODO: FOR DEBUGGING ONLY (remove before a release)
-  const std::vector<const char *> validationLayers = {
-      "VK_LAYER_KHRONOS_validation"};
+  std::vector<const char *> validationLayers;
+  if (app_params.vulkan_debug) {
+    validationLayers.push_back("VK_LAYER_KHRONOS_validation");
+  };
   createInfoInstance.enabledLayerCount =
       static_cast<uint32_t>(validationLayers.size());
   createInfoInstance.ppEnabledLayerNames = validationLayers.data();
@@ -454,13 +464,17 @@ VulkanBuilder::loadShader(const std::string &path) {
   if (!std::filesystem::exists(path)) {
     throw VulkanBuilderException("GLSL file does not exist: " + path);
   }
+  const auto app_params = Manager::getConstInstance().app_params;
+
   // Use glslangValidator to compile the GLSL shader to SPIR-V
   // -gVS: debugging infos, -V: GLSL Vulkan (-D: HLSL)
   std::stringstream sst;
 #ifdef _WIN32
-  sst << "glslangValidator.exe -gVS -V -o shader.spv " << path;
+  sst << "glslangValidator.exe " << (app_params.vulkan_debug ? "-gVS " : "")
+      << "-V -o shader.spv " << path;
 #else
-  sst << "glslangValidator -gVS -V -o shader.spv " << path;
+  sst << "glslangValidator " << (app_params.vulkan_debug ? "-gVS " : "")
+      << "-V -o shader.spv " << path;
 #endif
   system(sst.str().c_str());
 

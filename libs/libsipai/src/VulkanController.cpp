@@ -81,12 +81,14 @@ bool VulkanController::initialize() {
   // initialize opencv window (before builder)
   // !!! OpenCV must be built with OpenGL support
   // https://answers.opencv.org/question/10592/opencv-error-no-opengl-support/
-  cv::namedWindow(cvWindowTitle, (int)cv::WINDOW_OPENGL);
-  cv::resizeWindow(cvWindowTitle, (int)vulkan_->window_width,
-                   (int)vulkan_->window_height);
-  cv::imshow(cvWindowTitle, cv::Mat::zeros((int)vulkan_->window_height,
-                                           (int)vulkan_->window_width,
-                                           CV_8UC3)); // rows, cols, type
+  if (manager.app_params.vulkan_debug) {
+    cv::namedWindow(cvWindowTitle, (int)cv::WINDOW_OPENGL);
+    cv::resizeWindow(cvWindowTitle, (int)vulkan_->window_width,
+                     (int)vulkan_->window_height);
+    cv::imshow(cvWindowTitle, cv::Mat::zeros((int)vulkan_->window_height,
+                                             (int)vulkan_->window_width,
+                                             CV_8UC3)); // rows, cols, type
+  }
 
   // Vulkan builder
   builder_.withCommandPoolSize(1)
@@ -121,7 +123,7 @@ float VulkanController::trainingMonitored(
                  phase == TrainingPhase::Validation);
 
   // Compute and draw 3D frame (can be view in RenderDoc)
-  _drawFrame();
+  _processShaders();
 
   // Get the results
   const auto result = _getOutputData();
@@ -134,27 +136,34 @@ void VulkanController::updateNeuralNetwork() {
   _readBackOutputLayer();
 }
 
-void VulkanController::_drawFrame() {
-  // Wait for the fence to ensure the previous frame is finished
-  auto result = vkWaitForFences(vulkan_->logicalDevice, 1,
-                                &vulkan_->inFlightFence, VK_TRUE, UINT64_MAX);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Failed to wait for fence");
-  }
+/**
+ * @brief if vulkan debug mode, draw a window to be used with RenderDoc with
+ * pauses, else do just a compute shader pass.
+ *
+ */
+void VulkanController::_processShaders() {
+  const auto &app_params = Manager::getConstInstance().app_params;
 
-  // Acquire an image from the swap chain
   uint32_t imageIndex;
-  result = vkAcquireNextImageKHR(vulkan_->logicalDevice, vulkan_->swapChain,
-                                 UINT64_MAX, vulkan_->imageAvailableSemaphore,
-                                 VK_NULL_HANDLE, &imageIndex);
-  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw VulkanControllerException("Failed to acquire swap chain image");
-  }
+  if (app_params.vulkan_debug) {
+    // Wait for the fence to ensure the previous frame is finished
+    auto result = vkWaitForFences(vulkan_->logicalDevice, 1,
+                                  &vulkan_->inFlightFence, VK_TRUE, UINT64_MAX);
+    if (result != VK_SUCCESS) {
+      throw VulkanControllerException("Failed to wait for fence");
+    }
 
-  // Pause for RenderDoc frame capture
-  // TODO: use vulkan_debug flag
-  std::cout << "Press Enter to continue...";
-  std::cin.get();
+    // Acquire an image from the swap chain
+    result = vkAcquireNextImageKHR(vulkan_->logicalDevice, vulkan_->swapChain,
+                                   UINT64_MAX, vulkan_->imageAvailableSemaphore,
+                                   VK_NULL_HANDLE, &imageIndex);
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+      throw VulkanControllerException("Failed to acquire swap chain image");
+    }
+
+    // std::cout << "Press Enter to continue...";
+    // std::cin.get();
+  }
 
   // Begin recording commands in a single-time command buffer
   auto commandBuffer = helper_.commandsBegin();
@@ -167,52 +176,56 @@ void VulkanController::_drawFrame() {
                           &vulkan_->descriptorSet, 0, nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
 
-  // Memory barrier to ensure the compute pass is finished before starting the
-  // render pass
-  VkMemoryBarrier memoryBarrier = {};
-  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-  memoryBarrier.dstAccessMask =
-      VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+  if (app_params.vulkan_debug) {
+    // Memory barrier to ensure the compute pass is finished before starting the
+    // render pass
+    VkMemoryBarrier memoryBarrier = {};
+    memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+    memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+    memoryBarrier.dstAccessMask =
+        VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                       VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
-                           VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                       0, 1, &memoryBarrier, 0, nullptr, 0, nullptr);
+    vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
+                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                         0, 1, &memoryBarrier, 0, nullptr, 0, nullptr);
 
-  // Set up the render pass begin info
-  VkRenderPassBeginInfo renderPassInfo = {};
-  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-  renderPassInfo.renderPass = vulkan_->renderPass;
-  renderPassInfo.framebuffer = vulkan_->swapChainFramebuffers[imageIndex];
-  renderPassInfo.renderArea.offset = {0, 0};
-  renderPassInfo.renderArea.extent = vulkan_->swapChainExtent;
+    // Set up the render pass begin info
+    VkRenderPassBeginInfo renderPassInfo = {};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = vulkan_->renderPass;
+    renderPassInfo.framebuffer = vulkan_->swapChainFramebuffers[imageIndex];
+    renderPassInfo.renderArea.offset = {0, 0};
+    renderPassInfo.renderArea.extent = vulkan_->swapChainExtent;
 
-  VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-  renderPassInfo.clearValueCount = 1;
-  renderPassInfo.pClearValues = &clearColor;
+    VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearColor;
 
-  // Begin the render pass and bind the pipeline
-  vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
-                       VK_SUBPASS_CONTENTS_INLINE);
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    vulkan_->pipelineGraphic);
+    // Begin the render pass and bind the pipeline
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
+                         VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                      vulkan_->pipelineGraphic);
 
-  // Bind the vertex buffer
-  auto &vertexBuffer = getBuffer(EBuffer::Vertex);
-  VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
-  VkDeviceSize offsets[] = {0};
-  vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+    // Bind the vertex buffer
+    auto &vertexBuffer = getBuffer(EBuffer::Vertex);
+    VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-  // Issue the draw command
-  vkCmdDraw(commandBuffer, static_cast<uint32_t>(vulkan_->vertices.size()), 1,
-            0, 0);
+    // Issue the draw command
+    vkCmdDraw(commandBuffer, static_cast<uint32_t>(vulkan_->vertices.size()), 1,
+              0, 0);
 
-  // End the render pass
-  vkCmdEndRenderPass(commandBuffer);
+    // End the render pass
+    vkCmdEndRenderPass(commandBuffer);
 
-  // End recording commands and queue submit
-  helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
+    // End recording commands and queue submit
+    helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
+  } else {
+    helper_.commandsEnd_SubmitQueueCompute(commandBuffer);
+  }
 }
 
 void VulkanController::_readBackHiddenLayer1() {

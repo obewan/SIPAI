@@ -58,10 +58,6 @@ void RunnerTrainingVulkanVisitor::visit() const {
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams) &&
            cv::waitKey(30) != 27) {
-      cv::imshow(cvWindowTitle,
-                 cv::Mat::zeros(vulkan->window_height, vulkan->window_width,
-                                CV_8UC3)); // rows, cols, type
-
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
       float trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
