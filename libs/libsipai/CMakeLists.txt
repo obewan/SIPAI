@@ -30,6 +30,14 @@ find_package(TBB REQUIRED)
 find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
+set(LIBS ${OpenCV_LIBS} TBB::tbb Vulkan::Vulkan)
+
+# Add X11 (Linux only)
+if(UNIX AND NOT APPLE)
+    find_package(X11 REQUIRED)
+    list(APPEND LIBS ${X11_LIBRARIES})
+endif()
+
 # Add included libs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libjson nlohmann-json)
@@ -53,8 +61,7 @@ add_library(${LIBRARY_NAME} STATIC
 )
 
 
-target_link_libraries(libsipai ${OpenCV_LIBS} TBB::tbb  Vulkan::Vulkan)
-
+target_link_libraries(libsipai ${LIBS})
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

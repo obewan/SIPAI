@@ -19,8 +19,10 @@ public:
   bool replaceTemplateParameters(const std::string &inputFile,
                                  const std::string &outputFile);
 
-  VkCommandBuffer beginSingleTimeCommands();
-  void endSingleTimeCommands(VkCommandBuffer &commandBuffer);
+  VkCommandBuffer commandsBegin();
+  void commandsEnd_SubmitQueueGraphics(VkCommandBuffer &commandBuffer,
+                                       uint32_t &imageIndex);
+  void commandsEnd_SubmitQueueCompute(VkCommandBuffer &commandBuffer);
 
 private:
   std::shared_ptr<Vulkan> vulkan_;

@@ -17,19 +17,19 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     VulkanHelper helper;
     std::string relativePath = "../../";
     CHECK(std::filesystem::exists(
-        relativePath + manager.app_params.trainingMonitoredShaderTemplate));
+        relativePath + manager.app_params.shaderTrainingMonitoredTemplate));
     if (std::filesystem::exists(relativePath +
-                                manager.app_params.trainingMonitoredShader)) {
+                                manager.app_params.shaderTrainingMonitored)) {
       std::filesystem::remove(relativePath +
-                              manager.app_params.trainingMonitoredShader);
+                              manager.app_params.shaderTrainingMonitored);
     }
     CHECK(helper.replaceTemplateParameters(
-        relativePath + manager.app_params.trainingMonitoredShaderTemplate,
-        relativePath + manager.app_params.trainingMonitoredShader));
+        relativePath + manager.app_params.shaderTrainingMonitoredTemplate,
+        relativePath + manager.app_params.shaderTrainingMonitored));
     CHECK(std::filesystem::exists(relativePath +
-                                  manager.app_params.trainingMonitoredShader));
+                                  manager.app_params.shaderTrainingMonitored));
     std::ifstream inFile(relativePath +
-                         manager.app_params.trainingMonitoredShader);
+                         manager.app_params.shaderTrainingMonitored);
     std::string line;
     while (std::getline(inFile, line)) {
       CHECK(line.find("%%") == std::string::npos);
@@ -212,7 +212,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     allocInfo2.memoryTypeIndex = builder.findMemoryType(
         memRequirements2.memoryTypeBits, memoryPropertiesFlags);
     VkDeviceMemory outputLossBufferMemory;
-    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo, nullptr,
+    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo2, nullptr,
                               &outputLossBufferMemory);
     CHECK(result == VK_SUCCESS);
     result = vkBindBufferMemory(vulkan->logicalDevice, outputLossBuffer,
@@ -336,7 +336,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     // Create command pool
     VkCommandPoolCreateInfo poolInfoCMD = {};
     poolInfoCMD.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfoCMD.queueFamilyIndex = vulkan->queueFamilyIndex;
+    poolInfoCMD.queueFamilyIndex = vulkan->queueComputeIndex;
     poolInfoCMD.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(vulkan->logicalDevice, &poolInfoCMD, nullptr,
                                  &vulkan->commandPool);
@@ -381,8 +381,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(vulkan->queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(vulkan->queue);
+    vkQueueSubmit(vulkan->queueCompute, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(vulkan->queueCompute);
 
     // Read data from buffer
     OutputLoss outputLoss{.loss = 0.0f};
@@ -484,7 +484,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     allocInfo2.memoryTypeIndex = builder.findMemoryType(
         memRequirements2.memoryTypeBits, memoryPropertiesFlags);
     VkDeviceMemory outputLossBufferMemory;
-    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo, nullptr,
+    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo2, nullptr,
                               &outputLossBufferMemory);
     CHECK(result == VK_SUCCESS);
     result = vkBindBufferMemory(vulkan->logicalDevice, outputLossBuffer,
@@ -597,7 +597,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     // Create command pool
     VkCommandPoolCreateInfo poolInfoCMD = {};
     poolInfoCMD.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfoCMD.queueFamilyIndex = vulkan->queueFamilyIndex;
+    poolInfoCMD.queueFamilyIndex = vulkan->queueComputeIndex;
     poolInfoCMD.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(vulkan->logicalDevice, &poolInfoCMD, nullptr,
                                  &vulkan->commandPool);
@@ -642,8 +642,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(vulkan->queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(vulkan->queue);
+    vkQueueSubmit(vulkan->queueCompute, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(vulkan->queueCompute);
 
     // Read data from buffer
     OutputLoss outputLoss{.loss = 0.0f};

@@ -77,7 +77,7 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
   return true;
 }
 
-VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
+VkCommandBuffer VulkanHelper::commandsBegin() {
   // Take a command buffer from the pool
   VkCommandBuffer commandBuffer = vulkan_->commandBufferPool.back();
   vulkan_->commandBufferPool.pop_back();
@@ -94,7 +94,77 @@ VkCommandBuffer VulkanHelper::beginSingleTimeCommands() {
   return commandBuffer;
 }
 
-void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
+void VulkanHelper::commandsEnd_SubmitQueueGraphics(
+    VkCommandBuffer &commandBuffer, uint32_t &imageIndex) {
+  // End recording commands
+  auto result = vkEndCommandBuffer(commandBuffer);
+  if (result != VK_SUCCESS) {
+    throw VulkanHelperException("Vulkan command buffer end error.");
+  }
+
+  // Reset the fence for the next frame
+  vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->inFlightFence);
+
+  // Submit the command buffer to the graphics queue
+  VkSubmitInfo submitInfo = {};
+  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+  VkSemaphore waitSemaphores[] = {vulkan_->imageAvailableSemaphore};
+  VkPipelineStageFlags waitStages[] = {
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+  submitInfo.waitSemaphoreCount = 1;
+  submitInfo.pWaitSemaphores = waitSemaphores;
+  submitInfo.pWaitDstStageMask = waitStages;
+
+  submitInfo.commandBufferCount = 1;
+  submitInfo.pCommandBuffers = &commandBuffer;
+
+  VkSemaphore signalSemaphores[] = {vulkan_->renderFinishedSemaphore};
+  submitInfo.signalSemaphoreCount = 1;
+  submitInfo.pSignalSemaphores = signalSemaphores;
+
+  if (vkQueueSubmit(vulkan_->queueGraphics, 1, &submitInfo,
+                    vulkan_->inFlightFence) != VK_SUCCESS) {
+    throw VulkanHelperException("Failed to submit draw command buffer");
+  }
+
+  // Present the image
+  VkPresentInfoKHR presentInfo = {};
+  presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+  presentInfo.waitSemaphoreCount = 1;
+  presentInfo.pWaitSemaphores = signalSemaphores;
+
+  VkSwapchainKHR swapChains[] = {vulkan_->swapChain};
+  presentInfo.swapchainCount = 1;
+  presentInfo.pSwapchains = swapChains;
+  presentInfo.pImageIndices = &imageIndex;
+
+  result = vkQueuePresentKHR(vulkan_->queueGraphics, &presentInfo);
+  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    throw std::runtime_error("Failed to present swap chain image");
+  }
+
+  // Wait for the presentation to be done
+  vkQueueWaitIdle(vulkan_->queueGraphics);
+
+  // Reset the command buffer
+  result = vkResetCommandBuffer(commandBuffer, 0);
+  if (result != VK_SUCCESS) {
+    throw VulkanHelperException("Vulkan command buffer reset error.");
+  }
+
+  // Push back the command buffer in the pool
+  vulkan_->commandBufferPool.push_back(commandBuffer);
+}
+
+/**
+ * @brief not used anymore but still can be useful
+ *
+ * @param commandBuffer
+ */
+void VulkanHelper::commandsEnd_SubmitQueueCompute(
+    VkCommandBuffer &commandBuffer) {
   // Ends recording the command
   auto result = vkEndCommandBuffer(commandBuffer);
   if (result != VK_SUCCESS) {
@@ -106,7 +176,8 @@ void VulkanHelper::endSingleTimeCommands(VkCommandBuffer &commandBuffer) {
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
-  result = vkQueueSubmit(vulkan_->queue, 1, &submitInfo, vulkan_->computeFence);
+  result = vkQueueSubmit(vulkan_->queueCompute, 1, &submitInfo,
+                         vulkan_->computeFence);
   if (result != VK_SUCCESS) {
     throw VulkanHelperException("Vulkan queue submit error.");
   }

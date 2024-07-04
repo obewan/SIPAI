@@ -59,18 +59,34 @@ bool VulkanController::initialize() {
     return false;
   }
 
-  // add more shaders there
   if (vulkan_->shaders.empty()) {
+    // templated shaders
     if (!helper_.replaceTemplateParameters(
-            manager.app_params.trainingMonitoredShaderTemplate,
-            manager.app_params.trainingMonitoredShader)) {
+            manager.app_params.shaderTrainingMonitoredTemplate,
+            manager.app_params.shaderTrainingMonitored)) {
       SimpleLogger::LOG_ERROR("Templated shader build error.");
       return false;
     }
+
+    // shaders list
     vulkan_->shaders.push_back(
-        {.shadername = EShader::TrainingMonitored,
-         .filename = manager.app_params.trainingMonitoredShader});
+        {.shadername = EShader::TrainingMonitoredShader,
+         .filename = manager.app_params.shaderTrainingMonitored});
+    vulkan_->shaders.push_back({.shadername = EShader::VertexShader,
+                                .filename = manager.app_params.shaderVertex});
+    vulkan_->shaders.push_back({.shadername = EShader::FragmentShader,
+                                .filename = manager.app_params.shaderFragment});
   }
+
+  // initialize opencv window (before builder)
+  // !!! OpenCV must be built with OpenGL support
+  // https://answers.opencv.org/question/10592/opencv-error-no-opengl-support/
+  cv::namedWindow(cvWindowTitle, (int)cv::WINDOW_OPENGL);
+  cv::resizeWindow(cvWindowTitle, (int)vulkan_->window_width,
+                   (int)vulkan_->window_height);
+  cv::imshow(cvWindowTitle, cv::Mat::zeros((int)vulkan_->window_height,
+                                           (int)vulkan_->window_width,
+                                           CV_8UC3)); // rows, cols, type
 
   // Vulkan builder
   builder_.withCommandPoolSize(1)
@@ -89,7 +105,7 @@ float VulkanController::trainingMonitored(
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
-  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitored);
+  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitoredShader);
 
   _copyParameters();
 
@@ -104,8 +120,8 @@ float VulkanController::trainingMonitored(
   _copyInputData(inputValues->data, targetValues->data,
                  phase == TrainingPhase::Validation);
 
-  // Run the shader
-  _computeShader(trainingMonitoredShader.pipeline);
+  // Compute and draw 3D frame (can be view in RenderDoc)
+  _drawFrame();
 
   // Get the results
   const auto result = _getOutputData();
@@ -118,14 +134,85 @@ void VulkanController::updateNeuralNetwork() {
   _readBackOutputLayer();
 }
 
-void VulkanController::_computeShader(VkPipeline &pipeline) {
-  auto commandBuffer = helper_.beginSingleTimeCommands();
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+void VulkanController::_drawFrame() {
+  // Wait for the fence to ensure the previous frame is finished
+  auto result = vkWaitForFences(vulkan_->logicalDevice, 1,
+                                &vulkan_->inFlightFence, VK_TRUE, UINT64_MAX);
+  if (result != VK_SUCCESS) {
+    throw VulkanControllerException("Failed to wait for fence");
+  }
+
+  // Acquire an image from the swap chain
+  uint32_t imageIndex;
+  result = vkAcquireNextImageKHR(vulkan_->logicalDevice, vulkan_->swapChain,
+                                 UINT64_MAX, vulkan_->imageAvailableSemaphore,
+                                 VK_NULL_HANDLE, &imageIndex);
+  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    throw VulkanControllerException("Failed to acquire swap chain image");
+  }
+
+  // Pause for RenderDoc frame capture
+  // TODO: use vulkan_debug flag
+  std::cout << "Press Enter to continue...";
+  std::cin.get();
+
+  // Begin recording commands in a single-time command buffer
+  auto commandBuffer = helper_.commandsBegin();
+
+  // Compute pass
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                    vulkan_->pipelineCompute);
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           vulkan_->pipelineLayout, 0, 1,
                           &vulkan_->descriptorSet, 0, nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
-  helper_.endSingleTimeCommands(commandBuffer);
+
+  // Memory barrier to ensure the compute pass is finished before starting the
+  // render pass
+  VkMemoryBarrier memoryBarrier = {};
+  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  memoryBarrier.dstAccessMask =
+      VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                       VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
+                           VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                       0, 1, &memoryBarrier, 0, nullptr, 0, nullptr);
+
+  // Set up the render pass begin info
+  VkRenderPassBeginInfo renderPassInfo = {};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  renderPassInfo.renderPass = vulkan_->renderPass;
+  renderPassInfo.framebuffer = vulkan_->swapChainFramebuffers[imageIndex];
+  renderPassInfo.renderArea.offset = {0, 0};
+  renderPassInfo.renderArea.extent = vulkan_->swapChainExtent;
+
+  VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+  renderPassInfo.clearValueCount = 1;
+  renderPassInfo.pClearValues = &clearColor;
+
+  // Begin the render pass and bind the pipeline
+  vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
+                       VK_SUBPASS_CONTENTS_INLINE);
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    vulkan_->pipelineGraphic);
+
+  // Bind the vertex buffer
+  auto &vertexBuffer = getBuffer(EBuffer::Vertex);
+  VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
+  VkDeviceSize offsets[] = {0};
+  vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+  // Issue the draw command
+  vkCmdDraw(commandBuffer, static_cast<uint32_t>(vulkan_->vertices.size()), 1,
+            0, 0);
+
+  // End the render pass
+  vkCmdEndRenderPass(commandBuffer);
+
+  // End recording commands and queue submit
+  helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
 }
 
 void VulkanController::_readBackHiddenLayer1() {
@@ -189,8 +276,8 @@ void VulkanController::_readBackHiddenLayer1() {
           builder_.unmapBufferMemory(bufferHiddenLayer);
           throw VulkanControllerException("Invalid data buffer memory");
         }
-        if ((isUsed && i + 1 > dstNeuron.neighbors.size()) ||
-            (!isUsed && i + 1 < dstNeuron.neighbors.size())) {
+        if ((isUsed && i + 1 > (int)dstNeuron.neighbors.size()) ||
+            (!isUsed && i + 1 < (int)dstNeuron.neighbors.size())) {
           builder_.unmapBufferMemory(bufferHiddenLayer);
           throw VulkanControllerException("Invalid data buffer memory");
         }
@@ -249,9 +336,9 @@ void VulkanController::_readBackOutputLayer() {
       network->layers.back()->layerType != LayerType::LayerOutput) {
     throw VulkanControllerException("invalid neural network");
   }
-  auto &outputLayer = network->layers.back();
+  // auto &outputLayer = network->layers.back();
 
-  auto &bufferOutputLayer = getBuffer(EBuffer::OutputLayer);
+  // auto &bufferOutputLayer = getBuffer(EBuffer::OutputLayer);
 
   // TODO readBackOutputLayer()
   // builder_.mapBufferMemory(bufferOutputLayer);
@@ -341,7 +428,7 @@ void VulkanController::_copyOutputLayer() {
         // neighbors
         bool isUsed = false;
         for (int i = 0; i < MAX_NEIGHBORS; i++) {
-          if (i < neuron.neighbors.size()) {
+          if (i < (int)neuron.neighbors.size()) {
             isUsed = true;
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
                                                static_cast<uint32_t>(isUsed));
@@ -436,7 +523,7 @@ void VulkanController::_copyHiddenLayer1() {
         // neighbors
         bool isUsed = false;
         for (int i = 0; i < MAX_NEIGHBORS; i++) {
-          if (i < neuron.neighbors.size()) {
+          if (i < (int)neuron.neighbors.size()) {
             isUsed = true;
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
                                                static_cast<uint32_t>(isUsed));
