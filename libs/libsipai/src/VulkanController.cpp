@@ -120,11 +120,8 @@ float VulkanController::trainingMonitored(
   _copyInputData(inputValues->data, targetValues->data,
                  phase == TrainingPhase::Validation);
 
-  // Draw 3D frame
-  _drawFrame(vulkan_->pipelineGraphic);
-
-  // Run the compute shader
-  _computeShader(vulkan_->pipelineCompute);
+  // Compute and draw 3D frame (can be view in RenderDoc)
+  _drawFrame();
 
   // Get the results
   const auto result = _getOutputData();
@@ -137,7 +134,7 @@ void VulkanController::updateNeuralNetwork() {
   _readBackOutputLayer();
 }
 
-void VulkanController::_drawFrame(VkPipeline &pipeline) {
+void VulkanController::_drawFrame() {
   // Wait for the fence to ensure the previous frame is finished
   auto result = vkWaitForFences(vulkan_->logicalDevice, 1,
                                 &vulkan_->inFlightFence, VK_TRUE, UINT64_MAX);
@@ -157,6 +154,27 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
   // Begin recording commands in a single-time command buffer
   auto commandBuffer = helper_.commandsBegin();
 
+  // Compute pass
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                    vulkan_->pipelineCompute);
+  vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                          vulkan_->pipelineLayout, 0, 1,
+                          &vulkan_->descriptorSet, 0, nullptr);
+  vkCmdDispatch(commandBuffer, 1, 1, 1);
+
+  // Memory barrier to ensure the compute pass is finished before starting the
+  // render pass
+  VkMemoryBarrier memoryBarrier = {};
+  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  memoryBarrier.dstAccessMask =
+      VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                       VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
+                           VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                       0, 1, &memoryBarrier, 0, nullptr, 0, nullptr);
+
   // Set up the render pass begin info
   VkRenderPassBeginInfo renderPassInfo = {};
   renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -172,7 +190,8 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
   // Begin the render pass and bind the pipeline
   vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
                        VK_SUBPASS_CONTENTS_INLINE);
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    vulkan_->pipelineGraphic);
 
   // Bind the vertex buffer
   auto &vertexBuffer = getBuffer(EBuffer::Vertex);
@@ -189,16 +208,6 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
 
   // End recording commands and queue submit
   helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
-}
-
-void VulkanController::_computeShader(VkPipeline &pipeline) {
-  auto commandBuffer = helper_.commandsBegin();
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
-  vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                          vulkan_->pipelineLayout, 0, 1,
-                          &vulkan_->descriptorSet, 0, nullptr);
-  vkCmdDispatch(commandBuffer, 1, 1, 1);
-  helper_.commandsEnd_SubmitQueueCompute(commandBuffer);
 }
 
 void VulkanController::_readBackHiddenLayer1() {

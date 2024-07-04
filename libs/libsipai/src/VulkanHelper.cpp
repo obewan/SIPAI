@@ -158,6 +158,11 @@ void VulkanHelper::commandsEnd_SubmitQueueGraphics(
   vulkan_->commandBufferPool.push_back(commandBuffer);
 }
 
+/**
+ * @brief not used anymore but still can be useful
+ *
+ * @param commandBuffer
+ */
 void VulkanHelper::commandsEnd_SubmitQueueCompute(
     VkCommandBuffer &commandBuffer) {
   // Ends recording the command
