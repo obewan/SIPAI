@@ -586,16 +586,22 @@ void VulkanBuilder::_createDescriptorPool() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
-  VkDescriptorPoolSize poolSize = {};
-  poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  poolSize.descriptorCount = static_cast<uint32_t>(vulkan_->buffers.size());
+
+  std::array<VkDescriptorPoolSize, 2> poolSizes = {};
+  poolSizes[0].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  poolSizes[0].descriptorCount = static_cast<uint32_t>(vulkan_->buffers.size());
+
+  poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  poolSizes[1].descriptorCount = static_cast<uint32_t>(vulkan_->buffers.size());
+
   VkDescriptorPoolCreateInfo poolInfo = {};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  poolInfo.poolSizeCount = 1;
-  poolInfo.pPoolSizes = &poolSize;
+  poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+  poolInfo.pPoolSizes = poolSizes.data();
   poolInfo.maxSets = static_cast<uint32_t>(vulkan_->buffers.size());
-  auto result = vkCreateDescriptorPool(vulkan_->logicalDevice, &poolInfo,
-                                       nullptr, &vulkan_->descriptorPool);
+
+  VkResult result = vkCreateDescriptorPool(vulkan_->logicalDevice, &poolInfo,
+                                           nullptr, &vulkan_->descriptorPool);
   if (result != VK_SUCCESS) {
     throw VulkanBuilderException("Failed to create descriptor pool!");
   }
@@ -608,6 +614,9 @@ void VulkanBuilder::_createDescriptorSetLayout() {
   // Buffer layout binding
   std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
   for (size_t i = 0; i < vulkan_->buffers.size(); i++) {
+    if (vulkan_->buffers.at(i).name == EBuffer::Vertex) {
+      continue; // no descriptor for vertex buffers
+    }
     VkDescriptorSetLayoutBinding layoutBinding;
     layoutBinding.binding = vulkan_->buffers.at(i).binding;
     layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -617,7 +626,7 @@ void VulkanBuilder::_createDescriptorSetLayout() {
   }
   VkDescriptorSetLayoutCreateInfo layoutInfo = {};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = static_cast<uint32_t>(vulkan_->buffers.size());
+  layoutInfo.bindingCount = static_cast<uint32_t>(vulkan_->buffers.size() - 1);
   layoutInfo.pBindings = layoutBindings.data(); // array of bindings
   auto result =
       vkCreateDescriptorSetLayout(vulkan_->logicalDevice, &layoutInfo, nullptr,
@@ -649,6 +658,9 @@ void VulkanBuilder::_updateDescriptorSets() {
   }
   std::vector<VkDescriptorBufferInfo> descriptorBufferInfos;
   for (auto &buffer : vulkan_->buffers) {
+    if (buffer.name == EBuffer::Vertex) {
+      continue; // no descriptor for vertex buffers
+    }
     VkDescriptorBufferInfo descriptor{
         .buffer = buffer.buffer, .offset = 0, .range = buffer.info.size};
     descriptorBufferInfos.push_back(descriptor);
@@ -656,6 +668,9 @@ void VulkanBuilder::_updateDescriptorSets() {
   size_t pos = 0;
   std::vector<VkWriteDescriptorSet> writeDescriptorSets;
   for (auto &buffer : vulkan_->buffers) {
+    if (buffer.name == EBuffer::Vertex) {
+      continue; // no descriptor for vertex buffers
+    }
     VkWriteDescriptorSet writeDescriptorSet{
         .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
         .dstSet = vulkan_->descriptorSet,
@@ -937,6 +952,14 @@ void VulkanBuilder::_createSwapChain() {
   if (vulkan_ == nullptr) {
     throw VulkanBuilderException("null vulkan pointer.");
   }
+
+  VkSurfaceCapabilitiesKHR surfaceCapabilities;
+  if (vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+          vulkan_->physicalDevice, vulkan_->surface, &surfaceCapabilities) !=
+      VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to get surface capabilities");
+  }
+
   VkSwapchainCreateInfoKHR createInfo = {};
   createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
   createInfo.surface = vulkan_->surface;
@@ -946,6 +969,11 @@ void VulkanBuilder::_createSwapChain() {
   createInfo.imageExtent = {vulkan_->window_width, vulkan_->window_height};
   createInfo.imageArrayLayers = 1;
   createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+  createInfo.preTransform = surfaceCapabilities.currentTransform;
+  createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
+  createInfo.clipped = VK_TRUE;
+  createInfo.oldSwapchain = VK_NULL_HANDLE;
 
   if (vkCreateSwapchainKHR(vulkan_->logicalDevice, &createInfo, nullptr,
                            &vulkan_->swapChain) != VK_SUCCESS) {
@@ -955,6 +983,7 @@ void VulkanBuilder::_createSwapChain() {
   uint32_t imageCount;
   vkGetSwapchainImagesKHR(vulkan_->logicalDevice, vulkan_->swapChain,
                           &imageCount, nullptr);
+
   vulkan_->swapChainImages.resize(imageCount);
   vkGetSwapchainImagesKHR(vulkan_->logicalDevice, vulkan_->swapChain,
                           &imageCount, vulkan_->swapChainImages.data());
@@ -1224,6 +1253,7 @@ VulkanBuilder &VulkanBuilder::clear() {
     vkDestroyDevice(vulkan_->logicalDevice, nullptr);
     vulkan_->logicalDevice = VK_NULL_HANDLE;
     // queue is destroyed with the logical device
+    vulkan_->queueGraphics = VK_NULL_HANDLE;
     vulkan_->queueCompute = VK_NULL_HANDLE;
   }
   if (vulkan_->instance != VK_NULL_HANDLE) {

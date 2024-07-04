@@ -155,7 +155,7 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
   }
 
   // Begin recording commands in a single-time command buffer
-  auto commandBuffer = helper_.beginSingleTimeCommands();
+  auto commandBuffer = helper_.commandsBegin();
 
   // Set up the render pass begin info
   VkRenderPassBeginInfo renderPassInfo = {};
@@ -187,76 +187,18 @@ void VulkanController::_drawFrame(VkPipeline &pipeline) {
   // End the render pass
   vkCmdEndRenderPass(commandBuffer);
 
-  // End recording commands
-  result = vkEndCommandBuffer(commandBuffer);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan command buffer end error.");
-  }
-
-  // Reset the fence for the next frame
-  vkResetFences(vulkan_->logicalDevice, 1, &vulkan_->inFlightFence);
-
-  // Submit the command buffer to the graphics queue
-  VkSubmitInfo submitInfo = {};
-  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-  VkSemaphore waitSemaphores[] = {vulkan_->imageAvailableSemaphore};
-  VkPipelineStageFlags waitStages[] = {
-      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-  submitInfo.waitSemaphoreCount = 1;
-  submitInfo.pWaitSemaphores = waitSemaphores;
-  submitInfo.pWaitDstStageMask = waitStages;
-
-  submitInfo.commandBufferCount = 1;
-  submitInfo.pCommandBuffers = &commandBuffer;
-
-  VkSemaphore signalSemaphores[] = {vulkan_->renderFinishedSemaphore};
-  submitInfo.signalSemaphoreCount = 1;
-  submitInfo.pSignalSemaphores = signalSemaphores;
-
-  if (vkQueueSubmit(vulkan_->queueGraphics, 1, &submitInfo,
-                    vulkan_->inFlightFence) != VK_SUCCESS) {
-    throw VulkanControllerException("Failed to submit draw command buffer");
-  }
-
-  // Present the image
-  VkPresentInfoKHR presentInfo = {};
-  presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
-  presentInfo.waitSemaphoreCount = 1;
-  presentInfo.pWaitSemaphores = signalSemaphores;
-
-  VkSwapchainKHR swapChains[] = {vulkan_->swapChain};
-  presentInfo.swapchainCount = 1;
-  presentInfo.pSwapchains = swapChains;
-  presentInfo.pImageIndices = &imageIndex;
-
-  result = vkQueuePresentKHR(vulkan_->queueGraphics, &presentInfo);
-  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw std::runtime_error("Failed to present swap chain image");
-  }
-
-  // Wait for the presentation to be done
-  vkQueueWaitIdle(vulkan_->queueGraphics);
-
-  // Reset the command buffer
-  result = vkResetCommandBuffer(commandBuffer, 0);
-  if (result != VK_SUCCESS) {
-    throw VulkanControllerException("Vulkan command buffer reset error.");
-  }
-
-  // Push back the command buffer in the pool
-  vulkan_->commandBufferPool.push_back(commandBuffer);
+  // End recording commands and queue submit
+  helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
 }
 
 void VulkanController::_computeShader(VkPipeline &pipeline) {
-  auto commandBuffer = helper_.beginSingleTimeCommands();
+  auto commandBuffer = helper_.commandsBegin();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           vulkan_->pipelineLayout, 0, 1,
                           &vulkan_->descriptorSet, 0, nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
-  helper_.endSingleTimeCommands(commandBuffer);
+  helper_.commandsEnd_SubmitQueueCompute(commandBuffer);
 }
 
 void VulkanController::_readBackHiddenLayer1() {

@@ -85,14 +85,14 @@ VulkanControllerTest::ResultTest2 VulkanControllerTest::test2() {
 }
 
 void VulkanControllerTest::_computeShader(VkPipeline &pipeline) {
-  auto commandBuffer = helper_.beginSingleTimeCommands();
+  auto commandBuffer = helper_.commandsBegin();
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
   VkDescriptorSet descriptorSets[] = {vulkan_->descriptorSet};
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           vulkan_->pipelineLayout, 0, 1, descriptorSets, 0,
                           nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
-  helper_.endSingleTimeCommands(commandBuffer);
+  helper_.commandsEnd_SubmitQueueCompute(commandBuffer);
 }
 
 void VulkanControllerTest::_copyParameters() {
