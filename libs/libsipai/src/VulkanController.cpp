@@ -19,28 +19,6 @@ using namespace sipai;
 std::unique_ptr<VulkanController> VulkanController::controllerInstance_ =
     nullptr;
 
-// Specialization for uint32_t
-template <>
-uint32_t VulkanController::getDataFromBuffer<uint32_t>(const void *bufferData,
-                                                       uint32_t &offset) {
-  const uint32_t *typedBufferData =
-      reinterpret_cast<const uint32_t *>(bufferData);
-  uint32_t value = *(typedBufferData + offset / sizeof(uint32_t));
-  // value = swapEndian(value);
-  offset += sizeof(uint32_t);
-  return value;
-}
-
-// Specialization for uint32_t
-template <>
-uint8_t *VulkanController::copyToBuffer<uint32_t>(uint8_t *buffer,
-                                                  const uint32_t &data) {
-  // uint32_t swap = swapEndian(data);
-  // memcpy(buffer, &swap, sizeof(uint32_t));
-  memcpy(buffer, &data, sizeof(uint32_t));
-  return buffer + sizeof(uint32_t);
-}
-
 bool VulkanController::initialize() {
   if (vulkan_->isInitialized) {
     return true;
@@ -132,8 +110,8 @@ float VulkanController::trainingMonitored(
 }
 
 void VulkanController::updateNeuralNetwork() {
-  _readBackHiddenLayer1();
-  _readBackOutputLayer();
+  _readHiddenLayer1();
+  _readOutputLayer();
 }
 
 /**
@@ -225,7 +203,7 @@ void VulkanController::_processShaders() {
   }
 }
 
-void VulkanController::_readBackHiddenLayer1() {
+void VulkanController::_readHiddenLayer1() {
   auto &network = Manager::getInstance().network;
   if (!network || network->layers.size() < 2 ||
       network->layers.at(1)->layerType != LayerType::LayerHidden) {
@@ -246,6 +224,7 @@ void VulkanController::_readBackHiddenLayer1() {
   // Read neurons
   for (size_t y = 0; y < hiddenLayer->size_y; ++y) {
     for (size_t x = 0; x < hiddenLayer->size_x; ++x) {
+      uint offset_neuron = offset;
       auto &dstNeuron = hiddenLayer->neurons[y][x];
 
       // Check index_x and index_y
@@ -271,9 +250,11 @@ void VulkanController::_readBackHiddenLayer1() {
       }
 
       // Get neighbors
+      int neighbors_offset = 1616; // check with RenderDoc
+      offset = offset_neuron + neighbors_offset;
       for (int i = 0; i < MAX_NEIGHBORS; i++) {
-        bool isUsed = static_cast<bool>(
-            getDataFromBuffer<uint32_t>(bufferHiddenLayer.data, offset));
+        uint32_t isUsed =
+            getDataFromBuffer<uint32_t>(bufferHiddenLayer.data, offset);
         uint32_t neigh_index_x =
             getDataFromBuffer<uint32_t>(bufferHiddenLayer.data, offset);
         uint32_t neigh_index_y =
@@ -286,61 +267,79 @@ void VulkanController::_readBackHiddenLayer1() {
           builder_.unmapBufferMemory(bufferHiddenLayer);
           throw VulkanControllerException("Invalid data buffer memory");
         }
-        if ((isUsed && i + 1 > (int)dstNeuron.neighbors.size()) ||
-            (!isUsed && i + 1 < (int)dstNeuron.neighbors.size())) {
+        if (((isUsed > 0) && (i + 1 > (int)dstNeuron.neighbors.size())) ||
+            ((isUsed <= 0) && (i + 1 < (int)dstNeuron.neighbors.size()))) {
           builder_.unmapBufferMemory(bufferHiddenLayer);
           throw VulkanControllerException("Invalid data buffer memory");
         }
 
         // Get connection weight
+        offset += 4; // padding, check with RenderDoc
         auto weight =
             cv::Vec4f(getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
                       getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
                       getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
                       getDataFromBuffer<float>(bufferHiddenLayer.data, offset));
-        if (isUsed) {
+        if (isUsed > 0) {
           dstNeuron.neighbors[i].weight = weight;
         }
       }
-    } // end read neurons
+    } // end for (size_t x ...
+  } // end for (size_t y ...
 
-    // Get values
-    for (int y = 0; y < hiddenLayer->values.rows; ++y) {
-      for (int x = 0; x < hiddenLayer->values.cols; ++x) {
-        auto value =
-            cv::Vec4f(getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
-                      getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
-                      getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
-                      getDataFromBuffer<float>(bufferHiddenLayer.data, offset));
-        hiddenLayer->values.at<cv::Vec4f>(y, x) = value;
-      }
+  // Get values
+  int values_offset = 174400; // check with RenderDoc
+  offset = values_offset;
+  for (int y = 0; y < hiddenLayer->values.rows; ++y) {
+    for (int x = 0; x < hiddenLayer->values.cols; ++x) {
+      auto value =
+          cv::Vec4f(getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
+                    getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
+                    getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
+                    getDataFromBuffer<float>(bufferHiddenLayer.data, offset));
+      hiddenLayer->values.at<cv::Vec4f>(y, x) = value;
     }
+  }
 
-    // Get errors
-    for (int y = 0; y < hiddenLayer->errors.rows; ++y) {
-      for (int x = 0; x < hiddenLayer->errors.cols; ++x) {
-        auto error =
-            cv::Vec4f(getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
-                      getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
-                      getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
-                      getDataFromBuffer<float>(bufferHiddenLayer.data, offset));
-        hiddenLayer->errors.at<cv::Vec4f>(y, x) = error;
-      }
+  // Get errors
+  int errors_offset = 176000; // check with RenderDoc
+  offset = errors_offset;
+  for (int y = 0; y < hiddenLayer->errors.rows; ++y) {
+    for (int x = 0; x < hiddenLayer->errors.cols; ++x) {
+      auto error =
+          cv::Vec4f(getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
+                    getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
+                    getDataFromBuffer<float>(bufferHiddenLayer.data, offset),
+                    getDataFromBuffer<float>(bufferHiddenLayer.data, offset));
+      hiddenLayer->errors.at<cv::Vec4f>(y, x) = error;
     }
+  }
 
-    // Get others attributes (offset update)
-    getDataFromBuffer<float>(bufferHiddenLayer.data,
-                             offset); // activation_alpha
-    getDataFromBuffer<uint>(bufferHiddenLayer.data,
-                            offset); // activation_function
-    getDataFromBuffer<uint>(bufferHiddenLayer.data, offset); // size_x
-    getDataFromBuffer<uint>(bufferHiddenLayer.data, offset); // size_y
-  } // End for Read neurons
-
+  // Get others attributes
+  int activation_alpha_offset = 177600; // check with RenderDoc
+  offset = activation_alpha_offset;
+  // Check activation_alpha and activation_function
+  auto activation_alpha =
+      getDataFromBuffer<float>(bufferHiddenLayer.data, offset);
+  auto activation_function =
+      getDataFromBuffer<uint>(bufferHiddenLayer.data, offset);
+  float epsilon = 0.0001f;
+  if (abs(activation_alpha - hiddenLayer->activationFunctionAlpha) > epsilon ||
+      activation_function != (uint32_t)hiddenLayer->eactivationFunction) {
+    builder_.unmapBufferMemory(bufferHiddenLayer);
+    throw VulkanControllerException("Invalid data buffer memory");
+  }
+  // Check size_x and size_y
+  auto size_x = getDataFromBuffer<uint>(bufferHiddenLayer.data, offset);
+  auto size_y = getDataFromBuffer<uint>(bufferHiddenLayer.data, offset);
+  if (size_x != hiddenLayer->size_x || size_y != hiddenLayer->size_y) {
+    builder_.unmapBufferMemory(bufferHiddenLayer);
+    throw VulkanControllerException("Invalid data buffer memory");
+  }
   builder_.unmapBufferMemory(bufferHiddenLayer);
 }
 
-void VulkanController::_readBackOutputLayer() {
+void VulkanController::_readOutputLayer() {
   auto &network = Manager::getInstance().network;
   if (!network || network->layers.size() < 2 ||
       network->layers.back()->layerType != LayerType::LayerOutput) {
@@ -516,6 +515,7 @@ void VulkanController::_copyHiddenLayer1() {
     // Copy the neurons
     for (const auto &row : hiddenLayer1->neurons) {
       for (const auto &neuron : row) {
+        uint8_t *bufferNeuronStart = bufferPtr;
         // index_xy
         bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)neuron.index_x);
         bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)neuron.index_y);
@@ -524,33 +524,35 @@ void VulkanController::_copyHiddenLayer1() {
         for (int y = 0; y < neuron.weights.rows; y++) {
           for (int x = 0; x < neuron.weights.cols; x++) {
             for (int k = 0; k < 4; k++) {
-              bufferPtr = copyToBuffer<float>(
-                  bufferPtr, neuron.weights.at<cv::Vec4f>(y, x)[k]);
+              float value = neuron.weights.at<cv::Vec4f>(y, x)[k];
+              bufferPtr = copyToBuffer<float>(bufferPtr, value);
             }
           }
         }
 
         // neighbors
-        bool isUsed = false;
+        int neighbors_offset = 1616; // check with RenderDoc
+        bufferPtr = bufferNeuronStart + neighbors_offset;
+        uint32_t isUsed = 0;
         for (int i = 0; i < MAX_NEIGHBORS; i++) {
           if (i < (int)neuron.neighbors.size()) {
-            isUsed = true;
-            bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
-                                               static_cast<uint32_t>(isUsed));
+            isUsed = 1;
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr, isUsed);
             bufferPtr = copyToBuffer<uint32_t>(
                 bufferPtr, (uint32_t)neuron.neighbors[i].neuron->index_x);
             bufferPtr = copyToBuffer<uint32_t>(
                 bufferPtr, (uint32_t)neuron.neighbors[i].neuron->index_y);
+            bufferPtr += 4; // padding, check with RenderDoc
             for (int k = 0; k < 4; k++) {
               bufferPtr =
                   copyToBuffer<float>(bufferPtr, neuron.neighbors[i].weight[k]);
             }
           } else {
-            isUsed = false;
-            bufferPtr =
-                copyToBuffer<bool>(bufferPtr, static_cast<uint32_t>(isUsed));
+            isUsed = 0;
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr, isUsed);
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
+            bufferPtr += 4; // padding, check with RenderDoc
             for (int k = 0; k < 4; k++) {
               bufferPtr = copyToBuffer<float>(bufferPtr, 0.0f);
             }
@@ -560,6 +562,8 @@ void VulkanController::_copyHiddenLayer1() {
     }
 
     // Copy the values
+    int values_offset = 174400; // check with RenderDoc
+    bufferPtr = bufferStart + values_offset;
     for (int y = 0; y < hiddenLayer1->values.rows; y++) {
       for (int x = 0; x < hiddenLayer1->values.cols; x++) {
         for (int k = 0; k < 4; k++) {
@@ -570,6 +574,8 @@ void VulkanController::_copyHiddenLayer1() {
     }
 
     // Copy the errors
+    int errors_offset = 176000; // check with RenderDoc
+    bufferPtr = bufferStart + errors_offset;
     for (int y = 0; y < hiddenLayer1->errors.rows; y++) {
       for (int x = 0; x < hiddenLayer1->errors.cols; x++) {
         for (int k = 0; k < 4; k++) {
@@ -580,6 +586,8 @@ void VulkanController::_copyHiddenLayer1() {
     }
 
     // Copy the attributes
+    int activation_alpha_offset = 177600; // check with RenderDoc
+    bufferPtr = bufferStart + activation_alpha_offset;
     bufferPtr =
         copyToBuffer<float>(bufferPtr, hiddenLayer1->activationFunctionAlpha);
     bufferPtr = copyToBuffer<uint32_t>(
@@ -633,7 +641,7 @@ void VulkanController::_copyInputData(const cv::Mat &inputValues,
     }
 
     // Copy is_validation
-    bufferPtr = copyToBuffer<bool>(bufferPtr, is_validation);
+    bufferPtr = copyToBuffer<uint>(bufferPtr, is_validation);
 
     builder_.unmapBufferMemory(buffer);
 

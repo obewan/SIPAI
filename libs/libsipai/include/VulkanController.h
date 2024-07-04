@@ -152,8 +152,8 @@ private:
   static std::unique_ptr<VulkanController> controllerInstance_;
 
   void _processShaders();
-  void _readBackHiddenLayer1();
-  void _readBackOutputLayer();
+  void _readHiddenLayer1();
+  void _readOutputLayer();
 
   void _copyParameters();
   void _copyInputLayer();
