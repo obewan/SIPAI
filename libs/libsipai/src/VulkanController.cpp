@@ -160,9 +160,6 @@ void VulkanController::_processShaders() {
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
       throw VulkanControllerException("Failed to acquire swap chain image");
     }
-
-    // std::cout << "Press Enter to continue...";
-    // std::cin.get();
   }
 
   // Begin recording commands in a single-time command buffer
