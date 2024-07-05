@@ -250,8 +250,8 @@ void VulkanController::_readHiddenLayer1() {
       }
 
       // Get neighbors
-      int neighbors_offset = 1616; // check with RenderDoc
-      offset = offset_neuron + neighbors_offset;
+      int neighbors_padding = 8; // check with RenderDoc
+      offset += neighbors_padding;
       for (int i = 0; i < MAX_NEIGHBORS; i++) {
         uint32_t isUsed =
             getDataFromBuffer<uint32_t>(bufferHiddenLayer.data, offset);
@@ -288,8 +288,6 @@ void VulkanController::_readHiddenLayer1() {
   } // end for (size_t y ...
 
   // Get values
-  int values_offset = 174400; // check with RenderDoc
-  offset = values_offset;
   for (int y = 0; y < hiddenLayer->values.rows; ++y) {
     for (int x = 0; x < hiddenLayer->values.cols; ++x) {
       auto value =
@@ -302,8 +300,6 @@ void VulkanController::_readHiddenLayer1() {
   }
 
   // Get errors
-  int errors_offset = 176000; // check with RenderDoc
-  offset = errors_offset;
   for (int y = 0; y < hiddenLayer->errors.rows; ++y) {
     for (int x = 0; x < hiddenLayer->errors.cols; ++x) {
       auto error =
@@ -316,8 +312,6 @@ void VulkanController::_readHiddenLayer1() {
   }
 
   // Get others attributes
-  int activation_alpha_offset = 177600; // check with RenderDoc
-  offset = activation_alpha_offset;
   // Check activation_alpha and activation_function
   auto activation_alpha =
       getDataFromBuffer<float>(bufferHiddenLayer.data, offset);
@@ -531,8 +525,8 @@ void VulkanController::_copyHiddenLayer1() {
         }
 
         // neighbors
-        int neighbors_offset = 1616; // check with RenderDoc
-        bufferPtr = bufferNeuronStart + neighbors_offset;
+        int neighbors_padding = 8; // check with RenderDoc
+        bufferPtr += neighbors_padding;
         uint32_t isUsed = 0;
         for (int i = 0; i < MAX_NEIGHBORS; i++) {
           if (i < (int)neuron.neighbors.size()) {
@@ -562,8 +556,6 @@ void VulkanController::_copyHiddenLayer1() {
     }
 
     // Copy the values
-    int values_offset = 174400; // check with RenderDoc
-    bufferPtr = bufferStart + values_offset;
     for (int y = 0; y < hiddenLayer1->values.rows; y++) {
       for (int x = 0; x < hiddenLayer1->values.cols; x++) {
         for (int k = 0; k < 4; k++) {
@@ -574,8 +566,6 @@ void VulkanController::_copyHiddenLayer1() {
     }
 
     // Copy the errors
-    int errors_offset = 176000; // check with RenderDoc
-    bufferPtr = bufferStart + errors_offset;
     for (int y = 0; y < hiddenLayer1->errors.rows; y++) {
       for (int x = 0; x < hiddenLayer1->errors.cols; x++) {
         for (int k = 0; k < 4; k++) {
@@ -586,8 +576,6 @@ void VulkanController::_copyHiddenLayer1() {
     }
 
     // Copy the attributes
-    int activation_alpha_offset = 177600; // check with RenderDoc
-    bufferPtr = bufferStart + activation_alpha_offset;
     bufferPtr =
         copyToBuffer<float>(bufferPtr, hiddenLayer1->activationFunctionAlpha);
     bufferPtr = copyToBuffer<uint32_t>(
