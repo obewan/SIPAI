@@ -227,7 +227,7 @@ void computeOutputError(uint index_x, uint index_y) {
   }
 
   // Compute and update the error
-  float weightFactor = 0.5; // Experiment with weight between 0 and 1
+  float weightFactor = 0.5f; // Experiment with weight between 0 and 1
   vec4 outputValue = sharedOutputValues[index_y][index_x];
   vec4 targetValue = inputDataBuffer.targetValues[index_y][index_x];
   vec4 newError = weightFactor * (outputValue - targetValue) +
@@ -341,9 +341,10 @@ void main() {
   uint index_x = gl_LocalInvocationID.x;
   uint index_y = gl_LocalInvocationID.y;
 
-  // Initialize local loss
+  // Initialize variables
   if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
-    sharedOutputLoss[index_y][index_x] = 0.0;
+    sharedOutputValues[index_y][index_x] = vec4(0.0);
+    sharedOutputLoss[index_y][index_x] = 0.0f;
   }
   barrier();
 
@@ -359,7 +360,7 @@ void main() {
 
   // Output writing (unique thread)
   if (gl_LocalInvocationIndex == 0) {   
-    float totalLoss = 0.0;
+    float totalLoss = 0.0f;
     for (int y = 0; y < %%OUTPUT_SIZE_Y%%; ++y) {
       for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
         totalLoss += sharedOutputLoss[y][x];

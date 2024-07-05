@@ -171,7 +171,7 @@ float RunnerTrainingVulkanVisitor::trainingMonitored(
   }
 
   if (lossComputed == 0) {
-    return 0;
+    return 0.0f;
   }
   return (loss / static_cast<float>(lossComputed));
 }
