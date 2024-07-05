@@ -1154,6 +1154,10 @@ VulkanBuilder &VulkanBuilder::clear() {
   if (vulkan_ == nullptr) {
     return *this;
   }
+  if (Manager::getConstInstance().app_params.vulkan_debug) {
+    cv::destroyWindow(cvWindowTitle);
+  }
+
   auto freeBuffer = [](std::shared_ptr<Vulkan> vulkan, Buffer buffer) {
     if (buffer.buffer != VK_NULL_HANDLE) {
       if (buffer.isMemoryMapped) {

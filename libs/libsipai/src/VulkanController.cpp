@@ -87,24 +87,24 @@ float VulkanController::trainingMonitored(
   }
   auto &trainingMonitoredShader = getShader(EShader::TrainingMonitoredShader);
 
-  _copyParameters();
+  _writeParameters();
 
   if (!trainingMonitoredShader.isReady) {
-    _copyInputLayer();
-    _copyOutputLayer();
-    _copyHiddenLayer1();
+    _writeInputLayer();
+    _writeOutputLayer();
+    _writeHiddenLayer1();
     trainingMonitoredShader.isReady = true;
   }
 
   // Inject input data
-  _copyInputData(inputValues->data, targetValues->data,
-                 phase == TrainingPhase::Validation);
+  _writeInputData(inputValues->data, targetValues->data,
+                  phase == TrainingPhase::Validation);
 
   // Compute and draw 3D frame (can be view in RenderDoc)
   _processShaders();
 
   // Get the results
-  const auto result = _getOutputData();
+  const auto result = _readOutputData();
 
   return result->loss;
 }
@@ -339,16 +339,10 @@ void VulkanController::_readOutputLayer() {
       network->layers.back()->layerType != LayerType::LayerOutput) {
     throw VulkanControllerException("invalid neural network");
   }
-  // auto &outputLayer = network->layers.back();
-
-  // auto &bufferOutputLayer = getBuffer(EBuffer::OutputLayer);
-
-  // TODO readBackOutputLayer()
-  // builder_.mapBufferMemory(bufferOutputLayer);
-  // builder_.unmapBufferMemory(bufferOutputLayer);
+  // no needed to implement for now.
 }
 
-void VulkanController::_copyParameters() {
+void VulkanController::_writeParameters() {
   const auto &network_params = Manager::getConstInstance().network_params;
   GLSLParameters glslParams{
       .learning_rate = network_params.learning_rate,
@@ -365,7 +359,7 @@ void VulkanController::_copyParameters() {
   builder_.unmapBufferMemory(buffer);
 }
 
-void VulkanController::_copyInputLayer() {
+void VulkanController::_writeInputLayer() {
   const auto &inputLayer = Manager::getConstInstance().network->layers.front();
   if (inputLayer->layerType != LayerType::LayerInput) {
     throw VulkanControllerException("Invalid Input layer type.");
@@ -396,7 +390,7 @@ void VulkanController::_copyInputLayer() {
   }
 }
 
-void VulkanController::_copyOutputLayer() {
+void VulkanController::_writeOutputLayer() {
   const auto &layers = Manager::getConstInstance().network->layers;
   const auto &outputLayer = layers.back();
   if (outputLayer->layerType != LayerType::LayerOutput) {
@@ -422,33 +416,35 @@ void VulkanController::_copyOutputLayer() {
         for (int y = 0; y < neuron.weights.rows; y++) {
           for (int x = 0; x < neuron.weights.cols; x++) {
             for (int k = 0; k < 4; k++) {
-              bufferPtr = copyToBuffer<float>(
-                  bufferPtr, neuron.weights.at<cv::Vec4f>(y, x)[k]);
+              float value = neuron.weights.at<cv::Vec4f>(y, x)[k];
+              bufferPtr = copyToBuffer<float>(bufferPtr, value);
             }
           }
         }
 
         // neighbors
-        bool isUsed = false;
+        int neighbors_padding = 8; // check with RenderDoc
+        bufferPtr += neighbors_padding;
+        uint32_t isUsed = 0;
         for (int i = 0; i < MAX_NEIGHBORS; i++) {
           if (i < (int)neuron.neighbors.size()) {
-            isUsed = true;
-            bufferPtr = copyToBuffer<uint32_t>(bufferPtr,
-                                               static_cast<uint32_t>(isUsed));
+            isUsed = 1;
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr, isUsed);
             bufferPtr = copyToBuffer<uint32_t>(
                 bufferPtr, (uint32_t)neuron.neighbors[i].neuron->index_x);
             bufferPtr = copyToBuffer<uint32_t>(
                 bufferPtr, (uint32_t)neuron.neighbors[i].neuron->index_y);
+            bufferPtr += 4; // padding, check with RenderDoc
             for (int k = 0; k < 4; k++) {
               bufferPtr =
                   copyToBuffer<float>(bufferPtr, neuron.neighbors[i].weight[k]);
             }
           } else {
-            isUsed = false;
-            bufferPtr =
-                copyToBuffer<bool>(bufferPtr, static_cast<uint32_t>(isUsed));
+            isUsed = 0;
+            bufferPtr = copyToBuffer<uint32_t>(bufferPtr, isUsed);
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
             bufferPtr = copyToBuffer<uint32_t>(bufferPtr, 0);
+            bufferPtr += 4; // padding, check with RenderDoc
             for (int k = 0; k < 4; k++) {
               bufferPtr = copyToBuffer<float>(bufferPtr, 0.0f);
             }
@@ -489,7 +485,7 @@ void VulkanController::_copyOutputLayer() {
   }
 }
 
-void VulkanController::_copyHiddenLayer1() {
+void VulkanController::_writeHiddenLayer1() {
   const auto &layers = Manager::getConstInstance().network->layers;
   if (layers.size() < 2) {
     throw VulkanControllerException("Invalid layers size.");
@@ -509,7 +505,6 @@ void VulkanController::_copyHiddenLayer1() {
     // Copy the neurons
     for (const auto &row : hiddenLayer1->neurons) {
       for (const auto &neuron : row) {
-        uint8_t *bufferNeuronStart = bufferPtr;
         // index_xy
         bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)neuron.index_x);
         bufferPtr = copyToBuffer<uint32_t>(bufferPtr, (uint32_t)neuron.index_y);
@@ -597,9 +592,9 @@ void VulkanController::_copyHiddenLayer1() {
   }
 }
 
-void VulkanController::_copyInputData(const cv::Mat &inputValues,
-                                      const cv::Mat &targetValues,
-                                      bool is_validation) {
+void VulkanController::_writeInputData(const cv::Mat &inputValues,
+                                       const cv::Mat &targetValues,
+                                       bool is_validation) {
   // Copy the data into the VRAM
   try {
     auto &buffer = getBuffer(EBuffer::InputData);
@@ -643,7 +638,7 @@ void VulkanController::_copyInputData(const cv::Mat &inputValues,
   }
 }
 
-std::unique_ptr<GLSLOutputData> VulkanController::_getOutputData() {
+std::unique_ptr<GLSLOutputData> VulkanController::_readOutputData() {
   GLSLOutputData outputData = {};
 
   // Get loss

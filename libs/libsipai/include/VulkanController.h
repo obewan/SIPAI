@@ -155,13 +155,13 @@ private:
   void _readHiddenLayer1();
   void _readOutputLayer();
 
-  void _copyParameters();
-  void _copyInputLayer();
-  void _copyOutputLayer();
-  void _copyHiddenLayer1();
-  void _copyInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
-                      bool is_validation);
-  std::unique_ptr<GLSLOutputData> _getOutputData();
+  void _writeParameters();
+  void _writeInputLayer();
+  void _writeOutputLayer();
+  void _writeHiddenLayer1();
+  void _writeInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
+                       bool is_validation);
+  std::unique_ptr<GLSLOutputData> _readOutputData();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;
