@@ -179,6 +179,8 @@ void VulkanBuilder::_createInstance() {
 }
 
 void VulkanBuilder::_createLogicalDevice() {
+  const auto &app_params = Manager::getConstInstance().app_params;
+
   // Pick graphics and compute queues
   float queuePriority = 1.0f;
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -218,27 +220,29 @@ void VulkanBuilder::_createLogicalDevice() {
   vkEnumerateDeviceExtensionProperties(vulkan_->physicalDevice, nullptr,
                                        &deviceExtensionCount,
                                        availableExtensions.data());
-
-  bool extensionSwapChain = false;
-  bool extensionNonSemanticInfo = false;
-  for (const auto &extension : availableExtensions) {
-    if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, extension.extensionName) == 0) {
-      extensionSwapChain = true;
+  std::vector<const char *> deviceExtensions;
+  if (app_params.vulkan_debug) {
+    bool extensionSwapChain = false;
+    bool extensionNonSemanticInfo = false;
+    for (const auto &extension : availableExtensions) {
+      if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, extension.extensionName) ==
+          0) {
+        extensionSwapChain = true;
+      }
+      if (strcmp(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
+                 extension.extensionName) == 0) {
+        extensionNonSemanticInfo = true;
+      }
     }
-    if (strcmp(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
-               extension.extensionName) == 0) {
-      extensionNonSemanticInfo = true;
+    if (!extensionSwapChain) {
+      throw VulkanBuilderException("SwapChain extension not found.");
     }
+    if (!extensionNonSemanticInfo) {
+      throw VulkanBuilderException("Non-semantic info extension not found.");
+    }
+    deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    deviceExtensions.push_back(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME);
   }
-  if (!extensionSwapChain) {
-    throw VulkanBuilderException("SwapChain extension not found.");
-  }
-  if (!extensionNonSemanticInfo) {
-    throw VulkanBuilderException("Non-semantic info extension not found.");
-  }
-  std::vector<const char *> deviceExtensions = {
-      VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-      VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME};
 
   VkDeviceCreateInfo createInfoDevice{};
   createInfoDevice.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

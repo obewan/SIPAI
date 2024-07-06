@@ -224,7 +224,6 @@ void VulkanController::_readHiddenLayer1() {
   // Read neurons
   for (size_t y = 0; y < hiddenLayer->size_y; ++y) {
     for (size_t x = 0; x < hiddenLayer->size_x; ++x) {
-      uint offset_neuron = offset;
       auto &dstNeuron = hiddenLayer->neurons[y][x];
 
       // Check index_x and index_y
@@ -285,7 +284,7 @@ void VulkanController::_readHiddenLayer1() {
         }
       }
     } // end for (size_t x ...
-  } // end for (size_t y ...
+  }   // end for (size_t y ...
 
   // Get values
   for (int y = 0; y < hiddenLayer->values.rows; ++y) {
