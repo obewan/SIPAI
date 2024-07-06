@@ -81,14 +81,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a26f838364aed3fa64a9aacde54255139"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a7e60f470951f1560a8b5b0a4b0c6e4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#a2a7e60f470951f1560a8b5b0a4b0c6e4">filename</a></td></tr>
 <tr class="separator:a2a7e60f470951f1560a8b5b0a4b0c6e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7053db4ea2498c70a65d58c298499674"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#a7053db4ea2498c70a65d58c298499674">shader</a></td></tr>
+<tr class="memitem:a7053db4ea2498c70a65d58c298499674"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#a7053db4ea2498c70a65d58c298499674">shader</a> = nullptr</td></tr>
 <tr class="separator:a7053db4ea2498c70a65d58c298499674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4907a69fd761e7717fd3e28d4137fd76"><td class="memItemLeft" align="right" valign="top">VkShaderModule&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#a4907a69fd761e7717fd3e28d4137fd76">module</a> = VK_NULL_HANDLE</td></tr>
 <tr class="separator:a4907a69fd761e7717fd3e28d4137fd76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3c39f09b692d93b94dcee3ec3f3004c"><td class="memItemLeft" align="right" valign="top">VkPipeline&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#ad3c39f09b692d93b94dcee3ec3f3004c">pipeline</a> = VK_NULL_HANDLE</td></tr>
-<tr class="separator:ad3c39f09b692d93b94dcee3ec3f3004c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a584ac77dfd7a1ac60497ee68928e8a8b"><td class="memItemLeft" align="right" valign="top">VkComputePipelineCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#a584ac77dfd7a1ac60497ee68928e8a8b">info</a> = {}</td></tr>
-<tr class="separator:a584ac77dfd7a1ac60497ee68928e8a8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71a1cbf76922e5fbb18af6d8dce6b939"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html#a71a1cbf76922e5fbb18af6d8dce6b939">isReady</a> = false</td></tr>
 <tr class="separator:a71a1cbf76922e5fbb18af6d8dce6b939"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -101,20 +97,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string sipai::Shader::filename</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a584ac77dfd7a1ac60497ee68928e8a8b" name="a584ac77dfd7a1ac60497ee68928e8a8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a584ac77dfd7a1ac60497ee68928e8a8b">&#9670;&nbsp;</a></span>info</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">VkComputePipelineCreateInfo sipai::Shader::info = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -149,20 +131,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad3c39f09b692d93b94dcee3ec3f3004c" name="ad3c39f09b692d93b94dcee3ec3f3004c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3c39f09b692d93b94dcee3ec3f3004c">&#9670;&nbsp;</a></span>pipeline</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">VkPipeline sipai::Shader::pipeline = VK_NULL_HANDLE</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a7053db4ea2498c70a65d58c298499674" name="a7053db4ea2498c70a65d58c298499674"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7053db4ea2498c70a65d58c298499674">&#9670;&nbsp;</a></span>shader</h2>
 
@@ -170,7 +138,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;std::vector&lt;uint32_t&gt; &gt; sipai::Shader::shader</td>
+          <td class="memname">std::unique_ptr&lt;std::vector&lt;uint32_t&gt; &gt; sipai::Shader::shader = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">

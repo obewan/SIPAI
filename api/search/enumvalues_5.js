@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['outputdata_0',['OutputData',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b',1,'sipai']]],
-  ['outputlayer_1',['OutputLayer',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa500cef5499f984f348ea5eabd57ee667',1,'sipai']]],
-  ['outputloss_2',['OutputLoss',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f',1,'sipai']]]
+  ['layerhidden_0',['LayerHidden',['../namespacesipai.html#a49db076f4fbba89b129c17e422f06824a1da285ba3707efdd301e2400f78b68ff',1,'sipai']]],
+  ['layerinput_1',['LayerInput',['../namespacesipai.html#a49db076f4fbba89b129c17e422f06824a25e4adc172745274f4b517b5dab0ed0a',1,'sipai']]],
+  ['layeroutput_2',['LayerOutput',['../namespacesipai.html#a49db076f4fbba89b129c17e422f06824a450a4fcd54a4ccf3de2199639fe20671',1,'sipai']]],
+  ['lrelu_3',['LReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9',1,'sipai']]]
 ];

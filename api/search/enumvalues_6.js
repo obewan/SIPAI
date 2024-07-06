@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['parameters_0',['Parameters',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa3225a10b07f1580f10dee4abc3779e6c',1,'sipai']]],
-  ['prelu_1',['PReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a474e0c94ac3a455d2b98a72feba8fba4',1,'sipai']]]
+  ['outputdata_0',['OutputData',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b',1,'sipai']]],
+  ['outputlayer_1',['OutputLayer',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa500cef5499f984f348ea5eabd57ee667',1,'sipai']]],
+  ['outputloss_2',['OutputLoss',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f',1,'sipai']]]
 ];

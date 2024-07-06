@@ -113,8 +113,106 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5370bd5f34dd32d61f26d963503b2a27"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">loadShader</a> (const std::string &amp;path)</td></tr>
 <tr class="memdesc:a5370bd5f34dd32d61f26d963503b2a27"><td class="mdescLeft">&#160;</td><td class="mdescRight">load a GLSL shader file and compile it into a uint32 vector  <a href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">More...</a><br /></td></tr>
 <tr class="separator:a5370bd5f34dd32d61f26d963503b2a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae67f845c7288d926152235b48ec84ab9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9">alignedSize</a> (uint32_t value, uint32_t alignment)</td></tr>
+<tr class="memdesc:ae67f845c7288d926152235b48ec84ab9"><td class="mdescLeft">&#160;</td><td class="mdescRight">alignment, from VulkanTools.cpp  <a href="classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9">More...</a><br /></td></tr>
+<tr class="separator:ae67f845c7288d926152235b48ec84ab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8da016610af111958090bf1fd5303e45"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanBuilder.html#a8da016610af111958090bf1fd5303e45">alignedSize</a> (size_t value, size_t alignment)</td></tr>
+<tr class="memdesc:a8da016610af111958090bf1fd5303e45"><td class="mdescLeft">&#160;</td><td class="mdescRight">alignment, from VulkanTools.cpp  <a href="classsipai_1_1VulkanBuilder.html#a8da016610af111958090bf1fd5303e45">More...</a><br /></td></tr>
+<tr class="separator:a8da016610af111958090bf1fd5303e45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8da016610af111958090bf1fd5303e45" name="a8da016610af111958090bf1fd5303e45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8da016610af111958090bf1fd5303e45">&#9670;&nbsp;</a></span>alignedSize() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sipai::VulkanBuilder::alignedSize </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>alignment</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>alignment, from VulkanTools.cpp </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td></td></tr>
+    <tr><td class="paramname">alignment</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>uint32_t </dd></dl>
+
+</div>
+</div>
+<a id="ae67f845c7288d926152235b48ec84ab9" name="ae67f845c7288d926152235b48ec84ab9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae67f845c7288d926152235b48ec84ab9">&#9670;&nbsp;</a></span>alignedSize() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t sipai::VulkanBuilder::alignedSize </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>alignment</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>alignment, from VulkanTools.cpp </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td></td></tr>
+    <tr><td class="paramname">alignment</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>uint32_t </dd></dl>
+
+</div>
+</div>
 <a id="a3111ac92293672fe4b7d1e8f869a1810" name="a3111ac92293672fe4b7d1e8f869a1810"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3111ac92293672fe4b7d1e8f869a1810">&#9670;&nbsp;</a></span>build()</h2>
 

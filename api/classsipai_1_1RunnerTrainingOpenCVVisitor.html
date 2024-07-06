@@ -90,20 +90,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aee878be0ac2653986740bbe75bdda3c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#aee878be0ac2653986740bbe75bdda3c3">visit</a> () const override</td></tr>
 <tr class="memdesc:aee878be0ac2653986740bbe75bdda3c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the runner operation on the network.  <a href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#aee878be0ac2653986740bbe75bdda3c3">More...</a><br /></td></tr>
 <tr class="separator:aee878be0ac2653986740bbe75bdda3c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acceb35a2bca10af985841a93ce916ce6"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#acceb35a2bca10af985841a93ce916ce6">computeLoss</a> (size_t epoch, <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase) const</td></tr>
-<tr class="memdesc:acceb35a2bca10af985841a93ce916ce6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the loss of all images.  <a href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#acceb35a2bca10af985841a93ce916ce6">More...</a><br /></td></tr>
-<tr class="separator:acceb35a2bca10af985841a93ce916ce6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae40c3ad9bff36391ffe3b5d985120ea9"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#ae40c3ad9bff36391ffe3b5d985120ea9">trainingMonitored</a> (size_t epoch, <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase) const override</td></tr>
+<tr class="memdesc:ae40c3ad9bff36391ffe3b5d985120ea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training and validation, including loss compute of all images.  <a href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#ae40c3ad9bff36391ffe3b5d985120ea9">More...</a><br /></td></tr>
+<tr class="separator:ae40c3ad9bff36391ffe3b5d985120ea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsipai_1_1RunnerTrainingVisitor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsipai_1_1RunnerTrainingVisitor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsipai_1_1RunnerTrainingVisitor.html">sipai::RunnerTrainingVisitor</a></td></tr>
-<tr class="memitem:a0f2b03076ef7e5ca25fbab2849068071 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0f2b03076ef7e5ca25fbab2849068071">shouldContinueTraining</a> (int epoch, size_t epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
+<tr class="memitem:a38e0efba304e72cca61735dd115a8c2a inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a38e0efba304e72cca61735dd115a8c2a">~RunnerTrainingVisitor</a> ()=default</td></tr>
+<tr class="separator:a38e0efba304e72cca61735dd115a8c2a inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae195fc6967122e7ccb79a651df45d9f5 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">trainingMonitored</a> (size_t epoch, <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase) const =0</td></tr>
+<tr class="memdesc:ae195fc6967122e7ccb79a651df45d9f5 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training and validation, including loss compute of all images.  <a href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">More...</a><br /></td></tr>
+<tr class="separator:ae195fc6967122e7ccb79a651df45d9f5 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f2b03076ef7e5ca25fbab2849068071 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0f2b03076ef7e5ca25fbab2849068071">shouldContinueTraining</a> (int epoch, size_t epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
 <tr class="memdesc:a0f2b03076ef7e5ca25fbab2849068071 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the training should continue based on the provided conditions.  <a href="classsipai_1_1RunnerTrainingVisitor.html#a0f2b03076ef7e5ca25fbab2849068071">More...</a><br /></td></tr>
 <tr class="separator:a0f2b03076ef7e5ca25fbab2849068071 inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e537075238dbad39ea3f970e713760e inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a7e537075238dbad39ea3f970e713760e">adaptLearningRate</a> (float &amp;learningRate, const float &amp;validationLoss, const float &amp;previousValidationLoss, const bool &amp;enable_adaptive_increase) const</td></tr>
+<tr class="memitem:a7e537075238dbad39ea3f970e713760e inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a7e537075238dbad39ea3f970e713760e">adaptLearningRate</a> (float &amp;learningRate, const float &amp;validationLoss, const float &amp;previousValidationLoss, const bool &amp;enable_adaptive_increase) const</td></tr>
 <tr class="memdesc:a7e537075238dbad39ea3f970e713760e inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adaptive Learning Rate.  <a href="classsipai_1_1RunnerTrainingVisitor.html#a7e537075238dbad39ea3f970e713760e">More...</a><br /></td></tr>
 <tr class="separator:a7e537075238dbad39ea3f970e713760e inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aece995848a05e425dcd73a7387437f0d inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#aece995848a05e425dcd73a7387437f0d">logTrainingProgress</a> (const int &amp;epoch, const float &amp;trainingLoss, const float &amp;validationLoss, const float &amp;previousTrainingLoss, const float &amp;previousValidationLoss) const</td></tr>
+<tr class="memitem:aece995848a05e425dcd73a7387437f0d inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#aece995848a05e425dcd73a7387437f0d">logTrainingProgress</a> (const int &amp;epoch, const float &amp;trainingLoss, const float &amp;validationLoss, const float &amp;previousTrainingLoss, const float &amp;previousValidationLoss) const</td></tr>
 <tr class="memdesc:aece995848a05e425dcd73a7387437f0d inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs the training progress for the current epoch.  <a href="classsipai_1_1RunnerTrainingVisitor.html#aece995848a05e425dcd73a7387437f0d">More...</a><br /></td></tr>
 <tr class="separator:aece995848a05e425dcd73a7387437f0d inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0195a37585372f2e54ffa10ba0b0ab8f inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0195a37585372f2e54ffa10ba0b0ab8f">saveNetwork</a> (bool &amp;hasLastEpochBeenSaved) const</td></tr>
+<tr class="memitem:a0195a37585372f2e54ffa10ba0b0ab8f inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0195a37585372f2e54ffa10ba0b0ab8f">saveNetwork</a> (bool &amp;hasLastEpochBeenSaved) const</td></tr>
 <tr class="memdesc:a0195a37585372f2e54ffa10ba0b0ab8f inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save and export the neural network.  <a href="classsipai_1_1RunnerTrainingVisitor.html#a0195a37585372f2e54ffa10ba0b0ab8f">More...</a><br /></td></tr>
 <tr class="separator:a0195a37585372f2e54ffa10ba0b0ab8f inherit pub_methods_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsipai_1_1RunnerVisitor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsipai_1_1RunnerVisitor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsipai_1_1RunnerVisitor.html">sipai::RunnerVisitor</a></td></tr>
@@ -120,14 +125,17 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a774eeef69947406b33a6a5e0b5be0af0 inherit pro_attribs_classsipai_1_1RunnerTrainingVisitor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="acceb35a2bca10af985841a93ce916ce6" name="acceb35a2bca10af985841a93ce916ce6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acceb35a2bca10af985841a93ce916ce6">&#9670;&nbsp;</a></span>computeLoss()</h2>
+<a id="ae40c3ad9bff36391ffe3b5d985120ea9" name="ae40c3ad9bff36391ffe3b5d985120ea9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae40c3ad9bff36391ffe3b5d985120ea9">&#9670;&nbsp;</a></span>trainingMonitored()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float RunnerTrainingOpenCVVisitor::computeLoss </td>
+          <td class="memname">float RunnerTrainingOpenCVVisitor::trainingMonitored </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>epoch</em>, </td>
@@ -144,9 +152,14 @@ Additional Inherited Members</h2></td></tr>
           <td></td><td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Compute the loss of all images. </p>
+<p>Training and validation, including loss compute of all images. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">epoch</td><td>the current epoch </td></tr>
@@ -155,6 +168,8 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>float </dd></dl>
+
+<p>Implements <a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">sipai::RunnerTrainingVisitor</a>.</p>
 
 </div>
 </div>

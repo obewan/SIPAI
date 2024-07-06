@@ -81,20 +81,22 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a54942109569b1dc4a1d43668afd02ae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c9c8293e10ce0b4adf50d38b07cef91"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanHelper.html#a2c9c8293e10ce0b4adf50d38b07cef91">replaceTemplateParameters</a> (const std::string &amp;inputFile, const std::string &amp;outputFile)</td></tr>
 <tr class="separator:a2c9c8293e10ce0b4adf50d38b07cef91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af99ad8a3f089e3c6a59a318ce48ef859"><td class="memItemLeft" align="right" valign="top">VkCommandBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanHelper.html#af99ad8a3f089e3c6a59a318ce48ef859">beginSingleTimeCommands</a> ()</td></tr>
-<tr class="separator:af99ad8a3f089e3c6a59a318ce48ef859"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51bdaafefd06975f3fcb222cb436ebf1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanHelper.html#a51bdaafefd06975f3fcb222cb436ebf1">endSingleTimeCommands</a> (VkCommandBuffer &amp;commandBuffer)</td></tr>
-<tr class="separator:a51bdaafefd06975f3fcb222cb436ebf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8863f27eaec8ac84a2f1133a195bf57e"><td class="memItemLeft" align="right" valign="top">VkCommandBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanHelper.html#a8863f27eaec8ac84a2f1133a195bf57e">commandsBegin</a> ()</td></tr>
+<tr class="separator:a8863f27eaec8ac84a2f1133a195bf57e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a885b1e235b292e743f21da072a975343"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanHelper.html#a885b1e235b292e743f21da072a975343">commandsEnd_SubmitQueueGraphics</a> (VkCommandBuffer &amp;commandBuffer, uint32_t &amp;imageIndex)</td></tr>
+<tr class="separator:a885b1e235b292e743f21da072a975343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac870400ce54fa48acad1efa61f56222e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanHelper.html#ac870400ce54fa48acad1efa61f56222e">commandsEnd_SubmitQueueCompute</a> (VkCommandBuffer &amp;commandBuffer)</td></tr>
+<tr class="separator:ac870400ce54fa48acad1efa61f56222e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="af99ad8a3f089e3c6a59a318ce48ef859" name="af99ad8a3f089e3c6a59a318ce48ef859"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af99ad8a3f089e3c6a59a318ce48ef859">&#9670;&nbsp;</a></span>beginSingleTimeCommands()</h2>
+<a id="a8863f27eaec8ac84a2f1133a195bf57e" name="a8863f27eaec8ac84a2f1133a195bf57e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8863f27eaec8ac84a2f1133a195bf57e">&#9670;&nbsp;</a></span>commandsBegin()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">VkCommandBuffer VulkanHelper::beginSingleTimeCommands </td>
+          <td class="memname">VkCommandBuffer VulkanHelper::commandsBegin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -104,18 +106,46 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a51bdaafefd06975f3fcb222cb436ebf1" name="a51bdaafefd06975f3fcb222cb436ebf1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51bdaafefd06975f3fcb222cb436ebf1">&#9670;&nbsp;</a></span>endSingleTimeCommands()</h2>
+<a id="ac870400ce54fa48acad1efa61f56222e" name="ac870400ce54fa48acad1efa61f56222e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac870400ce54fa48acad1efa61f56222e">&#9670;&nbsp;</a></span>commandsEnd_SubmitQueueCompute()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void VulkanHelper::endSingleTimeCommands </td>
+          <td class="memname">void VulkanHelper::commandsEnd_SubmitQueueCompute </td>
           <td>(</td>
           <td class="paramtype">VkCommandBuffer &amp;&#160;</td>
           <td class="paramname"><em>commandBuffer</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a885b1e235b292e743f21da072a975343" name="a885b1e235b292e743f21da072a975343"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a885b1e235b292e743f21da072a975343">&#9670;&nbsp;</a></span>commandsEnd_SubmitQueueGraphics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VulkanHelper::commandsEnd_SubmitQueueGraphics </td>
+          <td>(</td>
+          <td class="paramtype">VkCommandBuffer &amp;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t &amp;&#160;</td>
+          <td class="paramname"><em>imageIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

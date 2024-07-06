@@ -112,44 +112,90 @@ $(function() {
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>  std::unique_ptr&lt;std::vector&lt;uint32_t&gt;&gt; <a class="code hl_function" href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">loadShader</a>(<span class="keyword">const</span> std::string &amp;path);</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>  std::optional&lt;unsigned int&gt; _pickQueueFamily();</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>  std::optional&lt;VkPhysicalDevice&gt; _pickPhysicalDevice();</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>  <span class="keywordtype">void</span> _createCommandPool();</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>  <span class="keywordtype">void</span> _allocateCommandBuffers();</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>  <span class="keywordtype">void</span> _createBuffers();</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>  <span class="keywordtype">void</span> _createDescriptorSetLayout();</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>  <span class="keywordtype">void</span> _createDescriptorPool();</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>  <span class="keywordtype">void</span> _allocateDescriptorSets();</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>  <span class="keywordtype">void</span> _createPipelineLayout();</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>  <span class="keywordtype">void</span> _createFence();</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>  <span class="keywordtype">void</span> _createShaderModules();</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>  <span class="keywordtype">void</span> _createComputePipelines();</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  <span class="keywordtype">void</span> _updateDescriptorSets();</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>  std::shared_ptr&lt;Vulkan&gt; vulkan_ = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>  <span class="keywordtype">size_t</span> commandPoolSize_ = 1;</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>  <span class="keywordtype">size_t</span> maxNeighboosPerNeuron_ = 4;</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>  <span class="keywordtype">bool</span> enableDebugInfo_ = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>};</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>} <span class="comment">// namespace sipai</span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9">  133</a></span>  uint32_t <a class="code hl_function" href="classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9">alignedSize</a>(uint32_t value, uint32_t alignment) {</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordflow">return</span> (value + alignment - 1) &amp; ~(alignment - 1);</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>  }</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno"><a class="line" href="classsipai_1_1VulkanBuilder.html#a8da016610af111958090bf1fd5303e45">  144</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classsipai_1_1VulkanBuilder.html#a8da016610af111958090bf1fd5303e45">alignedSize</a>(<span class="keywordtype">size_t</span> value, <span class="keywordtype">size_t</span> alignment) {</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    <span class="keywordflow">return</span> (value + alignment - 1) &amp; ~(alignment - 1);</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>  }</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>  std::optional&lt;unsigned int&gt; _pickQueueCompute();</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>  std::optional&lt;unsigned int&gt; _pickQueueGraphics();</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>  std::optional&lt;VkPhysicalDevice&gt; _pickPhysicalDevice();</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>  <span class="keywordtype">void</span> _allocateCommandBuffers();</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>  <span class="keywordtype">void</span> _allocateDescriptorSets();</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>  <span class="keywordtype">void</span> _createBuffers();</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>  <span class="keywordtype">void</span> _createCommandPool();</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>  <span class="keywordtype">void</span> _createShaderPipelines();</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>  <span class="keywordtype">void</span> _createDescriptorPool();</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>  <span class="keywordtype">void</span> _createDescriptorSetLayout();</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>  <span class="keywordtype">void</span> _createFence();</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>  <span class="keywordtype">void</span> _createFramebuffers();</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>  <span class="keywordtype">void</span> _createImageViews();</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>  <span class="keywordtype">void</span> _createInstance();</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>  <span class="keywordtype">void</span> _createLogicalDevice();</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>  <span class="keywordtype">void</span> _createPipelineLayout();</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>  <span class="keywordtype">void</span> _createRenderPass();</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>  <span class="keywordtype">void</span> _createShaderModules();</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>  <span class="keywordtype">void</span> _createSurface();</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>  <span class="keywordtype">void</span> _createSyncObjects();</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>  <span class="keywordtype">void</span> _createSwapChain();</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>  <span class="keywordtype">void</span> _updateDescriptorSets();</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>  <span class="keywordtype">bool</span> _checkDeviceProperties();</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>  std::shared_ptr&lt;Vulkan&gt; vulkan_ = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>  <span class="keywordtype">size_t</span> commandPoolSize_ = 1;</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>  <span class="keywordtype">size_t</span> maxNeighboosPerNeuron_ = 4;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>  <span class="keywordtype">bool</span> enableDebugInfo_ = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>  std::vector&lt;Vertex&gt; vertices = {</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>      <span class="comment">// Bar 1</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>      {{-0.9f, 0.9f}, {1.0f, 0.0f, 0.0f}},</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>      {{-0.9f, 0.8f}, {1.0f, 0.0f, 0.0f}},</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>      {{0.0f, 0.8f}, {1.0f, 0.0f, 0.0f}},</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>      {{-0.9f, 0.9f}, {1.0f, 0.0f, 0.0f}},</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>      {{0.0f, 0.8f}, {1.0f, 0.0f, 0.0f}},</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>      {{0.0f, 0.9f}, {1.0f, 0.0f, 0.0f}},</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>      <span class="comment">// Bar 2</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>      {{-0.9f, 0.7f}, {0.0f, 1.0f, 0.0f}},</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>      {{-0.9f, 0.6f}, {0.0f, 1.0f, 0.0f}},</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>      {{0.0f, 0.6f}, {0.0f, 1.0f, 0.0f}},</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>      {{-0.9f, 0.7f}, {0.0f, 1.0f, 0.0f}},</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>      {{0.0f, 0.6f}, {0.0f, 1.0f, 0.0f}},</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>      {{0.0f, 0.7f}, {0.0f, 1.0f, 0.0f}},</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>      <span class="comment">// Bar 3</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>      {{-0.9f, 0.5f}, {0.0f, 0.0f, 1.0f}},</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>      {{-0.9f, 0.4f}, {0.0f, 0.0f, 1.0f}},</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>      {{0.0f, 0.4f}, {0.0f, 0.0f, 1.0f}},</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>      {{-0.9f, 0.5f}, {0.0f, 0.0f, 1.0f}},</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>      {{0.0f, 0.4f}, {0.0f, 0.0f, 1.0f}},</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>      {{0.0f, 0.5f}, {0.0f, 0.0f, 1.0f}},</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>  };</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>};</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>} <span class="comment">// namespace sipai</span></div>
 <div class="ttc" id="aVulkanCommon_8h_html"><div class="ttname"><a href="VulkanCommon_8h.html">VulkanCommon.h</a></div><div class="ttdoc">Vulkan Common.</div></div>
 <div class="ttc" id="aclasssipai_1_1VulkanBuilder_html"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html">sipai::VulkanBuilder</a></div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:15</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a1a965c9b5cd95028de33948766e7bff5"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a1a965c9b5cd95028de33948766e7bff5">sipai::VulkanBuilder::unmapBufferMemory</a></div><div class="ttdeci">void unmapBufferMemory(Buffer &amp;buffer)</div><div class="ttdoc">Unmaps a previously mapped buffer's VRAM memory from the CPU RAM memory. After this operation,...</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:636</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a3111ac92293672fe4b7d1e8f869a1810"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a3111ac92293672fe4b7d1e8f869a1810">sipai::VulkanBuilder::build</a></div><div class="ttdeci">VulkanBuilder &amp; build()</div><div class="ttdoc">build the Vulkan controller</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:12</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a34b3a63d7bc2d4dfb33662e83a9cb226"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a34b3a63d7bc2d4dfb33662e83a9cb226">sipai::VulkanBuilder::initialize</a></div><div class="ttdeci">VulkanBuilder &amp; initialize()</div><div class="ttdoc">initialize the vulkan instance</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:40</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a3b67b3a16c28ad3e5bda29c48043a3fe"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a3b67b3a16c28ad3e5bda29c48043a3fe">sipai::VulkanBuilder::getMemoryProperties</a></div><div class="ttdeci">VkMemoryPropertyFlags getMemoryProperties()</div><div class="ttdoc">Get the Memory Properties flags.</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:224</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a5370bd5f34dd32d61f26d963503b2a27"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">sipai::VulkanBuilder::loadShader</a></div><div class="ttdeci">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt; loadShader(const std::string &amp;path)</div><div class="ttdoc">load a GLSL shader file and compile it into a uint32 vector</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:294</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a85fd2a086f245733939f5cf428d21089"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a85fd2a086f245733939f5cf428d21089">sipai::VulkanBuilder::clear</a></div><div class="ttdeci">VulkanBuilder &amp; clear()</div><div class="ttdoc">clear the vulkan instance</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:644</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_ab851b9820461b56d6a12330f2bd0bf4e"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#ab851b9820461b56d6a12330f2bd0bf4e">sipai::VulkanBuilder::mapBufferMemory</a></div><div class="ttdeci">void mapBufferMemory(Buffer &amp;buffer)</div><div class="ttdoc">Maps a buffer's VRAM memory to CPU RAM memory. This allows the CPU to directly read from or write to ...</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:608</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a1a965c9b5cd95028de33948766e7bff5"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a1a965c9b5cd95028de33948766e7bff5">sipai::VulkanBuilder::unmapBufferMemory</a></div><div class="ttdeci">void unmapBufferMemory(Buffer &amp;buffer)</div><div class="ttdoc">Unmaps a previously mapped buffer's VRAM memory from the CPU RAM memory. After this operation,...</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:1149</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a3111ac92293672fe4b7d1e8f869a1810"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a3111ac92293672fe4b7d1e8f869a1810">sipai::VulkanBuilder::build</a></div><div class="ttdeci">VulkanBuilder &amp; build()</div><div class="ttdoc">build the Vulkan controller</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:29</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a34b3a63d7bc2d4dfb33662e83a9cb226"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a34b3a63d7bc2d4dfb33662e83a9cb226">sipai::VulkanBuilder::initialize</a></div><div class="ttdeci">VulkanBuilder &amp; initialize()</div><div class="ttdoc">initialize the vulkan instance</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:72</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a3b67b3a16c28ad3e5bda29c48043a3fe"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a3b67b3a16c28ad3e5bda29c48043a3fe">sipai::VulkanBuilder::getMemoryProperties</a></div><div class="ttdeci">VkMemoryPropertyFlags getMemoryProperties()</div><div class="ttdoc">Get the Memory Properties flags.</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:369</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a5370bd5f34dd32d61f26d963503b2a27"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a5370bd5f34dd32d61f26d963503b2a27">sipai::VulkanBuilder::loadShader</a></div><div class="ttdeci">std::unique_ptr&lt; std::vector&lt; uint32_t &gt; &gt; loadShader(const std::string &amp;path)</div><div class="ttdoc">load a GLSL shader file and compile it into a uint32 vector</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:464</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a85fd2a086f245733939f5cf428d21089"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a85fd2a086f245733939f5cf428d21089">sipai::VulkanBuilder::clear</a></div><div class="ttdeci">VulkanBuilder &amp; clear()</div><div class="ttdoc">clear the vulkan instance</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:1157</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_a8da016610af111958090bf1fd5303e45"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#a8da016610af111958090bf1fd5303e45">sipai::VulkanBuilder::alignedSize</a></div><div class="ttdeci">size_t alignedSize(size_t value, size_t alignment)</div><div class="ttdoc">alignment, from VulkanTools.cpp</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:144</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_ab851b9820461b56d6a12330f2bd0bf4e"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#ab851b9820461b56d6a12330f2bd0bf4e">sipai::VulkanBuilder::mapBufferMemory</a></div><div class="ttdeci">void mapBufferMemory(Buffer &amp;buffer)</div><div class="ttdoc">Maps a buffer's VRAM memory to CPU RAM memory. This allows the CPU to directly read from or write to ...</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:1122</div></div>
 <div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_ad0e2142091726d4de3d13b066ac06551"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#ad0e2142091726d4de3d13b066ac06551">sipai::VulkanBuilder::withDebugInfo</a></div><div class="ttdeci">VulkanBuilder &amp; withDebugInfo(bool enable=true)</div><div class="ttdoc">enable debug infos (do not enable for production)</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:43</div></div>
 <div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_adb2edb942ba2ce1c2ebe4bf29600f62d"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#adb2edb942ba2ce1c2ebe4bf29600f62d">sipai::VulkanBuilder::withCommandPoolSize</a></div><div class="ttdeci">VulkanBuilder &amp; withCommandPoolSize(size_t size=1)</div><div class="ttdoc">set the command pool size</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:23</div></div>
 <div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_ae21fc686b7337a9ff5efda1480fc65ba"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#ae21fc686b7337a9ff5efda1480fc65ba">sipai::VulkanBuilder::withVulkan</a></div><div class="ttdeci">VulkanBuilder &amp; withVulkan(std::shared_ptr&lt; Vulkan &gt; vulkan)</div><div class="ttdoc">set Vulkan struct</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:54</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_ae67f845c7288d926152235b48ec84ab9"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9">sipai::VulkanBuilder::alignedSize</a></div><div class="ttdeci">uint32_t alignedSize(uint32_t value, uint32_t alignment)</div><div class="ttdoc">alignment, from VulkanTools.cpp</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:133</div></div>
 <div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_ae7afa10df70616cc0708d3773fdcc204"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#ae7afa10df70616cc0708d3773fdcc204">sipai::VulkanBuilder::withMaxNeighboorsPerNeuron</a></div><div class="ttdeci">VulkanBuilder &amp; withMaxNeighboorsPerNeuron(size_t size=4)</div><div class="ttdoc">set the max neighboors per neurons</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.h:33</div></div>
-<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_aea2e11e9074498b901576bfc223e64f1"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#aea2e11e9074498b901576bfc223e64f1">sipai::VulkanBuilder::findMemoryType</a></div><div class="ttdeci">uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const</div><div class="ttdoc">find memory type</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:206</div></div>
+<div class="ttc" id="aclasssipai_1_1VulkanBuilder_html_aea2e11e9074498b901576bfc223e64f1"><div class="ttname"><a href="classsipai_1_1VulkanBuilder.html#aea2e11e9074498b901576bfc223e64f1">sipai::VulkanBuilder::findMemoryType</a></div><div class="ttdeci">uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const</div><div class="ttdoc">find memory type</div><div class="ttdef"><b>Definition:</b> VulkanBuilder.cpp:351</div></div>
 <div class="ttc" id="anamespacesipai_html"><div class="ttname"><a href="namespacesipai.html">sipai</a></div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:20</div></div>
-<div class="ttc" id="astructsipai_1_1Buffer_html"><div class="ttname"><a href="structsipai_1_1Buffer.html">sipai::Buffer</a></div><div class="ttdef"><b>Definition:</b> VulkanCommon.h:110</div></div>
+<div class="ttc" id="astructsipai_1_1Buffer_html"><div class="ttname"><a href="structsipai_1_1Buffer.html">sipai::Buffer</a></div><div class="ttdef"><b>Definition:</b> VulkanCommon.h:145</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

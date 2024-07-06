@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sigmoid_0',['Sigmoid',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a21eebb164e4b8b9bcf64fdb4d8d5dff4',1,'sipai']]]
+  ['relu_0',['ReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194add10d919fa85cf27fc78c0e06fe0b378',1,'sipai']]]
 ];

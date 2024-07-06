@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-05-22 21:03:29</td>
+            <td class="headerValue">2024-07-06 15:42:49</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -81,13 +81,15 @@
 <a name="19"><span class="lineNum">      19 </span>            :   bool replaceTemplateParameters(const std::string &amp;inputFile,</a>
 <a name="20"><span class="lineNum">      20 </span>            :                                  const std::string &amp;outputFile);</a>
 <a name="21"><span class="lineNum">      21 </span>            : </a>
-<a name="22"><span class="lineNum">      22 </span>            :   VkCommandBuffer beginSingleTimeCommands();</a>
-<a name="23"><span class="lineNum">      23 </span>            :   void endSingleTimeCommands(VkCommandBuffer &amp;commandBuffer);</a>
-<a name="24"><span class="lineNum">      24 </span>            : </a>
-<a name="25"><span class="lineNum">      25 </span>            : private:</a>
-<a name="26"><span class="lineNum">      26 </span>            :   std::shared_ptr&lt;Vulkan&gt; vulkan_;</a>
-<a name="27"><span class="lineNum">      27 </span>            : };</a>
-<a name="28"><span class="lineNum">      28 </span>            : } // namespace sipai</a>
+<a name="22"><span class="lineNum">      22 </span>            :   VkCommandBuffer commandsBegin();</a>
+<a name="23"><span class="lineNum">      23 </span>            :   void commandsEnd_SubmitQueueGraphics(VkCommandBuffer &amp;commandBuffer,</a>
+<a name="24"><span class="lineNum">      24 </span>            :                                        uint32_t &amp;imageIndex);</a>
+<a name="25"><span class="lineNum">      25 </span>            :   void commandsEnd_SubmitQueueCompute(VkCommandBuffer &amp;commandBuffer);</a>
+<a name="26"><span class="lineNum">      26 </span>            : </a>
+<a name="27"><span class="lineNum">      27 </span>            : private:</a>
+<a name="28"><span class="lineNum">      28 </span>            :   std::shared_ptr&lt;Vulkan&gt; vulkan_;</a>
+<a name="29"><span class="lineNum">      29 </span>            : };</a>
+<a name="30"><span class="lineNum">      30 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>

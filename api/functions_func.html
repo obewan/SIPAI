@@ -68,6 +68,7 @@ $(function() {
 <li>adaptLearningRate()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a7e537075238dbad39ea3f970e713760e">sipai::RunnerTrainingVisitor</a></li>
 <li>addLayers()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#a5fabf5a39071cb7bfda642d261acf682">sipai::NeuralNetworkBuilder</a></li>
 <li>addNeighbors()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#a155910cf51b0212e87a4830f3f50ba82">sipai::NeuralNetworkBuilder</a></li>
+<li>alignedSize()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9">sipai::VulkanBuilder</a></li>
 <li>append()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#a28aeea0e00b3faff28ea5834812b62dc">sipai::SimpleLogger</a></li>
 <li>apply()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269">sipai::Layer</a></li>
 </ul>
@@ -75,7 +76,6 @@ $(function() {
 
 <h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
 <li>backwardPropagation()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#a617b2f78dd7866c2b4db09dda3dbd797">sipai::Layer</a>, <a class="el" href="classsipai_1_1LayerInput.html#aa798acafc383fa475112f2d8bce3006f">sipai::LayerInput</a>, <a class="el" href="classsipai_1_1NeuralNetwork.html#a533747dede8d9ea5c522cde2687515a4">sipai::NeuralNetwork</a></li>
-<li>beginSingleTimeCommands()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanHelper.html#af99ad8a3f089e3c6a59a318ce48ef859">sipai::VulkanHelper</a></li>
 <li>bindLayers()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#a82c7fb7fb4cd8f4d4dda7cc399f44735">sipai::NeuralNetworkBuilder</a></li>
 <li>build()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#a603dea4a2850a433bc1e33719b4b7179">sipai::NeuralNetworkBuilder</a>, <a class="el" href="classsipai_1_1VulkanBuilder.html#a3111ac92293672fe4b7d1e8f869a1810">sipai::VulkanBuilder</a></li>
 </ul>
@@ -84,9 +84,13 @@ $(function() {
 <h3><a id="index_c" name="index_c"></a>- c -</h3><ul>
 <li>clamp4f()&#160;:&#160;<a class="el" href="classsipai_1_1Common.html#ad430c1b6aa41345e1b79a5310830133d">sipai::Common</a></li>
 <li>clear()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#afcb924f37d086ba26c6d9a60094b0865">sipai::TrainingDataFactory</a>, <a class="el" href="classsipai_1_1VulkanBuilder.html#a85fd2a086f245733939f5cf428d21089">sipai::VulkanBuilder</a></li>
+<li>commandsBegin()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanHelper.html#a8863f27eaec8ac84a2f1133a195bf57e">sipai::VulkanHelper</a></li>
+<li>commandsEnd_SubmitQueueCompute()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanHelper.html#ac870400ce54fa48acad1efa61f56222e">sipai::VulkanHelper</a></li>
+<li>commandsEnd_SubmitQueueGraphics()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanHelper.html#a885b1e235b292e743f21da072a975343">sipai::VulkanHelper</a></li>
 <li>computeErrors()&#160;:&#160;<a class="el" href="classsipai_1_1LayerOutput.html#ac9588471bf823b6441ceb848da362eb9">sipai::LayerOutput</a></li>
-<li>computeLoss()&#160;:&#160;<a class="el" href="classsipai_1_1ImageHelper.html#a9b08944a7fc47578656e00b897bd5681">sipai::ImageHelper</a>, <a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#acceb35a2bca10af985841a93ce916ce6">sipai::RunnerTrainingOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#adc6b9ece0c3e0d4d376b5cf9c404479c">sipai::RunnerTrainingVulkanVisitor</a></li>
+<li>computeLoss()&#160;:&#160;<a class="el" href="classsipai_1_1ImageHelper.html#a9b08944a7fc47578656e00b897bd5681">sipai::ImageHelper</a></li>
 <li>copyMatToVector()&#160;:&#160;<a class="el" href="classsipai_1_1Common.html#a1026dc87f0f13e710366382dcb025cd5">sipai::Common</a></li>
+<li>copyToBuffer()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#a2f47d5e2916464b5a6c812ef3ddee807">sipai::VulkanController</a></li>
 <li>createOrImport()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#add0c63f0be168d004619714d75fdde37">sipai::NeuralNetworkBuilder</a></li>
 <li>createOrImportNetwork()&#160;:&#160;<a class="el" href="classsipai_1_1Manager.html#a6db3c17c6d2a4cd9038cbc5078315b51">sipai::Manager</a></li>
 </ul>
@@ -100,7 +104,6 @@ $(function() {
 
 <h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
 <li>endl()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#a613928303076478481bfd69a5d6cd118">sipai::SimpleLogger</a></li>
-<li>endSingleTimeCommands()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanHelper.html#a51bdaafefd06975f3fcb222cb436ebf1">sipai::VulkanHelper</a></li>
 <li>err()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#a4bb08e61103353b85d190b902587dba3">sipai::SimpleLogger</a></li>
 <li>error()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#aba5c905a11ba9458bf19d6f2bf0d5f27">sipai::SimpleLogger</a></li>
 <li>exportModel()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726">sipai::NeuralNetworkImportExportFacade</a>, <a class="el" href="classsipai_1_1NeuralNetworkImportExportJSON.html#ab40604ecad0208f18e333e88104acd27">sipai::NeuralNetworkImportExportJSON</a></li>
@@ -118,8 +121,11 @@ $(function() {
 
 <h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
 <li>generateInputImage()&#160;:&#160;<a class="el" href="classsipai_1_1ImageHelper.html#a4220efac15e29fdc0159415c22385c11">sipai::ImageHelper</a></li>
+<li>getAttributeDescriptions()&#160;:&#160;<a class="el" href="structsipai_1_1Vertex.html#af7fe28e5c9f7a79eaad2338e02d5dcb5">sipai::Vertex</a></li>
+<li>getBindingDescription()&#160;:&#160;<a class="el" href="structsipai_1_1Vertex.html#aec34ca6fbbe2d1aa9ffcfd87e4cafe83">sipai::Vertex</a></li>
 <li>getBuffer()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#a43079eefe4e357de5201fe68ba9e41f5">sipai::VulkanController</a></li>
 <li>getConstInstance()&#160;:&#160;<a class="el" href="classsipai_1_1Manager.html#a83b6085e3ba97d6bc1fd931387eb79f2">sipai::Manager</a>, <a class="el" href="classsipai_1_1TrainingDataFactory.html#ac43be196ba61c8964dccedcb0f9122fc">sipai::TrainingDataFactory</a>, <a class="el" href="classsipai_1_1VulkanController.html#a5185ffac83a3a81c108b7d4305c3b8c7">sipai::VulkanController</a></li>
+<li>getDataFromBuffer()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#ae99885853677bb2425cd2c9987dcadf0">sipai::VulkanController</a></li>
 <li>getDevice()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#ad5689079bc1040f743afdd415f4c770a">sipai::VulkanController</a></li>
 <li>getEnhancerVisitor()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerVisitorFactory.html#afb019c476d147204ad1669a6791ec3f9">sipai::RunnerVisitorFactory</a></li>
 <li>getFilenameCsv()&#160;:&#160;<a class="el" href="classsipai_1_1Common.html#a222c0ed7d6550849d01acd71ea087f33">sipai::Common</a></li>
@@ -149,7 +155,7 @@ $(function() {
 <li>importWeights()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a569627f1b617b7fb83df0d26193d7547">sipai::NeuralNetworkImportExportFacade</a></li>
 <li>info()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#a0154d9deb14298c26c8cd6d9c72855ea">sipai::SimpleLogger</a></li>
 <li>init()&#160;:&#160;<a class="el" href="classSIPAI.html#ade2dd822915fd47e80cc91089d836f60">SIPAI</a></li>
-<li>initialize()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanBuilder.html#a34b3a63d7bc2d4dfb33662e83a9cb226">sipai::VulkanBuilder</a>, <a class="el" href="classsipai_1_1VulkanController.html#a025d283d4661fd9d38450138fcaa532b">sipai::VulkanController</a></li>
+<li>initialize()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanBuilder.html#a34b3a63d7bc2d4dfb33662e83a9cb226">sipai::VulkanBuilder</a>, <a class="el" href="classsipai_1_1VulkanController.html#ac641bd79eb58017c58316616968db14a">sipai::VulkanController</a></li>
 <li>initializeWeights()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#a7ed61926de026157cde078bf1255ecb7">sipai::NeuralNetworkBuilder</a></li>
 <li>initWeights()&#160;:&#160;<a class="el" href="classsipai_1_1Neuron.html#a57090c95fbba406aa6199aac01dc130a">sipai::Neuron</a></li>
 <li>isDataFolder()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#abfe06e00da679493e00c908044e46243">sipai::TrainingDataFactory</a></li>
@@ -219,7 +225,7 @@ $(function() {
 
 <h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
 <li>saveImage()&#160;:&#160;<a class="el" href="classsipai_1_1ImageHelper.html#a6d12dc5f32e5b3e639020d7992c05740">sipai::ImageHelper</a></li>
-<li>saveNetwork()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0195a37585372f2e54ffa10ba0b0ab8f">sipai::RunnerTrainingVisitor</a></li>
+<li>saveNetwork()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0195a37585372f2e54ffa10ba0b0ab8f">sipai::RunnerTrainingVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#ac37e7f3baa00d14d6b863d9b23101e7d">sipai::RunnerTrainingVulkanVisitor</a></li>
 <li>setActivationFunction()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#a65bb9f8a8ddb3b41553a098e76552215">sipai::Layer</a>, <a class="el" href="classsipai_1_1NeuralNetworkBuilder.html#af0e0a48dc3829a68bd1f6333c177802e">sipai::NeuralNetworkBuilder</a></li>
 <li>setInputValues()&#160;:&#160;<a class="el" href="classsipai_1_1LayerInput.html#ad5e40600df3528142d4a307b6c0453af">sipai::LayerInput</a></li>
 <li>setPrecision()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#a9372734d4434977f81fc72f739a9a2a6">sipai::SimpleLogger</a></li>
@@ -230,6 +236,7 @@ $(function() {
 <li>shuffle()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#a08535daa36ad9e762f022c4e3c0555e3">sipai::TrainingDataFactory</a></li>
 <li>SimpleLogger()&#160;:&#160;<a class="el" href="classsipai_1_1SimpleLogger.html#af4a398d42feebbbce4286ead2b724e22">sipai::SimpleLogger</a></li>
 <li>splitImage()&#160;:&#160;<a class="el" href="classsipai_1_1ImageHelper.html#acdcd609ce750e34aefb3bc952b5cc2aa">sipai::ImageHelper</a></li>
+<li>swapEndian()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#ac6a7e507ad361f958c802fbd20c69741">sipai::VulkanController</a></li>
 </ul>
 
 
@@ -239,12 +246,13 @@ $(function() {
 <li>total()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#a399578bc6b2f99647e043e405ed33d72">sipai::Layer</a></li>
 <li>TrainingDataFactory()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#a9b5ba6d2519775ddd3f5b973747a91b9">sipai::TrainingDataFactory</a></li>
 <li>TrainingDataFactoryException()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactoryException.html#a0e75f573f8a65f88fca96a30066a49d1">sipai::TrainingDataFactoryException</a></li>
-<li>trainingMonitored()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">sipai::VulkanController</a></li>
+<li>trainingMonitored()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#ae40c3ad9bff36391ffe3b5d985120ea9">sipai::RunnerTrainingOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">sipai::RunnerTrainingVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a26a772f20dd4357482a8a62363f727d7">sipai::RunnerTrainingVulkanVisitor</a>, <a class="el" href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">sipai::VulkanController</a></li>
 </ul>
 
 
 <h3><a id="index_u" name="index_u"></a>- u -</h3><ul>
 <li>unmapBufferMemory()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanBuilder.html#a1a965c9b5cd95028de33948766e7bff5">sipai::VulkanBuilder</a></li>
+<li>updateNeuralNetwork()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#ad3e005f9f9da55103d3b00c8bb81068f">sipai::VulkanController</a></li>
 <li>updateWeights()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#ae948800ea75dbfabddcb27a50f836c57">sipai::Layer</a>, <a class="el" href="classsipai_1_1LayerInput.html#a4d699cc3f66c172349dc58075f51eff8">sipai::LayerInput</a>, <a class="el" href="classsipai_1_1NeuralNetwork.html#a985433dc857ad5905f1e060806a3a672">sipai::NeuralNetwork</a></li>
 </ul>
 
@@ -275,6 +283,7 @@ $(function() {
 <li>~Manager()&#160;:&#160;<a class="el" href="classsipai_1_1Manager.html#ac4fc722e8211d1dd342417f8ee162fc5">sipai::Manager</a></li>
 <li>~NeuralNetwork()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetwork.html#aa2cd9852cf13fe56c395dd7e5c11e35e">sipai::NeuralNetwork</a></li>
 <li>~NeuralNetworkImportExportFacade()&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#af4c5a426028b688e548b06bfa4e9c8bd">sipai::NeuralNetworkImportExportFacade</a></li>
+<li>~RunnerTrainingVisitor()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a38e0efba304e72cca61735dd115a8c2a">sipai::RunnerTrainingVisitor</a></li>
 <li>~RunnerVisitor()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerVisitor.html#a9eff828476354487d390af23b47516f0">sipai::RunnerVisitor</a></li>
 <li>~TrainingDataFactory()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#af2c675d918aeaa46504992342d0d3bc4">sipai::TrainingDataFactory</a></li>
 <li>~VulkanController()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#a52fb0521659584e17714d130bc6e7116">sipai::VulkanController</a></li>

@@ -12,9 +12,10 @@ var searchData=
   ['adaptlearningrate_9',['adaptLearningRate',['../classsipai_1_1RunnerTrainingVisitor.html#a7e537075238dbad39ea3f970e713760e',1,'sipai::RunnerTrainingVisitor']]],
   ['addlayers_10',['addLayers',['../classsipai_1_1NeuralNetworkBuilder.html#a5fabf5a39071cb7bfda642d261acf682',1,'sipai::NeuralNetworkBuilder']]],
   ['addneighbors_11',['addNeighbors',['../classsipai_1_1NeuralNetworkBuilder.html#a155910cf51b0212e87a4830f3f50ba82',1,'sipai::NeuralNetworkBuilder']]],
-  ['app_5fparams_12',['app_params',['../classsipai_1_1Manager.html#a04f60db76f56d7c2f8d62d15e7b436db',1,'sipai::Manager']]],
-  ['append_13',['append',['../classsipai_1_1SimpleLogger.html#a28aeea0e00b3faff28ea5834812b62dc',1,'sipai::SimpleLogger']]],
-  ['apply_14',['apply',['../classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269',1,'sipai::Layer']]],
-  ['appparams_15',['AppParams',['../structsipai_1_1AppParams.html',1,'sipai']]],
-  ['appparams_2eh_16',['AppParams.h',['../AppParams_8h.html',1,'']]]
+  ['alignedsize_12',['alignedSize',['../classsipai_1_1VulkanBuilder.html#ae67f845c7288d926152235b48ec84ab9',1,'sipai::VulkanBuilder::alignedSize(uint32_t value, uint32_t alignment)'],['../classsipai_1_1VulkanBuilder.html#a8da016610af111958090bf1fd5303e45',1,'sipai::VulkanBuilder::alignedSize(size_t value, size_t alignment)']]],
+  ['app_5fparams_13',['app_params',['../classsipai_1_1Manager.html#a04f60db76f56d7c2f8d62d15e7b436db',1,'sipai::Manager']]],
+  ['append_14',['append',['../classsipai_1_1SimpleLogger.html#a28aeea0e00b3faff28ea5834812b62dc',1,'sipai::SimpleLogger']]],
+  ['apply_15',['apply',['../classsipai_1_1Layer.html#a0b05a6104ee243b4865ff2168ad7b269',1,'sipai::Layer']]],
+  ['appparams_16',['AppParams',['../structsipai_1_1AppParams.html',1,'sipai']]],
+  ['appparams_2eh_17',['AppParams.h',['../AppParams_8h.html',1,'']]]
 ];
