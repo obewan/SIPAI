@@ -17,19 +17,19 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     VulkanHelper helper;
     std::string relativePath = "../../";
     CHECK(std::filesystem::exists(
-        relativePath + manager.app_params.trainingMonitoredShaderTemplate));
+        relativePath + manager.app_params.shaderTrainingMonitoredTemplate));
     if (std::filesystem::exists(relativePath +
-                                manager.app_params.trainingMonitoredShader)) {
+                                manager.app_params.shaderTrainingMonitored)) {
       std::filesystem::remove(relativePath +
-                              manager.app_params.trainingMonitoredShader);
+                              manager.app_params.shaderTrainingMonitored);
     }
     CHECK(helper.replaceTemplateParameters(
-        relativePath + manager.app_params.trainingMonitoredShaderTemplate,
-        relativePath + manager.app_params.trainingMonitoredShader));
+        relativePath + manager.app_params.shaderTrainingMonitoredTemplate,
+        relativePath + manager.app_params.shaderTrainingMonitored));
     CHECK(std::filesystem::exists(relativePath +
-                                  manager.app_params.trainingMonitoredShader));
+                                  manager.app_params.shaderTrainingMonitored));
     std::ifstream inFile(relativePath +
-                         manager.app_params.trainingMonitoredShader);
+                         manager.app_params.shaderTrainingMonitored);
     std::string line;
     while (std::getline(inFile, line)) {
       CHECK(line.find("%%") == std::string::npos);
@@ -212,7 +212,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     allocInfo2.memoryTypeIndex = builder.findMemoryType(
         memRequirements2.memoryTypeBits, memoryPropertiesFlags);
     VkDeviceMemory outputLossBufferMemory;
-    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo, nullptr,
+    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo2, nullptr,
                               &outputLossBufferMemory);
     CHECK(result == VK_SUCCESS);
     result = vkBindBufferMemory(vulkan->logicalDevice, outputLossBuffer,
@@ -336,7 +336,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     // Create command pool
     VkCommandPoolCreateInfo poolInfoCMD = {};
     poolInfoCMD.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfoCMD.queueFamilyIndex = vulkan->queueFamilyIndex;
+    poolInfoCMD.queueFamilyIndex = vulkan->queueComputeIndex;
     poolInfoCMD.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(vulkan->logicalDevice, &poolInfoCMD, nullptr,
                                  &vulkan->commandPool);
@@ -381,8 +381,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(vulkan->queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(vulkan->queue);
+    vkQueueSubmit(vulkan->queueCompute, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(vulkan->queueCompute);
 
     // Read data from buffer
     OutputLoss outputLoss{.loss = 0.0f};
@@ -484,7 +484,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     allocInfo2.memoryTypeIndex = builder.findMemoryType(
         memRequirements2.memoryTypeBits, memoryPropertiesFlags);
     VkDeviceMemory outputLossBufferMemory;
-    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo, nullptr,
+    result = vkAllocateMemory(vulkan->logicalDevice, &allocInfo2, nullptr,
                               &outputLossBufferMemory);
     CHECK(result == VK_SUCCESS);
     result = vkBindBufferMemory(vulkan->logicalDevice, outputLossBuffer,
@@ -597,7 +597,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     // Create command pool
     VkCommandPoolCreateInfo poolInfoCMD = {};
     poolInfoCMD.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfoCMD.queueFamilyIndex = vulkan->queueFamilyIndex;
+    poolInfoCMD.queueFamilyIndex = vulkan->queueComputeIndex;
     poolInfoCMD.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(vulkan->logicalDevice, &poolInfoCMD, nullptr,
                                  &vulkan->commandPool);
@@ -642,8 +642,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(vulkan->queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(vulkan->queue);
+    vkQueueSubmit(vulkan->queueCompute, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(vulkan->queueCompute);
 
     // Read data from buffer
     OutputLoss outputLoss{.loss = 0.0f};
@@ -694,6 +694,42 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
 
     float result = vulcanControllerTest.test1();
     CHECK(result == doctest::Approx(manager.network_params.learning_rate * 2));
+
+    vulcanControllerTest.destroy();
+    manager.network.reset();
+  }
+
+  SUBCASE("Test shader test2") {
+    auto &manager = Manager::getInstance();
+    manager.network.reset();
+    auto &ap = manager.app_params;
+    auto &np = manager.network_params;
+    np.input_size_x = 2;
+    np.input_size_y = 2;
+    np.hidden_size_x = 2;
+    np.hidden_size_y = 2;
+    np.output_size_x = 2;
+    np.output_size_y = 2;
+    np.hiddens_count = 1;
+    np.learning_rate = 0.65f;
+    np.error_min = 0.1f;
+    np.error_max = 0.9f;
+    np.adaptive_learning_rate = true;
+    np.adaptive_learning_rate_factor = 0.123f;
+    ap.network_to_import = "";
+    ap.network_to_export = "";
+    CHECK_NOTHROW(manager.createOrImportNetwork());
+
+    auto &vulcanControllerTest = VulkanControllerTest::getInstance();
+
+    CHECK_NOTHROW(vulcanControllerTest.initialize());
+    CHECK(vulcanControllerTest.IsInitialized());
+
+    auto result = vulcanControllerTest.test2();
+    CHECK(result.loss ==
+          doctest::Approx(manager.network_params.learning_rate * 2));
+
+    vulcanControllerTest.destroy();
     manager.network.reset();
   }
 

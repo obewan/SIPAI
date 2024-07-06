@@ -93,7 +93,8 @@ void Manager::run() {
       app_params.enable_parallel ? "true" : "false",
       "\nGPU Vulkan enabled: ", app_params.enable_vulkan ? "true" : "false",
       "\nverbose logs enabled: ", app_params.verbose ? "true" : "false",
-      "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false");
+      "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false",
+      "\ndebug vulkan enabled: ", app_params.vulkan_debug ? "true" : "false");
 
   // Enabling GPU Vulkan
   bool wasParallel = app_params.enable_parallel;

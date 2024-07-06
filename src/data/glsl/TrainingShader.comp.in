@@ -22,7 +22,7 @@ const int Sigmoid = 4;
 const int Tanh = 5;
 
 struct Neighbor {
-  bool is_used;
+  uint is_used;
   uint index_x;
   uint index_y;
   vec4 weight; // weight of the neighbor connection
@@ -227,7 +227,7 @@ void computeOutputError(uint index_x, uint index_y) {
   }
 
   // Compute and update the error
-  float weightFactor = 0.5; // Experiment with weight between 0 and 1
+  float weightFactor = 0.5f; // Experiment with weight between 0 and 1
   vec4 outputValue = sharedOutputValues[index_y][index_x];
   vec4 targetValue = inputDataBuffer.targetValues[index_y][index_x];
   vec4 newError = weightFactor * (outputValue - targetValue) +
@@ -256,7 +256,7 @@ void backwardHiddenLayer1(uint index_x, uint index_y) {
   // Consider errors of adjacent neurons
   for (uint i = 0;
        i < hiddenLayer1Buffer.neurons[index_y][index_x].neighbors.length(); i++) {
-    if (!hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].is_used) {
+    if (hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].is_used == 0) {
       continue;
     }
     error += hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].weight *
@@ -293,7 +293,7 @@ void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
   // Update neighbors connections weights
   for (uint i = 0;
        i < hiddenLayer1Buffer.neurons[index_y][index_x].neighbors.length(); i++) {
-    if (!hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].is_used) {
+    if (hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].is_used == 0) {
       continue;
     }
     hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].weight -=
@@ -325,7 +325,7 @@ void updateWeightsOutputLayer(uint index_x, uint index_y) {
   // Update neighbors connections weights
   for (uint i = 0; i < outputLayerBuffer.neurons[index_y][index_x].neighbors.length();
        i++) {
-    if (!outputLayerBuffer.neurons[index_y][index_x].neighbors[i].is_used) {
+    if (outputLayerBuffer.neurons[index_y][index_x].neighbors[i].is_used == 0) {
       continue;
     }
     outputLayerBuffer.neurons[index_y][index_x].neighbors[i].weight -=
@@ -341,9 +341,10 @@ void main() {
   uint index_x = gl_LocalInvocationID.x;
   uint index_y = gl_LocalInvocationID.y;
 
-  // Initialize local loss
+  // Initialize variables
   if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
-    sharedOutputLoss[index_y][index_x] = 0.0;
+    sharedOutputValues[index_y][index_x] = vec4(0.0);
+    sharedOutputLoss[index_y][index_x] = 0.0f;
   }
   barrier();
 
@@ -359,7 +360,7 @@ void main() {
 
   // Output writing (unique thread)
   if (gl_LocalInvocationIndex == 0) {   
-    float totalLoss = 0.0;
+    float totalLoss = 0.0f;
     for (int y = 0; y < %%OUTPUT_SIZE_Y%%; ++y) {
       for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
         totalLoss += sharedOutputLoss[y][x];

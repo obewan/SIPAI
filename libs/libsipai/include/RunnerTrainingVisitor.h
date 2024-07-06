@@ -22,6 +22,17 @@ extern void signalHandler(int signal);
 namespace sipai {
 class RunnerTrainingVisitor : public RunnerVisitor {
 public:
+  virtual ~RunnerTrainingVisitor() = default;
+
+  /**
+   * @brief Training and validation, including loss compute of all images.
+   *
+   * @param epoch the current epoch
+   * @param phase indicate if it is training or validation phase
+   * @return float
+   */
+  virtual float trainingMonitored(size_t epoch, TrainingPhase phase) const = 0;
+
   /**
    * @brief Determines whether the training should continue based on the
    * provided conditions.
@@ -33,8 +44,9 @@ public:
    * of epochs and maximum epochs without improvement.
    * @return True if the training should continue, false otherwise.
    */
-  bool shouldContinueTraining(int epoch, size_t epochsWithoutImprovement,
-                              const AppParams &appParams) const;
+  virtual bool shouldContinueTraining(int epoch,
+                                      size_t epochsWithoutImprovement,
+                                      const AppParams &appParams) const;
 
   /**
    * @brief Adaptive Learning Rate
@@ -44,9 +56,10 @@ public:
    * @param previousValidationLoss
    * @param enable_adaptive_increase
    */
-  void adaptLearningRate(float &learningRate, const float &validationLoss,
-                         const float &previousValidationLoss,
-                         const bool &enable_adaptive_increase) const;
+  virtual void adaptLearningRate(float &learningRate,
+                                 const float &validationLoss,
+                                 const float &previousValidationLoss,
+                                 const bool &enable_adaptive_increase) const;
 
   /**
    * @brief Logs the training progress for the current epoch.
@@ -57,17 +70,17 @@ public:
    * @param previousTrainingLoss
    * @param previousValidationLoss
    */
-  void logTrainingProgress(const int &epoch, const float &trainingLoss,
-                           const float &validationLoss,
-                           const float &previousTrainingLoss,
-                           const float &previousValidationLoss) const;
+  virtual void logTrainingProgress(const int &epoch, const float &trainingLoss,
+                                   const float &validationLoss,
+                                   const float &previousTrainingLoss,
+                                   const float &previousValidationLoss) const;
 
   /**
    * @brief Save and export the neural network
    *
    * @param hasLastEpochBeenSaved
    */
-  void saveNetwork(bool &hasLastEpochBeenSaved) const;
+  virtual void saveNetwork(bool &hasLastEpochBeenSaved) const;
 
 protected:
   mutable std::mutex threadMutex_;

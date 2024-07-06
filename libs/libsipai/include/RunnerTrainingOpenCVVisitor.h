@@ -18,18 +18,11 @@ class RunnerTrainingOpenCVVisitor : public RunnerTrainingVisitor {
 public:
   void visit() const override;
 
-  /**
-   * @brief Compute the loss of all images.
-   *
-   * @param epoch the current epoch
-   * @param phase indicate if it is training or validation phase
-   * @return float
-   */
-  float computeLoss(size_t epoch, TrainingPhase phase) const;
+  float trainingMonitored(size_t epoch, TrainingPhase phase) const override;
 
 private:
-  float _computeLoss(size_t epoch, std::shared_ptr<Data> data,
-                     TrainingPhase phase, bool isLossFrequency) const;
+  float _trainingMonitored(size_t epoch, std::shared_ptr<Data> data,
+                           TrainingPhase phase, bool isLossFrequency) const;
 
   ImageHelper imageHelper_;
 };

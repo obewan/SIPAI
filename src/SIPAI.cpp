@@ -118,6 +118,9 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
       "-D, --verbose_debug", app_params.verbose_debug,
       "Enables verbose debug-level logs. Can be used with verbose logs for "
       "even more detailed logs, but at the cost of some performance.");
+  app.add_flag("-G, --vulkan_debug", app_params.vulkan_debug,
+               "Enables vulkan debug mode, to debug with RenderDoc and other "
+               "tools. Do not enable in production.");
 
   // Double hyphen
   app.add_option(

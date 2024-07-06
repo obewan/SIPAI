@@ -8,11 +8,12 @@
  *
  */
 #pragma once
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <opencv2/opencv.hpp>
 #include <vector>
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_core.h>
 
 #if defined(_MSC_VER)
 using uint = unsigned int;
@@ -20,7 +21,8 @@ using uint = unsigned int;
 
 namespace sipai {
 
-const int MAX_NEIGHBORS = 4;
+inline constexpr const char *cvWindowTitle = "SIPAI";
+inline constexpr const int MAX_NEIGHBORS = 4;
 
 // numbers must match the GLSL bindings
 enum class EBuffer {
@@ -30,14 +32,19 @@ enum class EBuffer {
   HiddenLayer1 = 3,
   InputData = 4,
   OutputData = 5,
-  OutputLoss = 6
+  OutputLoss = 6,
+  Vertex = 7,
 };
 
 enum class EShader {
-  TrainingMonitored,
+  TrainingMonitoredShader,
+  VertexShader,
+  FragmentShader,
 
   // For Testing
-  Test1
+  // TODO: to remove and cleanup after testing
+  Test1,
+  Test2
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
@@ -47,7 +54,35 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::HiddenLayer1, "HiddenLayer1"},
     {EBuffer::InputData, "InputData"},
     {EBuffer::OutputData, "OutputData"},
-    {EBuffer::OutputLoss, "OutputLoss"}};
+    {EBuffer::OutputLoss, "OutputLoss"},
+    {EBuffer::Vertex, "Vertex"}};
+
+struct Vertex {
+  float pos[2];
+  float color[3];
+
+  static VkVertexInputBindingDescription getBindingDescription() {
+    VkVertexInputBindingDescription bindingDescription = {};
+    bindingDescription.binding = 0;
+    bindingDescription.stride = sizeof(Vertex);
+    bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    return bindingDescription;
+  }
+
+  static std::array<VkVertexInputAttributeDescription, 2>
+  getAttributeDescriptions() {
+    std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
+    attributeDescriptions[0].binding = 0;
+    attributeDescriptions[0].location = 0;
+    attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+    attributeDescriptions[0].offset = offsetof(Vertex, pos);
+    attributeDescriptions[1].binding = 0;
+    attributeDescriptions[1].location = 1;
+    attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    attributeDescriptions[1].offset = offsetof(Vertex, color);
+    return attributeDescriptions;
+  }
+};
 
 struct GLSLParameters {
   float learning_rate;
@@ -59,13 +94,13 @@ struct GLSLNeighbor {
   bool is_used;
   uint index_x;
   uint index_y;
-  cv::Vec4f weight;
+  std::vector<float> weight;
 };
 
 struct GLSLNeuron {
   uint index_x;
   uint index_y;
-  std::vector<std::vector<cv::Vec4f>> weights;
+  std::vector<std::vector<std::vector<float>>> weights;
   GLSLNeighbor neighbors[MAX_NEIGHBORS];
 };
 
@@ -99,8 +134,8 @@ struct GLSLOutputLayer {
 
 struct GLSLHiddenLayer {
   std::vector<std::vector<GLSLNeuron>> neurons;
-  std::vector<std::vector<cv::Vec4f>> values;
-  std::vector<std::vector<cv::Vec4f>> errors;
+  std::vector<std::vector<std::vector<float>>> values;
+  std::vector<std::vector<std::vector<float>>> errors;
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -120,28 +155,46 @@ struct Buffer {
 struct Shader {
   EShader shadername;
   std::string filename;
-  std::unique_ptr<std::vector<uint32_t>> shader;
+  std::unique_ptr<std::vector<uint32_t>> shader = nullptr;
   VkShaderModule module = VK_NULL_HANDLE;
-  VkPipeline pipeline = VK_NULL_HANDLE;
-  VkComputePipelineCreateInfo info = {};
   bool isReady = false;
 };
 
 struct Vulkan {
-  VkInstance vkInstance = VK_NULL_HANDLE;
-  VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-  VkDevice logicalDevice = VK_NULL_HANDLE;
   VkCommandPool commandPool = VK_NULL_HANDLE;
-  VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
   VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
   VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-  VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-  VkQueue queue = VK_NULL_HANDLE;
+  VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
+  VkDevice logicalDevice = VK_NULL_HANDLE;
   VkFence computeFence = VK_NULL_HANDLE;
-  std::vector<Shader> shaders;
+  VkFence inFlightFence = VK_NULL_HANDLE;
+  VkInstance instance = VK_NULL_HANDLE;
+  VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+  VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+  VkQueue queueCompute = VK_NULL_HANDLE;
+  VkQueue queueGraphics = VK_NULL_HANDLE;
+  VkRenderPass renderPass = VK_NULL_HANDLE;
+  VkSemaphore imageAvailableSemaphore = VK_NULL_HANDLE;
+  VkSemaphore renderFinishedSemaphore = VK_NULL_HANDLE;
+  VkSurfaceKHR surface = VK_NULL_HANDLE;
+  VkSwapchainKHR swapChain = VK_NULL_HANDLE;
+  VkFormat swapChainImageFormat;
+  VkExtent2D swapChainExtent;
+  VkComputePipelineCreateInfo infoCompute = {};
+  VkGraphicsPipelineCreateInfo infoGraphics = {};
+  VkPipeline pipelineGraphic = VK_NULL_HANDLE;
+  VkPipeline pipelineCompute = VK_NULL_HANDLE;
+  std::vector<Vertex> vertices;
   std::vector<Buffer> buffers;
+  std::vector<Shader> shaders;
   std::vector<VkCommandBuffer> commandBufferPool;
-  unsigned int queueFamilyIndex = 0;
+  std::vector<VkFramebuffer> swapChainFramebuffers;
+  std::vector<VkImage> swapChainImages;
+  std::vector<VkImageView> swapChainImageViews;
+  unsigned int queueComputeIndex = 0;
+  unsigned int queueGraphicsIndex = 0;
+  unsigned int window_width = 800;
+  unsigned int window_height = 600;
   bool isInitialized = false;
 };
 

@@ -123,25 +123,83 @@ public:
    */
   std::unique_ptr<std::vector<uint32_t>> loadShader(const std::string &path);
 
+  /**
+   * @brief alignment, from VulkanTools.cpp
+   *
+   * @param value
+   * @param alignment
+   * @return uint32_t
+   */
+  uint32_t alignedSize(uint32_t value, uint32_t alignment) {
+    return (value + alignment - 1) & ~(alignment - 1);
+  }
+
+  /**
+   * @brief alignment, from VulkanTools.cpp
+   *
+   * @param value
+   * @param alignment
+   * @return uint32_t
+   */
+  size_t alignedSize(size_t value, size_t alignment) {
+    return (value + alignment - 1) & ~(alignment - 1);
+  }
+
 private:
-  std::optional<unsigned int> _pickQueueFamily();
+  std::optional<unsigned int> _pickQueueCompute();
+  std::optional<unsigned int> _pickQueueGraphics();
   std::optional<VkPhysicalDevice> _pickPhysicalDevice();
 
-  void _createCommandPool();
   void _allocateCommandBuffers();
-  void _createBuffers();
-  void _createDescriptorSetLayout();
-  void _createDescriptorPool();
   void _allocateDescriptorSets();
-  void _createPipelineLayout();
+  void _createBuffers();
+  void _createCommandPool();
+  void _createShaderPipelines();
+  void _createDescriptorPool();
+  void _createDescriptorSetLayout();
   void _createFence();
+  void _createFramebuffers();
+  void _createImageViews();
+  void _createInstance();
+  void _createLogicalDevice();
+  void _createPipelineLayout();
+  void _createRenderPass();
   void _createShaderModules();
-  void _createComputePipelines();
+  void _createSurface();
+  void _createSyncObjects();
+  void _createSwapChain();
   void _updateDescriptorSets();
+
+  bool _checkDeviceProperties();
 
   std::shared_ptr<Vulkan> vulkan_ = nullptr;
   size_t commandPoolSize_ = 1;
   size_t maxNeighboosPerNeuron_ = 4;
   bool enableDebugInfo_ = false;
+  std::vector<Vertex> vertices = {
+      // Bar 1
+      {{-0.9f, 0.9f}, {1.0f, 0.0f, 0.0f}},
+      {{-0.9f, 0.8f}, {1.0f, 0.0f, 0.0f}},
+      {{0.0f, 0.8f}, {1.0f, 0.0f, 0.0f}},
+      {{-0.9f, 0.9f}, {1.0f, 0.0f, 0.0f}},
+      {{0.0f, 0.8f}, {1.0f, 0.0f, 0.0f}},
+      {{0.0f, 0.9f}, {1.0f, 0.0f, 0.0f}},
+
+      // Bar 2
+      {{-0.9f, 0.7f}, {0.0f, 1.0f, 0.0f}},
+      {{-0.9f, 0.6f}, {0.0f, 1.0f, 0.0f}},
+      {{0.0f, 0.6f}, {0.0f, 1.0f, 0.0f}},
+      {{-0.9f, 0.7f}, {0.0f, 1.0f, 0.0f}},
+      {{0.0f, 0.6f}, {0.0f, 1.0f, 0.0f}},
+      {{0.0f, 0.7f}, {0.0f, 1.0f, 0.0f}},
+
+      // Bar 3
+      {{-0.9f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+      {{-0.9f, 0.4f}, {0.0f, 0.0f, 1.0f}},
+      {{0.0f, 0.4f}, {0.0f, 0.0f, 1.0f}},
+      {{-0.9f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+      {{0.0f, 0.4f}, {0.0f, 0.0f, 1.0f}},
+      {{0.0f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+  };
 };
 } // namespace sipai
