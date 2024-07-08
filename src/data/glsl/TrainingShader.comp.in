@@ -1,4 +1,6 @@
 #version 450
+// enable debug printf extension only in debug mode
+// for debug printf infos, see https://www.lunarg.com/wp-content/uploads/2021/08/Using-Debug-Printf-02August2021.pdf
 #extension GL_EXT_debug_printf : enable
 
 /**
@@ -197,7 +199,7 @@ void forwardPropagationOutputLayer(uint index_x, uint index_y) {
   }
   sharedOutputValues[index_y][index_x] = activateFunction(
       result, outputLayerBuffer.activation_function, outputLayerBuffer.activation_alpha);
-  debugPrintfEXT("[DEBUG] sharedOutputValues[%i][%i] = %f", index_y, index_x, sharedOutputValues[index_y][index_x]);
+  debugPrintfEXT("[DEBUG] sharedOutputValues[%i][%i] = %v4f", index_y, index_x, sharedOutputValues[index_y][index_x]);
 }
 
 // Using mean square error (MSE)
@@ -206,11 +208,15 @@ void computeLoss(uint index_x, uint index_y) {
       index_x >= sharedOutputValues[0].length()) {
     return;
   }
-  vec4 diff = sharedOutputValues[index_y][index_x] - 
-              inputDataBuffer.targetValues[index_y][index_x];
-  float squaredDiff = dot(diff, diff);
-  sharedOutputLoss[index_y][index_x] = squaredDiff;
-  debugPrintfEXT("[DEBUG] sharedOutputLoss[%i][%i] = %f", index_y, index_x, sharedOutputLoss[index_y][index_x]);
+  vec4 diff = abs(sharedOutputValues[index_y][index_x] - 
+              inputDataBuffer.targetValues[index_y][index_x]);
+  debugPrintfEXT("[DEBUG][COMPUTELOSS] sharedOutputValues[%i][%i] = %v4f", index_y, index_x, sharedOutputValues[index_y][index_x]);              
+  debugPrintfEXT("[DEBUG][COMPUTELOSS] inputDataBuffer.targetValues[%i][%i] = %v4f", index_y, index_x, inputDataBuffer.targetValues[index_y][index_x]);              
+  debugPrintfEXT("[DEBUG][COMPUTELOSS] abs diff [%i][%i] = %v4f", index_y, index_x, diff);   
+
+  float pixelLoss = (diff[0] + diff[1] + diff[2] + diff[3]) / 4;  
+  sharedOutputLoss[index_y][index_x] = pixelLoss;
+  debugPrintfEXT("[DEBUG][COMPUTELOSS] sharedOutputLoss[%i][%i] = %f", index_y, index_x, sharedOutputLoss[index_y][index_x]);
 }
 
 void computeOutputError(uint index_x, uint index_y) {
@@ -238,7 +244,7 @@ void computeOutputError(uint index_x, uint index_y) {
                   ((1.0 - weightFactor) * neighborSum);
   outputLayerBuffer.errors[index_y][index_x] =
       clamp(newError, params.error_min, params.error_max);
-  debugPrintfEXT("[DEBUG] outputLayerBuffer.errors[%i][%i] = %f (not clamped), %f (clamped)", index_y, index_x, newError, outputLayerBuffer.errors[index_y][index_x]);
+  debugPrintfEXT("[DEBUG] outputLayerBuffer.errors[%i][%i] = %v4f (not clamped), %v4f (clamped)", index_y, index_x, newError, outputLayerBuffer.errors[index_y][index_x]);
 }
 
 void backwardHiddenLayer1(uint index_x, uint index_y) {
@@ -381,7 +387,10 @@ void main() {
     if (numPixels == 0){
       numPixels = 1;
     }
-    lossBuffer.loss = totalLoss / numPixels;
+    float meanLoss = totalLoss / numPixels;
+    debugPrintfEXT("[DEBUG][MAIN] meanLoss = %f", meanLoss);
+    
+    lossBuffer.loss = meanLoss;
 
     // Flatten outputValues
     // Commented: not required for training
