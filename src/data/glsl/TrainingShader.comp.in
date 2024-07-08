@@ -1,4 +1,5 @@
 #version 450
+#extension GL_EXT_debug_printf : enable
 
 /**
  * *TEMPLATE* GLSL training compute shader for Vulkan, by Dams
@@ -178,6 +179,7 @@ void forwardPropagationHiddenLayer1(uint index_x, uint index_y) {
   }
   hiddenLayer1Buffer.values[index_y][index_x] = activateFunction(
       result, hiddenLayer1Buffer.activation_function, hiddenLayer1Buffer.activation_alpha);
+  debugPrintfEXT("[DEBUG] hiddenLayer1Buffer.values[%i][%i] = %f", index_y, index_x, hiddenLayer1Buffer.values[index_y][index_x]);
 }
 
 void forwardPropagationOutputLayer(uint index_x, uint index_y) {
@@ -195,6 +197,7 @@ void forwardPropagationOutputLayer(uint index_x, uint index_y) {
   }
   sharedOutputValues[index_y][index_x] = activateFunction(
       result, outputLayerBuffer.activation_function, outputLayerBuffer.activation_alpha);
+  debugPrintfEXT("[DEBUG] sharedOutputValues[%i][%i] = %f", index_y, index_x, sharedOutputValues[index_y][index_x]);
 }
 
 // Using mean square error (MSE)
@@ -207,6 +210,7 @@ void computeLoss(uint index_x, uint index_y) {
               inputDataBuffer.targetValues[index_y][index_x];
   float squaredDiff = dot(diff, diff);
   sharedOutputLoss[index_y][index_x] = squaredDiff;
+  debugPrintfEXT("[DEBUG] sharedOutputLoss[%i][%i] = %f", index_y, index_x, sharedOutputLoss[index_y][index_x]);
 }
 
 void computeOutputError(uint index_x, uint index_y) {
@@ -234,6 +238,7 @@ void computeOutputError(uint index_x, uint index_y) {
                   ((1.0 - weightFactor) * neighborSum);
   outputLayerBuffer.errors[index_y][index_x] =
       clamp(newError, params.error_min, params.error_max);
+  debugPrintfEXT("[DEBUG] outputLayerBuffer.errors[%i][%i] = %f (not clamped), %f (clamped)", index_y, index_x, newError, outputLayerBuffer.errors[index_y][index_x]);
 }
 
 void backwardHiddenLayer1(uint index_x, uint index_y) {
@@ -264,12 +269,14 @@ void backwardHiddenLayer1(uint index_x, uint index_y) {
                  [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_y]
                  [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_x];
   }
+  debugPrintfEXT("[DEBUG] error [%i][%i] = %v4f", index_y, index_x, error);
 
   // Use the derivative of the activation function
   vec4 derivatedError = derivativeFunction(
       error, hiddenLayer1Buffer.activation_function, hiddenLayer1Buffer.activation_alpha);
   hiddenLayer1Buffer.errors[index_y][index_x] =
       clamp(derivatedError, params.error_min, params.error_max);
+  debugPrintfEXT("[DEBUG] hiddenLayer1Buffer.errors[%i][%i] = %v4f (not clamped), %v4f (clamped)", index_y, index_x, derivatedError, hiddenLayer1Buffer.errors[index_y][index_x]);
 }
 
 void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
@@ -279,6 +286,7 @@ void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
   }
   vec4 learningRateError =
       hiddenLayer1Buffer.errors[index_y][index_x] * params.learning_rate;
+  debugPrintfEXT("[DEBUG] learningRateError [%i][%i] = %v4f", index_y, index_x, learningRateError);
 
   // Update neuron weights that are connections weights with previous layers
   for (uint y = 0; y < hiddenLayer1Buffer.neurons[index_y][index_x].weights.length();
@@ -287,6 +295,7 @@ void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
          x < hiddenLayer1Buffer.neurons[index_y][index_x].weights[0].length(); x++) {
       hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x] -=
           (inputDataBuffer.inputValues[y][x] * learningRateError);
+      debugPrintfEXT("[DEBUG] hiddenLayer1Buffer.neurons[%i][%i].weights[%i][%i] = %v4f", index_y, index_x, y, x, hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x]);
     }
   }
 
@@ -301,6 +310,7 @@ void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
             [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_y]
             [hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].index_x] *
         learningRateError;
+    debugPrintfEXT("[DEBUG] hiddenLayer1Buffer.neurons[%i][%i].neighbors[%i].weight = %v4f", index_y, index_x, i, hiddenLayer1Buffer.neurons[index_y][index_x].neighbors[i].weight);
   }
 }
 
@@ -311,6 +321,7 @@ void updateWeightsOutputLayer(uint index_x, uint index_y) {
   }
   vec4 learningRateError =
       outputLayerBuffer.errors[index_y][index_x] * params.learning_rate;
+  debugPrintfEXT("[DEBUG] learningRateError [%i][%i] = %v4f", index_y, index_x, learningRateError);      
 
   // Update neuron weights that are connections weights with previous layers
   for (uint y = 0; y < outputLayerBuffer.neurons[index_y][index_x].weights.length();
