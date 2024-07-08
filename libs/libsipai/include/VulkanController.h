@@ -160,7 +160,7 @@ private:
   void _writeOutputLayer();
   void _writeHiddenLayer1();
   void _writeInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
-                       bool is_validation);
+                       const TrainingPhase &phase);
   std::unique_ptr<GLSLOutputData> _readOutputData();
 
   std::shared_ptr<Vulkan> vulkan_;

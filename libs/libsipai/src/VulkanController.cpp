@@ -97,8 +97,7 @@ float VulkanController::trainingMonitored(
   }
 
   // Inject input data
-  _writeInputData(inputValues->data, targetValues->data,
-                  phase == TrainingPhase::Validation);
+  _writeInputData(inputValues->data, targetValues->data, phase);
 
   // Compute and draw 3D frame (can be view in RenderDoc)
   _processShaders();
@@ -284,7 +283,7 @@ void VulkanController::_readHiddenLayer1() {
         }
       }
     } // end for (size_t x ...
-  }   // end for (size_t y ...
+  } // end for (size_t y ...
 
   // Get values
   for (int y = 0; y < hiddenLayer->values.rows; ++y) {
@@ -593,7 +592,7 @@ void VulkanController::_writeHiddenLayer1() {
 
 void VulkanController::_writeInputData(const cv::Mat &inputValues,
                                        const cv::Mat &targetValues,
-                                       bool is_validation) {
+                                       const TrainingPhase &phase) {
   // Copy the data into the VRAM
   try {
     auto &buffer = getBuffer(EBuffer::InputData);
@@ -623,6 +622,7 @@ void VulkanController::_writeInputData(const cv::Mat &inputValues,
     }
 
     // Copy is_validation
+    bool is_validation = (phase == TrainingPhase::Validation);
     bufferPtr = copyToBuffer<uint>(bufferPtr, is_validation);
 
     builder_.unmapBufferMemory(buffer);

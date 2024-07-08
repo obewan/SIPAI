@@ -54,7 +54,7 @@ layout(std430, binding = 0) buffer readonly Parameters {
 params;
 
 // Layers binding
-layout(std430, binding = 1) buffer InputLayer {
+layout(std430, binding = 1) buffer readonly InputLayer {
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -181,7 +181,7 @@ void forwardHiddenLayer1(uint index_x, uint index_y) {
   }
   hiddenLayer1Buffer.values[index_y][index_x] = activateFunction(
       result, hiddenLayer1Buffer.activation_function, hiddenLayer1Buffer.activation_alpha);
-  debugPrintfEXT("[DEBUG][FORWARDHIDDENLAYER1] hiddenLayer1Buffer.values[%i][%i] = %f", index_y, index_x, hiddenLayer1Buffer.values[index_y][index_x]);
+  debugPrintfEXT("[DEBUG][FORWARDHIDDENLAYER1] hiddenLayer1Buffer.values[%i][%i] = %v4f", index_y, index_x, hiddenLayer1Buffer.values[index_y][index_x]);
 }
 
 void forwardOutputLayer(uint index_x, uint index_y) {
