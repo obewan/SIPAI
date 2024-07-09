@@ -95,6 +95,18 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
     return std::string();
   };
 
+  // Optional: using a config file, TOML format
+  // see https://github.com/CLIUtils/CLI11?tab=readme-ov-file#configuration-file
+  // see https://cliutils.github.io/CLI11/book/chapters/config.html
+  // see https://toml.io/en/
+  app.set_config("-c, --config", "sipai.toml",
+                 "optional: read a specific config file or a default "
+                 "sipai.toml file, using TOML format and same options names.\n"
+                 "Example of sipai.toml file:\n"
+                 "mode = \"TrainingMonitored\"\n"
+                 "input_size_x = 20\n"
+                 "input_size_y = 20");
+
   // Single hyphen
   app.add_option(
          "-m, --mode", app_params.run_mode,
