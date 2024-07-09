@@ -48,8 +48,10 @@ void RunnerTrainingVulkanVisitor::visit() const {
     // Set up signal handler
     std::signal(SIGINT, signalHandler);
 
-    float previousTrainingLoss = std::numeric_limits<float>::max();
-    float previousValidationLoss = std::numeric_limits<float>::max();
+    float trainingLoss = 0.0f;
+    float validationLoss = 0.0f;
+    float previousTrainingLoss = 0.0f;
+    float previousValidationLoss = 0.0f;
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
@@ -58,24 +60,6 @@ void RunnerTrainingVulkanVisitor::visit() const {
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams) &&
            cv::waitKey(30) != 27) {
-      TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
-
-      float trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
-      if (stopTrainingNow) {
-        break;
-      }
-
-      float validationLoss =
-          trainingMonitored(epoch, TrainingPhase::Validation);
-      if (stopTrainingNow) {
-        break;
-      }
-
-      logTrainingProgress(epoch, trainingLoss, validationLoss,
-                          previousTrainingLoss, previousValidationLoss);
-
-      hasLastEpochBeenSaved = false;
-      epoch++;
 
       // if Adaptive Learning Rate enabled, adapt the learning rate.
       if (adaptive_learning_rate && epoch > 1) {
@@ -83,23 +67,42 @@ void RunnerTrainingVulkanVisitor::visit() const {
                           enable_adaptive_increase);
       }
 
+      TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
+
+      trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
+      if (stopTrainingNow) {
+        break;
+      }
+
+      validationLoss = trainingMonitored(epoch, TrainingPhase::Validation);
+      if (stopTrainingNow) {
+        break;
+      }
+
+      logTrainingProgress(epoch, trainingLoss, validationLoss,
+                          previousTrainingLoss, previousValidationLoss);
+
       // check the epochs without improvement counter
-      if (validationLoss < previousValidationLoss ||
-          trainingLoss < previousTrainingLoss) {
-        epochsWithoutImprovement = 0;
-      } else {
-        epochsWithoutImprovement++;
+      if (epoch > 0) {
+        if (validationLoss < previousValidationLoss ||
+            trainingLoss < previousTrainingLoss) {
+          epochsWithoutImprovement = 0;
+        } else {
+          epochsWithoutImprovement++;
+        }
       }
 
       previousTrainingLoss = trainingLoss;
       previousValidationLoss = validationLoss;
+      hasLastEpochBeenSaved = false;
+      epoch++;
 
       if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
         // TODO: an option to save the best validation rate network (if not
         // saved)
         saveNetwork(hasLastEpochBeenSaved);
       }
-    }
+    } // end while
 
     SimpleLogger::LOG_INFO("Exiting training...");
     if (!stopTrainingNow) {
