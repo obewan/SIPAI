@@ -33,13 +33,20 @@ consteval unsigned long long operator"" _G(unsigned long long x) {
 
 enum class TrainingPhase { Training, Validation };
 
-enum class ERunMode { Enhancer, Testing, Training, TrainingMonitored };
+enum class ERunMode {
+  Enhancer,
+  Testing,
+  Training,
+  TrainingMonitored,
+  Upscaler
+};
 
 const std::map<std::string, ERunMode, std::less<>> mode_map{
     {"Enhancer", ERunMode::Enhancer},
     {"Testing", ERunMode::Testing},
     {"Training", ERunMode::Training},
-    {"TrainingMonitored", ERunMode::TrainingMonitored}};
+    {"TrainingMonitored", ERunMode::TrainingMonitored},
+    {"Upscaler", ERunMode::Upscaler}};
 
 inline std::unordered_set<std::string> valid_extensions = {
     ".bmp",  ".dib", ".jpeg", ".jpg", ".jpe", ".jp2", ".png",
