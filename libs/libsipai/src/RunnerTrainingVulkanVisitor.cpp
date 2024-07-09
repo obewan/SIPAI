@@ -69,6 +69,9 @@ void RunnerTrainingVulkanVisitor::visit() const {
 
       TrainingDataFactory::getInstance().shuffle(TrainingPhase::Training);
 
+      previousTrainingLoss = trainingLoss;
+      previousValidationLoss = validationLoss;
+
       trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
@@ -92,8 +95,6 @@ void RunnerTrainingVulkanVisitor::visit() const {
         }
       }
 
-      previousTrainingLoss = trainingLoss;
-      previousValidationLoss = validationLoss;
       hasLastEpochBeenSaved = false;
       epoch++;
 
