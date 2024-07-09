@@ -44,9 +44,9 @@ public:
    *  @return float computed loss between the generated output and the expected
    * images after the training or the validation
    */
-  float trainingMonitored(const std::shared_ptr<sipai::Image> &inputValues,
-                          const std::shared_ptr<sipai::Image> &targetValues,
-                          const TrainingPhase &phase);
+  float training(const std::shared_ptr<sipai::Image> &inputValues,
+                 const std::shared_ptr<sipai::Image> &targetValues,
+                 const TrainingPhase &phase);
 
   /**
    * @brief Update the Neural Network with values from Vulkan.

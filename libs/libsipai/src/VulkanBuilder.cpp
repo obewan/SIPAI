@@ -768,7 +768,7 @@ void VulkanBuilder::_createShaderPipelines() {
     // compute shader
     case (EShader::Test1): // TODO: remove Test1 Test2 after tests
     case (EShader::Test2):
-    case (EShader::TrainingMonitoredShader): {
+    case (EShader::TrainingShader): {
       computeShaderStageInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
       computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;

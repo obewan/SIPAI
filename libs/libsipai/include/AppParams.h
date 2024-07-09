@@ -25,9 +25,8 @@ struct AppParams {
   std::string training_data_folder = "";
   std::string network_to_import = "";
   std::string network_to_export = "";
-  std::string shaderTrainingMonitored = "data/glsl/TrainingShader.comp";
-  std::string shaderTrainingMonitoredTemplate =
-      "data/glsl/TrainingShader.comp.in";
+  std::string shaderTraining = "data/glsl/TrainingShader.comp";
+  std::string shaderTrainingTemplate = "data/glsl/TrainingShader.comp.in";
   std::string shaderFragment = "data/glsl/FragmentShader.frag";
   std::string shaderVertex = "data/glsl/VertexShader.vert";
   ERunMode run_mode = ERunMode::Enhancer;

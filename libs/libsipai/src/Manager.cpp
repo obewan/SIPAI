@@ -133,8 +133,8 @@ void Manager::run() {
   // Run with visitor
   try {
     switch (app_params.run_mode) {
-    case ERunMode::TrainingMonitored:
-      runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());
+    case ERunMode::Training:
+      runWithVisitor(runnerVisitorFactory_.getTrainingVisitor());
       break;
     case ERunMode::Enhancer:
       runWithVisitor(runnerVisitorFactory_.getEnhancerVisitor());

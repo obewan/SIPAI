@@ -14,12 +14,12 @@
 namespace sipai {
 class RunnerVisitorFactory {
 public:
-  const RunnerVisitor &getTrainingMonitoredVisitor();
+  const RunnerVisitor &getTrainingVisitor();
 
   const RunnerVisitor &getEnhancerVisitor();
 
 private:
-  std::unique_ptr<RunnerVisitor> trainingMonitoredVisitor_ = nullptr;
+  std::unique_ptr<RunnerVisitor> trainingVisitor_ = nullptr;
   std::unique_ptr<RunnerVisitor> enhancerVisitor_ = nullptr;
 };
 } // namespace sipai

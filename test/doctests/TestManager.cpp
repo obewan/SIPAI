@@ -149,7 +149,7 @@ TEST_CASE("Testing the Manager class") {
     ap.training_data_file = "images-test1.csv";
     ap.training_data_folder = "";
     ap.max_epochs = 2;
-    ap.run_mode = ERunMode::TrainingMonitored;
+    ap.run_mode = ERunMode::Training;
     ap.network_to_export = "tempNetwork.json";
     ap.network_to_import = "";
     ap.enable_vulkan = false;
@@ -193,7 +193,7 @@ TEST_CASE("Testing the Manager class") {
     ap.training_data_file = "";
     ap.training_data_folder = "../data/images/target/";
     ap.max_epochs = 2;
-    ap.run_mode = ERunMode::TrainingMonitored;
+    ap.run_mode = ERunMode::Training;
     ap.network_to_export = "tempNetwork.json";
     ap.network_to_import = "";
     ap.enable_vulkan = false;

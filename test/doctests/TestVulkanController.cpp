@@ -16,20 +16,18 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     const auto &manager = Manager::getConstInstance();
     VulkanHelper helper;
     std::string relativePath = "../../";
-    CHECK(std::filesystem::exists(
-        relativePath + manager.app_params.shaderTrainingMonitoredTemplate));
+    CHECK(std::filesystem::exists(relativePath +
+                                  manager.app_params.shaderTrainingTemplate));
     if (std::filesystem::exists(relativePath +
-                                manager.app_params.shaderTrainingMonitored)) {
-      std::filesystem::remove(relativePath +
-                              manager.app_params.shaderTrainingMonitored);
+                                manager.app_params.shaderTraining)) {
+      std::filesystem::remove(relativePath + manager.app_params.shaderTraining);
     }
     CHECK(helper.replaceTemplateParameters(
-        relativePath + manager.app_params.shaderTrainingMonitoredTemplate,
-        relativePath + manager.app_params.shaderTrainingMonitored));
+        relativePath + manager.app_params.shaderTrainingTemplate,
+        relativePath + manager.app_params.shaderTraining));
     CHECK(std::filesystem::exists(relativePath +
-                                  manager.app_params.shaderTrainingMonitored));
-    std::ifstream inFile(relativePath +
-                         manager.app_params.shaderTrainingMonitored);
+                                  manager.app_params.shaderTraining));
+    std::ifstream inFile(relativePath + manager.app_params.shaderTraining);
     std::string line;
     while (std::getline(inFile, line)) {
       CHECK(line.find("%%") == std::string::npos);

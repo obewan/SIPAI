@@ -40,16 +40,15 @@ bool VulkanController::initialize() {
   if (vulkan_->shaders.empty()) {
     // templated shaders
     if (!helper_.replaceTemplateParameters(
-            manager.app_params.shaderTrainingMonitoredTemplate,
-            manager.app_params.shaderTrainingMonitored)) {
+            manager.app_params.shaderTrainingTemplate,
+            manager.app_params.shaderTraining)) {
       SimpleLogger::LOG_ERROR("Templated shader build error.");
       return false;
     }
 
     // shaders list
-    vulkan_->shaders.push_back(
-        {.shadername = EShader::TrainingMonitoredShader,
-         .filename = manager.app_params.shaderTrainingMonitored});
+    vulkan_->shaders.push_back({.shadername = EShader::TrainingShader,
+                                .filename = manager.app_params.shaderTraining});
     vulkan_->shaders.push_back({.shadername = EShader::VertexShader,
                                 .filename = manager.app_params.shaderVertex});
     vulkan_->shaders.push_back({.shadername = EShader::FragmentShader,
@@ -78,22 +77,22 @@ bool VulkanController::initialize() {
   return vulkan_->isInitialized;
 }
 
-float VulkanController::trainingMonitored(
+float VulkanController::training(
     const std::shared_ptr<sipai::Image> &inputValues,
     const std::shared_ptr<sipai::Image> &targetValues,
     const TrainingPhase &phase) {
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
-  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitoredShader);
+  auto &trainingShader = getShader(EShader::TrainingShader);
 
   _writeParameters();
 
-  if (!trainingMonitoredShader.isReady) {
+  if (!trainingShader.isReady) {
     _writeInputLayer();
     _writeOutputLayer();
     _writeHiddenLayer1();
-    trainingMonitoredShader.isReady = true;
+    trainingShader.isReady = true;
   }
 
   // Inject input data

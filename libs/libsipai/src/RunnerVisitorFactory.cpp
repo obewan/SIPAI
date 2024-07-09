@@ -6,18 +6,16 @@
 
 using namespace sipai;
 
-const RunnerVisitor &RunnerVisitorFactory::getTrainingMonitoredVisitor() {
-  if (!trainingMonitoredVisitor_) {
+const RunnerVisitor &RunnerVisitorFactory::getTrainingVisitor() {
+  if (!trainingVisitor_) {
     const auto &app_param = Manager::getConstInstance().app_params;
     if (app_param.enable_vulkan) {
-      trainingMonitoredVisitor_ =
-          std::make_unique<RunnerTrainingVulkanVisitor>();
+      trainingVisitor_ = std::make_unique<RunnerTrainingVulkanVisitor>();
     } else {
-      trainingMonitoredVisitor_ =
-          std::make_unique<RunnerTrainingOpenCVVisitor>();
+      trainingVisitor_ = std::make_unique<RunnerTrainingOpenCVVisitor>();
     }
   }
-  return *trainingMonitoredVisitor_;
+  return *trainingVisitor_;
 }
 
 const RunnerVisitor &RunnerVisitorFactory::getEnhancerVisitor() {
