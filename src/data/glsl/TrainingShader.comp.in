@@ -1,4 +1,5 @@
 #version 450
+
 // enable debug printf extension only in debug mode
 // for debug printf infos, see https://www.lunarg.com/wp-content/uploads/2021/08/Using-Debug-Printf-02August2021.pdf
 //#extension GL_EXT_debug_printf : enable
@@ -202,7 +203,7 @@ void forwardOutputLayer(uint index_x, uint index_y) {
   //debugPrintfEXT("[DEBUG][FORWARDOUTPUTLAYER] sharedOutputValues[%i][%i] = %v4f", index_y, index_x, sharedOutputValues[index_y][index_x]);
 }
 
-// Using mean squared error (MSE)
+// Using Mean Squared Error (MSE)
 void computeLoss(uint index_x, uint index_y) {
   if (index_y >= sharedOutputValues.length() ||
       index_x >= sharedOutputValues[0].length()) {
@@ -210,10 +211,7 @@ void computeLoss(uint index_x, uint index_y) {
   }
   vec4 diff = sharedOutputValues[index_y][index_x] - 
               inputDataBuffer.targetValues[index_y][index_x];
-  vec4 squaredDiff = diff * diff;              
-  //debugPrintfEXT("[DEBUG][COMPUTELOSS] sharedOutputValues[%i][%i] = %v4f", index_y, index_x, sharedOutputValues[index_y][index_x]);              
-  //debugPrintfEXT("[DEBUG][COMPUTELOSS] inputDataBuffer.targetValues[%i][%i] = %v4f", index_y, index_x, inputDataBuffer.targetValues[index_y][index_x]);              
-  //debugPrintfEXT("[DEBUG][COMPUTELOSS] diff [%i][%i] = %v4f", index_y, index_x, diff); 
+  vec4 squaredDiff = diff * diff;                
   //debugPrintfEXT("[DEBUG][COMPUTELOSS] squared diff [%i][%i] = %v4f", index_y, index_x, squaredDiff); 
 
 
