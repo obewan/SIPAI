@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">37</td>
+            <td class="headerCovTableEntry">23</td>
             <td class="headerCovTableEntry">59</td>
-            <td class="headerCovTableEntryLo">62.7 %</td>
+            <td class="headerCovTableEntryLo">39.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-07-06 15:42:49</td>
+            <td class="headerValue">2024-07-09 00:22:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">3</td>
             <td class="headerCovTableEntry">5</td>
-            <td class="headerCovTableEntryMed">80.0 %</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -97,35 +97,35 @@
 <a name="35"><span class="lineNum">      35 </span><span class="lineCov">          9 :   return improvementCondition &amp;&amp; epochCondition;</span></a>
 <a name="36"><span class="lineNum">      36 </span>            : }</a>
 <a name="37"><span class="lineNum">      37 </span>            : </a>
-<a name="38"><span class="lineNum">      38 </span><span class="lineCov">          2 : void RunnerTrainingVisitor::adaptLearningRate(</span></a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineNoCov">          0 : void RunnerTrainingVisitor::adaptLearningRate(</span></a>
 <a name="39"><span class="lineNum">      39 </span>            :     float &amp;learningRate, const float &amp;validationLoss,</a>
 <a name="40"><span class="lineNum">      40 </span>            :     const float &amp;previousValidationLoss,</a>
 <a name="41"><span class="lineNum">      41 </span>            :     const bool &amp;enable_adaptive_increase) const {</a>
-<a name="42"><span class="lineNum">      42 </span><span class="lineCov">          2 :   std::scoped_lock&lt;std::mutex&gt; lock(threadMutex_);</span></a>
+<a name="42"><span class="lineNum">      42 </span><span class="lineNoCov">          0 :   std::scoped_lock&lt;std::mutex&gt; lock(threadMutex_);</span></a>
 <a name="43"><span class="lineNum">      43 </span>            : </a>
-<a name="44"><span class="lineNum">      44 </span><span class="lineCov">          2 :   const auto &amp;manager = Manager::getConstInstance();</span></a>
-<a name="45"><span class="lineNum">      45 </span><span class="lineCov">          2 :   const auto &amp;appParams = manager.app_params;</span></a>
-<a name="46"><span class="lineNum">      46 </span><span class="lineCov">          2 :   const auto &amp;learning_rate_min = appParams.learning_rate_min;</span></a>
-<a name="47"><span class="lineNum">      47 </span><span class="lineCov">          2 :   const auto &amp;learning_rate_max = appParams.learning_rate_max;</span></a>
-<a name="48"><span class="lineNum">      48 </span><span class="lineCov">          2 :   const auto &amp;learning_rate_adaptive_factor =</span></a>
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 :   const auto &amp;manager = Manager::getConstInstance();</span></a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineNoCov">          0 :   const auto &amp;appParams = manager.app_params;</span></a>
+<a name="46"><span class="lineNum">      46 </span><span class="lineNoCov">          0 :   const auto &amp;learning_rate_min = appParams.learning_rate_min;</span></a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :   const auto &amp;learning_rate_max = appParams.learning_rate_max;</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :   const auto &amp;learning_rate_adaptive_factor =</span></a>
 <a name="49"><span class="lineNum">      49 </span>            :       manager.network_params.adaptive_learning_rate_factor;</a>
 <a name="50"><span class="lineNum">      50 </span>            : </a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineCov">          2 :   const float previous_learning_rate = learningRate;</span></a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          2 :   const float increase_slower_factor = 1.5f;</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :   const float previous_learning_rate = learningRate;</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 :   const float increase_slower_factor = 1.5f;</span></a>
 <a name="53"><span class="lineNum">      53 </span>            : </a>
-<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          2 :   if (validationLoss &gt;= previousValidationLoss &amp;&amp;</span></a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :   if (validationLoss &gt;= previousValidationLoss &amp;&amp;</span></a>
 <a name="55"><span class="lineNum">      55 </span><span class="lineNoCov">          0 :       learningRate &gt; learning_rate_min) {</span></a>
 <a name="56"><span class="lineNum">      56 </span>            :     // this will decrease learningRate (0.001 * 0.5 = 0.0005)</a>
 <a name="57"><span class="lineNum">      57 </span><span class="lineNoCov">          0 :     learningRate *= learning_rate_adaptive_factor;</span></a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          2 :   } else if (enable_adaptive_increase &amp;&amp;</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineNoCov">          0 :   } else if (enable_adaptive_increase &amp;&amp;</span></a>
 <a name="59"><span class="lineNum">      59 </span><span class="lineNoCov">          0 :              validationLoss &lt; previousValidationLoss &amp;&amp;</span></a>
 <a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :              learningRate &lt; learning_rate_max) {</span></a>
 <a name="61"><span class="lineNum">      61 </span>            :     // this will increase learningRate but slower (0.001 / (0.5 * 1.5) = 0.0013)</a>
 <a name="62"><span class="lineNum">      62 </span><span class="lineNoCov">          0 :     learningRate /= (learning_rate_adaptive_factor * increase_slower_factor);</span></a>
 <a name="63"><span class="lineNum">      63 </span>            :   }</a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">          2 :   learningRate = std::clamp(learningRate, learning_rate_min, learning_rate_max);</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 :   learningRate = std::clamp(learningRate, learning_rate_min, learning_rate_max);</span></a>
 <a name="65"><span class="lineNum">      65 </span>            : </a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          2 :   if (appParams.verbose &amp;&amp; learningRate != previous_learning_rate) {</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :   if (appParams.verbose &amp;&amp; learningRate != previous_learning_rate) {</span></a>
 <a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :     const auto current_precision = SimpleLogger::getInstance().getPrecision();</span></a>
 <a name="68"><span class="lineNum">      68 </span><span class="lineNoCov">          0 :     SimpleLogger::getInstance()</span></a>
 <a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :         .setPrecision(6)</span></a>
@@ -133,7 +133,7 @@
 <a name="71"><span class="lineNum">      71 </span>            :               learningRate)</a>
 <a name="72"><span class="lineNum">      72 </span><span class="lineNoCov">          0 :         .setPrecision(current_precision);</span></a>
 <a name="73"><span class="lineNum">      73 </span>            :   }</a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          2 : }</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 : }</span></a>
 <a name="75"><span class="lineNum">      75 </span>            : </a>
 <a name="76"><span class="lineNum">      76 </span><span class="lineCov">          6 : void RunnerTrainingVisitor::logTrainingProgress(</span></a>
 <a name="77"><span class="lineNum">      77 </span>            :     const int &amp;epoch, const float &amp;trainingLoss, const float &amp;validationLoss,</a>
