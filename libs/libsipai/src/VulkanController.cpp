@@ -40,6 +40,9 @@ bool VulkanController::initialize() {
   if (vulkan_->shaders.empty()) {
     // templated shaders
     if (!helper_.replaceTemplateParameters(
+            manager.app_params.shaderEnhancerTemplate,
+            manager.app_params.shaderEnhancer) ||
+        !helper_.replaceTemplateParameters(
             manager.app_params.shaderTrainingTemplate,
             manager.app_params.shaderTraining)) {
       SimpleLogger::LOG_ERROR("Templated shader build error.");
@@ -47,6 +50,8 @@ bool VulkanController::initialize() {
     }
 
     // shaders list
+    vulkan_->shaders.push_back({.shadername = EShader::EnhancerShader,
+                                .filename = manager.app_params.shaderEnhancer});
     vulkan_->shaders.push_back({.shadername = EShader::TrainingShader,
                                 .filename = manager.app_params.shaderTraining});
     vulkan_->shaders.push_back({.shadername = EShader::VertexShader,
@@ -105,6 +110,27 @@ float VulkanController::training(
   const auto result = _readOutputData();
 
   return result->loss;
+}
+
+std::shared_ptr<sipai::Image>
+VulkanController::enhancer(const std::shared_ptr<sipai::Image> &inputValues) {
+  if (!IsInitialized()) {
+    throw VulkanControllerException("Vulkan controller is not initialized.");
+  }
+
+  auto &enhancerShader = getShader(EShader::EnhancerShader);
+
+  _writeParameters();
+
+  if (!enhancerShader.isReady) {
+    _writeInputLayer();
+    _writeOutputLayer();
+    _writeHiddenLayer1();
+    enhancerShader.isReady = true;
+  }
+
+  // Inject input data
+  _writeInputData(inputValues->data);
 }
 
 void VulkanController::updateNeuralNetwork() {
@@ -585,6 +611,35 @@ void VulkanController::_writeHiddenLayer1() {
     }
   } catch (std::exception &ex) {
     throw VulkanControllerException("Hidden layer copy error: " +
+                                    std::string(ex.what()));
+  }
+}
+
+void VulkanController::_writeInputData(const cv::Mat &inputValues) {
+  // Copy the data into the VRAM
+  try {
+    auto &buffer = getBuffer(EBuffer::InputData);
+    builder_.mapBufferMemory(buffer);
+    memset(buffer.data, 0, (size_t)buffer.info.size);
+    uint8_t *bufferPtr = static_cast<uint8_t *>(buffer.data);
+    uint8_t *bufferStart = bufferPtr;
+
+    // Copy the inputValues
+    for (int y = 0; y < inputValues.rows; y++) {
+      for (int x = 0; x < inputValues.cols; x++) {
+        for (int k = 0; k < 4; k++) {
+          bufferPtr = copyToBuffer<float>(bufferPtr,
+                                          inputValues.at<cv::Vec4f>(y, x)[k]);
+        }
+      }
+    }
+
+    size_t totalBytesCopied = bufferPtr - bufferStart;
+    if (totalBytesCopied > (size_t)buffer.info.size) {
+      throw VulkanControllerException("copy buffer overflow");
+    }
+  } catch (std::exception &ex) {
+    throw VulkanControllerException("Input data copy error: " +
                                     std::string(ex.what()));
   }
 }

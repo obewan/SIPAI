@@ -11,7 +11,7 @@ using namespace sipai;
 TEST_CASE("Testing RunnerEnhancerVisitor") {
 
   SUBCASE("Test exceptions") {
-    RunnerEnhancerVisitor visitor;
+    RunnerEnhancerOpenCVVisitor visitor;
     auto &manager = Manager::getInstance();
 
     // no network
@@ -29,7 +29,7 @@ TEST_CASE("Testing RunnerEnhancerVisitor") {
     CHECK_THROWS_AS(visitor.visit(), RunnerVisitorException);
   }
   SUBCASE("Test visit success") {
-    RunnerEnhancerVisitor visitor;
+    RunnerEnhancerOpenCVVisitor visitor;
     auto &manager = Manager::getInstance();
     manager.network.reset();
     manager.network_params = {

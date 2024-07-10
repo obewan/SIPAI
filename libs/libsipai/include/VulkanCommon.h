@@ -38,6 +38,7 @@ enum class EBuffer {
 
 enum class EShader {
   TrainingShader,
+  EnhancerShader,
   VertexShader,
   FragmentShader,
 

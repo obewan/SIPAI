@@ -1,6 +1,7 @@
 #include "RunnerVisitorFactory.h"
 #include "Manager.h"
-#include "RunnerEnhancerVisitor.h"
+#include "RunnerEnhancerOpenCVVisitor.h"
+#include "RunnerEnhancerVulkanVisitor.h"
 #include "RunnerTrainingOpenCVVisitor.h"
 #include "RunnerTrainingVulkanVisitor.h"
 
@@ -20,7 +21,12 @@ const RunnerVisitor &RunnerVisitorFactory::getTrainingVisitor() {
 
 const RunnerVisitor &RunnerVisitorFactory::getEnhancerVisitor() {
   if (!enhancerVisitor_) {
-    enhancerVisitor_ = std::make_unique<RunnerEnhancerVisitor>();
+    const auto &app_param = Manager::getConstInstance().app_params;
+    if (app_param.enable_vulkan) {
+      enhancerVisitor_ = std::make_unique<RunnerEnhancerVulkanVisitor>();
+    } else {
+      enhancerVisitor_ = std::make_unique<RunnerEnhancerOpenCVVisitor>();
+    }
   }
   return *enhancerVisitor_;
 }

@@ -55,8 +55,6 @@ void RunnerTrainingVulkanVisitor::visit() const {
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
-    const auto &vulkan = VulkanController::getInstance().getVulkan();
-
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams) &&
            cv::waitKey(30) != 27) {

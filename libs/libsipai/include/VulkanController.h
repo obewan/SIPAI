@@ -49,6 +49,16 @@ public:
                  const TrainingPhase &phase);
 
   /**
+   * @brief Get image output values after a forward propagation, using an
+   * existing neural network.
+   *
+   * @param inputValues the input values
+   * @return std::shared_ptr<sipai::Image> the output values
+   */
+  std::shared_ptr<sipai::Image>
+  enhancer(const std::shared_ptr<sipai::Image> &inputValues);
+
+  /**
    * @brief Update the Neural Network with values from Vulkan.
    *
    */
@@ -159,6 +169,7 @@ private:
   void _writeInputLayer();
   void _writeOutputLayer();
   void _writeHiddenLayer1();
+  void _writeInputData(const cv::Mat &inputValues);
   void _writeInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
                        const TrainingPhase &phase);
   std::unique_ptr<GLSLOutputData> _readOutputData();

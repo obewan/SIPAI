@@ -1,15 +1,17 @@
-#include "RunnerEnhancerVisitor.h"
+#include "RunnerEnhancerVulkanVisitor.h"
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
+#include "VulkanController.h"
 #include "exception/RunnerVisitorException.h"
 #include <exception>
 #include <memory>
 
+
 using namespace sipai;
 
-void RunnerEnhancerVisitor::visit() const {
-  SimpleLogger::LOG_INFO("Image enhancement...");
+void RunnerEnhancerVulkanVisitor::visit() const {
+  SimpleLogger::LOG_INFO("Image enhancement (Vulkan)...");
   auto &manager = Manager::getInstance();
 
   if (!manager.network) {
@@ -35,6 +37,7 @@ void RunnerEnhancerVisitor::visit() const {
         network_params.input_size_y);
 
     // Get output image parts by forward propagation
+    const auto &vulkan = VulkanController::getInstance().getVulkan();
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
       const auto &outputData =
