@@ -13,7 +13,7 @@
 // One workgroup, neurons local threads per workgroup
 layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
-// thread shared datas (warning it is a fast but very limited memory)
+// Threads shared datas (warning it is a fast but very limited memory)
 shared vec4 sharedOutputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
 shared float sharedOutputLoss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
 
@@ -93,7 +93,7 @@ layout(std430, binding = 4) buffer readonly InputData {
 inputDataBuffer;
 
 layout(std430, binding = 5) buffer writeonly OutputData { 
-  vec4 outputValues[%%OUTPUT_SIZE_XY%%];
+  vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
 }
 outputDataBuffer;
 
@@ -395,14 +395,6 @@ void main() {
     //debugPrintfEXT("[DEBUG][MAIN] meanSquaredLoss = %f", meanSquaredLoss);
     
     lossBuffer.loss = meanSquaredLoss;
-
-    // Flatten outputValues
-    // Commented: not required for training
-    // for (int y = 0; y <  %%OUTPUT_SIZE_Y%%; ++y) {
-    //  for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
-    //    outputDataBuffer.outputValues[y * %%OUTPUT_SIZE_X%% + x] = sharedOutputValues[y][x];
-    // }
-    //}
   }
   barrier();
 
