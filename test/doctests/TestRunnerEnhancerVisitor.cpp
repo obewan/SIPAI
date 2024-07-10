@@ -1,6 +1,6 @@
 #include "Manager.h"
 #include "NeuralNetwork.h"
-#include "RunnerEnhancerVisitor.h"
+#include "RunnerEnhancerOpenCVVisitor.h"
 #include "doctest.h"
 #include "exception/RunnerVisitorException.h"
 #include <filesystem>
