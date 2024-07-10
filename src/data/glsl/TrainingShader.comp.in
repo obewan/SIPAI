@@ -13,9 +13,16 @@
 // One workgroup, neurons local threads per workgroup
 layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
+const int OUTPUT_SIZE_X = %%OUTPUT_SIZE_X%%;
+const int OUTPUT_SIZE_Y = %%OUTPUT_SIZE_Y%%;
+const int HIDDEN_SIZE_X = %%HIDDEN_SIZE_X%%;
+const int HIDDEN_SIZE_Y = %%HIDDEN_SIZE_Y%%;
+const int INPUT_SIZE_X = %%INPUT_SIZE_X%%;
+const int INPUT_SIZE_Y = %%INPUT_SIZE_Y%%;
+
 // Threads shared datas (warning it is a fast but very limited memory)
-shared vec4 sharedOutputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-shared float sharedOutputLoss[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+shared vec4 sharedOutputValues[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
+shared float sharedOutputLoss[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
 
 // Enum mapping, do not change
 const int ELU = 0;
@@ -35,14 +42,14 @@ struct Neighbor {
 struct HiddenNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];
+  vec4 weights[INPUT_SIZE_Y][INPUT_SIZE_X];
   Neighbor neighbors[4];
 };
 
 struct OutputNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
+  vec4 weights[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
   Neighbor neighbors[4];
 };
 
@@ -64,8 +71,8 @@ layout(std430, binding = 1) buffer readonly InputLayer {
 inputLayerBuffer;
 
 layout(std430, binding = 2) buffer OutputLayer {
-  OutputNeuron neurons[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-  vec4 errors[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+  OutputNeuron neurons[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
+  vec4 errors[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -74,9 +81,9 @@ layout(std430, binding = 2) buffer OutputLayer {
 outputLayerBuffer;
 
 layout(std430, binding = 3) buffer HiddenLayer1 {
-  HiddenNeuron neurons[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
-  vec4 values[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
-  vec4 errors[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
+  HiddenNeuron neurons[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
+  vec4 values[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
+  vec4 errors[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -86,14 +93,14 @@ hiddenLayer1Buffer;
 
 // Data binding
 layout(std430, binding = 4) buffer readonly InputData {
-  vec4 inputValues[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];  
-  vec4 targetValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];  
+  vec4 inputValues[INPUT_SIZE_Y][INPUT_SIZE_X];  
+  vec4 targetValues[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];  
   bool is_validation;
 }
 inputDataBuffer;
 
 layout(std430, binding = 5) buffer writeonly OutputData { 
-  vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+  vec4 outputValues[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
 }
 outputDataBuffer;
 
@@ -168,13 +175,13 @@ vec4 activateFunction(vec4 value, uint activation_function,
 }
 
 void forwardHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= %%HIDDEN_SIZE_Y%% || index_x >= %%HIDDEN_SIZE_X%%) {
+  if (index_y >= HIDDEN_SIZE_Y || index_x >= HIDDEN_SIZE_X) {
     return;
   }
   // forward hidden layer using previous input layer 
   vec4 result = vec4(0.0);
-  for (uint y = 0; y < %%INPUT_SIZE_Y%%; y++) {
-    for (uint x = 0; x < %%INPUT_SIZE_X%%; x++) {
+  for (uint y = 0; y < INPUT_SIZE_Y; y++) {
+    for (uint x = 0; x < INPUT_SIZE_X; x++) {
       result += inputDataBuffer.inputValues[y][x] *
                 hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x];
     }
@@ -185,13 +192,13 @@ void forwardHiddenLayer1(uint index_x, uint index_y) {
 }
 
 void forwardOutputLayer(uint index_x, uint index_y) {
-  if (index_y >= %%OUTPUT_SIZE_Y%% || index_x >= %%OUTPUT_SIZE_X%%) {
+  if (index_y >= OUTPUT_SIZE_Y || index_x >= OUTPUT_SIZE_X) {
     return;
   }
   // forward output layer using previous hidden layer 
   vec4 result = vec4(0.0);
-  for (uint y = 0; y < %%HIDDEN_SIZE_Y%%; y++) {
-    for (uint x = 0; x < %%HIDDEN_SIZE_X%%; x++) {
+  for (uint y = 0; y < HIDDEN_SIZE_Y; y++) {
+    for (uint x = 0; x < HIDDEN_SIZE_X; x++) {
       result += hiddenLayer1Buffer.values[y][x] *
                 outputLayerBuffer.neurons[index_y][index_x].weights[y][x];
     }
@@ -203,7 +210,7 @@ void forwardOutputLayer(uint index_x, uint index_y) {
 
 // Using Mean Squared Error (MSE)
 void computeLoss(uint index_x, uint index_y) {
-  if (index_y >= %%OUTPUT_SIZE_Y%% || index_x >= %%OUTPUT_SIZE_X%%) {
+  if (index_y >= OUTPUT_SIZE_Y || index_x >= OUTPUT_SIZE_X) {
     return;
   }
   vec4 diff = sharedOutputValues[index_y][index_x] - 
@@ -220,7 +227,7 @@ void computeLoss(uint index_x, uint index_y) {
 }
 
 void computeOutputError(uint index_x, uint index_y) {
-  if (index_y >= %%OUTPUT_SIZE_Y%% || index_x >= %%OUTPUT_SIZE_X%%) {
+  if (index_y >= OUTPUT_SIZE_Y || index_x >= OUTPUT_SIZE_X) {
     return;
   }
   // add neighbors connections weighted values
@@ -247,14 +254,14 @@ void computeOutputError(uint index_x, uint index_y) {
 }
 
 void backwardHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= %%HIDDEN_SIZE_Y%% || index_x >= %%HIDDEN_SIZE_X%%) {
+  if (index_y >= HIDDEN_SIZE_Y || index_x >= HIDDEN_SIZE_X) {
     return;
   }
   vec4 error = vec4(0.0);
 
   // Add next layer neurons error ponderated with weights for this neuron
-  for (uint out_y = 0; out_y < %%OUTPUT_SIZE_Y%%; out_y++) {
-    for (uint out_x = 0; out_x < %%OUTPUT_SIZE_X%%; out_x++) {
+  for (uint out_y = 0; out_y < OUTPUT_SIZE_Y; out_y++) {
+    for (uint out_x = 0; out_x < OUTPUT_SIZE_X; out_x++) {
       vec4 out_error = outputLayerBuffer.errors[out_y][out_x];
       vec4 out_weight =
           outputLayerBuffer.neurons[out_y][out_x].weights[index_y][index_x];
@@ -284,7 +291,7 @@ void backwardHiddenLayer1(uint index_x, uint index_y) {
 }
 
 void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= %%HIDDEN_SIZE_Y%% || index_x >= %%HIDDEN_SIZE_X%%) {
+  if (index_y >= HIDDEN_SIZE_Y || index_x >= HIDDEN_SIZE_X) {
     return;
   }
   vec4 learningRateError =
@@ -318,7 +325,7 @@ void updateWeightsHiddenLayer1(uint index_x, uint index_y) {
 }
 
 void updateWeightsOutputLayer(uint index_x, uint index_y) {
-  if (index_y >= %%OUTPUT_SIZE_Y%% || index_x >= %%OUTPUT_SIZE_X%%) {
+  if (index_y >= OUTPUT_SIZE_Y || index_x >= OUTPUT_SIZE_X) {
     return;
   }
   vec4 learningRateError =
@@ -355,7 +362,7 @@ void main() {
   uint index_y = gl_LocalInvocationID.y;
 
   // Initialize variables
-  if (index_y < %%OUTPUT_SIZE_Y%% && index_x < %%OUTPUT_SIZE_X%%) {
+  if (index_y < OUTPUT_SIZE_Y && index_x < OUTPUT_SIZE_X) {
     sharedOutputValues[index_y][index_x] = vec4(0.0);
     sharedOutputLoss[index_y][index_x] = 0.0f;
   }
@@ -375,12 +382,12 @@ void main() {
   if (gl_LocalInvocationIndex == 0) {   
     // Mean Squared Error (next)
     float totalLoss = 0.0f;
-    for (int y = 0; y < %%OUTPUT_SIZE_Y%%; ++y) {
-      for (int x = 0; x < %%OUTPUT_SIZE_X%%; ++x) {
+    for (int y = 0; y < OUTPUT_SIZE_Y; ++y) {
+      for (int x = 0; x < OUTPUT_SIZE_X; ++x) {
         totalLoss += sharedOutputLoss[y][x];
       }
     }
-    uint numPixels = %%OUTPUT_SIZE_Y%% * %%OUTPUT_SIZE_X%%;    
+    uint numPixels = OUTPUT_SIZE_Y * OUTPUT_SIZE_X;    
     if (numPixels == 0){
       numPixels = 1;
     }

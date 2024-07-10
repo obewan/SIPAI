@@ -13,6 +13,13 @@
 // One workgroup, neurons local threads per workgroup
 layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
+const int OUTPUT_SIZE_X = %%OUTPUT_SIZE_X%%;
+const int OUTPUT_SIZE_Y = %%OUTPUT_SIZE_Y%%;
+const int HIDDEN_SIZE_X = %%HIDDEN_SIZE_X%%;
+const int HIDDEN_SIZE_Y = %%HIDDEN_SIZE_Y%%;
+const int INPUT_SIZE_X = %%INPUT_SIZE_X%%;
+const int INPUT_SIZE_Y = %%INPUT_SIZE_Y%%;
+
 // Enum mapping, do not change
 const int ELU = 0;
 const int LReLU = 1;
@@ -31,14 +38,14 @@ struct Neighbor {
 struct HiddenNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];
+  vec4 weights[INPUT_SIZE_Y][INPUT_SIZE_X];
   Neighbor neighbors[4];
 };
 
 struct OutputNeuron {
   uint index_x;
   uint index_y;
-  vec4 weights[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
+  vec4 weights[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
   Neighbor neighbors[4];
 };
 
@@ -60,8 +67,8 @@ layout(std430, binding = 1) buffer readonly InputLayer {
 inputLayerBuffer;
 
 layout(std430, binding = 2) buffer OutputLayer {
-  OutputNeuron neurons[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
-  vec4 errors[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+  OutputNeuron neurons[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
+  vec4 errors[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -70,9 +77,9 @@ layout(std430, binding = 2) buffer OutputLayer {
 outputLayerBuffer;
 
 layout(std430, binding = 3) buffer HiddenLayer1 {
-  HiddenNeuron neurons[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
-  vec4 values[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
-  vec4 errors[%%HIDDEN_SIZE_Y%%][%%HIDDEN_SIZE_X%%];
+  HiddenNeuron neurons[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
+  vec4 values[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
+  vec4 errors[HIDDEN_SIZE_Y][HIDDEN_SIZE_X];
   float activation_alpha;
   uint activation_function;
   uint size_x;
@@ -82,14 +89,14 @@ hiddenLayer1Buffer;
 
 // Data binding
 layout(std430, binding = 4) buffer readonly InputData {
-  vec4 inputValues[%%INPUT_SIZE_Y%%][%%INPUT_SIZE_X%%];  
-  vec4 targetValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];  
+  vec4 inputValues[INPUT_SIZE_Y][INPUT_SIZE_X];  
+  vec4 targetValues[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];  
   bool is_validation;
 }
 inputDataBuffer;
 
 layout(std430, binding = 5) buffer writeonly OutputData { 
-  vec4 outputValues[%%OUTPUT_SIZE_Y%%][%%OUTPUT_SIZE_X%%];
+  vec4 outputValues[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
 }
 outputDataBuffer;
 
@@ -164,13 +171,13 @@ vec4 activateFunction(vec4 value, uint activation_function,
 }
 
 void forwardHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= %%HIDDEN_SIZE_Y%% || index_x >= %%HIDDEN_SIZE_X%%) {
+  if (index_y >= HIDDEN_SIZE_Y || index_x >= HIDDEN_SIZE_X) {
     return;
   }
   // forward hidden layer using previous input layer 
   vec4 result = vec4(0.0);
-  for (uint y = 0; y < %%INPUT_SIZE_Y%%; y++) {
-    for (uint x = 0; x < %%INPUT_SIZE_X%%; x++) {
+  for (uint y = 0; y < INPUT_SIZE_Y; y++) {
+    for (uint x = 0; x < INPUT_SIZE_X; x++) {
       result += inputDataBuffer.inputValues[y][x] *
                 hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x];
     }
@@ -181,13 +188,13 @@ void forwardHiddenLayer1(uint index_x, uint index_y) {
 }
 
 void forwardOutputLayer(uint index_x, uint index_y) {
-  if (index_y >= %%OUTPUT_SIZE_Y%% || index_x >= %%OUTPUT_SIZE_X%%) {
+  if (index_y >= OUTPUT_SIZE_Y || index_x >= OUTPUT_SIZE_X) {
     return;
   }
   // forward output layer using previous hidden layer
   vec4 result = vec4(0.0);
-  for (uint y = 0; y < %%HIDDEN_SIZE_Y%%; y++) {
-    for (uint x = 0; x < %%HIDDEN_SIZE_X%%; x++) {
+  for (uint y = 0; y < HIDDEN_SIZE_Y; y++) {
+    for (uint x = 0; x < HIDDEN_SIZE_X; x++) {
       result += hiddenLayer1Buffer.values[y][x] *
                 outputLayerBuffer.neurons[index_y][index_x].weights[y][x];
     }
