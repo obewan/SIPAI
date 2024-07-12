@@ -164,6 +164,8 @@ private:
   void _processShaders();
   void _readHiddenLayer1();
   void _readOutputLayer();
+  float _readOutputLoss();
+  std::shared_ptr<sipai::Image> _readOutputData();
 
   void _writeParameters();
   void _writeInputLayer();
@@ -172,7 +174,6 @@ private:
   void _writeInputData(const cv::Mat &inputValues);
   void _writeInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
                        const TrainingPhase &phase);
-  std::unique_ptr<GLSLOutputData> _readOutputData();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;

@@ -103,13 +103,13 @@ float VulkanController::training(
   // Inject input data
   _writeInputData(inputValues->data, targetValues->data, phase);
 
-  // Compute and draw 3D frame (can be view in RenderDoc)
+  // Compute (draw 3D frame if vulkan debug, can be debug in RenderDoc then)
   _processShaders();
 
   // Get the results
-  const auto result = _readOutputData();
+  const float loss = _readOutputLoss();
 
-  return result->loss;
+  return loss;
 }
 
 std::shared_ptr<sipai::Image>
@@ -131,6 +131,14 @@ VulkanController::enhancer(const std::shared_ptr<sipai::Image> &inputValues) {
 
   // Inject input data
   _writeInputData(inputValues->data);
+
+  // Compute (draw 3D frame if vulkan debug, can be debug in RenderDoc then)
+  _processShaders();
+
+  // Get the results
+  const auto outputData = _readOutputData();
+
+  return outputData;
 }
 
 void VulkanController::updateNeuralNetwork() {
@@ -362,7 +370,152 @@ void VulkanController::_readOutputLayer() {
       network->layers.back()->layerType != LayerType::LayerOutput) {
     throw VulkanControllerException("invalid neural network");
   }
-  // no needed to implement for now.
+  auto &outputLayer = network->layers.back();
+  auto &bufferOutputLayer = getBuffer(EBuffer::OutputLayer);
+
+  builder_.mapBufferMemory(bufferOutputLayer);
+  if (!bufferOutputLayer.data) {
+    builder_.unmapBufferMemory(bufferOutputLayer);
+    throw VulkanControllerException(
+        "Invalid data pointer after mapping buffer memory");
+  }
+
+  uint offset = 0;
+
+  // Read neurons
+  for (size_t y = 0; y < outputLayer->size_y; ++y) {
+    for (size_t x = 0; x < outputLayer->size_x; ++x) {
+      auto &dstNeuron = outputLayer->neurons[y][x];
+
+      // Check index_x and index_y
+      uint32_t index_x =
+          getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+      uint32_t index_y =
+          getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+      if (dstNeuron.index_x != index_x || dstNeuron.index_y != index_y) {
+        builder_.unmapBufferMemory(bufferOutputLayer);
+        throw VulkanControllerException("Invalid data buffer memory");
+      }
+
+      // Get weights
+      for (int i = 0; i < dstNeuron.weights.rows; ++i) {
+        for (int j = 0; j < dstNeuron.weights.cols; ++j) {
+          auto value = cv::Vec4f(
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset));
+          dstNeuron.weights.at<cv::Vec4f>(i, j) = value;
+        }
+      }
+
+      // Get neighbors
+      int neighbors_padding = 8; // check with RenderDoc
+      offset += neighbors_padding;
+      for (int i = 0; i < MAX_NEIGHBORS; i++) {
+        uint32_t isUsed =
+            getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+        uint32_t neigh_index_x =
+            getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+        uint32_t neigh_index_y =
+            getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+
+        // Some checks
+        if (isUsed &&
+            (dstNeuron.neighbors[i].neuron->index_x != neigh_index_x ||
+             dstNeuron.neighbors[i].neuron->index_y != neigh_index_y)) {
+          builder_.unmapBufferMemory(bufferOutputLayer);
+          throw VulkanControllerException("Invalid data buffer memory");
+        }
+        if (((isUsed > 0) && (i + 1 > (int)dstNeuron.neighbors.size())) ||
+            ((isUsed <= 0) && (i + 1 < (int)dstNeuron.neighbors.size()))) {
+          builder_.unmapBufferMemory(bufferOutputLayer);
+          throw VulkanControllerException("Invalid data buffer memory");
+        }
+
+        // Get connection weight
+        offset += 4; // padding, check with RenderDoc
+        auto weight =
+            cv::Vec4f(getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                      getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                      getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                      getDataFromBuffer<float>(bufferOutputLayer.data, offset));
+        if (isUsed > 0) {
+          dstNeuron.neighbors[i].weight = weight;
+        }
+      }
+    } // end for (size_t x ...
+  } // end for (size_t y ...
+
+  // Get errors
+  for (int y = 0; y < outputLayer->errors.rows; ++y) {
+    for (int x = 0; x < outputLayer->errors.cols; ++x) {
+      auto error =
+          cv::Vec4f(getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                    getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                    getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                    getDataFromBuffer<float>(bufferOutputLayer.data, offset));
+      outputLayer->errors.at<cv::Vec4f>(y, x) = error;
+    }
+  }
+
+  // Get others attributes
+  // Check activation_alpha and activation_function
+  auto activation_alpha =
+      getDataFromBuffer<float>(bufferOutputLayer.data, offset);
+  auto activation_function =
+      getDataFromBuffer<uint>(bufferOutputLayer.data, offset);
+  float epsilon = 0.0001f;
+  if (abs(activation_alpha - outputLayer->activationFunctionAlpha) > epsilon ||
+      activation_function != (uint32_t)outputLayer->eactivationFunction) {
+    builder_.unmapBufferMemory(bufferOutputLayer);
+    throw VulkanControllerException("Invalid data buffer memory");
+  }
+  // Check size_x and size_y
+  auto size_x = getDataFromBuffer<uint>(bufferOutputLayer.data, offset);
+  auto size_y = getDataFromBuffer<uint>(bufferOutputLayer.data, offset);
+  if (size_x != outputLayer->size_x || size_y != outputLayer->size_y) {
+    builder_.unmapBufferMemory(bufferOutputLayer);
+    throw VulkanControllerException("Invalid data buffer memory");
+  }
+  builder_.unmapBufferMemory(bufferOutputLayer);
+}
+
+float VulkanController::_readOutputLoss() {
+  GLSLOutputData outputData = {};
+
+  // Get loss
+  auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
+  builder_.mapBufferMemory(bufferLoss);
+  float loss = *reinterpret_cast<float *>(bufferLoss.data);
+  builder_.unmapBufferMemory(bufferLoss);
+
+  // Get outputValues
+  // Commented: not required here
+  // const auto &params = Manager::getConstInstance().network_params;
+  // cv::Mat outputValues((int)params.output_size_y,
+  // (int)params.output_size_x,
+  //                      CV_32FC4, cv::Vec4f::all(0.0));
+  // auto &buffer = getBuffer(EBuffer::OutputValues);
+  // builder_.mapBufferMemory(buffer);
+  // const auto mappedData = static_cast<std::array<float, 4> *>(buffer.data);
+  // // copy the data
+  // for (int y = 0; y < outputValues.rows; y++) {
+  //   for (int x = 0; x < outputValues.cols; x++) {
+  //     size_t index = y * outputValues.cols + x;
+  //     outputValues.at<cv::Vec4f>(y, x) =
+  //         cv::Vec4f(mappedData[index][0], mappedData[index][1],
+  //                   mappedData[index][2], mappedData[index][3]);
+  //   }
+  // }
+  // builder_.unmapBufferMemory(buffer);
+
+  return loss;
+}
+
+std::shared_ptr<sipai::Image> VulkanController::_readOutputData() {
+
+  return nullptr;
 }
 
 void VulkanController::_writeParameters() {
@@ -689,36 +842,4 @@ void VulkanController::_writeInputData(const cv::Mat &inputValues,
     throw VulkanControllerException("Input data copy error: " +
                                     std::string(ex.what()));
   }
-}
-
-std::unique_ptr<GLSLOutputData> VulkanController::_readOutputData() {
-  GLSLOutputData outputData = {};
-
-  // Get loss
-  auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
-  builder_.mapBufferMemory(bufferLoss);
-  outputData.loss = *reinterpret_cast<float *>(bufferLoss.data);
-  builder_.unmapBufferMemory(bufferLoss);
-
-  // Get outputValues
-  // Commented: not required here
-  // const auto &params = Manager::getConstInstance().network_params;
-  // cv::Mat outputValues((int)params.output_size_y,
-  // (int)params.output_size_x,
-  //                      CV_32FC4, cv::Vec4f::all(0.0));
-  // auto &buffer = getBuffer(EBuffer::OutputValues);
-  // builder_.mapBufferMemory(buffer);
-  // const auto mappedData = static_cast<std::array<float, 4> *>(buffer.data);
-  // // copy the data
-  // for (int y = 0; y < outputValues.rows; y++) {
-  //   for (int x = 0; x < outputValues.cols; x++) {
-  //     size_t index = y * outputValues.cols + x;
-  //     outputValues.at<cv::Vec4f>(y, x) =
-  //         cv::Vec4f(mappedData[index][0], mappedData[index][1],
-  //                   mappedData[index][2], mappedData[index][3]);
-  //   }
-  // }
-  // builder_.unmapBufferMemory(buffer);
-
-  return std::make_unique<GLSLOutputData>(outputData);
 }
