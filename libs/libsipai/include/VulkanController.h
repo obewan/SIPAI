@@ -44,9 +44,17 @@ public:
    *  @return float computed loss between the generated output and the expected
    * images after the training or the validation
    */
-  float trainingMonitored(const std::shared_ptr<sipai::Image> &inputValues,
-                          const std::shared_ptr<sipai::Image> &targetValues,
-                          const TrainingPhase &phase);
+  float training(const std::shared_ptr<sipai::Image> &inputValues,
+                 const std::shared_ptr<sipai::Image> &targetValues,
+                 const TrainingPhase &phase);
+
+  /**
+   * @brief Get image output values after a forward propagation, using an
+   * existing neural network.
+   *
+   * @param inputValues the input values
+   */
+  void forwardEnhancer(const cv::Mat &inputValues);
 
   /**
    * @brief Update the Neural Network with values from Vulkan.
@@ -151,17 +159,20 @@ private:
   };
   static std::unique_ptr<VulkanController> controllerInstance_;
 
-  void _processShaders();
+  void _processShaders(const EShader &shader);
+  void _processRenderPass(VkCommandBuffer &commandBuffer, uint32_t &imageIndex);
   void _readHiddenLayer1();
   void _readOutputLayer();
+  void _readOutputData();
+  float _readOutputLoss();
 
   void _writeParameters();
   void _writeInputLayer();
   void _writeOutputLayer();
   void _writeHiddenLayer1();
+  void _writeInputData(const cv::Mat &inputValues);
   void _writeInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
                        const TrainingPhase &phase);
-  std::unique_ptr<GLSLOutputData> _readOutputData();
 
   std::shared_ptr<Vulkan> vulkan_;
   VulkanBuilder builder_;

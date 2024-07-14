@@ -16,6 +16,6 @@ public:
   void visit() const override;
   void saveNetwork(bool &hasLastEpochBeenSaved) const override;
 
-  float trainingMonitored(size_t epoch, TrainingPhase phase) const override;
+  float training(size_t epoch, TrainingPhase phase) const override;
 };
 } // namespace sipai

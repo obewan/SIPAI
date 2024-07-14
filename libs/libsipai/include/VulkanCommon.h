@@ -37,14 +37,10 @@ enum class EBuffer {
 };
 
 enum class EShader {
-  TrainingMonitoredShader,
+  TrainingShader,
+  EnhancerShader,
   VertexShader,
-  FragmentShader,
-
-  // For Testing
-  // TODO: to remove and cleanup after testing
-  Test1,
-  Test2
+  FragmentShader
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{
@@ -108,12 +104,6 @@ struct GLSLInputData {
   std::vector<std::vector<cv::Vec4f>> inputValues;
   std::vector<std::vector<cv::Vec4f>> targetValues;
   bool is_validation;
-};
-
-// special format after transformations and merge
-struct GLSLOutputData {
-  cv::Mat outputValues;
-  float loss;
 };
 
 struct GLSLInputLayer {
@@ -180,10 +170,12 @@ struct Vulkan {
   VkSwapchainKHR swapChain = VK_NULL_HANDLE;
   VkFormat swapChainImageFormat;
   VkExtent2D swapChainExtent;
-  VkComputePipelineCreateInfo infoCompute = {};
+  VkComputePipelineCreateInfo infoComputeTraining = {};
+  VkComputePipelineCreateInfo infoComputeEnhancer = {};
   VkGraphicsPipelineCreateInfo infoGraphics = {};
   VkPipeline pipelineGraphic = VK_NULL_HANDLE;
-  VkPipeline pipelineCompute = VK_NULL_HANDLE;
+  VkPipeline pipelineComputeTraining = VK_NULL_HANDLE;
+  VkPipeline pipelineComputeEnhancer = VK_NULL_HANDLE;
   std::vector<Vertex> vertices;
   std::vector<Buffer> buffers;
   std::vector<Shader> shaders;

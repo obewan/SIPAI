@@ -40,16 +40,20 @@ bool VulkanController::initialize() {
   if (vulkan_->shaders.empty()) {
     // templated shaders
     if (!helper_.replaceTemplateParameters(
-            manager.app_params.shaderTrainingMonitoredTemplate,
-            manager.app_params.shaderTrainingMonitored)) {
+            manager.app_params.shaderEnhancerTemplate,
+            manager.app_params.shaderEnhancer) ||
+        !helper_.replaceTemplateParameters(
+            manager.app_params.shaderTrainingTemplate,
+            manager.app_params.shaderTraining)) {
       SimpleLogger::LOG_ERROR("Templated shader build error.");
       return false;
     }
 
     // shaders list
-    vulkan_->shaders.push_back(
-        {.shadername = EShader::TrainingMonitoredShader,
-         .filename = manager.app_params.shaderTrainingMonitored});
+    vulkan_->shaders.push_back({.shadername = EShader::EnhancerShader,
+                                .filename = manager.app_params.shaderEnhancer});
+    vulkan_->shaders.push_back({.shadername = EShader::TrainingShader,
+                                .filename = manager.app_params.shaderTraining});
     vulkan_->shaders.push_back({.shadername = EShader::VertexShader,
                                 .filename = manager.app_params.shaderVertex});
     vulkan_->shaders.push_back({.shadername = EShader::FragmentShader,
@@ -78,34 +82,60 @@ bool VulkanController::initialize() {
   return vulkan_->isInitialized;
 }
 
-float VulkanController::trainingMonitored(
+float VulkanController::training(
     const std::shared_ptr<sipai::Image> &inputValues,
     const std::shared_ptr<sipai::Image> &targetValues,
     const TrainingPhase &phase) {
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
-  auto &trainingMonitoredShader = getShader(EShader::TrainingMonitoredShader);
+  auto &trainingShader = getShader(EShader::TrainingShader);
 
   _writeParameters();
 
-  if (!trainingMonitoredShader.isReady) {
+  if (!trainingShader.isReady) {
     _writeInputLayer();
     _writeOutputLayer();
     _writeHiddenLayer1();
-    trainingMonitoredShader.isReady = true;
+    trainingShader.isReady = true;
   }
 
   // Inject input data
   _writeInputData(inputValues->data, targetValues->data, phase);
 
-  // Compute and draw 3D frame (can be view in RenderDoc)
-  _processShaders();
+  // Compute (draw 3D frame if vulkan debug, can be debug in RenderDoc then)
+  _processShaders(EShader::TrainingShader);
 
   // Get the results
-  const auto result = _readOutputData();
+  const float loss = _readOutputLoss();
 
-  return result->loss;
+  return loss;
+}
+
+void VulkanController::forwardEnhancer(const cv::Mat &inputValues) {
+  if (!IsInitialized()) {
+    throw VulkanControllerException("Vulkan controller is not initialized.");
+  }
+
+  auto &enhancerShader = getShader(EShader::EnhancerShader);
+
+  _writeParameters();
+
+  if (!enhancerShader.isReady) {
+    _writeInputLayer();
+    _writeOutputLayer();
+    _writeHiddenLayer1();
+    enhancerShader.isReady = true;
+  }
+
+  // Inject input data
+  _writeInputData(inputValues);
+
+  // Compute (draw 3D frame if vulkan debug, can be debug in RenderDoc then)
+  _processShaders(EShader::EnhancerShader);
+
+  // Get the results into the output layer values
+  _readOutputData();
 }
 
 void VulkanController::updateNeuralNetwork() {
@@ -118,7 +148,7 @@ void VulkanController::updateNeuralNetwork() {
  * pauses, else do just a compute shader pass.
  *
  */
-void VulkanController::_processShaders() {
+void VulkanController::_processShaders(const EShader &shader) {
   const auto &app_params = Manager::getConstInstance().app_params;
 
   uint32_t imageIndex;
@@ -142,64 +172,83 @@ void VulkanController::_processShaders() {
   // Begin recording commands in a single-time command buffer
   auto commandBuffer = helper_.commandsBegin();
 
-  // Compute pass
-  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                    vulkan_->pipelineCompute);
+  // Compute pass begin
+  switch (shader) {
+  case EShader::TrainingShader:
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                      vulkan_->pipelineComputeTraining);
+    break;
+  case EShader::EnhancerShader:
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                      vulkan_->pipelineComputeEnhancer);
+    break;
+  default:
+    throw VulkanControllerException("Non implemented compute shader");
+  }
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           vulkan_->pipelineLayout, 0, 1,
                           &vulkan_->descriptorSet, 0, nullptr);
   vkCmdDispatch(commandBuffer, 1, 1, 1);
+  // Compute pass end
 
   if (app_params.vulkan_debug) {
-    // Memory barrier to ensure the compute pass is finished before starting the
-    // render pass
-    VkMemoryBarrier memoryBarrier = {};
-    memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-    memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-    memoryBarrier.dstAccessMask =
-        VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-    vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                         0, 1, &memoryBarrier, 0, nullptr, 0, nullptr);
-
-    // Set up the render pass begin info
-    VkRenderPassBeginInfo renderPassInfo = {};
-    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = vulkan_->renderPass;
-    renderPassInfo.framebuffer = vulkan_->swapChainFramebuffers[imageIndex];
-    renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent = vulkan_->swapChainExtent;
-
-    VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-    renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues = &clearColor;
-
-    // Begin the render pass and bind the pipeline
-    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
-                         VK_SUBPASS_CONTENTS_INLINE);
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                      vulkan_->pipelineGraphic);
-
-    // Bind the vertex buffer
-    auto &vertexBuffer = getBuffer(EBuffer::Vertex);
-    VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
-    VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-    // Issue the draw command
-    vkCmdDraw(commandBuffer, static_cast<uint32_t>(vulkan_->vertices.size()), 1,
-              0, 0);
-
-    // End the render pass
-    vkCmdEndRenderPass(commandBuffer);
-
-    // End recording commands and queue submit
-    helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
+    // If vulkan debug, using graphic pipeline and render pass in window
+    _processRenderPass(commandBuffer, imageIndex);
   } else {
+    // else just submit and return
     helper_.commandsEnd_SubmitQueueCompute(commandBuffer);
   }
+}
+
+void VulkanController::_processRenderPass(VkCommandBuffer &commandBuffer,
+                                          uint32_t &imageIndex) {
+
+  // Memory barrier to ensure the compute pass is finished before starting the
+  // render pass
+  VkMemoryBarrier memoryBarrier = {};
+  memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+  memoryBarrier.dstAccessMask =
+      VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+  vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                       VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
+                           VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                       0, 1, &memoryBarrier, 0, nullptr, 0, nullptr);
+
+  // Set up the render pass begin info
+  VkRenderPassBeginInfo renderPassInfo = {};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  renderPassInfo.renderPass = vulkan_->renderPass;
+  renderPassInfo.framebuffer = vulkan_->swapChainFramebuffers[imageIndex];
+  renderPassInfo.renderArea.offset = {0, 0};
+  renderPassInfo.renderArea.extent = vulkan_->swapChainExtent;
+
+  VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+  renderPassInfo.clearValueCount = 1;
+  renderPassInfo.pClearValues = &clearColor;
+
+  // Begin the render pass and bind the pipeline
+  vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
+                       VK_SUBPASS_CONTENTS_INLINE);
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    vulkan_->pipelineGraphic);
+
+  // Bind the vertex buffer
+  auto &vertexBuffer = getBuffer(EBuffer::Vertex);
+  VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
+  VkDeviceSize offsets[] = {0};
+  vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+  // Issue the draw command
+  vkCmdDraw(commandBuffer, static_cast<uint32_t>(vulkan_->vertices.size()), 1,
+            0, 0);
+
+  // End the render pass
+  vkCmdEndRenderPass(commandBuffer);
+
+  // End recording commands and queue submit
+  helper_.commandsEnd_SubmitQueueGraphics(commandBuffer, imageIndex);
 }
 
 void VulkanController::_readHiddenLayer1() {
@@ -337,7 +386,153 @@ void VulkanController::_readOutputLayer() {
       network->layers.back()->layerType != LayerType::LayerOutput) {
     throw VulkanControllerException("invalid neural network");
   }
-  // no needed to implement for now.
+  auto &outputLayer = network->layers.back();
+  auto &bufferOutputLayer = getBuffer(EBuffer::OutputLayer);
+
+  builder_.mapBufferMemory(bufferOutputLayer);
+  if (!bufferOutputLayer.data) {
+    builder_.unmapBufferMemory(bufferOutputLayer);
+    throw VulkanControllerException(
+        "Invalid data pointer after mapping buffer memory");
+  }
+
+  uint offset = 0;
+
+  // Read neurons
+  for (size_t y = 0; y < outputLayer->size_y; ++y) {
+    for (size_t x = 0; x < outputLayer->size_x; ++x) {
+      auto &dstNeuron = outputLayer->neurons[y][x];
+
+      // Check index_x and index_y
+      uint32_t index_x =
+          getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+      uint32_t index_y =
+          getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+      if (dstNeuron.index_x != index_x || dstNeuron.index_y != index_y) {
+        builder_.unmapBufferMemory(bufferOutputLayer);
+        throw VulkanControllerException("Invalid data buffer memory");
+      }
+
+      // Get weights
+      for (int i = 0; i < dstNeuron.weights.rows; ++i) {
+        for (int j = 0; j < dstNeuron.weights.cols; ++j) {
+          auto value = cv::Vec4f(
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+              getDataFromBuffer<float>(bufferOutputLayer.data, offset));
+          dstNeuron.weights.at<cv::Vec4f>(i, j) = value;
+        }
+      }
+
+      // Get neighbors
+      int neighbors_padding = 8; // check with RenderDoc
+      offset += neighbors_padding;
+      for (int i = 0; i < MAX_NEIGHBORS; i++) {
+        uint32_t isUsed =
+            getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+        uint32_t neigh_index_x =
+            getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+        uint32_t neigh_index_y =
+            getDataFromBuffer<uint32_t>(bufferOutputLayer.data, offset);
+
+        // Some checks
+        if (isUsed &&
+            (dstNeuron.neighbors[i].neuron->index_x != neigh_index_x ||
+             dstNeuron.neighbors[i].neuron->index_y != neigh_index_y)) {
+          builder_.unmapBufferMemory(bufferOutputLayer);
+          throw VulkanControllerException("Invalid data buffer memory");
+        }
+        if (((isUsed > 0) && (i + 1 > (int)dstNeuron.neighbors.size())) ||
+            ((isUsed <= 0) && (i + 1 < (int)dstNeuron.neighbors.size()))) {
+          builder_.unmapBufferMemory(bufferOutputLayer);
+          throw VulkanControllerException("Invalid data buffer memory");
+        }
+
+        // Get connection weight
+        offset += 4; // padding, check with RenderDoc
+        auto weight =
+            cv::Vec4f(getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                      getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                      getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                      getDataFromBuffer<float>(bufferOutputLayer.data, offset));
+        if (isUsed > 0) {
+          dstNeuron.neighbors[i].weight = weight;
+        }
+      }
+    } // end for (size_t x ...
+  } // end for (size_t y ...
+
+  // Get errors
+  for (int y = 0; y < outputLayer->errors.rows; ++y) {
+    for (int x = 0; x < outputLayer->errors.cols; ++x) {
+      auto error =
+          cv::Vec4f(getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                    getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                    getDataFromBuffer<float>(bufferOutputLayer.data, offset),
+                    getDataFromBuffer<float>(bufferOutputLayer.data, offset));
+      outputLayer->errors.at<cv::Vec4f>(y, x) = error;
+    }
+  }
+
+  // Get others attributes
+  // Check activation_alpha and activation_function
+  auto activation_alpha =
+      getDataFromBuffer<float>(bufferOutputLayer.data, offset);
+  auto activation_function =
+      getDataFromBuffer<uint>(bufferOutputLayer.data, offset);
+  float epsilon = 0.0001f;
+  if (abs(activation_alpha - outputLayer->activationFunctionAlpha) > epsilon ||
+      activation_function != (uint32_t)outputLayer->eactivationFunction) {
+    builder_.unmapBufferMemory(bufferOutputLayer);
+    throw VulkanControllerException("Invalid data buffer memory");
+  }
+  // Check size_x and size_y
+  auto size_x = getDataFromBuffer<uint>(bufferOutputLayer.data, offset);
+  auto size_y = getDataFromBuffer<uint>(bufferOutputLayer.data, offset);
+  if (size_x != outputLayer->size_x || size_y != outputLayer->size_y) {
+    builder_.unmapBufferMemory(bufferOutputLayer);
+    throw VulkanControllerException("Invalid data buffer memory");
+  }
+  builder_.unmapBufferMemory(bufferOutputLayer);
+}
+
+float VulkanController::_readOutputLoss() {
+  auto &buffer = getBuffer(EBuffer::OutputLoss);
+
+  builder_.mapBufferMemory(buffer);
+  float loss = *reinterpret_cast<float *>(buffer.data);
+  builder_.unmapBufferMemory(buffer);
+
+  return loss;
+}
+
+void VulkanController::_readOutputData() {
+
+  auto &network = Manager::getInstance().network;
+  auto &outputLayer = network->layers.back();
+
+  try {
+    uint offset = 0;
+    auto &buffer = getBuffer(EBuffer::OutputData);
+    builder_.mapBufferMemory(buffer);
+
+    // Get output values
+    for (int y = 0; y < outputLayer->values.rows; ++y) {
+      for (int x = 0; x < outputLayer->values.cols; ++x) {
+        auto value = cv::Vec4f(getDataFromBuffer<float>(buffer.data, offset),
+                               getDataFromBuffer<float>(buffer.data, offset),
+                               getDataFromBuffer<float>(buffer.data, offset),
+                               getDataFromBuffer<float>(buffer.data, offset));
+        outputLayer->values.at<cv::Vec4f>(y, x) = value;
+      }
+    }
+
+    builder_.unmapBufferMemory(buffer);
+  } catch (std::exception &ex) {
+    throw VulkanControllerException("Reading Output Data error: " +
+                                    std::string(ex.what()));
+  }
 }
 
 void VulkanController::_writeParameters() {
@@ -590,6 +785,35 @@ void VulkanController::_writeHiddenLayer1() {
   }
 }
 
+void VulkanController::_writeInputData(const cv::Mat &inputValues) {
+  // Copy the data into the VRAM
+  try {
+    auto &buffer = getBuffer(EBuffer::InputData);
+    builder_.mapBufferMemory(buffer);
+    memset(buffer.data, 0, (size_t)buffer.info.size);
+    uint8_t *bufferPtr = static_cast<uint8_t *>(buffer.data);
+    uint8_t *bufferStart = bufferPtr;
+
+    // Copy the inputValues
+    for (int y = 0; y < inputValues.rows; y++) {
+      for (int x = 0; x < inputValues.cols; x++) {
+        for (int k = 0; k < 4; k++) {
+          bufferPtr = copyToBuffer<float>(bufferPtr,
+                                          inputValues.at<cv::Vec4f>(y, x)[k]);
+        }
+      }
+    }
+
+    size_t totalBytesCopied = bufferPtr - bufferStart;
+    if (totalBytesCopied > (size_t)buffer.info.size) {
+      throw VulkanControllerException("copy buffer overflow");
+    }
+  } catch (std::exception &ex) {
+    throw VulkanControllerException("Input data copy error: " +
+                                    std::string(ex.what()));
+  }
+}
+
 void VulkanController::_writeInputData(const cv::Mat &inputValues,
                                        const cv::Mat &targetValues,
                                        const TrainingPhase &phase) {
@@ -635,36 +859,4 @@ void VulkanController::_writeInputData(const cv::Mat &inputValues,
     throw VulkanControllerException("Input data copy error: " +
                                     std::string(ex.what()));
   }
-}
-
-std::unique_ptr<GLSLOutputData> VulkanController::_readOutputData() {
-  GLSLOutputData outputData = {};
-
-  // Get loss
-  auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
-  builder_.mapBufferMemory(bufferLoss);
-  outputData.loss = *reinterpret_cast<float *>(bufferLoss.data);
-  builder_.unmapBufferMemory(bufferLoss);
-
-  // Get outputValues
-  // Commented: not required here
-  // const auto &params = Manager::getConstInstance().network_params;
-  // cv::Mat outputValues((int)params.output_size_y,
-  // (int)params.output_size_x,
-  //                      CV_32FC4, cv::Vec4f::all(0.0));
-  // auto &buffer = getBuffer(EBuffer::OutputValues);
-  // builder_.mapBufferMemory(buffer);
-  // const auto mappedData = static_cast<std::array<float, 4> *>(buffer.data);
-  // // copy the data
-  // for (int y = 0; y < outputValues.rows; y++) {
-  //   for (int x = 0; x < outputValues.cols; x++) {
-  //     size_t index = y * outputValues.cols + x;
-  //     outputValues.at<cv::Vec4f>(y, x) =
-  //         cv::Vec4f(mappedData[index][0], mappedData[index][1],
-  //                   mappedData[index][2], mappedData[index][3]);
-  //   }
-  // }
-  // builder_.unmapBufferMemory(buffer);
-
-  return std::make_unique<GLSLOutputData>(outputData);
 }

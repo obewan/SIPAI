@@ -55,8 +55,6 @@ void RunnerTrainingVulkanVisitor::visit() const {
     int epoch = 0;
     int epochsWithoutImprovement = 0;
     bool hasLastEpochBeenSaved = false;
-    const auto &vulkan = VulkanController::getInstance().getVulkan();
-
     while (!stopTraining && !stopTrainingNow &&
            shouldContinueTraining(epoch, epochsWithoutImprovement, appParams) &&
            cv::waitKey(30) != 27) {
@@ -72,12 +70,12 @@ void RunnerTrainingVulkanVisitor::visit() const {
       previousTrainingLoss = trainingLoss;
       previousValidationLoss = validationLoss;
 
-      trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
+      trainingLoss = training(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
       }
 
-      validationLoss = trainingMonitored(epoch, TrainingPhase::Validation);
+      validationLoss = training(epoch, TrainingPhase::Validation);
       if (stopTrainingNow) {
         break;
       }
@@ -132,8 +130,8 @@ void RunnerTrainingVulkanVisitor::saveNetwork(
   }
 }
 
-float RunnerTrainingVulkanVisitor::trainingMonitored(
-    size_t epoch, TrainingPhase phase) const {
+float RunnerTrainingVulkanVisitor::training(size_t epoch,
+                                            TrainingPhase phase) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;
@@ -166,8 +164,8 @@ float RunnerTrainingVulkanVisitor::trainingMonitored(
       // Get the input and target parts
       const auto &inputPart = data->img_input.at(i);
       const auto &targetPart = data->img_target.at(i);
-      imageLoss += VulkanController::getInstance().trainingMonitored(
-          inputPart, targetPart, phase);
+      imageLoss += VulkanController::getInstance().training(inputPart,
+                                                            targetPart, phase);
     }
 
     loss += (imageLoss / static_cast<float>(data->img_input.size()));

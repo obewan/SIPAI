@@ -94,8 +94,5 @@ public:
    * @return The computed loss.
    */
   float computeLoss(const cv::Mat &outputData, const cv::Mat &targetData) const;
-
-private:
-  cv::Mat convertToFloatMat(const cv::Mat &mat) const;
 };
 } // namespace sipai

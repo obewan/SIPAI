@@ -1,15 +1,16 @@
-#include "RunnerEnhancerVisitor.h"
+#include "RunnerEnhancerVulkanVisitor.h"
 #include "ImageHelper.h"
 #include "Manager.h"
 #include "SimpleLogger.h"
+#include "VulkanController.h"
 #include "exception/RunnerVisitorException.h"
 #include <exception>
 #include <memory>
 
 using namespace sipai;
 
-void RunnerEnhancerVisitor::visit() const {
-  SimpleLogger::LOG_INFO("Image enhancement...");
+void RunnerEnhancerVulkanVisitor::visit() const {
+  SimpleLogger::LOG_INFO("Image enhancement (Vulkan)...");
   auto &manager = Manager::getInstance();
 
   if (!manager.network) {
@@ -23,6 +24,10 @@ void RunnerEnhancerVisitor::visit() const {
   if (manager.app_params.output_file.empty()) {
     throw RunnerVisitorException("No output file. Aborting.");
   }
+  const auto &outputLayer = manager.network->layers.back();
+  if (outputLayer->layerType != LayerType::LayerOutput) {
+    throw RunnerVisitorException("invalid neural network");
+  }
 
   try {
     const auto &app_params = manager.app_params;
@@ -35,11 +40,11 @@ void RunnerEnhancerVisitor::visit() const {
         network_params.input_size_y);
 
     // Get output image parts by forward propagation
+    const auto &vulkan = VulkanController::getInstance().getVulkan();
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
-      const auto &outputData =
-          manager.network->forwardPropagation(inputPart->data);
-      Image output{.data = outputData,
+      VulkanController::getInstance().forwardEnhancer(inputPart->data);
+      Image output{.data = outputLayer->values,
                    .orig_height = inputPart->orig_height,
                    .orig_width = inputPart->orig_width,
                    .orig_type = inputPart->orig_type,

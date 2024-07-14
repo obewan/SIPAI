@@ -1,5 +1,5 @@
 @echo off
-REM script to test the TrainingMonitored on a release, for local testing
+REM script to test the Training on a release, for local testing
 set res_i=30
 set res_h=30
 set res_o=30
@@ -20,6 +20,6 @@ sipai.exe --en test.json ^
        --isx %res_i% --isy %res_i% --hsx %res_h% --hsy %res_h% --osx %res_o% --osy %res_o% --hl %hl% ^
        --haf %algo% --oaf %algo% ^
        --haa %haa% --oaa %oaa% --lr %lr% --is %split% --trf %factor% ^
-       --eas 10 --rl --bl -m TrainingMonitored ^
+       --eas 10 --rl --bl -m Training ^
        -V --alr --alrf %alrf% --temin %temin% --temax %temax% --vulkan
 popd

@@ -2,7 +2,6 @@
 #include "Manager.h"
 #include "RunnerTrainingVulkanVisitor.h"
 #include "VulkanController.h"
-#include "VulkanControllerTest.h"
 #include "doctest.h"
 #include <filesystem>
 #include <fstream>
@@ -16,20 +15,18 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     const auto &manager = Manager::getConstInstance();
     VulkanHelper helper;
     std::string relativePath = "../../";
-    CHECK(std::filesystem::exists(
-        relativePath + manager.app_params.shaderTrainingMonitoredTemplate));
+    CHECK(std::filesystem::exists(relativePath +
+                                  manager.app_params.shaderTrainingTemplate));
     if (std::filesystem::exists(relativePath +
-                                manager.app_params.shaderTrainingMonitored)) {
-      std::filesystem::remove(relativePath +
-                              manager.app_params.shaderTrainingMonitored);
+                                manager.app_params.shaderTraining)) {
+      std::filesystem::remove(relativePath + manager.app_params.shaderTraining);
     }
     CHECK(helper.replaceTemplateParameters(
-        relativePath + manager.app_params.shaderTrainingMonitoredTemplate,
-        relativePath + manager.app_params.shaderTrainingMonitored));
+        relativePath + manager.app_params.shaderTrainingTemplate,
+        relativePath + manager.app_params.shaderTraining));
     CHECK(std::filesystem::exists(relativePath +
-                                  manager.app_params.shaderTrainingMonitored));
-    std::ifstream inFile(relativePath +
-                         manager.app_params.shaderTrainingMonitored);
+                                  manager.app_params.shaderTraining));
+    std::ifstream inFile(relativePath + manager.app_params.shaderTraining);
     std::string line;
     while (std::getline(inFile, line)) {
       CHECK(line.find("%%") == std::string::npos);
@@ -664,73 +661,6 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     vkDestroyPipeline(vulkan->logicalDevice, computePipeline, nullptr);
     vkDestroyPipelineLayout(vulkan->logicalDevice, pipelineLayout, nullptr);
     builder.clear();
-  }
-
-  SUBCASE("Test shader test1") {
-    auto &manager = Manager::getInstance();
-    manager.network.reset();
-    auto &ap = manager.app_params;
-    auto &np = manager.network_params;
-    np.input_size_x = 10;
-    np.input_size_y = 10;
-    np.hidden_size_x = 10;
-    np.hidden_size_y = 10;
-    np.output_size_x = 10;
-    np.output_size_y = 10;
-    np.hiddens_count = 1;
-    np.learning_rate = 0.65f;
-    np.error_min = 0.1f;
-    np.error_max = 0.9f;
-    np.adaptive_learning_rate = true;
-    np.adaptive_learning_rate_factor = 0.123f;
-    ap.network_to_import = "";
-    ap.network_to_export = "";
-    CHECK_NOTHROW(manager.createOrImportNetwork());
-
-    auto &vulcanControllerTest = VulkanControllerTest::getInstance();
-
-    CHECK_NOTHROW(vulcanControllerTest.initialize());
-    CHECK(vulcanControllerTest.IsInitialized());
-
-    float result = vulcanControllerTest.test1();
-    CHECK(result == doctest::Approx(manager.network_params.learning_rate * 2));
-
-    vulcanControllerTest.destroy();
-    manager.network.reset();
-  }
-
-  SUBCASE("Test shader test2") {
-    auto &manager = Manager::getInstance();
-    manager.network.reset();
-    auto &ap = manager.app_params;
-    auto &np = manager.network_params;
-    np.input_size_x = 2;
-    np.input_size_y = 2;
-    np.hidden_size_x = 2;
-    np.hidden_size_y = 2;
-    np.output_size_x = 2;
-    np.output_size_y = 2;
-    np.hiddens_count = 1;
-    np.learning_rate = 0.65f;
-    np.error_min = 0.1f;
-    np.error_max = 0.9f;
-    np.adaptive_learning_rate = true;
-    np.adaptive_learning_rate_factor = 0.123f;
-    ap.network_to_import = "";
-    ap.network_to_export = "";
-    CHECK_NOTHROW(manager.createOrImportNetwork());
-
-    auto &vulcanControllerTest = VulkanControllerTest::getInstance();
-
-    CHECK_NOTHROW(vulcanControllerTest.initialize());
-    CHECK(vulcanControllerTest.IsInitialized());
-
-    auto result = vulcanControllerTest.test2();
-    CHECK(result.loss ==
-          doctest::Approx(manager.network_params.learning_rate * 2));
-
-    vulcanControllerTest.destroy();
-    manager.network.reset();
   }
 
   SUBCASE("Test various") {

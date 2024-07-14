@@ -31,7 +31,7 @@ public:
    * @param phase indicate if it is training or validation phase
    * @return float
    */
-  virtual float trainingMonitored(size_t epoch, TrainingPhase phase) const = 0;
+  virtual float training(size_t epoch, TrainingPhase phase) const = 0;
 
   /**
    * @brief Determines whether the training should continue based on the
