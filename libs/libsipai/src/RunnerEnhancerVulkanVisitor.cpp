@@ -7,7 +7,6 @@
 #include <exception>
 #include <memory>
 
-
 using namespace sipai;
 
 void RunnerEnhancerVulkanVisitor::visit() const {
@@ -25,6 +24,10 @@ void RunnerEnhancerVulkanVisitor::visit() const {
   if (manager.app_params.output_file.empty()) {
     throw RunnerVisitorException("No output file. Aborting.");
   }
+  const auto &outputLayer = manager.network->layers.back();
+  if (outputLayer->layerType != LayerType::LayerOutput) {
+    throw RunnerVisitorException("invalid neural network");
+  }
 
   try {
     const auto &app_params = manager.app_params;
@@ -40,9 +43,8 @@ void RunnerEnhancerVulkanVisitor::visit() const {
     const auto &vulkan = VulkanController::getInstance().getVulkan();
     ImageParts outputParts;
     for (const auto &inputPart : inputImage) {
-      const auto &outputData =
-          manager.network->forwardPropagation(inputPart->data);
-      Image output{.data = outputData,
+      VulkanController::getInstance().forwardEnhancer(inputPart->data);
+      Image output{.data = outputLayer->values,
                    .orig_height = inputPart->orig_height,
                    .orig_width = inputPart->orig_width,
                    .orig_type = inputPart->orig_type,

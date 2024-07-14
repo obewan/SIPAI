@@ -53,10 +53,8 @@ public:
    * existing neural network.
    *
    * @param inputValues the input values
-   * @return std::shared_ptr<sipai::Image> the output values
    */
-  std::shared_ptr<sipai::Image>
-  enhancer(const std::shared_ptr<sipai::Image> &inputValues);
+  void forwardEnhancer(const cv::Mat &inputValues);
 
   /**
    * @brief Update the Neural Network with values from Vulkan.
@@ -164,8 +162,8 @@ private:
   void _processShaders();
   void _readHiddenLayer1();
   void _readOutputLayer();
+  void _readOutputData();
   float _readOutputLoss();
-  std::shared_ptr<sipai::Image> _readOutputData();
 
   void _writeParameters();
   void _writeInputLayer();

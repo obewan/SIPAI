@@ -112,8 +112,7 @@ float VulkanController::training(
   return loss;
 }
 
-std::shared_ptr<sipai::Image>
-VulkanController::enhancer(const std::shared_ptr<sipai::Image> &inputValues) {
+void VulkanController::forwardEnhancer(const cv::Mat &inputValues) {
   if (!IsInitialized()) {
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
@@ -130,15 +129,13 @@ VulkanController::enhancer(const std::shared_ptr<sipai::Image> &inputValues) {
   }
 
   // Inject input data
-  _writeInputData(inputValues->data);
+  _writeInputData(inputValues);
 
   // Compute (draw 3D frame if vulkan debug, can be debug in RenderDoc then)
   _processShaders();
 
-  // Get the results
-  const auto outputData = _readOutputData();
-
-  return outputData;
+  // Get the results into the output layer values
+  _readOutputData();
 }
 
 void VulkanController::updateNeuralNetwork() {
@@ -491,8 +488,8 @@ float VulkanController::_readOutputLoss() {
   return loss;
 }
 
-std::shared_ptr<sipai::Image> VulkanController::_readOutputData() {
-  sipai::Image image;
+void VulkanController::_readOutputData() {
+
   auto &network = Manager::getInstance().network;
   auto &outputLayer = network->layers.back();
 
@@ -517,10 +514,6 @@ std::shared_ptr<sipai::Image> VulkanController::_readOutputData() {
     throw VulkanControllerException("Reading Output Data error: " +
                                     std::string(ex.what()));
   }
-
-  image.data = outputLayer->values.clone();
-
-  return std::make_shared<sipai::Image>(image);
 }
 
 void VulkanController::_writeParameters() {
