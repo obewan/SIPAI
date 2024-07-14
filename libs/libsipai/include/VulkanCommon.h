@@ -40,12 +40,7 @@ enum class EShader {
   TrainingShader,
   EnhancerShader,
   VertexShader,
-  FragmentShader,
-
-  // For Testing
-  // TODO: to remove and cleanup after testing
-  Test1,
-  Test2
+  FragmentShader
 };
 
 const std::map<EBuffer, std::string, std::less<>> buffer_map{

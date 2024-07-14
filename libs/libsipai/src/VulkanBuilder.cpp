@@ -774,8 +774,6 @@ void VulkanBuilder::_createShaderPipelines() {
       computeShaderEnhancerInfo.module = shader.module;
       computeShaderEnhancerInfo.pName = "main";
     } break;
-    case (EShader::Test1): // TODO: remove Test1 Test2 after tests
-    case (EShader::Test2):
     case (EShader::TrainingShader): {
       computeShaderTrainingInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
