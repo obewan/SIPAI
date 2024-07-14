@@ -175,10 +175,12 @@ struct Vulkan {
   VkSwapchainKHR swapChain = VK_NULL_HANDLE;
   VkFormat swapChainImageFormat;
   VkExtent2D swapChainExtent;
-  VkComputePipelineCreateInfo infoCompute = {};
+  VkComputePipelineCreateInfo infoComputeTraining = {};
+  VkComputePipelineCreateInfo infoComputeEnhancer = {};
   VkGraphicsPipelineCreateInfo infoGraphics = {};
   VkPipeline pipelineGraphic = VK_NULL_HANDLE;
-  VkPipeline pipelineCompute = VK_NULL_HANDLE;
+  VkPipeline pipelineComputeTraining = VK_NULL_HANDLE;
+  VkPipeline pipelineComputeEnhancer = VK_NULL_HANDLE;
   std::vector<Vertex> vertices;
   std::vector<Buffer> buffers;
   std::vector<Shader> shaders;

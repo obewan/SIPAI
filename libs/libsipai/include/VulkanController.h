@@ -159,7 +159,8 @@ private:
   };
   static std::unique_ptr<VulkanController> controllerInstance_;
 
-  void _processShaders();
+  void _processShaders(const EShader &shader);
+  void _processRenderPass(VkCommandBuffer &commandBuffer, uint32_t &imageIndex);
   void _readHiddenLayer1();
   void _readOutputLayer();
   void _readOutputData();

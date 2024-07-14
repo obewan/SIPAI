@@ -742,7 +742,8 @@ void VulkanBuilder::_createShaderPipelines() {
     throw VulkanBuilderException("null vulkan pointer.");
   }
   std::vector<VkPipelineShaderStageCreateInfo> shaderGraphicsStages;
-  VkPipelineShaderStageCreateInfo computeShaderStageInfo = {};
+  VkPipelineShaderStageCreateInfo computeShaderTrainingInfo = {};
+  VkPipelineShaderStageCreateInfo computeShaderEnhancerInfo = {};
   for (auto &shader : vulkan_->shaders) {
     switch (shader.shadername) {
     // vertex shader
@@ -766,15 +767,21 @@ void VulkanBuilder::_createShaderPipelines() {
       shaderGraphicsStages.push_back(fragShaderStageInfo);
     } break;
     // compute shader
+    case (EShader::EnhancerShader): {
+      computeShaderEnhancerInfo.sType =
+          VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+      computeShaderEnhancerInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+      computeShaderEnhancerInfo.module = shader.module;
+      computeShaderEnhancerInfo.pName = "main";
+    } break;
     case (EShader::Test1): // TODO: remove Test1 Test2 after tests
     case (EShader::Test2):
-    case (EShader::EnhancerShader):
     case (EShader::TrainingShader): {
-      computeShaderStageInfo.sType =
+      computeShaderTrainingInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-      computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-      computeShaderStageInfo.module = shader.module;
-      computeShaderStageInfo.pName = "main";
+      computeShaderTrainingInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+      computeShaderTrainingInfo.module = shader.module;
+      computeShaderTrainingInfo.pName = "main";
     } break;
     default:
       break;
@@ -876,15 +883,31 @@ void VulkanBuilder::_createShaderPipelines() {
   }
 
   // create compute pipelines
-  vulkan_->infoCompute.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  vulkan_->infoCompute.stage = computeShaderStageInfo;
-  vulkan_->infoCompute.layout = vulkan_->pipelineLayout;
-  vulkan_->infoCompute.basePipelineHandle = VK_NULL_HANDLE;
-  vulkan_->infoCompute.basePipelineIndex = 0;
+  // Training Shader
+  vulkan_->infoComputeTraining.sType =
+      VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  vulkan_->infoComputeTraining.stage = computeShaderTrainingInfo;
+  vulkan_->infoComputeTraining.layout = vulkan_->pipelineLayout;
+  vulkan_->infoComputeTraining.basePipelineHandle = VK_NULL_HANDLE;
+  vulkan_->infoComputeTraining.basePipelineIndex = 0;
   if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
-                               &vulkan_->infoCompute, nullptr,
-                               &vulkan_->pipelineCompute) != VK_SUCCESS) {
-    throw VulkanBuilderException("Failed to create compute pipeline");
+                               &vulkan_->infoComputeTraining, nullptr,
+                               &vulkan_->pipelineComputeTraining) !=
+      VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create compute Training pipeline");
+  };
+  // Enhancer Shader
+  vulkan_->infoComputeEnhancer.sType =
+      VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  vulkan_->infoComputeEnhancer.stage = computeShaderEnhancerInfo;
+  vulkan_->infoComputeEnhancer.layout = vulkan_->pipelineLayout;
+  vulkan_->infoComputeEnhancer.basePipelineHandle = VK_NULL_HANDLE;
+  vulkan_->infoComputeEnhancer.basePipelineIndex = 0;
+  if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
+                               &vulkan_->infoComputeEnhancer, nullptr,
+                               &vulkan_->pipelineComputeEnhancer) !=
+      VK_SUCCESS) {
+    throw VulkanBuilderException("Failed to create compute Enhancer pipeline");
   };
 }
 
@@ -1190,10 +1213,16 @@ VulkanBuilder &VulkanBuilder::clear() {
     vulkan_->pipelineGraphic = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->pipelineCompute != VK_NULL_HANDLE) {
-    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineCompute,
+  if (vulkan_->pipelineComputeTraining != VK_NULL_HANDLE) {
+    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineComputeTraining,
                       nullptr);
-    vulkan_->pipelineCompute = VK_NULL_HANDLE;
+    vulkan_->pipelineComputeTraining = VK_NULL_HANDLE;
+  }
+
+  if (vulkan_->pipelineComputeEnhancer != VK_NULL_HANDLE) {
+    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineComputeEnhancer,
+                      nullptr);
+    vulkan_->pipelineComputeEnhancer = VK_NULL_HANDLE;
   }
 
   for (auto framebuffer : vulkan_->swapChainFramebuffers) {

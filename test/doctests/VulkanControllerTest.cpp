@@ -59,7 +59,7 @@ float VulkanControllerTest::test1() {
   _copyParameters();
 
   auto &shaderTest1 = getShader(EShader::Test1);
-  _computeShader(vulkan_->pipelineCompute);
+  _computeShader(vulkan_->pipelineComputeTraining);
 
   float loss = _readOutputLoss();
 
@@ -71,7 +71,7 @@ VulkanControllerTest::ResultTest2 VulkanControllerTest::test2() {
   _copyHiddenLayer1();
 
   auto &shaderTest2 = getShader(EShader::Test2);
-  _computeShader(vulkan_->pipelineCompute);
+  _computeShader(vulkan_->pipelineComputeTraining);
 
   ResultTest2 result;
 
