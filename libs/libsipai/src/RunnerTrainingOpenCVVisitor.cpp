@@ -75,12 +75,12 @@ void RunnerTrainingOpenCVVisitor::visit() const {
       previousTrainingLoss = trainingLoss;
       previousValidationLoss = validationLoss;
 
-      trainingLoss = trainingMonitored(epoch, TrainingPhase::Training);
+      trainingLoss = training(epoch, TrainingPhase::Training);
       if (stopTrainingNow) {
         break;
       }
 
-      validationLoss = trainingMonitored(epoch, TrainingPhase::Validation);
+      validationLoss = training(epoch, TrainingPhase::Validation);
       if (stopTrainingNow) {
         break;
       }
@@ -125,8 +125,8 @@ void RunnerTrainingOpenCVVisitor::visit() const {
   }
 }
 
-float RunnerTrainingOpenCVVisitor::trainingMonitored(
-    size_t epoch, TrainingPhase phase) const {
+float RunnerTrainingOpenCVVisitor::training(size_t epoch,
+                                            TrainingPhase phase) const {
 
   // Initialize the total loss to 0
   float loss = 0.0f;
@@ -158,7 +158,7 @@ float RunnerTrainingOpenCVVisitor::trainingMonitored(
     isLossFrequency = counter % lossFrequency == 0 ? true : false;
 
     // Compute the image parts loss
-    float imageLoss = _trainingMonitored(epoch, data, phase, isLossFrequency);
+    float imageLoss = _training(epoch, data, phase, isLossFrequency);
     if (stopTrainingNow) {
       break;
     }
@@ -178,9 +178,10 @@ float RunnerTrainingOpenCVVisitor::trainingMonitored(
   return (loss / static_cast<float>(lossComputed));
 }
 
-float RunnerTrainingOpenCVVisitor::_trainingMonitored(
-    size_t epoch, std::shared_ptr<Data> data, TrainingPhase phase,
-    bool isLossFrequency) const {
+float RunnerTrainingOpenCVVisitor::_training(size_t epoch,
+                                             std::shared_ptr<Data> data,
+                                             TrainingPhase phase,
+                                             bool isLossFrequency) const {
   if (data->img_input.size() != data->img_target.size()) {
     throw ImageHelperException(
         "internal exception: input and target parts have different sizes.");

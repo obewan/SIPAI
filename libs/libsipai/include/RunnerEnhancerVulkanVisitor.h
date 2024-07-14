@@ -1,8 +1,8 @@
 /**
- * @file RunnerEnhancerVisitor.h
+ * @file RunnerEnhancerVulkanVisitor.h
  * @author Damien Balima (www.dams-labs.net)
  * @brief Concret RunnerVisitor for Enhancer run.
- * @date 2024-04-05
+ * @date 2024-07-10
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
  *
@@ -13,7 +13,7 @@
 #include "RunnerVisitor.h"
 
 namespace sipai {
-class RunnerEnhancerVisitor : public RunnerVisitor {
+class RunnerEnhancerVulkanVisitor : public RunnerVisitor {
 public:
   void visit() const override;
 

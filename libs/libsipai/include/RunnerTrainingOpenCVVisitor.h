@@ -1,7 +1,7 @@
 /**
  * @file RunnerTrainingOpenCVVisitor.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief Concret RunnerVisitor for TrainingMonitored run.
+ * @brief Concret RunnerVisitor for Training run.
  * @date 2024-03-17
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
@@ -18,11 +18,11 @@ class RunnerTrainingOpenCVVisitor : public RunnerTrainingVisitor {
 public:
   void visit() const override;
 
-  float trainingMonitored(size_t epoch, TrainingPhase phase) const override;
+  float training(size_t epoch, TrainingPhase phase) const override;
 
 private:
-  float _trainingMonitored(size_t epoch, std::shared_ptr<Data> data,
-                           TrainingPhase phase, bool isLossFrequency) const;
+  float _training(size_t epoch, std::shared_ptr<Data> data, TrainingPhase phase,
+                  bool isLossFrequency) const;
 
   ImageHelper imageHelper_;
 };

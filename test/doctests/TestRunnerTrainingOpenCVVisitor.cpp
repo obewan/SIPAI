@@ -38,7 +38,7 @@ TEST_CASE("Testing RunnerTrainingOpenCVVisitor") {
     ap.training_data_file = "";
     ap.training_data_folder = "../data/images/target/";
     ap.max_epochs = 2;
-    ap.run_mode = ERunMode::TrainingMonitored;
+    ap.run_mode = ERunMode::Training;
     ap.network_to_export = "tempNetwork.json";
     ap.network_to_import = "";
     ap.enable_vulkan = false;

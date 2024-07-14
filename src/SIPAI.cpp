@@ -103,7 +103,7 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                  "optional: read a specific config file or a default "
                  "sipai.toml file, using TOML format and same options names.\n"
                  "Example of sipai.toml file:\n"
-                 "mode = \"TrainingMonitored\"\n"
+                 "mode = \"Training\"\n"
                  "input_size_x = 20\n"
                  "input_size_y = 20");
 
@@ -115,11 +115,9 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "enhancer mode requires a neural network that has been imported and "
          "trained for enhancement (be sure that the model has good testing "
          "results).\n  - Testing: Test an imported neural network without "
-         "training.\n  - Training: Train the neural network without "
-         "testing.\n "
-         " - TrainingMonitored: Train and test at each epoch while monitoring "
-         "the progress. Be aware that this is slower and will use more "
-         "memory.")
+         "training.\n "
+         " - Training: Train and test at each epoch, showing training "
+         "progress.")
       ->default_val(app_params.run_mode)
       ->transform(CLI::CheckedTransformer(mode_map, CLI::ignore_case));
   app.add_flag("-v,--version", version, "Show current version.");
