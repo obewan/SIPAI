@@ -482,40 +482,45 @@ void VulkanController::_readOutputLayer() {
 }
 
 float VulkanController::_readOutputLoss() {
-  GLSLOutputData outputData = {};
+  auto &buffer = getBuffer(EBuffer::OutputLoss);
 
-  // Get loss
-  auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
-  builder_.mapBufferMemory(bufferLoss);
-  float loss = *reinterpret_cast<float *>(bufferLoss.data);
-  builder_.unmapBufferMemory(bufferLoss);
-
-  // Get outputValues
-  // Commented: not required here
-  // const auto &params = Manager::getConstInstance().network_params;
-  // cv::Mat outputValues((int)params.output_size_y,
-  // (int)params.output_size_x,
-  //                      CV_32FC4, cv::Vec4f::all(0.0));
-  // auto &buffer = getBuffer(EBuffer::OutputValues);
-  // builder_.mapBufferMemory(buffer);
-  // const auto mappedData = static_cast<std::array<float, 4> *>(buffer.data);
-  // // copy the data
-  // for (int y = 0; y < outputValues.rows; y++) {
-  //   for (int x = 0; x < outputValues.cols; x++) {
-  //     size_t index = y * outputValues.cols + x;
-  //     outputValues.at<cv::Vec4f>(y, x) =
-  //         cv::Vec4f(mappedData[index][0], mappedData[index][1],
-  //                   mappedData[index][2], mappedData[index][3]);
-  //   }
-  // }
-  // builder_.unmapBufferMemory(buffer);
+  builder_.mapBufferMemory(buffer);
+  float loss = *reinterpret_cast<float *>(buffer.data);
+  builder_.unmapBufferMemory(buffer);
 
   return loss;
 }
 
 std::shared_ptr<sipai::Image> VulkanController::_readOutputData() {
+  sipai::Image image;
+  auto &network = Manager::getInstance().network;
+  auto &outputLayer = network->layers.back();
 
-  return nullptr;
+  try {
+    uint offset = 0;
+    auto &buffer = getBuffer(EBuffer::OutputData);
+    builder_.mapBufferMemory(buffer);
+
+    // Get output values
+    for (int y = 0; y < outputLayer->values.rows; ++y) {
+      for (int x = 0; x < outputLayer->values.cols; ++x) {
+        auto value = cv::Vec4f(getDataFromBuffer<float>(buffer.data, offset),
+                               getDataFromBuffer<float>(buffer.data, offset),
+                               getDataFromBuffer<float>(buffer.data, offset),
+                               getDataFromBuffer<float>(buffer.data, offset));
+        outputLayer->values.at<cv::Vec4f>(y, x) = value;
+      }
+    }
+
+    builder_.unmapBufferMemory(buffer);
+  } catch (std::exception &ex) {
+    throw VulkanControllerException("Reading Output Data error: " +
+                                    std::string(ex.what()));
+  }
+
+  image.data = outputLayer->values.clone();
+
+  return std::make_shared<sipai::Image>(image);
 }
 
 void VulkanController::_writeParameters() {

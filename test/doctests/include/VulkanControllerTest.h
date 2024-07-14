@@ -128,7 +128,7 @@ private:
   void _copyHiddenLayer1();
   void _copyInputData(const cv::Mat &inputValues, const cv::Mat &targetValues,
                       bool is_validation);
-  std::unique_ptr<GLSLOutputData> _getOutputData();
+  float _readOutputLoss();
   Layer *_getHiddenLayer1();
 
   std::shared_ptr<Vulkan> vulkan_;

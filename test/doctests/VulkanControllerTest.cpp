@@ -61,9 +61,9 @@ float VulkanControllerTest::test1() {
   auto &shaderTest1 = getShader(EShader::Test1);
   _computeShader(vulkan_->pipelineCompute);
 
-  const auto result = _getOutputData();
+  float loss = _readOutputLoss();
 
-  return result->loss;
+  return loss;
 }
 
 VulkanControllerTest::ResultTest2 VulkanControllerTest::test2() {
@@ -75,10 +75,10 @@ VulkanControllerTest::ResultTest2 VulkanControllerTest::test2() {
 
   ResultTest2 result;
 
-  const auto loss = _getOutputData();
+  const auto loss = _readOutputLoss();
   const auto layer = _getHiddenLayer1();
 
-  result.loss = loss->loss;
+  result.loss = loss;
   result.layer = layer;
 
   return result;
@@ -231,17 +231,14 @@ void VulkanControllerTest::_copyHiddenLayer1() {
   }
 }
 
-std::unique_ptr<GLSLOutputData> VulkanControllerTest::_getOutputData() {
+float VulkanControllerTest::_readOutputLoss() {
   // Get loss
-  GLSLOutputData outputData{.loss = 0.0f};
   auto &bufferLoss = getBuffer(EBuffer::OutputLoss);
   builder_.mapBufferMemory(bufferLoss);
-  outputData.loss = *reinterpret_cast<float *>(bufferLoss.data);
+  float loss = *reinterpret_cast<float *>(bufferLoss.data);
   builder_.unmapBufferMemory(bufferLoss);
 
-  // Get outputValues
-  // Commented: not required here
-  return std::make_unique<GLSLOutputData>(outputData);
+  return loss;
 }
 
 Layer *VulkanControllerTest::_getHiddenLayer1() {

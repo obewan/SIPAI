@@ -111,12 +111,6 @@ struct GLSLInputData {
   bool is_validation;
 };
 
-// special format after transformations and merge
-struct GLSLOutputData {
-  cv::Mat outputValues;
-  float loss;
-};
-
 struct GLSLInputLayer {
   float activation_alpha;
   uint activation_function;
