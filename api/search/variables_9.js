@@ -8,6 +8,5 @@ var searchData=
   ['learning_5frate_5',['learning_rate',['../structsipai_1_1NeuralNetworkParams.html#a8dc30f3e1293e624ab72c2176c1eb7f0',1,'sipai::NeuralNetworkParams::learning_rate()'],['../structsipai_1_1GLSLParameters.html#aedaa2a99cea28765ad99c238a20d7262',1,'sipai::GLSLParameters::learning_rate()']]],
   ['learning_5frate_5fmax_6',['learning_rate_max',['../structsipai_1_1AppParams.html#adf151d336acd525e3a3536455517d48e',1,'sipai::AppParams']]],
   ['learning_5frate_5fmin_7',['learning_rate_min',['../structsipai_1_1AppParams.html#a406e8eeec2b91b71af4a4cb217fd3a27',1,'sipai::AppParams']]],
-  ['logicaldevice_8',['logicalDevice',['../structsipai_1_1Vulkan.html#ac41c1f4c327a3b908574c0b90812f68e',1,'sipai::Vulkan']]],
-  ['loss_9',['loss',['../structsipai_1_1GLSLOutputData.html#a80da0f712672188d182b8d3f7b839ac8',1,'sipai::GLSLOutputData']]]
+  ['logicaldevice_8',['logicalDevice',['../structsipai_1_1Vulkan.html#ac41c1f4c327a3b908574c0b90812f68e',1,'sipai::Vulkan']]]
 ];

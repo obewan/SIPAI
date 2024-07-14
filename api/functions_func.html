@@ -115,6 +115,7 @@ $(function() {
 <h3><a id="index_f" name="index_f"></a>- f -</h3><ul>
 <li>FileReaderException()&#160;:&#160;<a class="el" href="classsipai_1_1FileReaderException.html#afc0f5d68ba724cb5c9c52faf403c9f83">sipai::FileReaderException</a></li>
 <li>findMemoryType()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanBuilder.html#aea2e11e9074498b901576bfc223e64f1">sipai::VulkanBuilder</a></li>
+<li>forwardEnhancer()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#a7bef6034759af1be6513f08f60c99d01">sipai::VulkanController</a></li>
 <li>forwardPropagation()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#a0720cd219c9b3b0ae134f8328a0d5323">sipai::Layer</a>, <a class="el" href="classsipai_1_1LayerInput.html#ae2e760229508b0065f37688e36af3642">sipai::LayerInput</a>, <a class="el" href="classsipai_1_1NeuralNetwork.html#a55ebb37367c4362c029a921f9ae1a37b">sipai::NeuralNetwork</a></li>
 </ul>
 
@@ -140,8 +141,8 @@ $(function() {
 <li>getRunModeStr()&#160;:&#160;<a class="el" href="classsipai_1_1Common.html#ae19514b0ec6908107ba57bb950a53dc5">sipai::Common</a></li>
 <li>getShader()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#ad6df7454ed704dd900744df67c7e78fd">sipai::VulkanController</a></li>
 <li>getSize()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#a543e4224367fc861d553671de6ed46ee">sipai::TrainingDataFactory</a></li>
-<li>getTrainingMonitoredVisitor()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerVisitorFactory.html#a5722d58068ff82eda1c95b57afa86c36">sipai::RunnerVisitorFactory</a></li>
 <li>getTrainingPhaseStr()&#160;:&#160;<a class="el" href="classsipai_1_1Common.html#a21984857a0955ac1017b1d565bf027ad">sipai::Common</a></li>
+<li>getTrainingVisitor()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerVisitorFactory.html#a7287b4c91f22ca980406f398218ce37b">sipai::RunnerVisitorFactory</a></li>
 <li>getVersionHeader()&#160;:&#160;<a class="el" href="classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045">sipai::Manager</a></li>
 <li>getVulkan()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#a4863122a608e966bef1f696188bbf295">sipai::VulkanController</a></li>
 </ul>
@@ -244,9 +245,9 @@ $(function() {
 <li>toNeighborsStringCsv()&#160;:&#160;<a class="el" href="classsipai_1_1Neuron.html#a9fe33c8da6ba5ab44b6b5f64a1002a50">sipai::Neuron</a></li>
 <li>toStringCsv()&#160;:&#160;<a class="el" href="classsipai_1_1Neuron.html#acc0bdf4182ec97adddaf231403961a47">sipai::Neuron</a></li>
 <li>total()&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#a399578bc6b2f99647e043e405ed33d72">sipai::Layer</a></li>
+<li>training()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#adc8103d230ab86fffcbeff191b475bb7">sipai::RunnerTrainingOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a3204b14ba9222aa5dc5861cabaf35c27">sipai::RunnerTrainingVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a4e8ca20e8e934fbaacd83f8c08fc860d">sipai::RunnerTrainingVulkanVisitor</a>, <a class="el" href="classsipai_1_1VulkanController.html#aa42e517d75debfc9941558da6203d248">sipai::VulkanController</a></li>
 <li>TrainingDataFactory()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactory.html#a9b5ba6d2519775ddd3f5b973747a91b9">sipai::TrainingDataFactory</a></li>
 <li>TrainingDataFactoryException()&#160;:&#160;<a class="el" href="classsipai_1_1TrainingDataFactoryException.html#a0e75f573f8a65f88fca96a30066a49d1">sipai::TrainingDataFactoryException</a></li>
-<li>trainingMonitored()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#ae40c3ad9bff36391ffe3b5d985120ea9">sipai::RunnerTrainingOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">sipai::RunnerTrainingVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a26a772f20dd4357482a8a62363f727d7">sipai::RunnerTrainingVulkanVisitor</a>, <a class="el" href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">sipai::VulkanController</a></li>
 </ul>
 
 
@@ -258,7 +259,7 @@ $(function() {
 
 
 <h3><a id="index_v" name="index_v"></a>- v -</h3><ul>
-<li>visit()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerEnhancerVisitor.html#a8198fb773d38fc6b5a1df4536905ce80">sipai::RunnerEnhancerVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#aee878be0ac2653986740bbe75bdda3c3">sipai::RunnerTrainingOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a02278630a182a01673cca0bd92ece10f">sipai::RunnerTrainingVulkanVisitor</a>, <a class="el" href="classsipai_1_1RunnerVisitor.html#a6300f208cce52718005492f57aab919c">sipai::RunnerVisitor</a></li>
+<li>visit()&#160;:&#160;<a class="el" href="classsipai_1_1RunnerEnhancerOpenCVVisitor.html#aae68cf23c52208b1f471f13ffacaa045">sipai::RunnerEnhancerOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerEnhancerVulkanVisitor.html#a6332f40dbea3f2dd107d1a2b5f77d666">sipai::RunnerEnhancerVulkanVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#aee878be0ac2653986740bbe75bdda3c3">sipai::RunnerTrainingOpenCVVisitor</a>, <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a02278630a182a01673cca0bd92ece10f">sipai::RunnerTrainingVulkanVisitor</a>, <a class="el" href="classsipai_1_1RunnerVisitor.html#a6300f208cce52718005492f57aab919c">sipai::RunnerVisitor</a></li>
 <li>VulkanBuilderException()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanBuilderException.html#a4681130c21b82f317fd5c838814d88e4">sipai::VulkanBuilderException</a></li>
 <li>VulkanController()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanController.html#a588530c6cb20b456c3b746124025b69c">sipai::VulkanController</a></li>
 <li>VulkanControllerException()&#160;:&#160;<a class="el" href="classsipai_1_1VulkanControllerException.html#a49079ae436558274dbfef8c96e5e0856">sipai::VulkanControllerException</a></li>

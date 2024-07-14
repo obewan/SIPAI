@@ -17,6 +17,5 @@ var searchData=
   ['output_5fsize_5fy_14',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]],
   ['outputdata_15',['OutputData',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b',1,'sipai']]],
   ['outputlayer_16',['OutputLayer',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa500cef5499f984f348ea5eabd57ee667',1,'sipai']]],
-  ['outputloss_17',['OutputLoss',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f',1,'sipai']]],
-  ['outputvalues_18',['outputValues',['../structsipai_1_1GLSLOutputData.html#a59527ecdb57bf9056a46dba282d853ba',1,'sipai::GLSLOutputData']]]
+  ['outputloss_17',['OutputLoss',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f',1,'sipai']]]
 ];

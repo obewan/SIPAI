@@ -21,8 +21,8 @@ var searchData=
   ['getrunmodestr_18',['getRunModeStr',['../classsipai_1_1Common.html#ae19514b0ec6908107ba57bb950a53dc5',1,'sipai::Common']]],
   ['getshader_19',['getShader',['../classsipai_1_1VulkanController.html#ad6df7454ed704dd900744df67c7e78fd',1,'sipai::VulkanController']]],
   ['getsize_20',['getSize',['../classsipai_1_1TrainingDataFactory.html#a543e4224367fc861d553671de6ed46ee',1,'sipai::TrainingDataFactory']]],
-  ['gettrainingmonitoredvisitor_21',['getTrainingMonitoredVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a5722d58068ff82eda1c95b57afa86c36',1,'sipai::RunnerVisitorFactory']]],
-  ['gettrainingphasestr_22',['getTrainingPhaseStr',['../classsipai_1_1Common.html#a21984857a0955ac1017b1d565bf027ad',1,'sipai::Common']]],
+  ['gettrainingphasestr_21',['getTrainingPhaseStr',['../classsipai_1_1Common.html#a21984857a0955ac1017b1d565bf027ad',1,'sipai::Common']]],
+  ['gettrainingvisitor_22',['getTrainingVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a7287b4c91f22ca980406f398218ce37b',1,'sipai::RunnerVisitorFactory']]],
   ['getversionheader_23',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]],
   ['getvulkan_24',['getVulkan',['../classsipai_1_1VulkanController.html#a4863122a608e966bef1f696188bbf295',1,'sipai::VulkanController']]]
 ];

@@ -100,8 +100,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLNeuron.html">GLSLNeuron</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLOutputData.html">GLSLOutputData</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLOutputLayer.html">GLSLOutputLayer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1GLSLParameters.html">GLSLParameters</a></td></tr>
@@ -156,7 +154,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuronConnection.html">NeuronConnection</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerEnhancerVisitor.html">RunnerEnhancerVisitor</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerEnhancerOpenCVVisitor.html">RunnerEnhancerOpenCVVisitor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerEnhancerVulkanVisitor.html">RunnerEnhancerVulkanVisitor</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html">RunnerTrainingOpenCVVisitor</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -228,14 +228,10 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174a13148717f8faa9037f37d28971dfc219">Validation</a>
  }</td></tr>
 <tr class="separator:a31f5785dc7275f35e3d911c004d3d174"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86f53af3a527e290419e10fd371cd032"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a> { <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b">Enhancer</a>
+<tr class="memitem:a86f53af3a527e290419e10fd371cd032"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a> { <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b">Enhancer</a>
 , <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032afa6a5a3224d7da66d9e0bdec25f62cf0">Testing</a>
 , <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032acf270e40d273f9e7fd7c3061729060c3">Training</a>
-, <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032ad8bd04dc25b6c9e78730ad78cbd8d074">TrainingMonitored</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032abbcf7d32f778ed870874d1c149efe8ef">Upscaler</a>
-<br />
+, <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032abbcf7d32f778ed870874d1c149efe8ef">Upscaler</a>
  }</td></tr>
 <tr class="separator:a86f53af3a527e290419e10fd371cd032"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49db076f4fbba89b129c17e422f06824"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824">LayerType</a> { <a class="el" href="namespacesipai.html#a49db076f4fbba89b129c17e422f06824a25e4adc172745274f4b517b5dab0ed0a">LayerInput</a>
@@ -262,14 +258,10 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:ac80e3de3115cc9e1d7f5f3de89351d4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">EShader</a> { <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba3abdcaca23aebff96c5f5851e7423637">TrainingMonitoredShader</a>
+<tr class="memitem:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">EShader</a> { <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbab579d756e7ba4d3429c09a150c58932e">TrainingShader</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba99e2ec69e96556fb46e71f041ac8764b">EnhancerShader</a>
 , <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33">VertexShader</a>
 , <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922">FragmentShader</a>
-, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbae1b849f9631ffc1829b2e31402373e3c">Test1</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbac454552d52d55d3ef56408742887362b">Test2</a>
-<br />
  }</td></tr>
 <tr class="separator:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -450,7 +442,6 @@ Variables</h2></td></tr>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b" name="a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b"></a>Enhancer&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a86f53af3a527e290419e10fd371cd032afa6a5a3224d7da66d9e0bdec25f62cf0" name="a86f53af3a527e290419e10fd371cd032afa6a5a3224d7da66d9e0bdec25f62cf0"></a>Testing&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a86f53af3a527e290419e10fd371cd032acf270e40d273f9e7fd7c3061729060c3" name="a86f53af3a527e290419e10fd371cd032acf270e40d273f9e7fd7c3061729060c3"></a>Training&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a86f53af3a527e290419e10fd371cd032ad8bd04dc25b6c9e78730ad78cbd8d074" name="a86f53af3a527e290419e10fd371cd032ad8bd04dc25b6c9e78730ad78cbd8d074"></a>TrainingMonitored&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a86f53af3a527e290419e10fd371cd032abbcf7d32f778ed870874d1c149efe8ef" name="a86f53af3a527e290419e10fd371cd032abbcf7d32f778ed870874d1c149efe8ef"></a>Upscaler&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
@@ -476,11 +467,10 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba3abdcaca23aebff96c5f5851e7423637" name="aeb54a7d7536dd01dfd04177d4320c1fba3abdcaca23aebff96c5f5851e7423637"></a>TrainingMonitoredShader&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbab579d756e7ba4d3429c09a150c58932e" name="aeb54a7d7536dd01dfd04177d4320c1fbab579d756e7ba4d3429c09a150c58932e"></a>TrainingShader&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba99e2ec69e96556fb46e71f041ac8764b" name="aeb54a7d7536dd01dfd04177d4320c1fba99e2ec69e96556fb46e71f041ac8764b"></a>EnhancerShader&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33" name="aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33"></a>VertexShader&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922" name="aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922"></a>FragmentShader&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbae1b849f9631ffc1829b2e31402373e3c" name="aeb54a7d7536dd01dfd04177d4320c1fbae1b849f9631ffc1829b2e31402373e3c"></a>Test1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbac454552d52d55d3ef56408742887362b" name="aeb54a7d7536dd01dfd04177d4320c1fbac454552d52d55d3ef56408742887362b"></a>Test2&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -881,7 +871,6 @@ Variables</h2></td></tr>
 <div class="line">    {<span class="stringliteral">&quot;Enhancer&quot;</span>, ERunMode::Enhancer},</div>
 <div class="line">    {<span class="stringliteral">&quot;Testing&quot;</span>, ERunMode::Testing},</div>
 <div class="line">    {<span class="stringliteral">&quot;Training&quot;</span>, ERunMode::Training},</div>
-<div class="line">    {<span class="stringliteral">&quot;TrainingMonitored&quot;</span>, ERunMode::TrainingMonitored},</div>
 <div class="line">    {<span class="stringliteral">&quot;Upscaler&quot;</span>, ERunMode::Upscaler}}</div>
 </div><!-- fragment -->
 </div>

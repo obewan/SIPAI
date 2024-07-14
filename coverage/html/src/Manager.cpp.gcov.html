@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-07-09 15:38:36</td>
+            <td class="headerValue">2024-07-14 20:22:10</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -195,8 +195,8 @@
 <a name="133"><span class="lineNum">     133 </span>            :   // Run with visitor</a>
 <a name="134"><span class="lineNum">     134 </span>            :   try {</a>
 <a name="135"><span class="lineNum">     135 </span><span class="lineCov">          2 :     switch (app_params.run_mode) {</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          2 :     case ERunMode::TrainingMonitored:</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 :       runWithVisitor(runnerVisitorFactory_.getTrainingMonitoredVisitor());</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          2 :     case ERunMode::Training:</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 :       runWithVisitor(runnerVisitorFactory_.getTrainingVisitor());</span></a>
 <a name="138"><span class="lineNum">     138 </span><span class="lineCov">          2 :       break;</span></a>
 <a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :     case ERunMode::Enhancer:</span></a>
 <a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :       runWithVisitor(runnerVisitorFactory_.getEnhancerVisitor());</span></a>

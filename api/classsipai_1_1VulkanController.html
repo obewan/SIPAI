@@ -88,9 +88,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac641bd79eb58017c58316616968db14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e41f8c443f52895697c311b37710d8f"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#a2e41f8c443f52895697c311b37710d8f">IsInitialized</a> ()</td></tr>
 <tr class="separator:a2e41f8c443f52895697c311b37710d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd6abf1bf4fa903344fcbda403d1aa67"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">trainingMonitored</a> (const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;inputValues, const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;targetValues, const <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> &amp;phase)</td></tr>
-<tr class="memdesc:abd6abf1bf4fa903344fcbda403d1aa67"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> training or validation on an input image.  <a href="classsipai_1_1VulkanController.html#abd6abf1bf4fa903344fcbda403d1aa67">More...</a><br /></td></tr>
-<tr class="separator:abd6abf1bf4fa903344fcbda403d1aa67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa42e517d75debfc9941558da6203d248"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#aa42e517d75debfc9941558da6203d248">training</a> (const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;inputValues, const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;targetValues, const <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> &amp;phase)</td></tr>
+<tr class="memdesc:aa42e517d75debfc9941558da6203d248"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a> training or validation on an input image.  <a href="classsipai_1_1VulkanController.html#aa42e517d75debfc9941558da6203d248">More...</a><br /></td></tr>
+<tr class="separator:aa42e517d75debfc9941558da6203d248"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bef6034759af1be6513f08f60c99d01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#a7bef6034759af1be6513f08f60c99d01">forwardEnhancer</a> (const cv::Mat &amp;inputValues)</td></tr>
+<tr class="memdesc:a7bef6034759af1be6513f08f60c99d01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get image output values after a forward propagation, using an existing neural network.  <a href="classsipai_1_1VulkanController.html#a7bef6034759af1be6513f08f60c99d01">More...</a><br /></td></tr>
+<tr class="separator:a7bef6034759af1be6513f08f60c99d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3e005f9f9da55103d3b00c8bb81068f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1VulkanController.html#ad3e005f9f9da55103d3b00c8bb81068f">updateNeuralNetwork</a> ()</td></tr>
 <tr class="memdesc:ad3e005f9f9da55103d3b00c8bb81068f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the Neural Network with values from <a class="el" href="structsipai_1_1Vulkan.html">Vulkan</a>.  <a href="classsipai_1_1VulkanController.html#ad3e005f9f9da55103d3b00c8bb81068f">More...</a><br /></td></tr>
 <tr class="separator:ad3e005f9f9da55103d3b00c8bb81068f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -257,6 +260,32 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Destroy the device instance, cleaning ressources. </p>
+
+</div>
+</div>
+<a id="a7bef6034759af1be6513f08f60c99d01" name="a7bef6034759af1be6513f08f60c99d01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bef6034759af1be6513f08f60c99d01">&#9670;&nbsp;</a></span>forwardEnhancer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VulkanController::forwardEnhancer </td>
+          <td>(</td>
+          <td class="paramtype">const cv::Mat &amp;&#160;</td>
+          <td class="paramname"><em>inputValues</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get image output values after a forward propagation, using an existing neural network. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inputValues</td><td>the input values </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -581,14 +610,14 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="abd6abf1bf4fa903344fcbda403d1aa67" name="abd6abf1bf4fa903344fcbda403d1aa67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd6abf1bf4fa903344fcbda403d1aa67">&#9670;&nbsp;</a></span>trainingMonitored()</h2>
+<a id="aa42e517d75debfc9941558da6203d248" name="aa42e517d75debfc9941558da6203d248"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa42e517d75debfc9941558da6203d248">&#9670;&nbsp;</a></span>training()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float VulkanController::trainingMonitored </td>
+          <td class="memname">float VulkanController::training </td>
           <td>(</td>
           <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="structsipai_1_1Image.html">sipai::Image</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>inputValues</em>, </td>

@@ -32,6 +32,5 @@ var searchData=
   ['logicaldevice_29',['logicalDevice',['../structsipai_1_1Vulkan.html#ac41c1f4c327a3b908574c0b90812f68e',1,'sipai::Vulkan']]],
   ['loglevel_30',['LogLevel',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0',1,'sipai']]],
   ['logtrainingprogress_31',['logTrainingProgress',['../classsipai_1_1RunnerTrainingVisitor.html#aece995848a05e425dcd73a7387437f0d',1,'sipai::RunnerTrainingVisitor']]],
-  ['loss_32',['loss',['../structsipai_1_1GLSLOutputData.html#a80da0f712672188d182b8d3f7b839ac8',1,'sipai::GLSLOutputData']]],
-  ['lrelu_33',['LReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9',1,'sipai']]]
+  ['lrelu_32',['LReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9',1,'sipai']]]
 ];

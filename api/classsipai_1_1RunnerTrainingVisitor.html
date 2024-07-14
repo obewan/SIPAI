@@ -91,9 +91,9 @@ Inheritance diagram for sipai::RunnerTrainingVisitor:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a38e0efba304e72cca61735dd115a8c2a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a38e0efba304e72cca61735dd115a8c2a">~RunnerTrainingVisitor</a> ()=default</td></tr>
 <tr class="separator:a38e0efba304e72cca61735dd115a8c2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae195fc6967122e7ccb79a651df45d9f5"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">trainingMonitored</a> (size_t epoch, <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase) const =0</td></tr>
-<tr class="memdesc:ae195fc6967122e7ccb79a651df45d9f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training and validation, including loss compute of all images.  <a href="classsipai_1_1RunnerTrainingVisitor.html#ae195fc6967122e7ccb79a651df45d9f5">More...</a><br /></td></tr>
-<tr class="separator:ae195fc6967122e7ccb79a651df45d9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3204b14ba9222aa5dc5861cabaf35c27"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a3204b14ba9222aa5dc5861cabaf35c27">training</a> (size_t epoch, <a class="el" href="namespacesipai.html#a31f5785dc7275f35e3d911c004d3d174">TrainingPhase</a> phase) const =0</td></tr>
+<tr class="memdesc:a3204b14ba9222aa5dc5861cabaf35c27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training and validation, including loss compute of all images.  <a href="classsipai_1_1RunnerTrainingVisitor.html#a3204b14ba9222aa5dc5861cabaf35c27">More...</a><br /></td></tr>
+<tr class="separator:a3204b14ba9222aa5dc5861cabaf35c27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f2b03076ef7e5ca25fbab2849068071"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a0f2b03076ef7e5ca25fbab2849068071">shouldContinueTraining</a> (int epoch, size_t epochsWithoutImprovement, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
 <tr class="memdesc:a0f2b03076ef7e5ca25fbab2849068071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the training should continue based on the provided conditions.  <a href="classsipai_1_1RunnerTrainingVisitor.html#a0f2b03076ef7e5ca25fbab2849068071">More...</a><br /></td></tr>
 <tr class="separator:a0f2b03076ef7e5ca25fbab2849068071"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -359,8 +359,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae195fc6967122e7ccb79a651df45d9f5" name="ae195fc6967122e7ccb79a651df45d9f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae195fc6967122e7ccb79a651df45d9f5">&#9670;&nbsp;</a></span>trainingMonitored()</h2>
+<a id="a3204b14ba9222aa5dc5861cabaf35c27" name="a3204b14ba9222aa5dc5861cabaf35c27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3204b14ba9222aa5dc5861cabaf35c27">&#9670;&nbsp;</a></span>training()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -369,7 +369,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual float sipai::RunnerTrainingVisitor::trainingMonitored </td>
+          <td class="memname">virtual float sipai::RunnerTrainingVisitor::training </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>epoch</em>, </td>
@@ -403,7 +403,7 @@ Protected Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>float </dd></dl>
 
-<p>Implemented in <a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#ae40c3ad9bff36391ffe3b5d985120ea9">sipai::RunnerTrainingOpenCVVisitor</a>, and <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a26a772f20dd4357482a8a62363f727d7">sipai::RunnerTrainingVulkanVisitor</a>.</p>
+<p>Implemented in <a class="el" href="classsipai_1_1RunnerTrainingOpenCVVisitor.html#adc8103d230ab86fffcbeff191b475bb7">sipai::RunnerTrainingOpenCVVisitor</a>, and <a class="el" href="classsipai_1_1RunnerTrainingVulkanVisitor.html#a4e8ca20e8e934fbaacd83f8c08fc860d">sipai::RunnerTrainingVulkanVisitor</a>.</p>
 
 </div>
 </div>
