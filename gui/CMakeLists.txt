@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-# set(PROJECT_NAME sipai-gui)
+set(PROJECT_NAME sipai-gui)
 
-# find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 # project(${PROJECT_NAME})
 
