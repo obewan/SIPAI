@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 3.5.0)
 
+set(PROJECT_NAME sipai)
+project(${PROJECT_NAME})
 
 option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" TRUE)
 
-set(PROJECT_NAME sipai)
-set(SOURCE_DIR src)
-file(GLOB SOURCE "${SOURCE_DIR}/*.cpp")
-set(LIBRARIES_DIR libs)
-set(LIBRARIES libsipai)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,7 +13,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /MP /EHsc")
@@ -39,7 +36,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
         '/usr/include/*' '/usr/lib/*' 
         '${CMAKE_CURRENT_SOURCE_DIR}/test/*'
         '${CMAKE_CURRENT_SOURCE_DIR}/libs/libsipai/**Vulkan*' 
-        '${CMAKE_CURRENT_SOURCE_DIR}/src/*'
+        '${CMAKE_CURRENT_SOURCE_DIR}/cmd/*'
+        '${CMAKE_CURRENT_SOURCE_DIR}/gui/*'
         '${CMAKE_CURRENT_SOURCE_DIR}/libs/libcsvparser/*'
         '${CMAKE_CURRENT_SOURCE_DIR}/libs/libjson/*'
         COMMENT "Generating lcov.info"
@@ -50,24 +48,12 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
     )
 endif()
 
-project(${PROJECT_NAME})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
-add_executable(${PROJECT_NAME} ${SOURCE})
-
-foreach(LIBRARY ${LIBRARIES})
-    add_subdirectory("${LIBRARIES_DIR}/${LIBRARY}")
-endforeach(LIBRARY)
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
-
-if(WIN32)
-    target_sources(${PROJECT_NAME} PRIVATE version.rc)
-endif()
+add_subdirectory(libs)
+add_subdirectory(cmd)
+add_subdirectory(gui)
 
 enable_testing()
 add_subdirectory(test)
 
-install(TARGETS ${PROJECT_NAME} 
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib/static)

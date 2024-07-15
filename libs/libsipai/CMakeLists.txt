@@ -39,8 +39,8 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # Add included libs
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser csv-parser)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libjson nlohmann-json)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libcsvparser/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libjson/include)
 
 
 set(PROJECT_NAME libsipai)
