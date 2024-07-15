@@ -10,7 +10,7 @@ var searchData=
   ['resetcounters_7',['resetCounters',['../classsipai_1_1TrainingDataFactory.html#ad9826e0b7b84e46e4f494a221072543d',1,'sipai::TrainingDataFactory']]],
   ['resetprecision_8',['resetPrecision',['../classsipai_1_1SimpleLogger.html#a67875ccf1fc75b9c8fd919627ba4eceb',1,'sipai::SimpleLogger']]],
   ['resize_9',['resize',['../structsipai_1_1Image.html#a1d9e52855f89d823b535bffa5a4e7e22',1,'sipai::Image']]],
-  ['run_10',['run',['../classsipai_1_1Manager.html#af8c67c221068e4e3ccccf1d5f70ba8ee',1,'sipai::Manager::run()'],['../classSIPAI.html#a2083f3dc3545e3ddad71bb54211429c4',1,'SIPAI::run()']]],
+  ['run_10',['run',['../classsipai_1_1Manager.html#af8c67c221068e4e3ccccf1d5f70ba8ee',1,'sipai::Manager']]],
   ['run_5fmode_11',['run_mode',['../structsipai_1_1AppParams.html#a0d3fe9abf2b2c464b6c31996f110d19e',1,'sipai::AppParams']]],
   ['runnerenhanceropencvvisitor_12',['RunnerEnhancerOpenCVVisitor',['../classsipai_1_1RunnerEnhancerOpenCVVisitor.html',1,'sipai']]],
   ['runnerenhanceropencvvisitor_2ecpp_13',['RunnerEnhancerOpenCVVisitor.cpp',['../RunnerEnhancerOpenCVVisitor_8cpp.html',1,'']]],

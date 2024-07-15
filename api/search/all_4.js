@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['eactivationfunction_0',['EActivationFunction',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194',1,'sipai']]],
-  ['eactivationfunction_1',['eactivationFunction',['../classsipai_1_1Layer.html#a97161f22242964f098daf4348f7c1d52',1,'sipai::Layer']]],
+  ['eactivationfunction_0',['eactivationFunction',['../classsipai_1_1Layer.html#a97161f22242964f098daf4348f7c1d52',1,'sipai::Layer']]],
+  ['eactivationfunction_1',['EActivationFunction',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194',1,'sipai']]],
   ['ebuffer_2',['EBuffer',['../namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4a',1,'sipai']]],
   ['elu_3',['ELU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a5b44c930bf0ddeef48b50ef11e5ddd58',1,'sipai']]],
   ['elu_4',['elu',['../namespacesipai.html#a59ab2586c52d0cb588fd3f25766c7c13',1,'sipai']]],
@@ -21,12 +21,10 @@ var searchData=
   ['error_18',['ERROR',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0abb1ca97ec761fc37101737ba0aa2e7c5',1,'sipai']]],
   ['error_5fmax_19',['error_max',['../structsipai_1_1NeuralNetworkParams.html#a8d2cb6f17259022358c396cbb2058b67',1,'sipai::NeuralNetworkParams::error_max()'],['../structsipai_1_1GLSLParameters.html#ab7701f0794176a5a373c8876d18fce06',1,'sipai::GLSLParameters::error_max()']]],
   ['error_5fmin_20',['error_min',['../structsipai_1_1NeuralNetworkParams.html#a348f07543dd36650871ac13855acab92',1,'sipai::NeuralNetworkParams::error_min()'],['../structsipai_1_1GLSLParameters.html#af13ccc0d87ee8fa26c60164362b9c0f9',1,'sipai::GLSLParameters::error_min()']]],
-  ['errors_21',['errors',['../structsipai_1_1GLSLHiddenLayer.html#a261ac05b0001c866a82d5646e3822bf6',1,'sipai::GLSLHiddenLayer::errors()'],['../structsipai_1_1GLSLOutputLayer.html#a0655a6bda4218e942e01c703b27dc554',1,'sipai::GLSLOutputLayer::errors()'],['../classsipai_1_1Layer.html#afa236a0fb78ae15af18be6f572af586d',1,'sipai::Layer::errors()']]],
+  ['errors_21',['errors',['../structsipai_1_1GLSLOutputLayer.html#a0655a6bda4218e942e01c703b27dc554',1,'sipai::GLSLOutputLayer::errors()'],['../structsipai_1_1GLSLHiddenLayer.html#a261ac05b0001c866a82d5646e3822bf6',1,'sipai::GLSLHiddenLayer::errors()'],['../classsipai_1_1Layer.html#afa236a0fb78ae15af18be6f572af586d',1,'sipai::Layer::errors()']]],
   ['erunmode_22',['ERunMode',['../namespacesipai.html#a86f53af3a527e290419e10fd371cd032',1,'sipai']]],
   ['eshader_23',['EShader',['../namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb',1,'sipai']]],
-  ['exit_5fhelp_24',['EXIT_HELP',['../classSIPAI.html#a7b10521718bb6554476359639e2ffe0d',1,'SIPAI']]],
-  ['exit_5fversion_25',['EXIT_VERSION',['../classSIPAI.html#a8240208e9d64cd499cfdc70e3f70a2f2',1,'SIPAI']]],
-  ['exportmodel_26',['exportModel',['../classsipai_1_1NeuralNetworkImportExportJSON.html#ab40604ecad0208f18e333e88104acd27',1,'sipai::NeuralNetworkImportExportJSON::exportModel()'],['../classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726',1,'sipai::NeuralNetworkImportExportFacade::exportModel()']]],
-  ['exportnetwork_27',['exportNetwork',['../classsipai_1_1Manager.html#aba29378e09dc2e3781b40d38e8d4314e',1,'sipai::Manager']]],
-  ['exportneuronsweights_28',['exportNeuronsWeights',['../classsipai_1_1NeuralNetworkImportExportCSV.html#a2a81b9ad2ae27e22956a432ad6c39006',1,'sipai::NeuralNetworkImportExportCSV']]]
+  ['exportmodel_24',['exportModel',['../classsipai_1_1NeuralNetworkImportExportJSON.html#ab40604ecad0208f18e333e88104acd27',1,'sipai::NeuralNetworkImportExportJSON::exportModel()'],['../classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726',1,'sipai::NeuralNetworkImportExportFacade::exportModel()']]],
+  ['exportnetwork_25',['exportNetwork',['../classsipai_1_1Manager.html#aba29378e09dc2e3781b40d38e8d4314e',1,'sipai::Manager']]],
+  ['exportneuronsweights_26',['exportNeuronsWeights',['../classsipai_1_1NeuralNetworkImportExportCSV.html#a2a81b9ad2ae27e22956a432ad6c39006',1,'sipai::NeuralNetworkImportExportCSV']]]
 ];
