@@ -151,24 +151,6 @@ void VulkanController::updateNeuralNetwork() {
 void VulkanController::_processShaders(const EShader &shader) {
   const auto &app_params = Manager::getConstInstance().app_params;
 
-  uint32_t imageIndex;
-  if (app_params.vulkan_debug) {
-    // Wait for the fence to ensure the previous frame is finished
-    auto result = vkWaitForFences(vulkan_->logicalDevice, 1,
-                                  &vulkan_->inFlightFence, VK_TRUE, UINT64_MAX);
-    if (result != VK_SUCCESS) {
-      throw VulkanControllerException("Failed to wait for fence");
-    }
-
-    // Acquire an image from the swap chain
-    result = vkAcquireNextImageKHR(vulkan_->logicalDevice, vulkan_->swapChain,
-                                   UINT64_MAX, vulkan_->imageAvailableSemaphore,
-                                   VK_NULL_HANDLE, &imageIndex);
-    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-      throw VulkanControllerException("Failed to acquire swap chain image");
-    }
-  }
-
   // Begin recording commands in a single-time command buffer
   auto commandBuffer = helper_.commandsBegin();
 
@@ -193,15 +175,31 @@ void VulkanController::_processShaders(const EShader &shader) {
 
   if (app_params.vulkan_debug) {
     // If vulkan debug, using graphic pipeline and render pass in window
-    _processRenderPass(commandBuffer, imageIndex);
+    _processRenderPass(commandBuffer);
   } else {
     // else just submit and return
     helper_.commandsEnd_SubmitQueueCompute(commandBuffer);
   }
 }
 
-void VulkanController::_processRenderPass(VkCommandBuffer &commandBuffer,
-                                          uint32_t &imageIndex) {
+void VulkanController::_processRenderPass(VkCommandBuffer &commandBuffer) {
+
+  uint32_t imageIndex;
+
+  // Wait for the fence to ensure the previous frame is finished
+  auto result = vkWaitForFences(vulkan_->logicalDevice, 1,
+                                &vulkan_->inFlightFence, VK_TRUE, UINT64_MAX);
+  if (result != VK_SUCCESS) {
+    throw VulkanControllerException("Failed to wait for fence");
+  }
+
+  // Acquire an image from the swap chain
+  result = vkAcquireNextImageKHR(vulkan_->logicalDevice, vulkan_->swapChain,
+                                 UINT64_MAX, vulkan_->imageAvailableSemaphore,
+                                 VK_NULL_HANDLE, &imageIndex);
+  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    throw VulkanControllerException("Failed to acquire swap chain image");
+  }
 
   // Memory barrier to ensure the compute pass is finished before starting the
   // render pass
