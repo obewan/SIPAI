@@ -32,12 +32,13 @@ void MainWindow::about() {
 
 void MainWindow::modelFileOpen() {
   auto fileName = QFileDialog::getOpenFileName(
-      this, tr("Select a valide Sipai Neural Network Model file"));
+      this, tr("Select a Sipai neural network model Json file..."), "",
+      tr("JSON (*.json)"));
   // TODO: continue with check and loading file
 }
 
 void MainWindow::createActions() {
-  modelFileOpenAct = new QAction(tr("&Load a Neural Network Model..."), this);
+  modelFileOpenAct = new QAction(tr("&Import a neural network model..."), this);
   modelFileOpenAct->setShortcut(QKeySequence::Open);
   connect(modelFileOpenAct, &QAction::triggered, this,
           &MainWindow::modelFileOpen);
