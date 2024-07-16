@@ -26,8 +26,9 @@ Requirements for compiling the source code:
 - [CMake](https://cmake.org/)
 - The [Qt6](https://www.qt.io/download-qt-installer-oss) libraries for the GUI version.
 - on Windows:
-  - **Image Encoding**: Ensure that your image names are encoded in a format compatible with your system (for example, ASCII). Alternatively, you can install Unicode UTF-8 on your system for broader compatibility .
-  - **Vulkan SDK Installation**: After installing the Vulkan SDK, make sure to log out and log back in. This step is necessary to update the system paths.
+  - **Image Encoding**: ensure that your image names are encoded in a format compatible with your system (for example, ASCII). Alternatively, you can install Unicode UTF-8 on your system for broader compatibility .
+  - **Vulkan SDK Installation**: after installing the Vulkan SDK, make sure to log out and log back in. This step is necessary to update the system paths.
+  - **Qt6 Installation**: ensure to have set the environment path to the `msvc2019_64\bin` folder of your installation.
 - on a Windows WSL Linux, be sure to use WSL 2 or better and to have enabled the GPU acceleration: after a `sudo apt-get install mesa-utils` the command `glxinfo | grep -i opengl` should show a line like `OpenGL renderer string: D3D12 (the 3D card)`. You should have a `/dev/dxg` device link as well.
 
 ---

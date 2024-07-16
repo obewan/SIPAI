@@ -29,12 +29,13 @@ distribute your contributions under the same license as the original.
 measures that legally restrict others from doing anything the license permits.
  */
 
-#include "include/SIPAI.h"
+#include "SIPAI.h"
+#include "CLI11.hpp"
 #include "Manager.h"
 #include "SimpleLogger.h"
-#include "include/CLI11.hpp"
 #include <cstdlib>
 #include <string>
+
 // for CLI11 doc, see https://github.com/CLIUtils/CLI11
 
 using namespace sipai;
