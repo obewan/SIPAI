@@ -21,4 +21,22 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 public:
   MainWindow();
+
+private slots:
+  void about();
+  void modelFileOpen();
+
+protected:
+  void closeEvent(QCloseEvent *event) override;
+
+private:
+  void createActions();
+  void createMenus();
+
+  QMenu *fileMenu;
+  QMenu *helpMenu;
+
+  QAction *modelFileOpenAct;
+  QAction *exitAct;
+  QAction *aboutAct;
 };
