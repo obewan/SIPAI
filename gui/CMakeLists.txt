@@ -10,7 +10,9 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"  "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
+#rq. Need to add the .h as a source because QT moc will create a cpp from the .h (Q_OBJECT), 
+# or else put the .h in same directory than the .cpp to avoid link issues
+file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 
 set(LIBS_DIR ../libs)
 set(LIBSIPAI ${LIBS_DIR}/libsipai)
@@ -36,6 +38,8 @@ if(WIN32)
     target_sources(${PROJECT_NAME} PRIVATE ../version.rc)
 endif()
 
+qt_finalize_executable(${PROJECT_NAME})
+
 #copy to parent dir
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_BINARY_DIR})
@@ -46,4 +50,3 @@ install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib/static)
 
-qt_finalize_executable(${PROJECT_NAME})
