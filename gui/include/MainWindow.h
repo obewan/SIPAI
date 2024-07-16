@@ -13,30 +13,21 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-class QAction;
-class QMenu;
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
 public:
-  MainWindow();
+  MainWindow(QWidget *parent = nullptr);
+  ~MainWindow();
 
-private slots:
-  void about();
-  void modelFileOpen();
-
-protected:
-  void closeEvent(QCloseEvent *event) override;
+public slots:
+  void onActionAbout();
+  void onActionImportNeuralNetwork();
 
 private:
-  void createActions();
-  void createMenus();
-
-  QMenu *fileMenu;
-  QMenu *helpMenu;
-
-  QAction *modelFileOpenAct;
-  QAction *exitAct;
-  QAction *aboutAct;
+  Ui::MainWindow *ui;
 };
