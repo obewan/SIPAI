@@ -24,7 +24,7 @@ Requirements for compiling the source code:
 - The [Vulkan SDK](https://www.vulkan.org/) library (on Debian: `sudo apt-get -y install libvulkan1 libvulkan-dev mesa-vulkan-drivers vulkan-tools`, on Windows: https://vulkan.lunarg.com/sdk/home#windows).
 - The GLSL tools to use with Vulkan (on Debian: `sudo apt-get -y install glslang-tools spirv-tools`)
 - [CMake](https://cmake.org/)
-- The [Qt6](https://www.qt.io/download-qt-installer-oss) libraries for the GUI version.
+- The [Qt6](https://www.qt.io/download-qt-installer-oss) libraries for the GUI version (on Debian: `sudo apt-get -y install qt6-base-dev libqt6svg6 qt6-svg-dev`).
 - on Windows:
   - **Image Encoding**: ensure that your image names are encoded in a format compatible with your system (for example, ASCII). Alternatively, you can install Unicode UTF-8 on your system for broader compatibility .
   - **Vulkan SDK Installation**: after installing the Vulkan SDK, make sure to log out and log back in. This step is necessary to update the system paths.
