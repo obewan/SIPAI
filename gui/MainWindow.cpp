@@ -1,3 +1,5 @@
+
+#undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
 #include "MainWindow.h"
 #include "./ui_MainWindow.h"
 #include "Manager.h"

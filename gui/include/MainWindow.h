@@ -10,7 +10,6 @@
 
 #pragma once
 
-#undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
 #include <QMainWindow>
 #include <string>
 
