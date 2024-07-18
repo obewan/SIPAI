@@ -24,7 +24,7 @@ include_directories(${LIBSIPAI}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 qt_standard_project_setup()
 
-qt_add_executable(${PROJECT_NAME} MANUAL_FINALIZATION ${SOURCE})
+qt_add_executable(${PROJECT_NAME} MANUAL_FINALIZATION ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/icons.qrc)
 
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
@@ -44,7 +44,6 @@ endif()
 qt_finalize_executable(${PROJECT_NAME})
 
 #copy to parent dir
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/icons DESTINATION ${CMAKE_BINARY_DIR}/)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_BINARY_DIR})
 

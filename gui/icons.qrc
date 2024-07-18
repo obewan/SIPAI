@@ -1,0 +1,20 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>icons/Bkchem48.png</file>
+		<file>icons/Dialog-error-round.svg</file>
+		<file>icons/Document-new.svg</file>
+		<file>icons/Document-open.svg</file>
+		<file>icons/Document-save.svg</file>
+		<file>icons/Document-save-as.svg</file>
+		<file>icons/Edit-clear.svg</file>
+		<file>icons/Emblem-unreadable.svg</file>
+		<file>icons/Image-x-generic-2.svg</file>
+		<file>icons/Media-playback-start.svg</file>
+		<file>icons/Media-playback-stop.svg</file>
+		<file>icons/Preferences-system.svg</file>
+		<file>icons/Tango-style_info_icon.svg</file>
+		<file>icons/Text-x-generic-info.svg</file>
+    </qresource>
+</RCC>
+

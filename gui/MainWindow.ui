@@ -20,8 +20,8 @@
    <string>SIPAI</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>icons/Bkchem48.png</normaloff>icons/Bkchem48.png</iconset>
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/Bkchem48.png</normaloff>:/icons/Bkchem48.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -71,8 +71,8 @@
             </sizepolicy>
            </property>
            <attribute name="icon">
-            <iconset>
-             <normaloff>icons/Bkchem48.png</normaloff>icons/Bkchem48.png</iconset>
+            <iconset resource="icons.qrc">
+             <normaloff>:/icons/Bkchem48.png</normaloff>:/icons/Bkchem48.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Neural Network</string>
@@ -121,7 +121,7 @@
             <property name="title">
              <string>Layers settings</string>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>10</x>
@@ -304,8 +304,8 @@
             </sizepolicy>
            </property>
            <attribute name="icon">
-            <iconset>
-             <normaloff>icons/Preferences-system.svg</normaloff>icons/Preferences-system.svg</iconset>
+            <iconset resource="icons.qrc">
+             <normaloff>:/icons/Preferences-system.svg</normaloff>:/icons/Preferences-system.svg</iconset>
            </attribute>
            <attribute name="title">
             <string>Run Settings</string>
@@ -319,8 +319,8 @@
             </sizepolicy>
            </property>
            <attribute name="icon">
-            <iconset>
-             <normaloff>icons/Text-x-generic-info.svg</normaloff>icons/Text-x-generic-info.svg</iconset>
+            <iconset resource="icons.qrc">
+             <normaloff>:/icons/Text-x-generic-info.svg</normaloff>:/icons/Text-x-generic-info.svg</iconset>
            </attribute>
            <attribute name="title">
             <string>Logs</string>
@@ -380,8 +380,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>icons/Document-open.svg</normaloff>icons/Document-open.svg</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
    </property>
    <property name="text">
     <string>Import...</string>
@@ -395,8 +395,8 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset>
-     <normaloff>icons/Emblem-unreadable.svg</normaloff>icons/Emblem-unreadable.svg</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Emblem-unreadable.svg</normaloff>:/icons/Emblem-unreadable.svg</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -404,8 +404,8 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset>
-     <normaloff>icons/Tango-style_info_icon.svg</normaloff>icons/Tango-style_info_icon.svg</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Tango-style_info_icon.svg</normaloff>:/icons/Tango-style_info_icon.svg</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -416,8 +416,8 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>icons/Document-save.svg</normaloff>icons/Document-save.svg</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
    </property>
    <property name="text">
     <string>Export...</string>
@@ -430,7 +430,9 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>
