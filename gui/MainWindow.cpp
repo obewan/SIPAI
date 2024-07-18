@@ -1,8 +1,8 @@
 
-#undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
-#include "MainWindow.h"
-#include "./ui_MainWindow.h"
 #include "Manager.h"
+#undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
+#include "./ui_MainWindow.h"
+#include "MainWindow.h"
 #include <sstream>
 
 #include <QFileDialog>

@@ -11,7 +11,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 
 #rq. Need to add the .h as a source because QT moc will create a cpp from the .h (Q_OBJECT), 
 # or else put the .h in same directory than the .cpp to avoid link issues
@@ -35,7 +35,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     SRCDIR="${CMAKE_CURRENT_SOURCE_DIR}/"
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE libsipai Qt6::Core Qt::Gui Qt6::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE libsipai Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg)
 
 if(WIN32)
     target_sources(${PROJECT_NAME} PRIVATE ../version.rc)
