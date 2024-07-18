@@ -35,7 +35,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     SRCDIR="${CMAKE_CURRENT_SOURCE_DIR}/"
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt::Gui Qt6::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE libsipai Qt6::Core Qt::Gui Qt6::Widgets)
 
 if(WIN32)
     target_sources(${PROJECT_NAME} PRIVATE ../version.rc)

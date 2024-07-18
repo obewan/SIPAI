@@ -11,6 +11,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <string>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,4 +31,5 @@ public slots:
 
 private:
   Ui::MainWindow *ui;
+  std::string aboutStr_;
 };
