@@ -102,11 +102,11 @@
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+               <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
                 <item>
-                 <widget class="QGroupBox" name="groupBox">
+                 <widget class="QGroupBox" name="groupBoxNetworkLayers">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
@@ -121,13 +121,13 @@
                    <item>
                     <layout class="QFormLayout" name="formLayout_2">
                      <property name="sizeConstraint">
-                      <enum>QLayout::SetFixedSize</enum>
+                      <enum>QLayout::SetDefaultConstraint</enum>
                      </property>
                      <property name="fieldGrowthPolicy">
-                      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                      </property>
                      <property name="horizontalSpacing">
-                      <number>21</number>
+                      <number>6</number>
                      </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="labelInputLayers">
@@ -139,62 +139,22 @@
                      <item row="0" column="1">
                       <widget class="QSpinBox" name="spinBoxInputLayers">
                        <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
                        </property>
                        <property name="toolTip">
                         <string>Total of input layers</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="labelHiddenLayers">
-                       <property name="text">
-                        <string>Hidden layers:</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QSpinBox" name="spinBoxHiddenLayers">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="toolTip">
-                        <string>Total of hidden layers </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="0">
-                      <widget class="QLabel" name="labelOutputLayers">
-                       <property name="text">
-                        <string>Output layers:</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="6" column="1">
-                      <widget class="QSpinBox" name="spinBoxOutputLayers">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="toolTip">
-                        <string>Total of output layers</string>
                        </property>
                       </widget>
                      </item>
@@ -208,10 +168,10 @@
                      <item row="1" column="1">
                       <widget class="QSpinBox" name="spinBoxInputNeurons">
                        <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -221,20 +181,43 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="0">
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelHiddenLayers">
+                       <property name="text">
+                        <string>Hidden layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QSpinBox" name="spinBoxHiddenLayers">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Total of hidden layers </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
                       <widget class="QLabel" name="labelHiddenNeurons">
                        <property name="text">
                         <string>Hidden neurons per layers:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
+                     <item row="3" column="1">
                       <widget class="QSpinBox" name="spinBoxHiddenNeurons">
                        <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -244,20 +227,43 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="7" column="0">
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelOutputLayers">
+                       <property name="text">
+                        <string>Output layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QSpinBox" name="spinBoxOutputLayers">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Total of output layers</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
                       <widget class="QLabel" name="labelOutputNeurons">
                        <property name="text">
                         <string>Output neurons per layers:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="7" column="1">
+                     <item row="5" column="1">
                       <widget class="QSpinBox" name="spinBoxOutputNeurons">
                        <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -267,19 +273,145 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="0">
-                      <widget class="Line" name="line">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBoxNetworkParams">
+                  <property name="title">
+                   <string>Network parameters</string>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <layout class="QFormLayout" name="formLayout_3">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>6</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelLearningRate">
+                       <property name="text">
+                        <string>Learning rate:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="0">
-                      <widget class="Line" name="line_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
+                     <item row="0" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLR">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
                        </property>
                       </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelAdaptiveLR">
+                       <property name="text">
+                        <string>Learning rate adjustable:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="checkBoxLRAdaptive">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelAdaptiveLRFactor">
+                       <property name="text">
+                        <string>Learning rate adjustable factor:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLRAdatpiveFactor"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelLRAdaptiveIncrease">
+                       <property name="text">
+                        <string>Learning rate adjustable increase:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QCheckBox" name="checkBoxLRAdaptiveIncrease">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelActivationFunctionHidden">
+                       <property name="text">
+                        <string>Activation function for hidden neurons:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QComboBox" name="comboBoxActivationFunctionHidden"/>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelActivationFunctionHiddenAlpha">
+                       <property name="text">
+                        <string>Activation function for hidden alpha:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionHiddenAlpha"/>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelActivationFunctionOutput">
+                       <property name="text">
+                        <string>Activation function for output neurons:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QComboBox" name="comboBoxActivationFunctionOutput"/>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelActivationFunctionOutputAlpha">
+                       <property name="text">
+                        <string>Activation function for output alpha:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionOutputAlpha"/>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelErrorMin">
+                       <property name="text">
+                        <string>Learning error min:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMin"/>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="labelErrorMax">
+                       <property name="text">
+                        <string>Learning error max:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMax"/>
                      </item>
                     </layout>
                    </item>
