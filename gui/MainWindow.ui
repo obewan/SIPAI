@@ -84,7 +84,7 @@
                <enum>QLayout::SetNoConstraint</enum>
               </property>
               <item>
-               <layout class="QFormLayout" name="formLayout">
+               <layout class="QFormLayout" name="formLayout_4">
                 <item row="0" column="0">
                  <widget class="QLabel" name="labelCurrentNetwork">
                   <property name="text">
@@ -93,11 +93,29 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QLineEdit" name="lineEditCurrentNetwork">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
+                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditCurrentNetwork">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonCurrentNetwork">
+                    <property name="toolTip">
+                     <string>Select a file...</string>
+                    </property>
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -506,20 +524,6 @@
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <widget class="QPushButton" name="pushButtonNetworkLoad">
-                  <property name="toolTip">
-                   <string>Load a neural network</string>
-                  </property>
-                  <property name="text">
-                   <string>Load</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="icons.qrc">
-                    <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </item>
              </layout>
@@ -540,6 +544,76 @@
            <attribute name="title">
             <string>Run Settings</string>
            </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <layout class="QFormLayout" name="formLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelMode">
+                  <property name="text">
+                   <string>Running mode:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="comboBoxMode"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelInputFile">
+                  <property name="text">
+                   <string>Input file:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditInputFile"/>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonInputFile">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="labelOutputFile">
+                  <property name="text">
+                   <string>Output file:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditOuputFile"/>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonOutputFile">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tabLogs">
            <property name="sizePolicy">
