@@ -36,10 +36,10 @@ struct AppParams {
   float training_split_ratio = 0.7f;
   float learning_rate_max = 1.0f;
   float learning_rate_min = 0.00001f;
-  int max_epochs = NO_MAX_EPOCHS;
-  size_t max_epochs_without_improvement = 2;
-  size_t epoch_autosave = 100;
-  size_t image_split = 1;
+  int max_epochs = NO_MAX_EPOCHS;            // TODO: check for 0 = no max
+  size_t max_epochs_without_improvement = 2; // TODO: check for 0 = no max
+  size_t epoch_autosave = 100;               // TODO: check for 0 = no autosave
+  size_t image_split = 1;                    // TODO: check for 0 = no split
   size_t training_reduce_factor = 4;
   bool random_loading = false;
   bool bulk_loading = false;

@@ -97,7 +97,7 @@
                   <item>
                    <widget class="QLineEdit" name="lineEditCurrentNetwork">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -602,9 +602,9 @@
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
+             <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
               <item>
-               <layout class="QFormLayout" name="formLayout">
+               <layout class="QFormLayout" name="formLayout_7">
                 <item row="0" column="0">
                  <widget class="QLabel" name="labelMode">
                   <property name="text">
@@ -613,16 +613,58 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QComboBox" name="comboBoxMode"/>
+                 <layout class="QHBoxLayout" name="horizontalLayout_15" stretch="1,1">
+                  <item>
+                   <widget class="QComboBox" name="comboBoxMode">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
-                <item row="2" column="0">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelSpace_11">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="labelSpace_12">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QFormLayout" name="formLayout_6">
+                <item row="0" column="0">
                  <widget class="QLabel" name="labelInputFile">
                   <property name="text">
                    <string>Input file:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
+                <item row="0" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_8">
                   <item>
                    <widget class="QLineEdit" name="lineEditInputFile"/>
@@ -640,14 +682,14 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="0">
+                <item row="1" column="0">
                  <widget class="QLabel" name="labelOutputFile">
                   <property name="text">
                    <string>Output file:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="1" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_2">
                   <item>
                    <widget class="QLineEdit" name="lineEditOuputFile"/>
@@ -665,14 +707,14 @@
                   </item>
                  </layout>
                 </item>
-                <item row="4" column="0">
+                <item row="2" column="0">
                  <widget class="QLabel" name="labelTrainingFile">
                   <property name="text">
                    <string>Training file:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="2" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_10">
                   <item>
                    <widget class="QLineEdit" name="lineEditTrainingFile"/>
@@ -690,14 +732,14 @@
                   </item>
                  </layout>
                 </item>
-                <item row="5" column="0">
+                <item row="3" column="0">
                  <widget class="QLabel" name="labelTrainingFolder">
                   <property name="text">
                    <string>Training folder:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="1">
+                <item row="3" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_11">
                   <item>
                    <widget class="QLineEdit" name="lineEditTrainingFolder"/>
@@ -715,53 +757,157 @@
                   </item>
                  </layout>
                 </item>
-                <item row="6" column="0">
-                 <widget class="QLabel" name="labelSpace_9">
-                  <property name="text">
-                   <string/>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="1,1">
+                <item>
+                 <layout class="QFormLayout" name="formLayout">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="labelSpace_9">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="labelSpace_10">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelOutputScale">
+                    <property name="text">
+                     <string>Output scale factor:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QDoubleSpinBox" name="doubleSpinBoxOutputScaleFactor">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="labelTrainingSplit">
+                    <property name="text">
+                     <string>Training split ratio:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="labelLearningRateMin">
+                    <property name="text">
+                     <string>Learning rate min:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMin"/>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="labelLearningRateMax">
+                    <property name="text">
+                     <string>Learning rate max:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMax"/>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="labelEpochsMax">
+                    <property name="text">
+                     <string>Epochs max:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QSpinBox" name="spinBoxEpochsMax"/>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="labelEpochsWithoutImpMax">
+                    <property name="text">
+                     <string>Epochs without improvement max: </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
+                   <widget class="QSpinBox" name="spinBoxEpochsWithoutImpMax"/>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="labelEpochsSaving">
+                    <property name="text">
+                     <string>Epochs frequency model saving:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="1">
+                   <widget class="QSpinBox" name="spinBoxEpochsSaving"/>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="labelImageSplits">
+                    <property name="text">
+                     <string>Image splits:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1">
+                   <widget class="QSpinBox" name="spinBoxImageSplits"/>
+                  </item>
+                  <item row="9" column="0">
+                   <widget class="QLabel" name="labelImageReducingFactor">
+                    <property name="text">
+                     <string>Image reducing factor:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="1">
+                   <widget class="QDoubleSpinBox" name="doubleSpinBoxImageReducingFactor"/>
+                  </item>
+                  <item row="10" column="0">
+                   <widget class="QLabel" name="labelImagesRandomLoading">
+                    <property name="text">
+                     <string>Images random loading:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="1">
+                   <widget class="QCheckBox" name="checkBoxImagesRandomLoading">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                 </widget>
-                </item>
-                <item row="6" column="1">
-                 <widget class="QLabel" name="labelSpace_10">
-                  <property name="text">
-                   <string/>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
                   </property>
-                 </widget>
-                </item>
-                <item row="7" column="0">
-                 <widget class="QLabel" name="labelOutputScale">
-                  <property name="text">
-                   <string>Output scale factor:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBoxOutputScaleFactor"/>
-                </item>
-                <item row="8" column="0">
-                 <widget class="QLabel" name="labelTrainingSplit">
-                  <property name="text">
-                   <string>Training split ratio:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit"/>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="labelSpace_11">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="labelSpace_12">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
+                 </spacer>
                 </item>
                </layout>
               </item>
