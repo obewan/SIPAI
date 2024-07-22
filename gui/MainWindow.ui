@@ -120,7 +120,7 @@
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
+               <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1">
                 <item>
                  <widget class="QGroupBox" name="groupBoxNetworkLayers">
                   <property name="sizePolicy">
@@ -130,7 +130,7 @@
                    </sizepolicy>
                   </property>
                   <property name="title">
-                   <string>Layers settings</string>
+                   <string>Layers parameters</string>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <property name="sizeConstraint">
@@ -327,7 +327,7 @@
                 <item>
                  <widget class="QGroupBox" name="groupBoxNetworkParams">
                   <property name="title">
-                   <string>Network parameters</string>
+                   <string>Neural network parameters</string>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_6">
                    <item>
@@ -491,22 +491,6 @@
                    </item>
                   </layout>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>
@@ -757,157 +741,320 @@
                   </item>
                  </layout>
                 </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="labelSpace_19">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="labelSpace_20">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="1,1">
                 <item>
-                 <layout class="QFormLayout" name="formLayout">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="labelSpace_9">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="labelSpace_10">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="labelOutputScale">
-                    <property name="text">
-                     <string>Output scale factor:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QDoubleSpinBox" name="doubleSpinBoxOutputScaleFactor">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="labelTrainingSplit">
-                    <property name="text">
-                     <string>Training split ratio:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit"/>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="labelLearningRateMin">
-                    <property name="text">
-                     <string>Learning rate min:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMin"/>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="labelLearningRateMax">
-                    <property name="text">
-                     <string>Learning rate max:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMax"/>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="labelEpochsMax">
-                    <property name="text">
-                     <string>Epochs max:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
-                   <widget class="QSpinBox" name="spinBoxEpochsMax"/>
-                  </item>
-                  <item row="6" column="0">
-                   <widget class="QLabel" name="labelEpochsWithoutImpMax">
-                    <property name="text">
-                     <string>Epochs without improvement max: </string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="1">
-                   <widget class="QSpinBox" name="spinBoxEpochsWithoutImpMax"/>
-                  </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="labelEpochsSaving">
-                    <property name="text">
-                     <string>Epochs frequency model saving:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="1">
-                   <widget class="QSpinBox" name="spinBoxEpochsSaving"/>
-                  </item>
-                  <item row="8" column="0">
-                   <widget class="QLabel" name="labelImageSplits">
-                    <property name="text">
-                     <string>Image splits:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="1">
-                   <widget class="QSpinBox" name="spinBoxImageSplits"/>
-                  </item>
-                  <item row="9" column="0">
-                   <widget class="QLabel" name="labelImageReducingFactor">
-                    <property name="text">
-                     <string>Image reducing factor:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="9" column="1">
-                   <widget class="QDoubleSpinBox" name="doubleSpinBoxImageReducingFactor"/>
-                  </item>
-                  <item row="10" column="0">
-                   <widget class="QLabel" name="labelImagesRandomLoading">
-                    <property name="text">
-                     <string>Images random loading:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="10" column="1">
-                   <widget class="QCheckBox" name="checkBoxImagesRandomLoading">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
+                 <widget class="QGroupBox" name="groupBoxRunSettingsMain">
+                  <property name="title">
+                   <string>Main parameters</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_5">
+                   <item>
+                    <layout class="QFormLayout" name="formLayout">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelOutputScale">
+                       <property name="text">
+                        <string>Output scale factor:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxOutputScaleFactor">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelTrainingSplit">
+                       <property name="text">
+                        <string>Training split ratio:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelLearningRateMin">
+                       <property name="text">
+                        <string>Learning rate min:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMin"/>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelLearningRateMax">
+                       <property name="text">
+                        <string>Learning rate max:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMax"/>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelEpochsMax">
+                       <property name="text">
+                        <string>Epochs total max:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QSpinBox" name="spinBoxEpochsMax"/>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelEpochsWithoutImpMax">
+                       <property name="text">
+                        <string>Epochs without improvement max: </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QSpinBox" name="spinBoxEpochsWithoutImpMax"/>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelEpochsSaving">
+                       <property name="text">
+                        <string>Epochs model saving frequency:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QSpinBox" name="spinBoxEpochsSaving"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelSpace_9">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="labelSpace_10">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelSpace_13">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLabel" name="labelSpace_14">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QGroupBox" name="groupBoxRunSettingOptional">
+                  <property name="title">
+                   <string>Optional parameters</string>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
+                  <layout class="QVBoxLayout" name="verticalLayout_6">
+                   <item>
+                    <layout class="QFormLayout" name="formLayout_5">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelImageSplits">
+                       <property name="text">
+                        <string>Image splits:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QSpinBox" name="spinBoxImageSplits"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelImageReducingFactor">
+                       <property name="text">
+                        <string>Image reducing factor:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxImageReducingFactor"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelImagesRandomLoading">
+                       <property name="text">
+                        <string>Images random loading:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QCheckBox" name="checkBoxImagesRandomLoading">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelImagesBulk">
+                       <property name="text">
+                        <string>Images bulk loading:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QCheckBox" name="checkBoxImagesBulk">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelImagesPadding">
+                       <property name="text">
+                        <string>Images padding:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QCheckBox" name="checkBoxImagesPadding">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelEnableCpuParallel">
+                       <property name="text">
+                        <string>Enable CPU parallelism:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QCheckBox" name="checkBoxEnableCpuParallel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelEnableGpuParallel">
+                       <property name="text">
+                        <string>Enable GPU parallelism:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QCheckBox" name="checkBoxEnableGpuParallel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="labelVerbose">
+                       <property name="text">
+                        <string>Enable verbose logs:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1">
+                      <widget class="QCheckBox" name="checkBoxVerbose">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="0">
+                      <widget class="QLabel" name="labelVerboseDebug">
+                       <property name="text">
+                        <string>Enable verbose Debug logs:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="1">
+                      <widget class="QCheckBox" name="checkBoxVerboseDebug">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="0">
+                      <widget class="QLabel" name="labelVerboseVulkan">
+                       <property name="text">
+                        <string>Enable verbose Vulkan logs:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="1">
+                      <widget class="QCheckBox" name="checkBoxVerboseVulkan">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelSpace_15">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLabel" name="labelSpace_16">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelSpace_17">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QLabel" name="labelSpace_18">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
                 </item>
                </layout>
               </item>
