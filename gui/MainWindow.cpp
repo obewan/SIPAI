@@ -12,7 +12,8 @@ using namespace Qt::StringLiterals;
 using namespace sipai;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
+    : QMainWindow(parent), ui(new Ui::MainWindow),
+      modelLogger(new QStandardItemModel(0, 3)) {
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 
@@ -21,6 +22,16 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::onActionImportNeuralNetwork);
   connect(ui->actionAbout, &QAction::triggered, this,
           &MainWindow::onActionAbout);
+
+  // Add logs
+  modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
+  ui->tableViewLogs->setModel(modelLogger);
+  ui->tableViewLogs->horizontalHeader()->setSectionResizeMode(
+      0, QHeaderView::ResizeToContents); // Timestamp
+  ui->tableViewLogs->horizontalHeader()->setSectionResizeMode(
+      1, QHeaderView::ResizeToContents); // Log Level
+  ui->tableViewLogs->horizontalHeader()->setSectionResizeMode(
+      2, QHeaderView::Stretch); // Message
 
   // Other inits
   const std::string &version = Manager::getConstInstance().app_params.version;
@@ -34,7 +45,10 @@ MainWindow::MainWindow(QWidget *parent)
   aboutStr_ = aboutStr.str();
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() {
+  delete ui;
+  delete modelLogger;
+}
 
 void MainWindow::onActionImportNeuralNetwork() {
   auto fileName = QFileDialog::getOpenFileName(

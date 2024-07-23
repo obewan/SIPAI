@@ -11,6 +11,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QStandardItemModel>
 #include <string>
 
 QT_BEGIN_NAMESPACE
@@ -31,5 +32,7 @@ public slots:
 
 private:
   Ui::MainWindow *ui;
+  QStandardItemModel *modelLogger;
+
   std::string aboutStr_;
 };
