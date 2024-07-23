@@ -17,11 +17,12 @@ MainWindow::MainWindow(QWidget *parent)
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 
-  // Connect to slots
-  connect(ui->actionImportNeuralNetwork, &QAction::triggered, this,
-          &MainWindow::onActionImportNeuralNetwork);
+  // Connect actions to slots
+  connect(ui->actionLoadNeuralNetwork, &QAction::triggered, this,
+          &MainWindow::onActionLoadNeuralNetwork);  
   connect(ui->actionAbout, &QAction::triggered, this,
           &MainWindow::onActionAbout);
+    
 
   // Add logs
   modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
@@ -50,7 +51,7 @@ MainWindow::~MainWindow() {
   delete modelLogger;
 }
 
-void MainWindow::onActionImportNeuralNetwork() {
+void MainWindow::onActionLoadNeuralNetwork() {
   auto fileName = QFileDialog::getOpenFileName(
       this, tr("Select a Sipai neural network model Json file..."), "",
       tr("JSON (*.json)"));

@@ -28,7 +28,7 @@ public:
 
 public slots:
   void onActionAbout();
-  void onActionImportNeuralNetwork();
+  void onActionLoadNeuralNetwork();
 
 private:
   Ui::MainWindow *ui;

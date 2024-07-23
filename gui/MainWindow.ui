@@ -1111,8 +1111,13 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionImportNeuralNetwork"/>
-    <addaction name="actionExportNeuralNetwork"/>
+    <addaction name="actionLoadSettings"/>
+    <addaction name="actionSaveSettings"/>
+    <addaction name="actionSaveAsSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoadNeuralNetwork"/>
+    <addaction name="actionSaveNeuralNetwork"/>
+    <addaction name="actionSaveAsNeuralNetwork"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -1137,10 +1142,15 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionImportNeuralNetwork"/>
-   <addaction name="actionExportNeuralNetwork"/>
+   <addaction name="actionLoadSettings"/>
+   <addaction name="actionSaveSettings"/>
+   <addaction name="actionSaveAsSettings"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun"/>
+   <addaction name="actionStop"/>
+   <addaction name="actionStopExit"/>
   </widget>
-  <action name="actionImportNeuralNetwork">
+  <action name="actionLoadNeuralNetwork">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -1149,22 +1159,25 @@
      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
    </property>
    <property name="text">
-    <string>Import...</string>
+    <string>Load a neural network...</string>
    </property>
    <property name="iconText">
-    <string>Import...</string>
+    <string>Load neural network...</string>
    </property>
    <property name="toolTip">
-    <string>Import a Neural Network</string>
+    <string>Load a Neural Network</string>
    </property>
   </action>
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/Emblem-unreadable.svg</normaloff>:/icons/Emblem-unreadable.svg</iconset>
+     <normaloff>:/icons/Dialog-error-round.svg</normaloff>:/icons/Dialog-error-round.svg</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="actionAbout">
@@ -1175,8 +1188,11 @@
    <property name="text">
     <string>About</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
   </action>
-  <action name="actionExportNeuralNetwork">
+  <action name="actionSaveNeuralNetwork">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1185,13 +1201,13 @@
      <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
    </property>
    <property name="text">
-    <string>Export...</string>
+    <string>Save the neural network</string>
    </property>
    <property name="iconText">
-    <string>Export...</string>
+    <string>Save the neural network</string>
    </property>
    <property name="toolTip">
-    <string>Export the neural network</string>
+    <string>Save  the  neural network</string>
    </property>
   </action>
   <action name="actionHelp">
@@ -1201,6 +1217,123 @@
    </property>
    <property name="text">
     <string>Help</string>
+   </property>
+  </action>
+  <action name="actionLoadSettings">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load settings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Load settings...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveSettings">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Save settings</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveAsSettings">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save settings as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save settings as...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Media-playback-start.svg</normaloff>:/icons/Media-playback-start.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="toolTip">
+    <string>Run</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Media-playback-stop.svg</normaloff>:/icons/Media-playback-stop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop the run and save the neural network</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionStopExit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Dialog-STOP.svg</normaloff>:/icons/Dialog-STOP.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stop and exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop and exit the run without saving</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveAsNeuralNetwork">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save the neural network as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the neural network as...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
    </property>
   </action>
  </widget>
@@ -1221,6 +1354,22 @@
     <hint type="destinationlabel">
      <x>399</x>
      <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonCurrentNetwork</sender>
+   <signal>pressed()</signal>
+   <receiver>actionLoadNeuralNetwork</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

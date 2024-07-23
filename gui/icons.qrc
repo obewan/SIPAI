@@ -16,7 +16,6 @@
         <file>icons/Text-x-generic-info.svg</file>
         <file>icons/Tecno-rueda.svg</file>
         <file>icons/Help-content.svg</file>
+        <file>icons/Dialog-STOP.svg</file>
     </qresource>
 </RCC>
-
-
