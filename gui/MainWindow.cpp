@@ -7,6 +7,8 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
+#include <QThread>
 
 using namespace Qt::StringLiterals;
 using namespace sipai;
@@ -19,10 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
 
   // Connect actions to slots
   connect(ui->actionLoadNeuralNetwork, &QAction::triggered, this,
-          &MainWindow::onActionLoadNeuralNetwork);  
+          &MainWindow::onActionLoadNeuralNetwork);
   connect(ui->actionAbout, &QAction::triggered, this,
           &MainWindow::onActionAbout);
-    
 
   // Add logs
   modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
@@ -55,7 +56,32 @@ void MainWindow::onActionLoadNeuralNetwork() {
   auto fileName = QFileDialog::getOpenFileName(
       this, tr("Select a Sipai neural network model Json file..."), "",
       tr("JSON (*.json)"));
-  // TODO: continue with check and loading file
+
+  if (fileName.isEmpty()) {
+    return; // No file selected
+  }
+  Manager::getInstance().app_params.network_to_import = fileName.toStdString();
+
+  QFile file(fileName);
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QMessageBox::warning(this, tr("Error"), tr("Cannot open file"));
+    return;
+  }
+
+  QProgressDialog progress("Loading neural network...", "Abort", 0, 100, this);
+  progress.setWindowModality(Qt::WindowModal);
+  for (int i = 0; i < 100; i++) {
+    progress.setValue(i);
+
+    if (progress.wasCanceled())
+      break;
+    //... load here
+    // Simulate some loading work
+    QThread::msleep(50);
+  }
+  progress.setValue(100);
+
+  ui->lineEditCurrentNetwork->setText(fileName);
 }
 
 void MainWindow::onActionAbout() {

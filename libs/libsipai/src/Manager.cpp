@@ -15,7 +15,7 @@ using namespace sipai;
 
 std::unique_ptr<Manager> Manager::instance_ = nullptr;
 
-void Manager::createOrImportNetwork() {
+void Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
   if (!network) {
     auto builder = std::make_unique<NeuralNetworkBuilder>();
     network = builder->createOrImport()

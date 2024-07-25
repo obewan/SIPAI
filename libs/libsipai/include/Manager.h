@@ -50,8 +50,10 @@ public:
 
   /**
    * @brief Network builder.
+   *
+   * @param progressCallback
    */
-  void createOrImportNetwork();
+  void createOrImportNetwork(std::function<void(int)> progressCallback = {});
 
   /**
    * @brief Export the neural network to its json and csv files.
