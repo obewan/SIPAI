@@ -11,8 +11,11 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QProgressDialog>
 #include <QStandardItemModel>
+#include <QThread>
 #include <string>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,9 +33,18 @@ public slots:
   void onActionAbout();
   void onActionLoadNeuralNetwork();
 
+private slots:
+  void onProgressUpdated(int value);
+  void onLoadingFinished();
+  void onErrorOccurred(const QString &message);
+
 private:
   Ui::MainWindow *ui;
   QStandardItemModel *modelLogger;
+  QProgressDialog *progressDialog;
+  QThread *workerThread;
+  QString currentFileName;
 
   std::string aboutStr_;
+  void displayError(const QString &message);
 };

@@ -3,19 +3,19 @@
 #undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
 #include "./ui_MainWindow.h"
 #include "MainWindow.h"
+#include "NetworkLoader.h"
 #include <sstream>
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QProgressDialog>
-#include <QThread>
 
 using namespace Qt::StringLiterals;
 using namespace sipai;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
-      modelLogger(new QStandardItemModel(0, 3)) {
+      modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
+      workerThread(nullptr) {
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 
@@ -60,7 +60,8 @@ void MainWindow::onActionLoadNeuralNetwork() {
   if (fileName.isEmpty()) {
     return; // No file selected
   }
-  Manager::getInstance().app_params.network_to_import = fileName.toStdString();
+
+  ui->lineEditCurrentNetwork->setText("");
 
   QFile file(fileName);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -68,20 +69,75 @@ void MainWindow::onActionLoadNeuralNetwork() {
     return;
   }
 
-  QProgressDialog progress("Loading neural network...", "Abort", 0, 100, this);
-  progress.setWindowModality(Qt::WindowModal);
-  for (int i = 0; i < 100; i++) {
-    progress.setValue(i);
+  currentFileName = fileName;
+  progressDialog =
+      new QProgressDialog("Loading neural network...", "Abort", 0, 100, this);
+  progressDialog->setWindowModality(Qt::WindowModal);
 
-    if (progress.wasCanceled())
-      break;
-    //... load here
-    // Simulate some loading work
-    QThread::msleep(50);
+  NetworkLoader *loader = new NetworkLoader;
+  loader->setFileName(fileName);
+
+  workerThread = new QThread;
+  loader->moveToThread(workerThread);
+
+  connect(workerThread, &QThread::started, loader, &NetworkLoader::loadNetwork);
+  connect(loader, &NetworkLoader::progressUpdated, this,
+          &MainWindow::onProgressUpdated, Qt::QueuedConnection);
+  connect(loader, &NetworkLoader::loadingFinished, this,
+          &MainWindow::onLoadingFinished, Qt::QueuedConnection);
+  connect(loader, &NetworkLoader::errorOccurred, this,
+          &MainWindow::onErrorOccurred, Qt::QueuedConnection);
+
+  connect(progressDialog, &QProgressDialog::canceled, [loader, this]() {
+    loader->deleteLater();
+    workerThread->quit();
+    workerThread->wait();
+    workerThread->deleteLater();
+  });
+
+  connect(workerThread, &QThread::finished, loader, &QObject::deleteLater);
+  connect(workerThread, &QThread::finished, workerThread,
+          &QObject::deleteLater);
+
+  workerThread->start();
+}
+
+void MainWindow::onProgressUpdated(int value) {
+  if (progressDialog) {
+    progressDialog->setValue(value);
   }
-  progress.setValue(100);
+}
 
-  ui->lineEditCurrentNetwork->setText(fileName);
+void MainWindow::onLoadingFinished() {
+  if (progressDialog) {
+    progressDialog->setValue(100);
+    ui->lineEditCurrentNetwork->setText(currentFileName);
+    progressDialog->close();
+    progressDialog->deleteLater();
+    progressDialog = nullptr;
+  }
+  workerThread->quit();
+  workerThread->wait();
+  workerThread->deleteLater();
+  workerThread = nullptr;
+}
+
+void MainWindow::onErrorOccurred(const QString &message) {
+  QMetaObject::invokeMethod(
+      this,
+      [this, message]() {
+        if (progressDialog) {
+          progressDialog->close();
+          progressDialog->deleteLater();
+          progressDialog = nullptr;
+        }
+        QMessageBox::warning(this, tr("Error"), message);
+        workerThread->quit();
+        workerThread->wait();
+        workerThread->deleteLater();
+        workerThread = nullptr;
+      },
+      Qt::QueuedConnection);
 }
 
 void MainWindow::onActionAbout() {
