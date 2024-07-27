@@ -3,11 +3,11 @@
 #undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
 #include "./ui_MainWindow.h"
 #include "MainWindow.h"
-#include "NetworkLoader.h"
 #include <sstream>
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QStatusBar>
 
 using namespace Qt::StringLiterals;
 using namespace sipai;
@@ -15,7 +15,7 @@ using namespace sipai;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
-      workerThread(nullptr) {
+      futureWatcher(new QFutureWatcher<void>(this)) {
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 
@@ -24,6 +24,12 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::onActionLoadNeuralNetwork);
   connect(ui->actionAbout, &QAction::triggered, this,
           &MainWindow::onActionAbout);
+
+  // Connect the QFutureWatcher signals to appropriate slots
+  connect(futureWatcher, &QFutureWatcher<void>::finished, this,
+          &MainWindow::onLoadingFinished);
+  connect(futureWatcher, &QFutureWatcher<void>::progressValueChanged, this,
+          &MainWindow::onProgressUpdated);
 
   // Add logs
   modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
@@ -74,32 +80,17 @@ void MainWindow::onActionLoadNeuralNetwork() {
       new QProgressDialog("Loading neural network...", "Abort", 0, 100, this);
   progressDialog->setWindowModality(Qt::WindowModal);
 
-  NetworkLoader *loader = new NetworkLoader;
-  loader->setFileName(fileName);
+  connect(progressDialog, &QProgressDialog::canceled, this,
+          &MainWindow::onLoadingCanceled);
 
-  workerThread = new QThread;
-  loader->moveToThread(workerThread);
+  // Update status bar
+  statusBar()->showMessage(tr("Loading neural network..."));
 
-  connect(workerThread, &QThread::started, loader, &NetworkLoader::loadNetwork);
-  connect(loader, &NetworkLoader::progressUpdated, this,
-          &MainWindow::onProgressUpdated, Qt::QueuedConnection);
-  connect(loader, &NetworkLoader::loadingFinished, this,
-          &MainWindow::onLoadingFinished, Qt::QueuedConnection);
-  connect(loader, &NetworkLoader::errorOccurred, this,
-          &MainWindow::onErrorOccurred, Qt::QueuedConnection);
+  // Start the concurrent loading process
+  QFuture<void> future = QtConcurrent::run([this]() { loadNetwork(); });
+  futureWatcher->setFuture(future);
 
-  connect(progressDialog, &QProgressDialog::canceled, [loader, this]() {
-    loader->deleteLater();
-    workerThread->quit();
-    workerThread->wait();
-    workerThread->deleteLater();
-  });
-
-  connect(workerThread, &QThread::finished, loader, &QObject::deleteLater);
-  connect(workerThread, &QThread::finished, workerThread,
-          &QObject::deleteLater);
-
-  workerThread->start();
+  progressDialog->show();
 }
 
 void MainWindow::onProgressUpdated(int value) {
@@ -108,18 +99,27 @@ void MainWindow::onProgressUpdated(int value) {
   }
 }
 
+void MainWindow::onLoadingCanceled() {
+  if (futureWatcher->isRunning()) {
+    futureWatcher->cancel();
+  }
+  if (progressDialog) {
+    progressDialog->close();
+    progressDialog->deleteLater();
+  }
+  statusBar()->showMessage(tr("Loading canceled"),
+                           5000); // Show message for 5 seconds
+}
+
 void MainWindow::onLoadingFinished() {
   if (progressDialog) {
     progressDialog->setValue(100);
     ui->lineEditCurrentNetwork->setText(currentFileName);
     progressDialog->close();
     progressDialog->deleteLater();
-    progressDialog = nullptr;
   }
-  workerThread->quit();
-  workerThread->wait();
-  workerThread->deleteLater();
-  workerThread = nullptr;
+  statusBar()->showMessage(tr("Loading finished"),
+                           5000); // Show message for 5 seconds
 }
 
 void MainWindow::onErrorOccurred(const QString &message) {
@@ -129,17 +129,33 @@ void MainWindow::onErrorOccurred(const QString &message) {
         if (progressDialog) {
           progressDialog->close();
           progressDialog->deleteLater();
-          progressDialog = nullptr;
         }
+        statusBar()->showMessage(tr("Error: %1").arg(message),
+                                 5000); // Show message for 5 seconds
         QMessageBox::warning(this, tr("Error"), message);
-        workerThread->quit();
-        workerThread->wait();
-        workerThread->deleteLater();
-        workerThread = nullptr;
       },
       Qt::QueuedConnection);
 }
 
 void MainWindow::onActionAbout() {
   QMessageBox::about(this, tr("About SIPAI"), aboutStr_.c_str());
+}
+
+void MainWindow::loadNetwork() {
+  auto &manager = Manager::getInstance();
+  manager.app_params.network_to_import = currentFileName.toStdString();
+
+  try {
+    manager.createOrImportNetwork([this](int i) {
+      QMetaObject::invokeMethod(futureWatcher, "setProgressValue",
+                                Q_ARG(int, i));
+      // Check for cancellation
+      if (futureWatcher->isCanceled()) {
+        throw std::runtime_error("Loading canceled");
+      }
+    });
+  } catch (const std::exception &ex) {
+    QMetaObject::invokeMethod(this, "onErrorOccurred",
+                              Q_ARG(QString, ex.what()));
+  }
 }

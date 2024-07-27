@@ -10,12 +10,12 @@
 
 #pragma once
 
+#include <QFutureWatcher>
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <QStandardItemModel>
-#include <QThread>
+#include <QtConcurrent>
 #include <string>
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,6 +35,7 @@ public slots:
 
 private slots:
   void onProgressUpdated(int value);
+  void onLoadingCanceled();
   void onLoadingFinished();
   void onErrorOccurred(const QString &message);
 
@@ -42,9 +43,9 @@ private:
   Ui::MainWindow *ui;
   QStandardItemModel *modelLogger;
   QProgressDialog *progressDialog;
-  QThread *workerThread;
+  QFutureWatcher<void> *futureWatcher;
   QString currentFileName;
 
   std::string aboutStr_;
-  void displayError(const QString &message);
+  void loadNetwork();
 };
