@@ -31,10 +31,12 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::createOrImport() {
     network_ =
         neuralNetworkImportExport.importModel(app_params_, network_params_);
     isImported = true;
+    _incrementProgress(10); // should be 10 after
   } else {
     SimpleLogger::LOG_INFO("Creating the neural network...");
     network_ = std::make_unique<NeuralNetwork>();
     isImported = false;
+    _incrementProgress(10); // should be 10 after
   }
   return *this;
 }
@@ -56,6 +58,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   auto inputLayer = new LayerInput(network_params_.input_size_x,
                                    network_params_.input_size_y);
   network_->layers.push_back(inputLayer);
+  _incrementProgress(10); // should be 20 after
 
   // Add Hidden Layers
   for (size_t i = 0; i < network_params_.hiddens_count; ++i) {
@@ -66,6 +69,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
     hiddenLayer->activationFunctionAlpha =
         network_params_.hidden_activation_alpha;
     network_->layers.push_back(hiddenLayer);
+    _incrementProgress(
+        10 * ((int)i + 1) /
+        (int)network_params_.hiddens_count); // should be 30 after
   }
 
   // Add Output Layer
@@ -75,6 +81,27 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   outputLayer->activationFunctionAlpha =
       network_params_.output_activation_alpha;
   network_->layers.push_back(outputLayer);
+  _incrementProgress(10); // should be 40 after
+  return *this;
+}
+
+NeuralNetworkBuilder &NeuralNetworkBuilder::bindLayers() {
+  SimpleLogger::LOG_INFO("Binding layers...");
+  if (!network_) {
+    throw NeuralNetworkException("neural network null");
+  }
+  if (network_->layers.empty()) {
+    throw NeuralNetworkException("empty layers");
+  }
+  for (size_t i = 0; i < network_->layers.size(); ++i) {
+    if (i > 0) {
+      network_->layers.at(i)->previousLayer = network_->layers.at(i - 1);
+    }
+    if (i < network_->layers.size() - 1) {
+      network_->layers.at(i)->nextLayer = network_->layers.at(i + 1);
+    }
+  }
+  _incrementProgress(10); // should be 50 after
   return *this;
 }
 
@@ -92,6 +119,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
   std::vector<std::pair<int, int>> directions = {
       {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
+  int counter = 0;
   for (auto layer : network_->layers) {
     if (layer->layerType == LayerType::LayerInput) {
       continue;
@@ -116,27 +144,11 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
         }
       }
     }
+    _incrementProgress(10 * (counter + 1) /
+                       (int)network_->layers.size()); // should be 60 after
+    counter++;
   }
 
-  return *this;
-}
-
-NeuralNetworkBuilder &NeuralNetworkBuilder::bindLayers() {
-  SimpleLogger::LOG_INFO("Binding layers...");
-  if (!network_) {
-    throw NeuralNetworkException("neural network null");
-  }
-  if (network_->layers.empty()) {
-    throw NeuralNetworkException("empty layers");
-  }
-  for (size_t i = 0; i < network_->layers.size(); ++i) {
-    if (i > 0) {
-      network_->layers.at(i)->previousLayer = network_->layers.at(i - 1);
-    }
-    if (i < network_->layers.size() - 1) {
-      network_->layers.at(i)->nextLayer = network_->layers.at(i + 1);
-    }
-  }
   return *this;
 }
 
@@ -147,7 +159,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
         Common::getFilenameCsv(app_params_.network_to_import);
     SimpleLogger::LOG_INFO("Importing layers neurons weights from ",
                            filenameCsv, "...");
-    neuralNetworkImportExport.importWeights(network_, app_params_);
+    neuralNetworkImportExport.importWeights(
+        network_, app_params_, progressCallback_,
+        progressCallbackValue_); // should be 70 after
     return *this;
   }
 
@@ -160,6 +174,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
   }
   // Initialize and get the max_weights at same time
   network_->max_weights = 0;
+  int counter = 0;
   for (auto layer : network_->layers) {
     if (layer->previousLayer != nullptr) {
       for (auto &rows : layer->neurons) {
@@ -173,6 +188,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
         }
       }
     }
+    _incrementProgress(10 * (counter + 1) /
+                       (int)network_->layers.size()); // should be 70 after
+    counter++;
   }
   return *this;
 }
@@ -187,6 +205,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::setActivationFunction() {
   }
   EActivationFunction activation_function;
   float activation_alpha = 0.0f;
+  int counter = 0;
   for (auto layer : network_->layers) {
     // Get the parameters
     switch (layer->layerType) {
@@ -236,6 +255,9 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::setActivationFunction() {
     default:
       throw NeuralNetworkException("Unimplemented Activation Function");
     }
+    _incrementProgress(10 * (counter + 1) /
+                       (int)network_->layers.size()); // should be 80 after
+    counter++;
   }
 
   return *this;

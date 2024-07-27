@@ -20,16 +20,22 @@ public:
    *
    * @param network
    * @param appParams
+   * @param progressCallback
    */
   void exportNeuronsWeights(const std::unique_ptr<NeuralNetwork> &network,
-                            const AppParams &appParams) const;
+                            const AppParams &appParams,
+                            std::function<void(int)> progressCallback = {},
+                            int progressInitialValue = 0) const;
 
   /**
    * @brief Import the network neurons data from a CSV file.
    * @param network
    * @param appParams
+   * @param progressCallback
    */
   void importNeuronsWeights(std::unique_ptr<NeuralNetwork> &network,
-                            const AppParams &appParams) const;
+                            const AppParams &appParams,
+                            std::function<void(int)> progressCallback = {},
+                            int progressInitialValue = 0) const;
 };
 } // namespace sipai

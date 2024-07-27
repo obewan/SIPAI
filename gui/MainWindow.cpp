@@ -90,6 +90,7 @@ void MainWindow::onActionLoadNeuralNetwork() {
   QFuture<void> future = QtConcurrent::run([this]() { loadNetwork(); });
   futureWatcher->setFuture(future);
 
+  progressDialog->setValue(0);
   progressDialog->show();
 }
 
@@ -147,7 +148,7 @@ void MainWindow::loadNetwork() {
 
   try {
     manager.createOrImportNetwork([this](int i) {
-      QMetaObject::invokeMethod(futureWatcher, "setProgressValue",
+      QMetaObject::invokeMethod(futureWatcher, "progressValueChanged",
                                 Q_ARG(int, i));
       // Check for cancellation
       if (futureWatcher->isCanceled()) {

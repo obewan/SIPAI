@@ -16,8 +16,8 @@
 using namespace sipai;
 
 void NeuralNetworkImportExportCSV::exportNeuronsWeights(
-    const std::unique_ptr<NeuralNetwork> &network,
-    const AppParams &appParams) const {
+    const std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams,
+    std::function<void(int)> progressCallback, int progressInitialValue) const {
   // get the csv filename
   std::string filename = Common::getFilenameCsv(appParams.network_to_export);
   std::ofstream file(filename);
@@ -50,7 +50,8 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
 }
 
 void NeuralNetworkImportExportCSV::importNeuronsWeights(
-    std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams) const {
+    std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams,
+    std::function<void(int)> progressCallback, int progressInitialValue) const {
 
   auto split = [](const std::string &s, char delimiter) {
     std::vector<std::optional<float>> tokens;
@@ -65,6 +66,13 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
 
   // get the csv filename
   std::string filename = Common::getFilenameCsv(appParams.network_to_import);
+
+  // get the total of lines to use for progress calculus
+  size_t totalLines = 0;
+  if (progressCallback) {
+    totalLines = Common::countLines(filename);
+  }
+
   std::ifstream file(filename);
   if (!file.is_open()) {
     throw ImportExportException("Failed to open file: " + filename);
@@ -141,6 +149,11 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
       for (size_t i = 0; i < connections.size(); i++) {
         connections.at(i).weight = weights.at(i);
       }
+    }
+    if (progressCallback) {
+      int progress =
+          progressInitialValue + ((10 * current_line_number) / (int)totalLines);
+      progressCallback(progress);
     }
   }
 }

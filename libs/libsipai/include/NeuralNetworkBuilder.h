@@ -55,6 +55,18 @@ public:
   }
 
   /**
+   * @brief Using a progress callback
+   *
+   * @param progressCallback
+   * @return NeuralNetworkBuilder&
+   */
+  NeuralNetworkBuilder &with(std::function<void(int)> progressCallback) {
+    progressCallback_ = progressCallback;
+    progressCallbackValue_ = 0;
+    return *this;
+  }
+
+  /**
    * @brief Create a Or import a neural network
    *
    * @return const NeuralNetworkBuilder&
@@ -100,5 +112,16 @@ private:
   AppParams &app_params_;
   NeuralNetworkParams &network_params_;
   bool isImported = false;
+  std::function<void(int)> progressCallback_ = {};
+  int progressCallbackValue_ = 0;
+
+  void _incrementProgress(int increment) {
+    if (progressCallback_) {
+      progressCallbackValue_ = progressCallbackValue_ + increment > 100
+                                   ? progressCallbackValue_ = 100
+                                   : progressCallbackValue_ += increment;
+      progressCallback_(progressCallbackValue_);
+    }
+  }
 };
 } // namespace sipai

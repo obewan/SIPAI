@@ -16,16 +16,18 @@ using namespace sipai;
 std::unique_ptr<Manager> Manager::instance_ = nullptr;
 
 void Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
-  if (!network) {
-    auto builder = std::make_unique<NeuralNetworkBuilder>();
-    network = builder->createOrImport()
-                  .addLayers()
-                  .bindLayers()
-                  .addNeighbors()
-                  .initializeWeights()
-                  .setActivationFunction()
-                  .build();
+  if (network) {
+    network.reset();
   }
+  auto builder = std::make_unique<NeuralNetworkBuilder>();
+  network = builder->with(progressCallback)
+                .createOrImport()
+                .addLayers()
+                .bindLayers()
+                .addNeighbors()
+                .initializeWeights()
+                .setActivationFunction()
+                .build();
 }
 
 void Manager::exportNetwork() {
