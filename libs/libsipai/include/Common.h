@@ -85,7 +85,9 @@ public:
     size_t lineCount = 0;
     std::string line;
     while (std::getline(file, line)) {
-      ++lineCount;
+      if (!line.empty()) {
+        ++lineCount;
+      }
     }
 
     file.close();
