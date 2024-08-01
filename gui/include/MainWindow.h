@@ -40,11 +40,13 @@ private slots:
   void onErrorOccurred(const QString &message);
 
 private:
+  std::string getNetwork_to_import() const;
+  Q_INVOKABLE void setNetwork_to_import(const std::string &value);
+
   Ui::MainWindow *ui;
   QStandardItemModel *modelLogger;
   QProgressDialog *progressDialog;
   QFutureWatcher<void> *futureWatcher;
-  QString currentFileName;
 
   std::string aboutStr_;
   void loadNetwork();

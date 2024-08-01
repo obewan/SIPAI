@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
       futureWatcher(new QFutureWatcher<void>(this)) {
+
+  auto &manager = Manager::getInstance();
+  auto &app_params = manager.app_params;
+
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 
@@ -30,6 +34,12 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::onLoadingFinished);
   connect(futureWatcher, &QFutureWatcher<void>::progressValueChanged, this,
           &MainWindow::onProgressUpdated);
+
+  // Bindings
+  connect(ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
+          [this](const QString &text) {
+            setNetwork_to_import(text.toStdString());
+          });
 
   // Add logs
   modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
@@ -75,7 +85,7 @@ void MainWindow::onActionLoadNeuralNetwork() {
     return;
   }
 
-  currentFileName = fileName;
+  ui->lineEditCurrentNetwork->setText(fileName);
   progressDialog =
       new QProgressDialog("Loading neural network...", "Abort", 0, 100, this);
   progressDialog->setWindowModality(Qt::WindowModal);
@@ -115,7 +125,6 @@ void MainWindow::onLoadingCanceled() {
 void MainWindow::onLoadingFinished() {
   if (progressDialog) {
     progressDialog->setValue(100);
-    ui->lineEditCurrentNetwork->setText(currentFileName);
     progressDialog->close();
     progressDialog->deleteLater();
   }
@@ -144,7 +153,6 @@ void MainWindow::onActionAbout() {
 
 void MainWindow::loadNetwork() {
   auto &manager = Manager::getInstance();
-  manager.app_params.network_to_import = currentFileName.toStdString();
 
   try {
     manager.createOrImportNetwork([this](int i) {
@@ -159,4 +167,12 @@ void MainWindow::loadNetwork() {
     QMetaObject::invokeMethod(this, "onErrorOccurred",
                               Q_ARG(QString, ex.what()));
   }
+}
+
+std::string MainWindow::getNetwork_to_import() const {
+  return Manager::getInstance().app_params.network_to_import;
+}
+
+void MainWindow::setNetwork_to_import(const std::string &value) {
+  Manager::getInstance().app_params.network_to_import = value;
 }
