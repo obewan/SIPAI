@@ -1,6 +1,7 @@
 
 #include "Manager.h"
 #undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
+
 #include "./ui_MainWindow.h"
 #include "MainWindow.h"
 #include <sstream>
@@ -15,13 +16,17 @@ using namespace sipai;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
-      futureWatcher(new QFutureWatcher<void>(this)) {
+      futureWatcher(new QFutureWatcher<void>(this)),
+      bindings(new Bindings()) {
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
 
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
+  
+  // Bindings
+  bindings->setBindings(ui);
 
   // Connect actions to slots
   connect(ui->actionLoadNeuralNetwork, &QAction::triggered, this,
@@ -34,12 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::onLoadingFinished);
   connect(futureWatcher, &QFutureWatcher<void>::progressValueChanged, this,
           &MainWindow::onProgressUpdated);
-
-  // Bindings
-  connect(ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
-          [this](const QString &text) {
-            setNetwork_to_import(text.toStdString());
-          });
 
   // Add logs
   modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
@@ -66,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
   delete ui;
   delete modelLogger;
+  delete bindings;
 }
 
 void MainWindow::onActionLoadNeuralNetwork() {
@@ -142,7 +142,7 @@ void MainWindow::onErrorOccurred(const QString &message) {
         }
         statusBar()->showMessage(tr("Error: %1").arg(message),
                                  5000); // Show message for 5 seconds
-        QMessageBox::warning(this, tr("Error"), message);
+        QMessageBox::warning(this, tr("Error"), message);        
       },
       Qt::QueuedConnection);
 }
@@ -167,12 +167,4 @@ void MainWindow::loadNetwork() {
     QMetaObject::invokeMethod(this, "onErrorOccurred",
                               Q_ARG(QString, ex.what()));
   }
-}
-
-std::string MainWindow::getNetwork_to_import() const {
-  return Manager::getInstance().app_params.network_to_import;
-}
-
-void MainWindow::setNetwork_to_import(const std::string &value) {
-  Manager::getInstance().app_params.network_to_import = value;
 }

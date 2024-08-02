@@ -16,6 +16,8 @@
 #include <QStandardItemModel>
 #include <QtConcurrent>
 #include <string>
+#include "Bindings.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -39,14 +41,12 @@ private slots:
   void onLoadingFinished();
   void onErrorOccurred(const QString &message);
 
-private:
-  std::string getNetwork_to_import() const;
-  Q_INVOKABLE void setNetwork_to_import(const std::string &value);
-
+private:  
   Ui::MainWindow *ui;
   QStandardItemModel *modelLogger;
   QProgressDialog *progressDialog;
   QFutureWatcher<void> *futureWatcher;
+  Bindings *bindings;
 
   std::string aboutStr_;
   void loadNetwork();
