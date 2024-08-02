@@ -16,15 +16,14 @@ using namespace sipai;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
-      futureWatcher(new QFutureWatcher<void>(this)),
-      bindings(new Bindings()) {
+      futureWatcher(new QFutureWatcher<void>(this)), bindings(new Bindings()) {
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
 
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
-  
+
   // Bindings
   bindings->setBindings(ui);
 
@@ -130,6 +129,7 @@ void MainWindow::onLoadingFinished() {
   }
   statusBar()->showMessage(tr("Loading finished"),
                            5000); // Show message for 5 seconds
+  bindings->getNetworkParams(ui);
 }
 
 void MainWindow::onErrorOccurred(const QString &message) {
@@ -142,7 +142,7 @@ void MainWindow::onErrorOccurred(const QString &message) {
         }
         statusBar()->showMessage(tr("Error: %1").arg(message),
                                  5000); // Show message for 5 seconds
-        QMessageBox::warning(this, tr("Error"), message);        
+        QMessageBox::warning(this, tr("Error"), message);
       },
       Qt::QueuedConnection);
 }

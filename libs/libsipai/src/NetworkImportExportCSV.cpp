@@ -80,6 +80,7 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
 
   // parsing the csv
   std::string line;
+  int oldProgressValue = progressInitialValue;
   for (int current_line_number = 1; std::getline(file, line);
        ++current_line_number) {
     const auto &fields = split(line, ',');
@@ -150,10 +151,14 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
         connections.at(i).weight = weights.at(i);
       }
     }
+
     if (progressCallback) {
-      int progress =
-          progressInitialValue + ((10 * current_line_number) / (int)totalLines);
-      progressCallback(progress);
+      int value = progressInitialValue +
+                  ((100 * current_line_number) / (int)totalLines);
+      if (value != oldProgressValue) {
+        progressCallback(value);
+        oldProgressValue = value;
+      }
     }
   }
 }

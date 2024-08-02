@@ -180,14 +180,14 @@
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QLabel" name="labelInputNeurons">
+                      <widget class="QLabel" name="labelInputNeuronsX">
                        <property name="text">
-                        <string>Input neurons per layers:</string>
+                        <string>Input X neurons per layers:</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QSpinBox" name="spinBoxInputNeurons">
+                      <widget class="QSpinBox" name="spinBoxInputNeuronsX">
                        <property name="enabled">
                         <bool>true</bool>
                        </property>
@@ -202,14 +202,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="0">
+                     <item row="4" column="0">
                       <widget class="QLabel" name="labelHiddenLayers">
                        <property name="text">
                         <string>Hidden layers:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1">
+                     <item row="4" column="1">
                       <widget class="QSpinBox" name="spinBoxHiddenLayers">
                        <property name="enabled">
                         <bool>true</bool>
@@ -225,15 +225,15 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="labelHiddenNeurons">
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelHiddenNeuronsX">
                        <property name="text">
-                        <string>Hidden neurons per layers:</string>
+                        <string>Hidden X neurons per layers:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
-                      <widget class="QSpinBox" name="spinBoxHiddenNeurons">
+                     <item row="5" column="1">
+                      <widget class="QSpinBox" name="spinBoxHiddenNeuronsX">
                        <property name="enabled">
                         <bool>true</bool>
                        </property>
@@ -248,14 +248,14 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="6" column="0">
+                     <item row="8" column="0">
                       <widget class="QLabel" name="labelOutputLayers">
                        <property name="text">
                         <string>Output layers:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="6" column="1">
+                     <item row="8" column="1">
                       <widget class="QSpinBox" name="spinBoxOutputLayers">
                        <property name="enabled">
                         <bool>true</bool>
@@ -271,15 +271,15 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="7" column="0">
-                      <widget class="QLabel" name="labelOutputNeurons">
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="labelOutputNeuronsX">
                        <property name="text">
-                        <string>Output neurons per layers:</string>
+                        <string>Output X neurons per layers:</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="7" column="1">
-                      <widget class="QSpinBox" name="spinBoxOutputNeurons">
+                     <item row="9" column="1">
+                      <widget class="QSpinBox" name="spinBoxOutputNeuronsX">
                        <property name="enabled">
                         <bool>true</bool>
                        </property>
@@ -294,33 +294,63 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="0">
+                     <item row="3" column="0">
                       <widget class="QLabel" name="labelSpace">
                        <property name="text">
                         <string/>
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="1">
+                     <item row="3" column="1">
                       <widget class="QLabel" name="labelSpace_2">
                        <property name="text">
                         <string/>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="0">
+                     <item row="7" column="0">
                       <widget class="QLabel" name="labelSpace_3">
                        <property name="text">
                         <string/>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="1">
+                     <item row="7" column="1">
                       <widget class="QLabel" name="labelSpace_4">
                        <property name="text">
                         <string/>
                        </property>
                       </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelInputNeuronsY">
+                       <property name="text">
+                        <string>Input Y neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QSpinBox" name="spinBoxInputNeuronsY"/>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelHiddenNeuronsY">
+                       <property name="text">
+                        <string>Hidden Y neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QSpinBox" name="spinBoxHiddenNeuronsY"/>
+                     </item>
+                     <item row="10" column="0">
+                      <widget class="QLabel" name="labelOutputNeuronsY">
+                       <property name="text">
+                        <string>Output Y neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="1">
+                      <widget class="QSpinBox" name="spinBoxOutputNeuronsY"/>
                      </item>
                     </layout>
                    </item>
@@ -362,6 +392,12 @@
                          <height>0</height>
                         </size>
                        </property>
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
@@ -386,7 +422,17 @@
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLRAdatpiveFactor"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLRAdatpiveFactor">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="3" column="0">
                       <widget class="QLabel" name="labelLRAdaptiveIncrease">
@@ -397,6 +443,9 @@
                      </item>
                      <item row="3" column="1">
                       <widget class="QCheckBox" name="checkBoxLRAdaptiveIncrease">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
@@ -420,7 +469,14 @@
                       </widget>
                      </item>
                      <item row="6" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionHiddenAlpha"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionHiddenAlpha">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="7" column="0">
                       <widget class="QLabel" name="labelActivationFunctionOutput">
@@ -440,7 +496,14 @@
                       </widget>
                      </item>
                      <item row="8" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionOutputAlpha"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionOutputAlpha">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="10" column="0">
                       <widget class="QLabel" name="labelErrorMin">
@@ -450,7 +513,14 @@
                       </widget>
                      </item>
                      <item row="10" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMin"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMin">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="11" column="0">
                       <widget class="QLabel" name="labelErrorMax">
@@ -460,7 +530,14 @@
                       </widget>
                      </item>
                      <item row="11" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMax"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMax">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="4" column="0">
                       <widget class="QLabel" name="labelSpace_5">
@@ -791,6 +868,12 @@
                          <height>0</height>
                         </size>
                        </property>
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.100000000000000</double>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
@@ -801,7 +884,17 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="maximum">
+                        <double>1.000000000000000</double>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.100000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="3" column="0">
                       <widget class="QLabel" name="labelLearningRateMin">
@@ -811,7 +904,14 @@
                       </widget>
                      </item>
                      <item row="3" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMin"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMin">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="4" column="0">
                       <widget class="QLabel" name="labelLearningRateMax">
@@ -821,7 +921,14 @@
                       </widget>
                      </item>
                      <item row="4" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMax"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMax">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="6" column="0">
                       <widget class="QLabel" name="labelEpochsMax">
@@ -912,7 +1019,14 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QDoubleSpinBox" name="doubleSpinBoxImageReducingFactor"/>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxImageReducingFactor">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.100000000000000</double>
+                       </property>
+                      </widget>
                      </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="labelImagesRandomLoading">
@@ -1373,6 +1487,38 @@
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxLRAdaptive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBoxLRAdatpiveFactor</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>913</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>913</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxLRAdaptive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxLRAdaptiveIncrease</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>913</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>913</x>
+     <y>275</y>
     </hint>
    </hints>
   </connection>

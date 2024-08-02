@@ -22,6 +22,7 @@ NeuralNetworkBuilder::NeuralNetworkBuilder(AppParams &appParams,
                                            NeuralNetworkParams &networkParams)
     : app_params_(appParams), network_params_(networkParams) {}
 
+// TODO: refactor this class by splitting create and import functions
 NeuralNetworkBuilder &NeuralNetworkBuilder::createOrImport() {
   if (!app_params_.network_to_import.empty() &&
       std::filesystem::exists(app_params_.network_to_import)) {
@@ -31,12 +32,11 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::createOrImport() {
     network_ =
         neuralNetworkImportExport.importModel(app_params_, network_params_);
     isImported = true;
-    _incrementProgress(10); // should be 10 after
   } else {
     SimpleLogger::LOG_INFO("Creating the neural network...");
     network_ = std::make_unique<NeuralNetwork>();
     isImported = false;
-    _incrementProgress(10); // should be 10 after
+    _incrementProgress(10);
   }
   return *this;
 }
@@ -58,7 +58,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   auto inputLayer = new LayerInput(network_params_.input_size_x,
                                    network_params_.input_size_y);
   network_->layers.push_back(inputLayer);
-  _incrementProgress(10); // should be 20 after
+  _incrementProgress(10);
 
   // Add Hidden Layers
   for (size_t i = 0; i < network_params_.hiddens_count; ++i) {
@@ -69,9 +69,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
     hiddenLayer->activationFunctionAlpha =
         network_params_.hidden_activation_alpha;
     network_->layers.push_back(hiddenLayer);
-    _incrementProgress(
-        10 * ((int)i + 1) /
-        (int)network_params_.hiddens_count); // should be 30 after
+    _incrementProgress(10 * ((int)i + 1) / (int)network_params_.hiddens_count);
   }
 
   // Add Output Layer
@@ -81,7 +79,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addLayers() {
   outputLayer->activationFunctionAlpha =
       network_params_.output_activation_alpha;
   network_->layers.push_back(outputLayer);
-  _incrementProgress(10); // should be 40 after
+  _incrementProgress(10);
   return *this;
 }
 
@@ -101,7 +99,6 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::bindLayers() {
       network_->layers.at(i)->nextLayer = network_->layers.at(i + 1);
     }
   }
-  _incrementProgress(10); // should be 50 after
   return *this;
 }
 
@@ -144,8 +141,6 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
         }
       }
     }
-    _incrementProgress(10 * (counter + 1) /
-                       (int)network_->layers.size()); // should be 60 after
     counter++;
   }
 
@@ -160,8 +155,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
     SimpleLogger::LOG_INFO("Importing layers neurons weights from ",
                            filenameCsv, "...");
     neuralNetworkImportExport.importWeights(
-        network_, app_params_, progressCallback_,
-        progressCallbackValue_); // should be 70 after
+        network_, app_params_, progressCallback_, progressCallbackValue_);
     return *this;
   }
 
@@ -188,8 +182,7 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::initializeWeights() {
         }
       }
     }
-    _incrementProgress(10 * (counter + 1) /
-                       (int)network_->layers.size()); // should be 70 after
+    _incrementProgress(60 * (counter + 1) / (int)network_->layers.size());
     counter++;
   }
   return *this;
@@ -255,8 +248,6 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::setActivationFunction() {
     default:
       throw NeuralNetworkException("Unimplemented Activation Function");
     }
-    _incrementProgress(10 * (counter + 1) /
-                       (int)network_->layers.size()); // should be 80 after
     counter++;
   }
 
