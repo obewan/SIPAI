@@ -57,15 +57,20 @@ void Bindings::getNetworkParams(Ui::MainWindow *ui) {
   const auto &network_params = Manager::getConstInstance().network_params;
   const auto &network = Manager::getConstInstance().network;
 
-  int inputCount = std::ranges::count_if(network->layers, [](Layer *layer) {
-    return layer->layerType == LayerType::LayerInput;
-  });
-  int hiddenCount = std::ranges::count_if(network->layers, [](Layer *layer) {
-    return layer->layerType == LayerType::LayerHidden;
-  });
-  int outputCount = std::ranges::count_if(network->layers, [](Layer *layer) {
-    return layer->layerType == LayerType::LayerOutput;
-  });
+  int inputCount = 1;
+  int hiddenCount = (int)network_params.hiddens_count;
+  int outputCount = 1;
+  if (network) {
+    inputCount = std::ranges::count_if(network->layers, [](Layer *layer) {
+      return layer->layerType == LayerType::LayerInput;
+    });
+    hiddenCount = std::ranges::count_if(network->layers, [](Layer *layer) {
+      return layer->layerType == LayerType::LayerHidden;
+    });
+    outputCount = std::ranges::count_if(network->layers, [](Layer *layer) {
+      return layer->layerType == LayerType::LayerOutput;
+    });
+  }
 
   ui->spinBoxInputLayers->setValue(inputCount);
   ui->spinBoxInputNeuronsX->setValue((int)network_params.input_size_x);

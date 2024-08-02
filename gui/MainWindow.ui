@@ -405,7 +405,7 @@
                         <double>0.010000000000000</double>
                        </property>
                        <property name="value">
-                        <double>0.010000000000000</double>
+                        <double>0.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -486,7 +486,7 @@
                         <double>0.010000000000000</double>
                        </property>
                        <property name="value">
-                        <double>0.010000000000000</double>
+                        <double>0.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -516,7 +516,7 @@
                         <double>0.010000000000000</double>
                        </property>
                        <property name="value">
-                        <double>0.010000000000000</double>
+                        <double>0.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -553,7 +553,7 @@
                         <double>0.010000000000000</double>
                        </property>
                        <property name="value">
-                        <double>1.000000000000000</double>
+                        <double>0.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -913,7 +913,7 @@
                         <double>0.100000000000000</double>
                        </property>
                        <property name="value">
-                        <double>0.700000000000000</double>
+                        <double>0.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -950,7 +950,7 @@
                         <double>0.010000000000000</double>
                        </property>
                        <property name="value">
-                        <double>1.000000000000000</double>
+                        <double>0.000000000000000</double>
                        </property>
                       </widget>
                      </item>
@@ -967,7 +967,7 @@
                         <number>999999999</number>
                        </property>
                        <property name="value">
-                        <number>100</number>
+                        <number>0</number>
                        </property>
                       </widget>
                      </item>
@@ -984,7 +984,7 @@
                         <number>999999999</number>
                        </property>
                        <property name="value">
-                        <number>5</number>
+                        <number>0</number>
                        </property>
                       </widget>
                      </item>
@@ -998,7 +998,7 @@
                      <item row="8" column="1">
                       <widget class="QSpinBox" name="spinBoxEpochsSaving">
                        <property name="value">
-                        <number>20</number>
+                        <number>0</number>
                        </property>
                       </widget>
                      </item>
@@ -1083,7 +1083,7 @@
                         <string/>
                        </property>
                        <property name="checked">
-                        <bool>true</bool>
+                        <bool>false</bool>
                        </property>
                       </widget>
                      </item>
@@ -1128,7 +1128,7 @@
                         <string/>
                        </property>
                        <property name="checked">
-                        <bool>true</bool>
+                        <bool>false</bool>
                        </property>
                       </widget>
                      </item>

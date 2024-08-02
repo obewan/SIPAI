@@ -44,7 +44,7 @@ struct AppParams {
   bool random_loading = false;
   bool bulk_loading = false;
   bool enable_vulkan = false;
-  bool enable_parallel = false;
+  bool enable_parallel = true;
   bool enable_padding = false;
   bool verbose = false;
   bool verbose_debug = false;

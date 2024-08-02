@@ -27,6 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
   // Bindings
   bindings->setBindings(ui);
 
+  // Get default values
+  bindings->getAppParams(ui);
+  bindings->getNetworkParams(ui);
+
   // Connect actions to slots
   connect(ui->actionLoadNeuralNetwork, &QAction::triggered, this,
           &MainWindow::onActionLoadNeuralNetwork);
