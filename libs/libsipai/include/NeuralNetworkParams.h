@@ -21,18 +21,18 @@ struct NeuralNetworkParams {
    * width.
    *
    */
-  size_t input_size_x = 64;
+  size_t input_size_x = 32;
   /**
    * @brief Y resolution for input neurons. This value should not be too large
    * to avoid performance degradation. Incoming images will be resized to this
    * height.
    *
    */
-  size_t input_size_y = 64;
-  size_t hidden_size_x = 64;
-  size_t hidden_size_y = 64;
-  size_t output_size_x = 64;
-  size_t output_size_y = 64;
+  size_t input_size_y = 32;
+  size_t hidden_size_x = 32;
+  size_t hidden_size_y = 32;
+  size_t output_size_x = 32;
+  size_t output_size_y = 32;
   size_t hiddens_count = 1;
   float learning_rate = 0.01f;
   float adaptive_learning_rate_factor = 0.5f;
