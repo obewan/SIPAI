@@ -14,7 +14,7 @@
 #include <string>
 
 namespace sipai {
-constexpr int NO_MAX_EPOCHS = -1;
+constexpr int NO_MAX_EPOCHS = 0;
 
 struct AppParams {
   std::string title = "SIPAI - Simple Image Processing Artificial Intelligence";
@@ -36,7 +36,7 @@ struct AppParams {
   float training_split_ratio = 0.7f;
   float learning_rate_max = 1.0f;
   float learning_rate_min = 0.00001f;
-  int max_epochs = NO_MAX_EPOCHS;            // TODO: check for 0 = no max
+  size_t max_epochs = NO_MAX_EPOCHS;
   size_t max_epochs_without_improvement = 2; // TODO: check for 0 = no max
   size_t epoch_autosave = 100;               // TODO: check for 0 = no autosave
   size_t image_split = 1;                    // TODO: check for 0 = no split

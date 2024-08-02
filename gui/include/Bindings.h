@@ -11,6 +11,7 @@
 #pragma once
 
 #include "ActivationFunctions.h"
+#include "Common.h"
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
@@ -40,4 +41,6 @@ private:
   Q_INVOKABLE void setHiddenNeuronsY(const int value);
   Q_INVOKABLE void setOutputNeuronsX(const int value);
   Q_INVOKABLE void setOutputNeuronsY(const int value);
+
+  Q_INVOKABLE void setRunningMode(const sipai::ERunMode &value);
 };

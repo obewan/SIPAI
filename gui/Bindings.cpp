@@ -46,11 +46,18 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
             setActivationFunctionOutput(
                 static_cast<EActivationFunction>(value));
           });
+
+  // add and bind running mode
+  for (const auto &[key, value] : mode_map) {
+    ui->comboBoxMode->addItem(QString::fromStdString(key),
+                              static_cast<int>(value));
+  }
 }
 
 void Bindings::getAppParams(Ui::MainWindow *ui) {
   const auto &app_params = Manager::getConstInstance().app_params;
   ui->lineEditCurrentNetwork->setText(app_params.network_to_import.c_str());
+  ui->comboBoxMode->setCurrentIndex(static_cast<int>(app_params.run_mode));
 }
 
 void Bindings::getNetworkParams(Ui::MainWindow *ui) {
@@ -141,4 +148,8 @@ void Bindings::setOutputNeuronsX(const int value) {
 
 void Bindings::setOutputNeuronsY(const int value) {
   Manager::getInstance().network_params.output_size_y = value;
+}
+
+void Bindings::setRunningMode(const sipai::ERunMode &value) {
+  Manager::getInstance().app_params.run_mode = value;
 }
