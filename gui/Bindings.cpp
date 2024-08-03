@@ -52,6 +52,16 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
     ui->comboBoxMode->addItem(QString::fromStdString(key),
                               static_cast<int>(value));
   }
+  // Some other running parameters bindings
+  connect(ui->lineEditInputFile, &QLineEdit::textChanged, this,
+          [this](const QString &text) { setInputFile(text.toStdString()); });
+  connect(ui->lineEditOutputFile, &QLineEdit::textChanged, this,
+          [this](const QString &text) { setOutputFile(text.toStdString()); });
+  connect(ui->lineEditTrainingFile, &QLineEdit::textChanged, this,
+          [this](const QString &text) { setTrainingFile(text.toStdString()); });
+  connect(
+      ui->lineEditTrainingFolder, &QLineEdit::textChanged, this,
+      [this](const QString &text) { setTrainingFolder(text.toStdString()); });
 }
 
 void Bindings::getAppParams(Ui::MainWindow *ui) {
@@ -152,4 +162,20 @@ void Bindings::setOutputNeuronsY(const int value) {
 
 void Bindings::setRunningMode(const sipai::ERunMode &value) {
   Manager::getInstance().app_params.run_mode = value;
+}
+
+void Bindings::setInputFile(const std::string &value) {
+  Manager::getInstance().app_params.input_file = value;
+}
+
+void Bindings::setOutputFile(const std::string &value) {
+  Manager::getInstance().app_params.output_file = value;
+}
+
+void Bindings::setTrainingFile(const std::string &value) {
+  Manager::getInstance().app_params.training_data_file = value;
+}
+
+void Bindings::setTrainingFolder(const std::string &value) {
+  Manager::getInstance().app_params.training_data_folder = value;
 }

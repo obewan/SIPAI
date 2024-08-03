@@ -43,4 +43,8 @@ private:
   Q_INVOKABLE void setOutputNeuronsY(const int value);
 
   Q_INVOKABLE void setRunningMode(const sipai::ERunMode &value);
+  Q_INVOKABLE void setInputFile(const std::string &value);
+  Q_INVOKABLE void setOutputFile(const std::string &value);
+  Q_INVOKABLE void setTrainingFile(const std::string &value);
+  Q_INVOKABLE void setTrainingFolder(const std::string &value);
 };
