@@ -10,14 +10,13 @@
 
 #pragma once
 
+#include "Bindings.h"
 #include <QFutureWatcher>
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <QStandardItemModel>
 #include <QtConcurrent>
 #include <string>
-#include "Bindings.h"
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,6 +33,10 @@ public:
 public slots:
   void onActionAbout();
   void onActionLoadNeuralNetwork();
+  void onActionSelectInputFile();
+  void onActionSelectOutputFile();
+  void onActionSelectTrainingFile();
+  void onActionSelectTrainingFolder();
 
 private slots:
   void onProgressUpdated(int value);
@@ -41,7 +44,7 @@ private slots:
   void onLoadingFinished();
   void onErrorOccurred(const QString &message);
 
-private:  
+private:
   Ui::MainWindow *ui;
   QStandardItemModel *modelLogger;
   QProgressDialog *progressDialog;

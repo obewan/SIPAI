@@ -786,7 +786,7 @@
                 <item row="1" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_2">
                   <item>
-                   <widget class="QLineEdit" name="lineEditOuputFile"/>
+                   <widget class="QLineEdit" name="lineEditOutputFile"/>
                   </item>
                   <item>
                    <widget class="QToolButton" name="toolButtonOutputFile">
@@ -1513,6 +1513,66 @@
     <enum>QAction::TextHeuristicRole</enum>
    </property>
   </action>
+  <action name="actionSelectInputFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select an input file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select an input file...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectOutputFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select an output file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select an output file...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectTrainingFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select a training file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select a training file...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectTrainingFolder">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select a training folder...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select a training folder...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="icons.qrc"/>
@@ -1579,6 +1639,70 @@
     <hint type="destinationlabel">
      <x>913</x>
      <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonInputFile</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectInputFile</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonOutputFile</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectOutputFile</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonTrainingFile</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectTrainingFile</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>250</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonTrainingFolder</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectTrainingFolder</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

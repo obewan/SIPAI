@@ -36,6 +36,14 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::onActionLoadNeuralNetwork);
   connect(ui->actionAbout, &QAction::triggered, this,
           &MainWindow::onActionAbout);
+  connect(ui->actionSelectInputFile, &QAction::triggered, this,
+          &MainWindow::onActionSelectInputFile);
+  connect(ui->actionSelectOutputFile, &QAction::triggered, this,
+          &MainWindow::onActionSelectOutputFile);
+  connect(ui->actionSelectTrainingFile, &QAction::triggered, this,
+          &MainWindow::onActionSelectTrainingFile);
+  connect(ui->actionSelectTrainingFolder, &QAction::triggered, this,
+          &MainWindow::onActionSelectTrainingFolder);
 
   // Connect the QFutureWatcher signals to appropriate slots
   connect(futureWatcher, &QFutureWatcher<void>::finished, this,
@@ -66,15 +74,15 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-  delete ui;
-  delete modelLogger;
   delete bindings;
+  delete modelLogger;
+  delete ui;
 }
 
 void MainWindow::onActionLoadNeuralNetwork() {
   auto fileName = QFileDialog::getOpenFileName(
       this, tr("Select a Sipai neural network model Json file..."), "",
-      tr("JSON (*.json)"));
+      "JSON (*.json)");
 
   if (fileName.isEmpty()) {
     return; // No file selected
@@ -149,6 +157,53 @@ void MainWindow::onErrorOccurred(const QString &message) {
         QMessageBox::warning(this, tr("Error"), message);
       },
       Qt::QueuedConnection);
+}
+
+void MainWindow::onActionSelectInputFile() {
+  auto fileName = QFileDialog::getOpenFileName(
+      this, tr("Select an input file as a valid image..."), "",
+      tr("Image Files (*.bmp *.jpg *.jpeg *.png)"));
+
+  if (fileName.isEmpty()) {
+    return; // No file selected
+  }
+
+  ui->lineEditInputFile->setText(fileName);
+}
+
+void MainWindow::onActionSelectOutputFile() {
+  auto fileName = QFileDialog::getSaveFileName(
+      this,
+      tr("Select or enter an output file name for the generated image..."), "",
+      tr("Image Files (*.bmp *.jpg *.jpeg *.png)"));
+
+  if (fileName.isEmpty()) {
+    return; // No file selected
+  }
+
+  ui->lineEditOutputFile->setText(fileName);
+}
+
+void MainWindow::onActionSelectTrainingFile() {
+  auto fileName = QFileDialog::getOpenFileName(
+      this, tr("Select a sipai training csv file..."), "", "CSV (*.csv)");
+
+  if (fileName.isEmpty()) {
+    return; // No file selected
+  }
+
+  ui->lineEditTrainingFile->setText(fileName);
+}
+
+void MainWindow::onActionSelectTrainingFolder() {
+  auto folderName = QFileDialog::getExistingDirectory(
+      this, tr("Select a sipai training folder..."), "");
+
+  if (folderName.isEmpty()) {
+    return; // No file selected
+  }
+
+  ui->lineEditTrainingFolder->setText(folderName);
 }
 
 void MainWindow::onActionAbout() {
