@@ -17,17 +17,17 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
       ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
       [this](const QString &text) { setNetworkToImport(text.toStdString()); });
   connect(ui->spinBoxInputNeuronsX, &QSpinBox::valueChanged, this,
-          [this](int value) { setInputNeuronsX(value); });
+          [this](int value) { setInputNeuronsX((size_t)value); });
   connect(ui->spinBoxInputNeuronsY, &QSpinBox::valueChanged, this,
-          [this](int value) { setInputNeuronsY(value); });
+          [this](int value) { setInputNeuronsY((size_t)value); });
   connect(ui->spinBoxHiddenNeuronsX, &QSpinBox::valueChanged, this,
-          [this](int value) { setHiddenNeuronsX(value); });
+          [this](int value) { setHiddenNeuronsX((size_t)value); });
   connect(ui->spinBoxHiddenNeuronsY, &QSpinBox::valueChanged, this,
-          [this](int value) { setHiddenNeuronsY(value); });
+          [this](int value) { setHiddenNeuronsY((size_t)value); });
   connect(ui->spinBoxOutputNeuronsX, &QSpinBox::valueChanged, this,
-          [this](int value) { setOutputNeuronsX(value); });
+          [this](int value) { setOutputNeuronsX((size_t)value); });
   connect(ui->spinBoxOutputNeuronsY, &QSpinBox::valueChanged, this,
-          [this](int value) { setOutputNeuronsY(value); });
+          [this](int value) { setOutputNeuronsY((size_t)value); });
   connect(ui->doubleSpinBoxErrorMin, &QDoubleSpinBox::valueChanged, this,
           [this](double value) { setErrorMin((float)value); });
   connect(ui->doubleSpinBoxErrorMax, &QDoubleSpinBox::valueChanged, this,
@@ -74,6 +74,12 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
           [this](double value) { setLearningRateMin((float)value); });
   connect(ui->doubleSpinBoxLearningRateMax, &QDoubleSpinBox::valueChanged, this,
           [this](double value) { setLearningRateMax((float)value); });
+  connect(ui->spinBoxEpochsMax, &QSpinBox::valueChanged, this,
+          [this](int value) { setEpochsMax((size_t)value); });
+  connect(ui->spinBoxEpochsWithoutImpMax, &QSpinBox::valueChanged, this,
+          [this](int value) { setEpochsWithoutImprovementMax((size_t)value); });
+  connect(ui->spinBoxEpochsSaving, &QSpinBox::valueChanged, this,
+          [this](int value) { setEpochsAutoSave((size_t)value); });
 }
 
 void Bindings::getAppParams(Ui::MainWindow *ui) {
@@ -93,6 +99,10 @@ void Bindings::getAppParams(Ui::MainWindow *ui) {
       (double)app_params.learning_rate_min);
   ui->doubleSpinBoxLearningRateMax->setValue(
       (double)app_params.learning_rate_max);
+  ui->spinBoxEpochsMax->setValue((int)app_params.max_epochs);
+  ui->spinBoxEpochsWithoutImpMax->setValue(
+      (int)app_params.max_epochs_without_improvement);
+  ui->spinBoxEpochsSaving->setValue((int)app_params.epoch_autosave);
 }
 
 void Bindings::getNetworkParams(Ui::MainWindow *ui) {
@@ -161,27 +171,27 @@ void Bindings::setActivationFunctionOutput(
   Manager::getInstance().network_params.output_activation_function = value;
 }
 
-void Bindings::setInputNeuronsX(const int value) {
+void Bindings::setInputNeuronsX(const size_t value) {
   Manager::getInstance().network_params.input_size_x = value;
 }
 
-void Bindings::setInputNeuronsY(const int value) {
+void Bindings::setInputNeuronsY(const size_t value) {
   Manager::getInstance().network_params.input_size_y = value;
 }
 
-void Bindings::setHiddenNeuronsX(const int value) {
+void Bindings::setHiddenNeuronsX(const size_t value) {
   Manager::getInstance().network_params.hidden_size_x = value;
 }
 
-void Bindings::setHiddenNeuronsY(const int value) {
+void Bindings::setHiddenNeuronsY(const size_t value) {
   Manager::getInstance().network_params.hidden_size_y = value;
 }
 
-void Bindings::setOutputNeuronsX(const int value) {
+void Bindings::setOutputNeuronsX(const size_t value) {
   Manager::getInstance().network_params.output_size_x = value;
 }
 
-void Bindings::setOutputNeuronsY(const int value) {
+void Bindings::setOutputNeuronsY(const size_t value) {
   Manager::getInstance().network_params.output_size_y = value;
 }
 
@@ -227,4 +237,16 @@ void Bindings::setLearningRateMin(const float value) {
 
 void Bindings::setLearningRateMax(const float value) {
   Manager::getInstance().app_params.learning_rate_max = value;
+}
+
+void Bindings::setEpochsMax(const size_t value) {
+  Manager::getInstance().app_params.max_epochs = value;
+}
+
+void Bindings::setEpochsWithoutImprovementMax(const size_t value) {
+  Manager::getInstance().app_params.max_epochs_without_improvement = value;
+}
+
+void Bindings::setEpochsAutoSave(const size_t value) {
+  Manager::getInstance().app_params.epoch_autosave = value;
 }

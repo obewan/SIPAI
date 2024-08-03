@@ -35,12 +35,12 @@ private:
   Q_INVOKABLE void
   setActivationFunctionOutput(const sipai::EActivationFunction &value);
 
-  Q_INVOKABLE void setInputNeuronsX(const int value);
-  Q_INVOKABLE void setInputNeuronsY(const int value);
-  Q_INVOKABLE void setHiddenNeuronsX(const int value);
-  Q_INVOKABLE void setHiddenNeuronsY(const int value);
-  Q_INVOKABLE void setOutputNeuronsX(const int value);
-  Q_INVOKABLE void setOutputNeuronsY(const int value);
+  Q_INVOKABLE void setInputNeuronsX(const size_t value);
+  Q_INVOKABLE void setInputNeuronsY(const size_t value);
+  Q_INVOKABLE void setHiddenNeuronsX(const size_t value);
+  Q_INVOKABLE void setHiddenNeuronsY(const size_t value);
+  Q_INVOKABLE void setOutputNeuronsX(const size_t value);
+  Q_INVOKABLE void setOutputNeuronsY(const size_t value);
   Q_INVOKABLE void setErrorMin(const float value);
   Q_INVOKABLE void setErrorMax(const float value);
 
@@ -53,4 +53,7 @@ private:
   Q_INVOKABLE void setTrainingSplitRatio(const float value);
   Q_INVOKABLE void setLearningRateMin(const float value);
   Q_INVOKABLE void setLearningRateMax(const float value);
+  Q_INVOKABLE void setEpochsMax(const size_t value);
+  Q_INVOKABLE void setEpochsWithoutImprovementMax(const size_t value);
+  Q_INVOKABLE void setEpochsAutoSave(const size_t value);
 };
