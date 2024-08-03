@@ -1,14 +1,12 @@
 /**
- * @file Bindings.h
+ * @file BindingNetworkParams.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief Parameters bindings for Qt UI
- * @date 2024-08-02
+ * @brief Bindings for network_params
+ * @date 2024-08-03
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
  *
  */
-
-#pragma once
 
 #include "ActivationFunctions.h"
 #include "Common.h"
@@ -20,7 +18,7 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class Bindings : public QObject {
+class BindingNetworkParams : public QObject {
   Q_OBJECT
 
 public:

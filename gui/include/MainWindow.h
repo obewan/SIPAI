@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "Bindings.h"
+#include "BindingAppParams.h"
 #include <QFutureWatcher>
 #include <QMainWindow>
 #include <QProgressDialog>
@@ -49,7 +49,7 @@ private:
   QStandardItemModel *modelLogger;
   QProgressDialog *progressDialog;
   QFutureWatcher<void> *futureWatcher;
-  Bindings *bindings;
+  BindingAppParams *bindingAppParams;
 
   std::string aboutStr_;
   void loadNetwork();

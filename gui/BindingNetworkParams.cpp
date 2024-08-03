@@ -2,7 +2,7 @@
 #undef emit // Undefine the TBB emit macro to avoid conflicts (workaround)
 
 #include "./ui_MainWindow.h"
-#include "Bindings.h"
+#include "BindingNetworkParams.h"
 #include "MainWindow.h"
 
 #include <algorithm>
@@ -11,7 +11,7 @@
 using namespace Qt::StringLiterals;
 using namespace sipai;
 
-void Bindings::setBindings(Ui::MainWindow *ui) {
+void BindingNetworkParams::setBindings(Ui::MainWindow *ui) {
   // bind some params
   connect(
       ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
@@ -82,7 +82,7 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
           [this](int value) { setEpochsAutoSave((size_t)value); });
 }
 
-void Bindings::getAppParams(Ui::MainWindow *ui) {
+void BindingNetworkParams::getAppParams(Ui::MainWindow *ui) {
   const auto &app_params = Manager::getConstInstance().app_params;
   ui->lineEditCurrentNetwork->setText(app_params.network_to_import.c_str());
 
@@ -105,7 +105,7 @@ void Bindings::getAppParams(Ui::MainWindow *ui) {
   ui->spinBoxEpochsSaving->setValue((int)app_params.epoch_autosave);
 }
 
-void Bindings::getNetworkParams(Ui::MainWindow *ui) {
+void BindingNetworkParams::getNetworkParams(Ui::MainWindow *ui) {
   const auto &network_params = Manager::getConstInstance().network_params;
   const auto &network = Manager::getConstInstance().network;
 
@@ -157,96 +157,96 @@ void Bindings::getNetworkParams(Ui::MainWindow *ui) {
   ui->doubleSpinBoxErrorMax->setValue((double)network_params.error_max);
 }
 
-void Bindings::setNetworkToImport(const std::string &value) {
+void BindingNetworkParams::setNetworkToImport(const std::string &value) {
   Manager::getInstance().app_params.network_to_import = value;
 }
 
-void Bindings::setActivationFunctionHidden(
+void BindingNetworkParams::setActivationFunctionHidden(
     const sipai::EActivationFunction &value) {
   Manager::getInstance().network_params.hidden_activation_function = value;
 }
 
-void Bindings::setActivationFunctionOutput(
+void BindingNetworkParams::setActivationFunctionOutput(
     const sipai::EActivationFunction &value) {
   Manager::getInstance().network_params.output_activation_function = value;
 }
 
-void Bindings::setInputNeuronsX(const size_t value) {
+void BindingNetworkParams::setInputNeuronsX(const size_t value) {
   Manager::getInstance().network_params.input_size_x = value;
 }
 
-void Bindings::setInputNeuronsY(const size_t value) {
+void BindingNetworkParams::setInputNeuronsY(const size_t value) {
   Manager::getInstance().network_params.input_size_y = value;
 }
 
-void Bindings::setHiddenNeuronsX(const size_t value) {
+void BindingNetworkParams::setHiddenNeuronsX(const size_t value) {
   Manager::getInstance().network_params.hidden_size_x = value;
 }
 
-void Bindings::setHiddenNeuronsY(const size_t value) {
+void BindingNetworkParams::setHiddenNeuronsY(const size_t value) {
   Manager::getInstance().network_params.hidden_size_y = value;
 }
 
-void Bindings::setOutputNeuronsX(const size_t value) {
+void BindingNetworkParams::setOutputNeuronsX(const size_t value) {
   Manager::getInstance().network_params.output_size_x = value;
 }
 
-void Bindings::setOutputNeuronsY(const size_t value) {
+void BindingNetworkParams::setOutputNeuronsY(const size_t value) {
   Manager::getInstance().network_params.output_size_y = value;
 }
 
-void Bindings::setErrorMin(const float value) {
+void BindingNetworkParams::setErrorMin(const float value) {
   Manager::getInstance().network_params.error_min = value;
 }
 
-void Bindings::setErrorMax(const float value) {
+void BindingNetworkParams::setErrorMax(const float value) {
   Manager::getInstance().network_params.error_max = value;
 }
 
-void Bindings::setRunningMode(const sipai::ERunMode &value) {
+void BindingNetworkParams::setRunningMode(const sipai::ERunMode &value) {
   Manager::getInstance().app_params.run_mode = value;
 }
 
-void Bindings::setInputFile(const std::string &value) {
+void BindingNetworkParams::setInputFile(const std::string &value) {
   Manager::getInstance().app_params.input_file = value;
 }
 
-void Bindings::setOutputFile(const std::string &value) {
+void BindingNetworkParams::setOutputFile(const std::string &value) {
   Manager::getInstance().app_params.output_file = value;
 }
 
-void Bindings::setTrainingFile(const std::string &value) {
+void BindingNetworkParams::setTrainingFile(const std::string &value) {
   Manager::getInstance().app_params.training_data_file = value;
 }
 
-void Bindings::setTrainingFolder(const std::string &value) {
+void BindingNetworkParams::setTrainingFolder(const std::string &value) {
   Manager::getInstance().app_params.training_data_folder = value;
 }
 
-void Bindings::setOutputScale(const float value) {
+void BindingNetworkParams::setOutputScale(const float value) {
   Manager::getInstance().app_params.output_scale = value;
 }
 
-void Bindings::setTrainingSplitRatio(const float value) {
+void BindingNetworkParams::setTrainingSplitRatio(const float value) {
   Manager::getInstance().app_params.training_split_ratio = value;
 }
 
-void Bindings::setLearningRateMin(const float value) {
+void BindingNetworkParams::setLearningRateMin(const float value) {
   Manager::getInstance().app_params.learning_rate_min = value;
 }
 
-void Bindings::setLearningRateMax(const float value) {
+void BindingNetworkParams::setLearningRateMax(const float value) {
   Manager::getInstance().app_params.learning_rate_max = value;
 }
 
-void Bindings::setEpochsMax(const size_t value) {
+void BindingNetworkParams::setEpochsMax(const size_t value) {
   Manager::getInstance().app_params.max_epochs = value;
 }
 
-void Bindings::setEpochsWithoutImprovementMax(const size_t value) {
+void BindingNetworkParams::setEpochsWithoutImprovementMax(const size_t value) {
   Manager::getInstance().app_params.max_epochs_without_improvement = value;
 }
 
-void Bindings::setEpochsAutoSave(const size_t value) {
+void BindingNetworkParams::setEpochsAutoSave(const size_t value) {
   Manager::getInstance().app_params.epoch_autosave = value;
 }

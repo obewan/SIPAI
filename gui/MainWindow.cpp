@@ -16,7 +16,8 @@ using namespace sipai;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
-      futureWatcher(new QFutureWatcher<void>(this)), bindings(new Bindings()) {
+      futureWatcher(new QFutureWatcher<void>(this)),
+      bindingAppParams(new BindingAppParams()) {
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
@@ -25,11 +26,10 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
 
   // Bindings
-  bindings->setBindings(ui);
+  bindingAppParams->connectUi(ui);
 
   // Get default values
-  bindings->getAppParams(ui);
-  bindings->getNetworkParams(ui);
+  bindingAppParams->reload();
 
   // Connect actions to slots
   connect(ui->actionLoadNeuralNetwork, &QAction::triggered, this,
@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-  delete bindings;
+  delete bindingAppParams;
   delete modelLogger;
   delete ui;
 }
@@ -141,7 +141,7 @@ void MainWindow::onLoadingFinished() {
   }
   statusBar()->showMessage(tr("Loading finished"),
                            5000); // Show message for 5 seconds
-  bindings->getNetworkParams(ui);
+  // bindings->getNetworkParams(ui);
 }
 
 void MainWindow::onErrorOccurred(const QString &message) {
