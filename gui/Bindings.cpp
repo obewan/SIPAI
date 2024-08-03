@@ -28,6 +28,10 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
           [this](int value) { setOutputNeuronsX(value); });
   connect(ui->spinBoxOutputNeuronsY, &QSpinBox::valueChanged, this,
           [this](int value) { setOutputNeuronsY(value); });
+  connect(ui->doubleSpinBoxErrorMin, &QDoubleSpinBox::valueChanged, this,
+          [this](double value) { setErrorMin((float)value); });
+  connect(ui->doubleSpinBoxErrorMax, &QDoubleSpinBox::valueChanged, this,
+          [this](double value) { setErrorMax((float)value); });
 
   // add and bind activation functions
   for (const auto &[key, value] : activation_map) {
@@ -62,12 +66,33 @@ void Bindings::setBindings(Ui::MainWindow *ui) {
   connect(
       ui->lineEditTrainingFolder, &QLineEdit::textChanged, this,
       [this](const QString &text) { setTrainingFolder(text.toStdString()); });
+  connect(ui->doubleSpinBoxOutputScaleFactor, &QDoubleSpinBox::valueChanged,
+          this, [this](double value) { setOutputScale((float)value); });
+  connect(ui->doubleSpinBoxTrainingSplit, &QDoubleSpinBox::valueChanged, this,
+          [this](double value) { setTrainingSplitRatio((float)value); });
+  connect(ui->doubleSpinBoxLearningRateMin, &QDoubleSpinBox::valueChanged, this,
+          [this](double value) { setLearningRateMin((float)value); });
+  connect(ui->doubleSpinBoxLearningRateMax, &QDoubleSpinBox::valueChanged, this,
+          [this](double value) { setLearningRateMax((float)value); });
 }
 
 void Bindings::getAppParams(Ui::MainWindow *ui) {
   const auto &app_params = Manager::getConstInstance().app_params;
   ui->lineEditCurrentNetwork->setText(app_params.network_to_import.c_str());
+
   ui->comboBoxMode->setCurrentIndex(static_cast<int>(app_params.run_mode));
+  ui->lineEditInputFile->setText(app_params.input_file.c_str());
+  ui->lineEditOutputFile->setText(app_params.output_file.c_str());
+  ui->lineEditTrainingFile->setText(app_params.training_data_file.c_str());
+  ui->lineEditTrainingFolder->setText(app_params.training_data_folder.c_str());
+
+  ui->doubleSpinBoxOutputScaleFactor->setValue((double)app_params.output_scale);
+  ui->doubleSpinBoxTrainingSplit->setValue(
+      (double)app_params.training_split_ratio);
+  ui->doubleSpinBoxLearningRateMin->setValue(
+      (double)app_params.learning_rate_min);
+  ui->doubleSpinBoxLearningRateMax->setValue(
+      (double)app_params.learning_rate_max);
 }
 
 void Bindings::getNetworkParams(Ui::MainWindow *ui) {
@@ -160,6 +185,14 @@ void Bindings::setOutputNeuronsY(const int value) {
   Manager::getInstance().network_params.output_size_y = value;
 }
 
+void Bindings::setErrorMin(const float value) {
+  Manager::getInstance().network_params.error_min = value;
+}
+
+void Bindings::setErrorMax(const float value) {
+  Manager::getInstance().network_params.error_max = value;
+}
+
 void Bindings::setRunningMode(const sipai::ERunMode &value) {
   Manager::getInstance().app_params.run_mode = value;
 }
@@ -178,4 +211,20 @@ void Bindings::setTrainingFile(const std::string &value) {
 
 void Bindings::setTrainingFolder(const std::string &value) {
   Manager::getInstance().app_params.training_data_folder = value;
+}
+
+void Bindings::setOutputScale(const float value) {
+  Manager::getInstance().app_params.output_scale = value;
+}
+
+void Bindings::setTrainingSplitRatio(const float value) {
+  Manager::getInstance().app_params.training_split_ratio = value;
+}
+
+void Bindings::setLearningRateMin(const float value) {
+  Manager::getInstance().app_params.learning_rate_min = value;
+}
+
+void Bindings::setLearningRateMax(const float value) {
+  Manager::getInstance().app_params.learning_rate_max = value;
 }

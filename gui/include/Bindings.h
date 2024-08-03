@@ -41,10 +41,16 @@ private:
   Q_INVOKABLE void setHiddenNeuronsY(const int value);
   Q_INVOKABLE void setOutputNeuronsX(const int value);
   Q_INVOKABLE void setOutputNeuronsY(const int value);
+  Q_INVOKABLE void setErrorMin(const float value);
+  Q_INVOKABLE void setErrorMax(const float value);
 
   Q_INVOKABLE void setRunningMode(const sipai::ERunMode &value);
   Q_INVOKABLE void setInputFile(const std::string &value);
   Q_INVOKABLE void setOutputFile(const std::string &value);
   Q_INVOKABLE void setTrainingFile(const std::string &value);
   Q_INVOKABLE void setTrainingFolder(const std::string &value);
+  Q_INVOKABLE void setOutputScale(const float value);
+  Q_INVOKABLE void setTrainingSplitRatio(const float value);
+  Q_INVOKABLE void setLearningRateMin(const float value);
+  Q_INVOKABLE void setLearningRateMax(const float value);
 };
