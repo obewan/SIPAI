@@ -52,6 +52,22 @@ class BindingAppParams : public QObject {
                  imageSplitChanged)
   Q_PROPERTY(double trainingReduceFactor READ getTrainingReduceFactor WRITE
                  setTrainingReduceFactor NOTIFY trainingReduceFactorChanged)
+  Q_PROPERTY(bool randomLoading READ getRandomLoading WRITE setRandomLoading
+                 NOTIFY randomLoadingChanged)
+  Q_PROPERTY(bool bulkLoading READ getBulkLoading WRITE setBulkLoading NOTIFY
+                 bulkLoadingChanged)
+  Q_PROPERTY(bool imagePadding READ getImagePadding WRITE setImagePadding NOTIFY
+                 imagePaddingChanged)
+  Q_PROPERTY(bool cpuParallel READ getCpuParallel WRITE setCpuParallel NOTIFY
+                 cpuParallelChanged)
+  Q_PROPERTY(bool enableVulkan READ getEnableVulkan WRITE setEnableVulkan NOTIFY
+                 enableVulkanChanged)
+  Q_PROPERTY(
+      bool verbose READ getVerbose WRITE setVerbose NOTIFY verboseChanged)
+  Q_PROPERTY(bool verboseDebug READ getVerboseDebug WRITE setVerboseDebug NOTIFY
+                 verboseDebugChanged)
+  Q_PROPERTY(bool vulkanDebug READ getVulkanDebug WRITE setVulkanDebug NOTIFY
+                 vulkanDebugChanged)
 
 public:
   BindingAppParams(QObject *parent = nullptr);
@@ -212,6 +228,70 @@ public:
     }
   }
 
+  bool getRandomLoading() const { return app_params.random_loading; }
+  void setRandomLoading(bool value) {
+    if (app_params.random_loading != value) {
+      app_params.random_loading = value;
+      emit randomLoadingChanged(value);
+    }
+  }
+
+  bool getBulkLoading() const { return app_params.bulk_loading; }
+  void setBulkLoading(bool value) {
+    if (app_params.bulk_loading != value) {
+      app_params.bulk_loading = value;
+      emit bulkLoadingChanged(value);
+    }
+  }
+
+  bool getImagePadding() const { return app_params.enable_padding; }
+  void setImagePadding(bool value) {
+    if (app_params.enable_padding != value) {
+      app_params.enable_padding = value;
+      emit imagePaddingChanged(value);
+    }
+  }
+
+  bool getCpuParallel() const { return app_params.enable_parallel; }
+  void setCpuParallel(bool value) {
+    if (app_params.enable_parallel != value) {
+      app_params.enable_parallel = value;
+      emit cpuParallelChanged(value);
+    }
+  }
+
+  bool getEnableVulkan() const { return app_params.enable_vulkan; }
+  void setEnableVulkan(bool value) {
+    if (app_params.enable_vulkan != value) {
+      app_params.enable_vulkan = value;
+      emit enableVulkanChanged(value);
+    }
+  }
+
+  bool getVerbose() const { return app_params.verbose; }
+  void setVerbose(bool value) {
+    if (app_params.verbose != value) {
+      app_params.verbose = value;
+      emit verboseChanged(value);
+    }
+  }
+
+  bool getVerboseDebug() const { return app_params.verbose_debug; }
+  void setVerboseDebug(bool value) {
+    if (app_params.verbose_debug != value) {
+      app_params.verbose_debug = value;
+      emit verboseDebugChanged(value);
+    }
+  }
+
+  bool getVulkanDebug() const { return app_params.vulkan_debug; }
+  void setVulkanDebug(bool value) {
+    if (app_params.vulkan_debug != value) {
+      app_params.vulkan_debug = value;
+      emit vulkanDebugChanged(value);
+    }
+  }
+
 signals:
   void runningModeChanged(int value);
   void networkToImportChanged(const QString &value);
@@ -228,6 +308,14 @@ signals:
   void epochsAutoSaveChanged(int value);
   void imageSplitChanged(int value);
   void trainingReduceFactorChanged(double value);
+  void randomLoadingChanged(bool value);
+  void bulkLoadingChanged(bool value);
+  void imagePaddingChanged(bool value);
+  void cpuParallelChanged(bool value);
+  void enableVulkanChanged(bool value);
+  void verboseChanged(bool value);
+  void verboseDebugChanged(bool value);
+  void vulkanDebugChanged(bool value);
 
 private:
   sipai::AppParams &app_params;

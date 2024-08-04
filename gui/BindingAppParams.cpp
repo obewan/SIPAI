@@ -105,6 +105,49 @@ void BindingAppParams::connectUi(Ui::MainWindow *ui) {
           [ui](double value) {
             ui->doubleSpinBoxImageReducingFactor->setValue(value);
           });
+
+  connect(ui->checkBoxImagesRandomLoading, &QCheckBox::toggled, this,
+          &BindingAppParams::setRandomLoading);
+  connect(this, &BindingAppParams::randomLoadingChanged, [ui](bool value) {
+    ui->checkBoxImagesRandomLoading->setChecked(value);
+  });
+
+  connect(ui->checkBoxImagesBulk, &QCheckBox::toggled, this,
+          &BindingAppParams::setBulkLoading);
+  connect(this, &BindingAppParams::bulkLoadingChanged,
+          [ui](bool value) { ui->checkBoxImagesBulk->setChecked(value); });
+
+  connect(ui->checkBoxImagesPadding, &QCheckBox::toggled, this,
+          &BindingAppParams::setImagePadding);
+  connect(this, &BindingAppParams::imagePaddingChanged,
+          [ui](bool value) { ui->checkBoxImagesPadding->setChecked(value); });
+
+  connect(ui->checkBoxEnableCpuParallel, &QCheckBox::toggled, this,
+          &BindingAppParams::setCpuParallel);
+  connect(this, &BindingAppParams::cpuParallelChanged, [ui](bool value) {
+    ui->checkBoxEnableCpuParallel->setChecked(value);
+  });
+
+  connect(ui->checkBoxEnableGpuParallel, &QCheckBox::toggled, this,
+          &BindingAppParams::setEnableVulkan);
+  connect(this, &BindingAppParams::enableVulkanChanged, [ui](bool value) {
+    ui->checkBoxEnableGpuParallel->setChecked(value);
+  });
+
+  connect(ui->checkBoxVerbose, &QCheckBox::toggled, this,
+          &BindingAppParams::setVerbose);
+  connect(this, &BindingAppParams::verboseChanged,
+          [ui](bool value) { ui->checkBoxVerbose->setChecked(value); });
+
+  connect(ui->checkBoxVerboseDebug, &QCheckBox::toggled, this,
+          &BindingAppParams::setVerboseDebug);
+  connect(this, &BindingAppParams::verboseDebugChanged,
+          [ui](bool value) { ui->checkBoxVerboseDebug->setChecked(value); });
+
+  connect(ui->checkBoxVerboseVulkan, &QCheckBox::toggled, this,
+          &BindingAppParams::setVulkanDebug);
+  connect(this, &BindingAppParams::vulkanDebugChanged,
+          [ui](bool value) { ui->checkBoxVerboseVulkan->setChecked(value); });
 }
 
 void BindingAppParams::reload() {
@@ -124,4 +167,12 @@ void BindingAppParams::reload() {
 
   emit imageSplitChanged(getImageSplit());
   emit trainingReduceFactorChanged(getTrainingReduceFactor());
+  emit randomLoadingChanged(getRandomLoading());
+  emit bulkLoadingChanged(getBulkLoading());
+  emit imagePaddingChanged(getImagePadding());
+  emit cpuParallelChanged(getCpuParallel());
+  emit enableVulkanChanged(getEnableVulkan());
+  emit verboseChanged(getVerbose());
+  emit verboseDebugChanged(getVerboseDebug());
+  emit vulkanDebugChanged(getVulkanDebug());
 }

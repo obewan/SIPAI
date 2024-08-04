@@ -99,7 +99,7 @@ void BindingNetworkParams::connectUi(Ui::MainWindow *ui) {
   connect(ui->checkBoxLRAdaptive, &QCheckBox::toggled, this,
           &BindingNetworkParams::setAdaptiveLearningRate);
   connect(this, &BindingNetworkParams::adaptiveLearningRateChanged,
-          [ui](double value) { ui->checkBoxLRAdaptive->setChecked(value); });
+          [ui](bool value) { ui->checkBoxLRAdaptive->setChecked(value); });
 
   connect(ui->doubleSpinBoxLRAdatpiveFactor, &QDoubleSpinBox::valueChanged,
           this, &BindingNetworkParams::setAdaptiveLearningRateFactor);
@@ -110,10 +110,9 @@ void BindingNetworkParams::connectUi(Ui::MainWindow *ui) {
 
   connect(ui->checkBoxLRAdaptiveIncrease, &QCheckBox::toggled, this,
           &BindingNetworkParams::setAdaptiveLearningRateIncrease);
-  connect(this, &BindingNetworkParams::adaptiveLearningRateIncreaseChanged,
-          [ui](double value) {
-            ui->checkBoxLRAdaptiveIncrease->setChecked(value);
-          });
+  connect(
+      this, &BindingNetworkParams::adaptiveLearningRateIncreaseChanged,
+      [ui](bool value) { ui->checkBoxLRAdaptiveIncrease->setChecked(value); });
 
   connect(ui->doubleSpinBoxErrorMin, &QDoubleSpinBox::valueChanged, this,
           &BindingNetworkParams::setErrorMin);
