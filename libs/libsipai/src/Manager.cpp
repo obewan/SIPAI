@@ -98,6 +98,11 @@ void Manager::run() {
       "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false",
       "\ndebug vulkan enabled: ", app_params.vulkan_debug ? "true" : "false");
 
+  // Some checking
+  if (app_params.image_split == NO_IMAGE_SPLIT) {
+    app_params.image_split = 1; // same as no split
+  }
+
   // Enabling GPU Vulkan
   bool wasParallel = app_params.enable_parallel;
   if (app_params.enable_vulkan) {

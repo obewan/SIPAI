@@ -93,6 +93,18 @@ void BindingAppParams::connectUi(Ui::MainWindow *ui) {
           &BindingAppParams::setEpochsAutoSave);
   connect(this, &BindingAppParams::epochsAutoSaveChanged,
           [ui](int value) { ui->spinBoxEpochsSaving->setValue(value); });
+
+  connect(ui->spinBoxImageSplits, &QSpinBox::valueChanged, this,
+          &BindingAppParams::setImageSplit);
+  connect(this, &BindingAppParams::imageSplitChanged,
+          [ui](int value) { ui->spinBoxImageSplits->setValue(value); });
+
+  connect(ui->doubleSpinBoxImageReducingFactor, &QDoubleSpinBox::valueChanged,
+          this, &BindingAppParams::setTrainingReduceFactor);
+  connect(this, &BindingAppParams::trainingReduceFactorChanged,
+          [ui](double value) {
+            ui->doubleSpinBoxImageReducingFactor->setValue(value);
+          });
 }
 
 void BindingAppParams::reload() {
@@ -109,4 +121,7 @@ void BindingAppParams::reload() {
   emit epochsMaxChanged(getEpochsMax());
   emit epochsWithoutImprovementMaxChanged(getEpochsWithoutImprovementMax());
   emit epochsAutoSaveChanged(getEpochsAutoSave());
+
+  emit imageSplitChanged(getImageSplit());
+  emit trainingReduceFactorChanged(getTrainingReduceFactor());
 }

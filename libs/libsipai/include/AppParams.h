@@ -15,6 +15,7 @@
 
 namespace sipai {
 constexpr int NO_MAX_EPOCHS = 0;
+constexpr int NO_IMAGE_SPLIT = 0;
 
 struct AppParams {
   std::string title = "SIPAI - Simple Image Processing Artificial Intelligence";
@@ -39,7 +40,7 @@ struct AppParams {
   size_t max_epochs = NO_MAX_EPOCHS;
   size_t max_epochs_without_improvement = 2; // TODO: check for 0 = no max
   size_t epoch_autosave = 100;               // TODO: check for 0 = no autosave
-  size_t image_split = 1;                    // TODO: check for 0 = no split
+  size_t image_split = NO_IMAGE_SPLIT;
   size_t training_reduce_factor = 4;
   bool random_loading = false;
   bool bulk_loading = false;

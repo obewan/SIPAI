@@ -48,6 +48,10 @@ class BindingAppParams : public QObject {
   Q_PROPERTY(int epochsWithoutImprovementMax READ getEpochsWithoutImprovementMax
                  WRITE setEpochsWithoutImprovementMax NOTIFY
                      epochsWithoutImprovementMaxChanged)
+  Q_PROPERTY(int imageSplit READ getImageSplit WRITE setImageSplit NOTIFY
+                 imageSplitChanged)
+  Q_PROPERTY(double trainingReduceFactor READ getTrainingReduceFactor WRITE
+                 setTrainingReduceFactor NOTIFY trainingReduceFactorChanged)
 
 public:
   BindingAppParams(QObject *parent = nullptr);
@@ -188,6 +192,26 @@ public:
     }
   }
 
+  int getImageSplit() const { return static_cast<int>(app_params.image_split); }
+  void setImageSplit(int value) {
+    auto svalue = static_cast<size_t>(value);
+    if (app_params.image_split != svalue) {
+      app_params.image_split = svalue;
+      emit imageSplitChanged(value);
+    }
+  }
+
+  double getTrainingReduceFactor() const {
+    return static_cast<double>(app_params.training_reduce_factor);
+  }
+  void setTrainingReduceFactor(double value) {
+    auto fvalue = static_cast<float>(value);
+    if (app_params.training_reduce_factor != fvalue) {
+      app_params.training_reduce_factor = fvalue;
+      emit trainingReduceFactorChanged(value);
+    }
+  }
+
 signals:
   void runningModeChanged(int value);
   void networkToImportChanged(const QString &value);
@@ -202,6 +226,8 @@ signals:
   void epochsMaxChanged(int value);
   void epochsWithoutImprovementMaxChanged(int value);
   void epochsAutoSaveChanged(int value);
+  void imageSplitChanged(int value);
+  void trainingReduceFactorChanged(double value);
 
 private:
   sipai::AppParams &app_params;

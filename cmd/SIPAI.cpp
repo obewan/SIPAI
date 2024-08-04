@@ -379,9 +379,10 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
          "parts, and a split of 3 will result in 9 smaller parts.\nTo avoid "
          "padding, make sure the split number is a multiple of the image width "
          "and height.\nAlso, be aware that using a split will increase the "
-         "training time.")
+         "training time.\nFor no image_split, indicate 1 or " +
+             std::to_string(NO_IMAGE_SPLIT))
       ->default_val(app_params.image_split)
-      ->check(CLI::PositiveNumber);
+      ->check(CLI::NonNegativeNumber);
   app.add_flag(
       "--pad, --padding", app_params.enable_padding,
       "Enable this flag to add padding to the image if the split factor is not "
