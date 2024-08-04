@@ -11,6 +11,7 @@
 #pragma once
 
 #include "BindingAppParams.h"
+#include "BindingNetworkParams.h"
 #include <QFutureWatcher>
 #include <QMainWindow>
 #include <QProgressDialog>
@@ -50,6 +51,7 @@ private:
   QProgressDialog *progressDialog;
   QFutureWatcher<void> *futureWatcher;
   BindingAppParams *bindingAppParams;
+  BindingNetworkParams *bindingNetworkParams;
 
   std::string aboutStr_;
   void loadNetwork();

@@ -17,7 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
       futureWatcher(new QFutureWatcher<void>(this)),
-      bindingAppParams(new BindingAppParams()) {
+      bindingAppParams(new BindingAppParams()),
+      bindingNetworkParams(new BindingNetworkParams()) {
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
@@ -27,9 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
 
   // Bindings
   bindingAppParams->connectUi(ui);
+  bindingNetworkParams->connectUi(ui);
 
   // Get default values
   bindingAppParams->reload();
+  bindingNetworkParams->reload();
 
   // Connect actions to slots
   connect(ui->actionLoadNeuralNetwork, &QAction::triggered, this,
@@ -75,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
   delete bindingAppParams;
+  delete bindingNetworkParams;
   delete modelLogger;
   delete ui;
 }

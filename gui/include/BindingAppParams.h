@@ -23,6 +23,8 @@ class BindingAppParams : public QObject {
   Q_OBJECT
   Q_PROPERTY(int runningMode READ getRunningMode WRITE setRunningMode NOTIFY
                  runningModeChanged)
+  Q_PROPERTY(QString networkToImport READ getNetworkToImport WRITE
+                 setNetworkToImport NOTIFY networkToImportChanged)
   Q_PROPERTY(QString inputFile READ getInputFile WRITE setInputFile NOTIFY
                  inputFileChanged)
   Q_PROPERTY(QString outputFile READ getOutputFile WRITE setOutputFile NOTIFY
@@ -50,6 +52,7 @@ class BindingAppParams : public QObject {
 public:
   BindingAppParams(QObject *parent = nullptr);
   void connectUi(Ui::MainWindow *ui);
+  void reload();
 
   int getRunningMode() const { return static_cast<int>(app_params.run_mode); }
   void setRunningMode(int value) {
@@ -57,6 +60,16 @@ public:
     if (app_params.run_mode != evalue) {
       app_params.run_mode = evalue;
       emit runningModeChanged(value);
+    }
+  }
+
+  QString getNetworkToImport() const {
+    return QString::fromStdString(app_params.network_to_import);
+  }
+  void setNetworkToImport(const QString &value) {
+    if (app_params.network_to_import != value.toStdString()) {
+      app_params.network_to_import = value.toStdString();
+      emit networkToImportChanged(value);
     }
   }
 
@@ -175,10 +188,9 @@ public:
     }
   }
 
-  void reload();
-
 signals:
   void runningModeChanged(int value);
+  void networkToImportChanged(const QString &value);
   void inputFileChanged(const QString &value);
   void outputFileChanged(const QString &value);
   void trainingFileChanged(const QString &value);

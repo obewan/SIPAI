@@ -11,14 +11,24 @@ BindingAppParams::BindingAppParams(QObject *parent)
     : QObject(parent), app_params(Manager::getInstance().app_params) {}
 
 void BindingAppParams::connectUi(Ui::MainWindow *ui) {
+  // add run mode enums select
   for (const auto &[key, value] : mode_map) {
     ui->comboBoxMode->addItem(QString::fromStdString(key),
                               static_cast<int>(value));
   }
+
+  // bindings
   connect(ui->comboBoxMode, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &BindingAppParams::setRunningMode);
   connect(this, &BindingAppParams::runningModeChanged,
           [ui](int value) { ui->comboBoxMode->setCurrentIndex(value); });
+
+  connect(ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
+          &BindingAppParams::setNetworkToImport);
+  connect(this, &BindingAppParams::networkToImportChanged,
+          [ui](const QString &value) {
+            ui->lineEditCurrentNetwork->setText(value);
+          });
 
   connect(ui->lineEditInputFile, &QLineEdit::textChanged, this,
           &BindingAppParams::setInputFile);
@@ -87,6 +97,7 @@ void BindingAppParams::connectUi(Ui::MainWindow *ui) {
 
 void BindingAppParams::reload() {
   emit runningModeChanged(getRunningMode());
+  emit networkToImportChanged(getNetworkToImport());
   emit inputFileChanged(getInputFile());
   emit outputFileChanged(getOutputFile());
   emit trainingFileChanged(getTrainingFile());
