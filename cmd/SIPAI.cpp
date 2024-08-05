@@ -417,4 +417,10 @@ void SIPAI::addOptions(CLI::App &app, AppParams &app_params,
                "of the CPU, except if Vulkan failed to initialize.");
 }
 
-void SIPAI::run() { Manager::getInstance().run(); }
+void SIPAI::run() {
+  Manager::getInstance()
+      .showHeader()
+      .createOrImportNetwork()
+      .showParameters()
+      .run();
+}

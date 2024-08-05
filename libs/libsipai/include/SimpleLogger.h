@@ -66,7 +66,7 @@ public:
     (streamArgs << ... << args);
 
     std::ostream *stream = (level == LogLevel::INFO) ? osout : oserr;
-    *stream << get_timestamp() << " [" << toString(level) << "] ";
+    *stream << "[" << get_timestamp() << "] [" << toString(level) << "] ";
     stream->precision(current_precision);
     *stream << std::fixed;
     *stream << streamArgs.str();
@@ -76,7 +76,7 @@ public:
 
     // Call the log callback if set
     if (logCallback) {
-      logCallback(get_timestamp(false), toString(level), streamArgs.str());
+      logCallback(get_timestamp(), toString(level), streamArgs.str());
     }
     return *this;
   }
@@ -302,7 +302,7 @@ private:
   mutable LogLevel currentLevel = LogLevel::INFO;
   LogCallback logCallback = {};
 
-  std::string get_timestamp(bool withBrackets = true) const {
+  std::string get_timestamp() const {
     auto now = std::chrono::system_clock::now();
     auto now_c = std::chrono::system_clock::to_time_t(now);
     std::tm now_tm{};
@@ -313,13 +313,9 @@ private:
 #else
     localtime_r(&now_c, &now_tm);
 #endif
-    if (withBrackets) {
-      sst << "[";
-    }
+
     sst << std::put_time(&now_tm, "%F %T");
-    if (withBrackets) {
-      sst << "]";
-    }
+
     return sst.str();
   }
 

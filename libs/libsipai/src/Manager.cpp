@@ -15,7 +15,8 @@ using namespace sipai;
 
 std::unique_ptr<Manager> Manager::instance_ = nullptr;
 
-void Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
+Manager &
+Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
   if (network) {
     network.reset();
   }
@@ -28,6 +29,7 @@ void Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
                 .initializeWeights()
                 .setActivationFunction()
                 .build();
+  return *this;
 }
 
 void Manager::exportNetwork() {
@@ -40,20 +42,7 @@ void Manager::exportNetwork() {
   }
 }
 
-void Manager::run() {
-  // TODO: refactor this for GUI
-  SimpleLogger::LOG_INFO(getVersionHeader());
-
-  // Initialize network
-  // TODO: refactor this for GUI
-  try {
-    createOrImportNetwork();
-  } catch (std::exception &ex) {
-    SimpleLogger::LOG_ERROR("Error during network init: ", ex.what());
-    return;
-  }
-
-  // Log parameters
+Manager &Manager::showParameters() {
   SimpleLogger::LOG_INFO(
       "Parameters: ", "\nmode: ", Common::getRunModeStr(app_params.run_mode),
       "\nauto-save every ", app_params.epoch_autosave, " epochs",
@@ -100,6 +89,10 @@ void Manager::run() {
       "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false",
       "\ndebug vulkan enabled: ", app_params.vulkan_debug ? "true" : "false");
 
+  return *this;
+}
+
+void Manager::run() {
   // Some checking
   if (app_params.image_split == NO_IMAGE_SPLIT) {
     app_params.image_split = 1; // same as no split

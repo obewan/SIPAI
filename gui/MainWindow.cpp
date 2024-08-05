@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
   });
 
   // Other inits
-  const std::string &version = Manager::getConstInstance().app_params.version;
+  const std::string &version = manager.app_params.version;
   std::stringstream aboutStr;
   aboutStr << "Simple Image Processing Artificial Intelligence\n"
            << "Version: " << version << "\n\n"
@@ -85,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent)
            << "Sources: https://obewan.github.io/SIPAI\n"
            << "Copyright: CC BY-NC-SA 4.0";
   aboutStr_ = aboutStr.str();
+
+  manager.showHeader();
 }
 
 MainWindow::~MainWindow() {
@@ -145,6 +147,7 @@ void MainWindow::onLoadingCanceled() {
     progressDialog->close();
     progressDialog->deleteLater();
   }
+  SimpleLogger::LOG_INFO(tr("Loading canceled").toStdString());
   statusBar()->showMessage(tr("Loading canceled"),
                            5000); // Show message for 5 seconds
 }
@@ -155,6 +158,7 @@ void MainWindow::onLoadingFinished() {
     progressDialog->close();
     progressDialog->deleteLater();
   }
+  SimpleLogger::LOG_INFO(tr("Loading finished").toStdString());
   statusBar()->showMessage(tr("Loading finished"),
                            5000); // Show message for 5 seconds
 }
@@ -167,6 +171,7 @@ void MainWindow::onErrorOccurred(const QString &message) {
           progressDialog->close();
           progressDialog->deleteLater();
         }
+        SimpleLogger::LOG_ERROR(message.toStdString());
         statusBar()->showMessage(tr("Error: %1").arg(message),
                                  5000); // Show message for 5 seconds
         QMessageBox::warning(this, tr("Error"), message);

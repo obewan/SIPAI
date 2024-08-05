@@ -173,7 +173,7 @@ TEST_CASE("Testing the Manager class") {
     }
     CHECK(std::filesystem::exists(ap.training_data_file));
     CHECK_FALSE(TrainingDataFactory::getInstance().isLoaded());
-    CHECK_NOTHROW(manager.run());
+    CHECK_NOTHROW(manager.createOrImportNetwork().run());
     CHECK(TrainingDataFactory::getInstance().isLoaded());
     CHECK_FALSE(TrainingDataFactory::getInstance().isDataFolder());
     CHECK(std::filesystem::exists(ap.network_to_export));
@@ -217,7 +217,7 @@ TEST_CASE("Testing the Manager class") {
     }
     CHECK(std::filesystem::exists(ap.training_data_folder));
     CHECK_FALSE(TrainingDataFactory::getInstance().isLoaded());
-    CHECK_NOTHROW(manager.run());
+    CHECK_NOTHROW(manager.createOrImportNetwork().run());
     CHECK(TrainingDataFactory::getInstance().isLoaded());
     CHECK(TrainingDataFactory::getInstance().isDataFolder());
     CHECK(std::filesystem::exists(ap.network_to_export));
