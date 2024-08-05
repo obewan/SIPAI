@@ -41,9 +41,11 @@ void Manager::exportNetwork() {
 }
 
 void Manager::run() {
+  // TODO: refactor this for GUI
   SimpleLogger::LOG_INFO(getVersionHeader());
 
   // Initialize network
+  // TODO: refactor this for GUI
   try {
     createOrImportNetwork();
   } catch (std::exception &ex) {

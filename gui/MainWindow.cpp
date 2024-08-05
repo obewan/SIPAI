@@ -4,6 +4,8 @@
 
 #include "./ui_MainWindow.h"
 #include "MainWindow.h"
+#include "QtSimpleLogger.h"
+#include "SimpleLogger.h"
 #include <sstream>
 
 #include <QFileDialog>
@@ -18,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
       futureWatcher(new QFutureWatcher<void>(this)),
       bindingAppParams(new BindingAppParams()),
-      bindingNetworkParams(new BindingNetworkParams()) {
+      bindingNetworkParams(new BindingNetworkParams()),
+      qtSimpleLogger(new QtSimpleLogger(modelLogger)) {
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
@@ -64,6 +67,14 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableViewLogs->horizontalHeader()->setSectionResizeMode(
       2, QHeaderView::Stretch); // Message
 
+  SimpleLogger &logger =
+      const_cast<SimpleLogger &>(SimpleLogger::getInstance());
+  logger.setLogCallback([this](const std::string &timestamp,
+                               const std::string &level,
+                               const std::string &message) {
+    qtSimpleLogger->log(timestamp, level, message);
+  });
+
   // Other inits
   const std::string &version = Manager::getConstInstance().app_params.version;
   std::stringstream aboutStr;
@@ -80,6 +91,7 @@ MainWindow::~MainWindow() {
   delete bindingAppParams;
   delete bindingNetworkParams;
   delete modelLogger;
+  delete qtSimpleLogger;
   delete ui;
 }
 
@@ -145,7 +157,6 @@ void MainWindow::onLoadingFinished() {
   }
   statusBar()->showMessage(tr("Loading finished"),
                            5000); // Show message for 5 seconds
-  // bindings->getNetworkParams(ui);
 }
 
 void MainWindow::onErrorOccurred(const QString &message) {
