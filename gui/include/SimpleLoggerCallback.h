@@ -1,7 +1,7 @@
 /**
- * @file QtSimpleLogger.h
+ * @file SimpleLoggerCallback.h
  * @author Damien Balima (www.dams-labs.net)
- * @brief A Qt wrapper for QStandardItemModel and sipai::SimpleLogger
+ * @brief A Log Callback for sipai::SimpleLogger to use with Qt.
  * @date 2024-08-05
  *
  * @copyright Damien Balima (c) CC-BY-NC-SA-4.0 2024
@@ -11,9 +11,9 @@
 #include <QList>
 #include <QStandardItemModel>
 
-class QtSimpleLogger {
+class SimpleLoggerCallback {
 public:
-  QtSimpleLogger(QStandardItemModel *model) : modelLogger(model) {}
+  SimpleLoggerCallback(QStandardItemModel *model) : modelLogger(model) {}
 
   void log(const std::string &timestamp, const std::string &level,
            const std::string &message) {

@@ -12,7 +12,7 @@
 
 #include "BindingAppParams.h"
 #include "BindingNetworkParams.h"
-#include "QtSimpleLogger.h"
+#include "SimpleLoggerCallback.h"
 #include <QFutureWatcher>
 #include <QMainWindow>
 #include <QProgressDialog>
@@ -53,7 +53,7 @@ private:
   QFutureWatcher<void> *futureWatcher;
   BindingAppParams *bindingAppParams;
   BindingNetworkParams *bindingNetworkParams;
-  QtSimpleLogger *qtSimpleLogger;
+  SimpleLoggerCallback *logCallback;
 
   std::string aboutStr_;
   void loadNetwork();

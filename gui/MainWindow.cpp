@@ -4,7 +4,6 @@
 
 #include "./ui_MainWindow.h"
 #include "MainWindow.h"
-#include "QtSimpleLogger.h"
 #include "SimpleLogger.h"
 #include <sstream>
 
@@ -21,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
       futureWatcher(new QFutureWatcher<void>(this)),
       bindingAppParams(new BindingAppParams()),
       bindingNetworkParams(new BindingNetworkParams()),
-      qtSimpleLogger(new QtSimpleLogger(modelLogger)) {
+      logCallback(new SimpleLoggerCallback(modelLogger)) {
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
@@ -72,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
   logger.setLogCallback([this](const std::string &timestamp,
                                const std::string &level,
                                const std::string &message) {
-    qtSimpleLogger->log(timestamp, level, message);
+    logCallback->log(timestamp, level, message);
   });
 
   // Other inits
@@ -93,7 +92,7 @@ MainWindow::~MainWindow() {
   delete bindingAppParams;
   delete bindingNetworkParams;
   delete modelLogger;
-  delete qtSimpleLogger;
+  delete logCallback;
   delete ui;
 }
 
