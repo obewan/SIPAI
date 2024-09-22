@@ -13,11 +13,15 @@ BindingAppParams::BindingAppParams(QObject *parent)
 void BindingAppParams::connectUi(Ui::MainWindow *ui) {
   // add run mode enums select
   for (const auto &[key, value] : mode_map) {
-    ui->comboBoxMode->addItem(QString::fromStdString(key),
-                              static_cast<int>(value));
+    // add only implemented modes
+    // TODO: implement and add other modes
+    if (value == ERunMode::Enhancer || value == ERunMode::Training) {
+      ui->comboBoxMode->addItem(QString::fromStdString(key),
+                                static_cast<int>(value));
+    }
   }
 
-  // bindings
+  // bindings (bidirectional)
   connect(ui->comboBoxMode, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &BindingAppParams::setRunningMode);
   connect(this, &BindingAppParams::runningModeChanged,
