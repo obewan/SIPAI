@@ -11,6 +11,8 @@ BindingAppParams::BindingAppParams(QObject *parent)
     : QObject(parent), app_params(Manager::getInstance().app_params) {}
 
 void BindingAppParams::connectUi(Ui::MainWindow *ui) {
+  this->ui = ui;
+
   // add run mode enums select
   for (const auto &[key, value] : mode_map) {
     // add only implemented modes
@@ -24,8 +26,31 @@ void BindingAppParams::connectUi(Ui::MainWindow *ui) {
   // bindings (bidirectional)
   connect(ui->comboBoxMode, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &BindingAppParams::setRunningMode);
-  connect(this, &BindingAppParams::runningModeChanged,
-          [ui](int value) { ui->comboBoxMode->setCurrentIndex(value); });
+  connect(this, &BindingAppParams::runningModeChanged, [ui](int index) {
+    ui->comboBoxMode->setCurrentIndex(index);
+    auto currentData = ui->comboBoxMode->currentData().toInt();
+    auto evalue = static_cast<sipai::ERunMode>(currentData);
+    switch (evalue) {
+    case sipai::ERunMode::Enhancer:
+      ui->lineEditInputFile->setEnabled(true);
+      ui->lineEditOutputFile->setEnabled(true);
+      ui->lineEditTrainingFile->setEnabled(false);
+      ui->lineEditTrainingFolder->setEnabled(false);
+      break;
+    case sipai::ERunMode::Training:
+      ui->lineEditInputFile->setEnabled(false);
+      ui->lineEditOutputFile->setEnabled(false);
+      ui->lineEditTrainingFile->setEnabled(true);
+      ui->lineEditTrainingFolder->setEnabled(true);
+      break;
+    default:
+      ui->lineEditInputFile->setEnabled(false);
+      ui->lineEditOutputFile->setEnabled(false);
+      ui->lineEditTrainingFile->setEnabled(false);
+      ui->lineEditTrainingFolder->setEnabled(false);
+      break;
+    }
+  });
 
   connect(ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
           &BindingAppParams::setNetworkToImport);

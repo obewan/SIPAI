@@ -9,6 +9,7 @@
  */
 
 #pragma once
+#include "../ui_MainWindow.h"
 #include "AppParams.h"
 #include "Common.h"
 #include <QObject>
@@ -75,11 +76,15 @@ public:
   void reload();
 
   int getRunningMode() const { return static_cast<int>(app_params.run_mode); }
-  void setRunningMode(int value) {
-    auto evalue = static_cast<sipai::ERunMode>(value);
+  void setRunningMode(int index) {
+    if (ui == nullptr) {
+      return;
+    }
+    auto currentData = ui->comboBoxMode->currentData().toInt();
+    auto evalue = static_cast<sipai::ERunMode>(currentData);
     if (app_params.run_mode != evalue) {
       app_params.run_mode = evalue;
-      emit runningModeChanged(value);
+      emit runningModeChanged(index);
     }
   }
 
@@ -319,4 +324,5 @@ signals:
 
 private:
   sipai::AppParams &app_params;
+  Ui::MainWindow *ui = nullptr;
 };
