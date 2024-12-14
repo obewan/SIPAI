@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,10 +17,7 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
 endif()
 
 # Add OpenCV lib
-if(WIN32)
-    set(OpenCV_DIR $ENV{OpenCV_BUILD})
-endif()
-find_package(OpenCV 4.6.0 REQUIRED)
+find_package(OpenCV 4.10.0 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Add Intel TBB lib
