@@ -17,7 +17,7 @@ if(CMAKE_BUILD_TYPE MATCHES Debug AND NOT WIN32)
 endif()
 
 # Add OpenCV lib
-find_package(OpenCV 4.10.0 REQUIRED)
+find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Add Intel TBB lib
