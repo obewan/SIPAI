@@ -25,7 +25,7 @@ If using OpenCV with Vulkan: enable OpenGL support, edit the OpenCV CMakelists.t
   VISIBLE_IF TRUE    
   VERIFY HAVE_OPENGL)*   
   and rebuild its libs.
-- The [Intel TBB](https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#onetbb) library
+- The [Intel TBB](https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#onetbb) library (for OpenCV)
 - The [Vulkan SDK](https://www.vulkan.org/) library (on Debian: `sudo apt-get -y install libvulkan1 libvulkan-dev mesa-vulkan-drivers vulkan-tools`, on Windows: https://vulkan.lunarg.com/sdk/home#windows).
 - The GLSL tools to use with Vulkan (on Debian: `sudo apt-get -y install glslang-tools spirv-tools`)
 - [CMake](https://cmake.org/)

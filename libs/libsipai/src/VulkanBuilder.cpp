@@ -71,7 +71,7 @@ VulkanBuilder &VulkanBuilder::build() {
 
 VulkanBuilder &VulkanBuilder::initialize() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   if (vulkan_->isInitialized) {
     return *this;
@@ -83,7 +83,7 @@ VulkanBuilder &VulkanBuilder::initialize() {
   // Get a physical device
   vulkan_->physicalDevice = _pickPhysicalDevice().value_or(VK_NULL_HANDLE);
   if (vulkan_->physicalDevice == VK_NULL_HANDLE) {
-    throw VulkanBuilderException("failed to find a suitable GPU!");
+    throw VulkanBuilderException("Failed to find a suitable GPU!");
   }
 
   // Create a logical device with its queues
@@ -174,7 +174,7 @@ void VulkanBuilder::_createInstance() {
   // create instance
   if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->instance) !=
       VK_SUCCESS) {
-    throw VulkanBuilderException("failed to create instance.");
+    throw VulkanBuilderException("Failed to create instance.");
   }
 }
 
@@ -279,6 +279,7 @@ bool VulkanBuilder::_checkDeviceProperties() {
   size_t maxSizeY =
       std::max({network_param.input_size_y, network_param.hidden_size_y,
                 network_param.output_size_y});
+  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);
   if (maxSizeX * maxSizeY <= maxComputeWorkGroupInvocations) {
     SimpleLogger::LOG_INFO(
         "Device workgroup maximum invocations: ",
@@ -298,7 +299,7 @@ bool VulkanBuilder::_checkDeviceProperties() {
 
 std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   auto getDeviceSuitableScore = [](const VkPhysicalDevice &device) {
@@ -331,7 +332,7 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(vulkan_->instance, &deviceCount, nullptr);
   if (deviceCount == 0) {
-    throw std::runtime_error("failed to find GPUs with Vulkan support!");
+    throw std::runtime_error("Failed to find GPUs with Vulkan support!");
   }
   std::vector<VkPhysicalDevice> devices(deviceCount);
   vkEnumeratePhysicalDevices(vulkan_->instance, &deviceCount, devices.data());
@@ -351,7 +352,7 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
 uint32_t VulkanBuilder::findMemoryType(uint32_t typeFilter,
                                        VkMemoryPropertyFlags properties) const {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(vulkan_->physicalDevice, &memProperties);
@@ -363,7 +364,7 @@ uint32_t VulkanBuilder::findMemoryType(uint32_t typeFilter,
     }
   }
 
-  throw VulkanBuilderException("failed to find suitable memory type.");
+  throw VulkanBuilderException("Failed to find suitable memory type.");
 }
 
 VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
@@ -412,7 +413,7 @@ VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
 
 std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   uint32_t queueFamilyCount = 0;
@@ -420,7 +421,7 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics() {
                                            &queueFamilyCount, nullptr);
   if (queueFamilyCount == 0) {
     throw VulkanBuilderException(
-        "failed to find GPUs with Vulkan queue support!");
+        "Failed to find GPUs with Vulkan queue support!");
   }
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
   vkGetPhysicalDeviceQueueFamilyProperties(
@@ -437,7 +438,7 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics() {
 
 std::optional<unsigned int> VulkanBuilder::_pickQueueCompute() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   uint32_t queueFamilyCount = 0;
@@ -445,7 +446,7 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueCompute() {
                                            &queueFamilyCount, nullptr);
   if (queueFamilyCount == 0) {
     throw VulkanBuilderException(
-        "failed to find GPUs with Vulkan queue support!");
+        "Failed to find GPUs with Vulkan queue support!");
   }
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
   vkGetPhysicalDeviceQueueFamilyProperties(
@@ -463,7 +464,7 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueCompute() {
 std::unique_ptr<std::vector<uint32_t>>
 VulkanBuilder::loadShader(const std::string &path) {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   if (!std::filesystem::exists(path)) {
     throw VulkanBuilderException("GLSL file does not exist: " + path);
@@ -499,7 +500,7 @@ VulkanBuilder::loadShader(const std::string &path) {
 
 void VulkanBuilder::_createBuffers() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   VkMemoryPropertyFlags memoryPropertiesFlags = getMemoryProperties();
@@ -602,7 +603,7 @@ void VulkanBuilder::_createBuffers() {
 
 void VulkanBuilder::_createDescriptorPool() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   std::array<VkDescriptorPoolSize, 2> poolSizes = {};
@@ -627,7 +628,7 @@ void VulkanBuilder::_createDescriptorPool() {
 
 void VulkanBuilder::_createDescriptorSetLayout() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   // Buffer layout binding
   std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
@@ -656,7 +657,7 @@ void VulkanBuilder::_createDescriptorSetLayout() {
 
 void VulkanBuilder::_allocateDescriptorSets() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkDescriptorSetAllocateInfo allocInfo = {};
   allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -672,7 +673,7 @@ void VulkanBuilder::_allocateDescriptorSets() {
 
 void VulkanBuilder::_updateDescriptorSets() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   std::vector<VkDescriptorBufferInfo> descriptorBufferInfos;
   for (auto &buffer : vulkan_->buffers) {
@@ -707,7 +708,7 @@ void VulkanBuilder::_updateDescriptorSets() {
 
 void VulkanBuilder::_createShaderModules() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   for (auto &shader : vulkan_->shaders) {
     VkShaderModuleCreateInfo createForwardInfo = {};
@@ -724,7 +725,7 @@ void VulkanBuilder::_createShaderModules() {
 
 void VulkanBuilder::_createPipelineLayout() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkDescriptorSetLayout setLayouts[] = {vulkan_->descriptorSetLayout};
   VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
@@ -739,7 +740,7 @@ void VulkanBuilder::_createPipelineLayout() {
 
 void VulkanBuilder::_createShaderPipelines() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   std::vector<VkPipelineShaderStageCreateInfo> shaderGraphicsStages;
   VkPipelineShaderStageCreateInfo computeShaderTrainingInfo = {};
@@ -911,7 +912,7 @@ void VulkanBuilder::_createShaderPipelines() {
 
 void VulkanBuilder::_createCommandPool() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkCommandPoolCreateInfo poolInfo = {};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -925,7 +926,7 @@ void VulkanBuilder::_createCommandPool() {
 
 void VulkanBuilder::_allocateCommandBuffers() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkCommandBufferAllocateInfo allocInfo = {};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -942,7 +943,7 @@ void VulkanBuilder::_allocateCommandBuffers() {
 
 void VulkanBuilder::_createFence() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkFenceCreateInfo fenceInfo = {};
   fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -955,7 +956,7 @@ void VulkanBuilder::_createFence() {
 
 void VulkanBuilder::_createSurface() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 #ifdef _WIN32
   HWND hwnd = (HWND)cvGetWindowHandle(cvWindowTitle);
@@ -990,7 +991,7 @@ void VulkanBuilder::_createSurface() {
 
 void VulkanBuilder::_createSwapChain() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   VkSurfaceCapabilitiesKHR surfaceCapabilities;
@@ -1034,7 +1035,7 @@ void VulkanBuilder::_createSwapChain() {
 
 void VulkanBuilder::_createImageViews() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   vulkan_->swapChainImageViews.resize(vulkan_->swapChainImages.size());
 
@@ -1063,7 +1064,7 @@ void VulkanBuilder::_createImageViews() {
 
 void VulkanBuilder::_createRenderPass() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = vulkan_->swapChainImageFormat;
@@ -1099,7 +1100,7 @@ void VulkanBuilder::_createRenderPass() {
 
 void VulkanBuilder::_createFramebuffers() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   vulkan_->swapChainFramebuffers.resize(vulkan_->swapChainImageViews.size());
 
@@ -1122,7 +1123,7 @@ void VulkanBuilder::_createFramebuffers() {
 
 void VulkanBuilder::_createSyncObjects() {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkSemaphoreCreateInfo semaphoreInfo = {};
   semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -1143,7 +1144,7 @@ void VulkanBuilder::_createSyncObjects() {
 
 void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   if (buffer.isMemoryMapped) {
     return;
