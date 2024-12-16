@@ -8,7 +8,6 @@
  *
  */
 #pragma once
-#include <opencv2/core/matx.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace sipai {

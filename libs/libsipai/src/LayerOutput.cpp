@@ -1,7 +1,7 @@
 #include "LayerOutput.h"
 #include "Manager.h"
 #include <cstddef>
-#include <opencv2/core/matx.hpp>
+#include <opencv2/opencv.hpp>
 
 using namespace sipai;
 

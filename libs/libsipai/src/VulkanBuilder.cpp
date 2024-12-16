@@ -9,7 +9,7 @@
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN // Reduce windows.h includes
-#define NOMINMAX // Prevent windows.h from defining min and max macros
+#define NOMINMAX            // Prevent windows.h from defining min and max macros
 #include <windows.h>
 #endif
 
@@ -26,12 +26,14 @@
 
 using namespace sipai;
 
-VulkanBuilder &VulkanBuilder::build() {
+VulkanBuilder &VulkanBuilder::build()
+{
   const auto &app_params = Manager::getConstInstance().app_params;
 
   // initialize
   initialize();
-  if (!vulkan_->isInitialized) {
+  if (!vulkan_->isInitialized)
+  {
     throw VulkanBuilderException("Vulkan initialization failure.");
   }
 
@@ -39,7 +41,8 @@ VulkanBuilder &VulkanBuilder::build() {
   vulkan_->vertices = vertices;
 
   // load shaders
-  for (auto &shader : vulkan_->shaders) {
+  for (auto &shader : vulkan_->shaders)
+  {
     shader.shader = loadShader(shader.filename);
   }
 
@@ -52,7 +55,8 @@ VulkanBuilder &VulkanBuilder::build() {
   _updateDescriptorSets();
   _createShaderModules();
   _createPipelineLayout();
-  if (app_params.vulkan_debug) {
+  if (app_params.vulkan_debug)
+  {
     _createSurface();
     _createSwapChain();
     _createRenderPass();
@@ -61,7 +65,8 @@ VulkanBuilder &VulkanBuilder::build() {
   _createCommandPool();
   _allocateCommandBuffers();
   _createFence();
-  if (app_params.vulkan_debug) {
+  if (app_params.vulkan_debug)
+  {
     _createImageViews();
     _createFramebuffers();
   }
@@ -69,11 +74,14 @@ VulkanBuilder &VulkanBuilder::build() {
   return *this;
 }
 
-VulkanBuilder &VulkanBuilder::initialize() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+VulkanBuilder &VulkanBuilder::initialize()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
-  if (vulkan_->isInitialized) {
+  if (vulkan_->isInitialized)
+  {
     return *this;
   }
 
@@ -82,8 +90,9 @@ VulkanBuilder &VulkanBuilder::initialize() {
 
   // Get a physical device
   vulkan_->physicalDevice = _pickPhysicalDevice().value_or(VK_NULL_HANDLE);
-  if (vulkan_->physicalDevice == VK_NULL_HANDLE) {
-    throw VulkanBuilderException("failed to find a suitable GPU!");
+  if (vulkan_->physicalDevice == VK_NULL_HANDLE)
+  {
+    throw VulkanBuilderException("Failed to find a suitable GPU!");
   }
 
   // Create a logical device with its queues
@@ -97,7 +106,8 @@ VulkanBuilder &VulkanBuilder::initialize() {
   return *this;
 }
 
-void VulkanBuilder::_createInstance() {
+void VulkanBuilder::_createInstance()
+{
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "SIPAI";
@@ -116,36 +126,43 @@ void VulkanBuilder::_createInstance() {
                                          availableInstanceExtensions.data());
   bool extensionSurface = false;
   bool extensionPlateformSurface = false;
-  for (const auto &extension : availableInstanceExtensions) {
+  for (const auto &extension : availableInstanceExtensions)
+  {
     // Generic surface extension
-    if (strcmp(VK_KHR_SURFACE_EXTENSION_NAME, extension.extensionName) == 0) {
+    if (strcmp(VK_KHR_SURFACE_EXTENSION_NAME, extension.extensionName) == 0)
+    {
       extensionSurface = true;
     }
     // Windows surface extension
 #ifdef _WIN32
     if (strcmp(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, extension.extensionName) ==
-        0) {
+        0)
+    {
       extensionPlateformSurface = true;
     }
 #else
     // Linux surface extension
     if (strcmp(VK_KHR_XLIB_SURFACE_EXTENSION_NAME, extension.extensionName) ==
-        0) {
+        0)
+    {
       extensionPlateformSurface = true;
     }
 #endif
   }
-  if (!extensionSurface) {
+  if (!extensionSurface)
+  {
     throw VulkanBuilderException("Surface extension not found.");
   }
-  if (!extensionPlateformSurface) {
+  if (!extensionPlateformSurface)
+  {
     throw VulkanBuilderException("Plateform surface extension not found.");
   }
 
   const auto &app_params = Manager::getConstInstance().app_params;
 
   std::vector<const char *> instanceExtensions;
-  if (app_params.vulkan_debug) {
+  if (app_params.vulkan_debug)
+  {
     instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     instanceExtensions.push_back(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
     instanceExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
@@ -164,7 +181,8 @@ void VulkanBuilder::_createInstance() {
   createInfoInstance.ppEnabledExtensionNames = instanceExtensions.data();
 
   std::vector<const char *> validationLayers;
-  if (app_params.vulkan_debug) {
+  if (app_params.vulkan_debug)
+  {
     validationLayers.push_back("VK_LAYER_KHRONOS_validation");
   };
   createInfoInstance.enabledLayerCount =
@@ -173,12 +191,14 @@ void VulkanBuilder::_createInstance() {
 
   // create instance
   if (vkCreateInstance(&createInfoInstance, nullptr, &vulkan_->instance) !=
-      VK_SUCCESS) {
-    throw VulkanBuilderException("failed to create instance.");
+      VK_SUCCESS)
+  {
+    throw VulkanBuilderException("Failed to create instance.");
   }
 }
 
-void VulkanBuilder::_createLogicalDevice() {
+void VulkanBuilder::_createLogicalDevice()
+{
   const auto &app_params = Manager::getConstInstance().app_params;
 
   // Pick graphics and compute queues
@@ -186,7 +206,8 @@ void VulkanBuilder::_createLogicalDevice() {
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
   auto graphicsQueueIndexOpt = _pickQueueGraphics();
   auto computeQueueIndexOpt = _pickQueueCompute();
-  if (!graphicsQueueIndexOpt.has_value() || !computeQueueIndexOpt.has_value()) {
+  if (!graphicsQueueIndexOpt.has_value() || !computeQueueIndexOpt.has_value())
+  {
     throw VulkanBuilderException("Failed to find required queue families");
   }
   vulkan_->queueGraphicsIndex = graphicsQueueIndexOpt.value();
@@ -201,7 +222,8 @@ void VulkanBuilder::_createLogicalDevice() {
 
   // If the compute queue index is different from the graphics queue index,
   // create a separate queue
-  if (vulkan_->queueComputeIndex != vulkan_->queueGraphicsIndex) {
+  if (vulkan_->queueComputeIndex != vulkan_->queueGraphicsIndex)
+  {
     VkDeviceQueueCreateInfo computeQueueCreateInfo{};
     computeQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
     computeQueueCreateInfo.queueFamilyIndex = vulkan_->queueComputeIndex;
@@ -221,23 +243,29 @@ void VulkanBuilder::_createLogicalDevice() {
                                        &deviceExtensionCount,
                                        availableExtensions.data());
   std::vector<const char *> deviceExtensions;
-  if (app_params.vulkan_debug) {
+  if (app_params.vulkan_debug)
+  {
     bool extensionSwapChain = false;
     bool extensionNonSemanticInfo = false;
-    for (const auto &extension : availableExtensions) {
+    for (const auto &extension : availableExtensions)
+    {
       if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, extension.extensionName) ==
-          0) {
+          0)
+      {
         extensionSwapChain = true;
       }
       if (strcmp(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME,
-                 extension.extensionName) == 0) {
+                 extension.extensionName) == 0)
+      {
         extensionNonSemanticInfo = true;
       }
     }
-    if (!extensionSwapChain) {
+    if (!extensionSwapChain)
+    {
       throw VulkanBuilderException("SwapChain extension not found.");
     }
-    if (!extensionNonSemanticInfo) {
+    if (!extensionNonSemanticInfo)
+    {
       throw VulkanBuilderException("Non-semantic info extension not found.");
     }
     deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
@@ -255,7 +283,8 @@ void VulkanBuilder::_createLogicalDevice() {
   createInfoDevice.ppEnabledExtensionNames = deviceExtensions.data();
 
   if (vkCreateDevice(vulkan_->physicalDevice, &createInfoDevice, nullptr,
-                     &vulkan_->logicalDevice) != VK_SUCCESS) {
+                     &vulkan_->logicalDevice) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create logical device!");
   }
 
@@ -265,7 +294,8 @@ void VulkanBuilder::_createLogicalDevice() {
                    &vulkan_->queueCompute);
 }
 
-bool VulkanBuilder::_checkDeviceProperties() {
+bool VulkanBuilder::_checkDeviceProperties()
+{
   const auto &network_param = Manager::getConstInstance().network_params;
   VkPhysicalDeviceProperties deviceProperties;
   vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
@@ -273,56 +303,70 @@ bool VulkanBuilder::_checkDeviceProperties() {
   // Checking maxComputeWorkGroupInvocations
   uint32_t maxComputeWorkGroupInvocations =
       deviceProperties.limits.maxComputeWorkGroupInvocations;
-  size_t maxSizeX =
+  uint32_t maxComputeWorkGroupCount0 = deviceProperties.limits.maxComputeWorkGroupCount[0];
+  uint32_t maxComputeWorkGroupCount1 = deviceProperties.limits.maxComputeWorkGroupCount[1];
+  uint32_t maxComputeWorkGroupCount2 = deviceProperties.limits.maxComputeWorkGroupCount[2];
+ 
+  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);
+  SimpleLogger::LOG_INFO("Device maxComputeWorkGroupInvocations: ", maxComputeWorkGroupInvocations);
+  SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on X: ", maxComputeWorkGroupCount0);
+  SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Y: ", maxComputeWorkGroupCount1);
+  SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Z: ", maxComputeWorkGroupCount2);
+
+ size_t maxSizeX =
       std::max({network_param.input_size_x, network_param.hidden_size_x,
                 network_param.output_size_x});
   size_t maxSizeY =
       std::max({network_param.input_size_y, network_param.hidden_size_y,
                 network_param.output_size_y});
-  if (maxSizeX * maxSizeY <= maxComputeWorkGroupInvocations) {
-    SimpleLogger::LOG_INFO(
-        "Device workgroup maximum invocations: ",
-        maxComputeWorkGroupInvocations,
-        ", neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
-        maxSizeX, "*", maxSizeY, "): OK.");
-  } else {
+  if (maxSizeX * maxSizeY > maxComputeWorkGroupInvocations)
+  {
     SimpleLogger::LOG_ERROR(
-        "Device workgroup maximum invocations: ",
+        "Device maxComputeWorkGroupInvocations limit (",
         maxComputeWorkGroupInvocations,
-        ", neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
+        ") is lesser than the neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
         maxSizeX, "*", maxSizeY, "): FAILURE.");
     return false;
   }
   return true;
 }
 
-std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
-  auto getDeviceSuitableScore = [](const VkPhysicalDevice &device) {
+  auto getDeviceSuitableScore = [](const VkPhysicalDevice &device)
+  {
     int score = 0;
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-    if (deviceFeatures.logicOp) {
+    if (deviceFeatures.logicOp)
+    {
       score++;
     }
-    if (deviceFeatures.geometryShader) {
+    if (deviceFeatures.geometryShader)
+    {
       score++;
     }
-    if (deviceFeatures.shaderFloat64) {
+    if (deviceFeatures.shaderFloat64)
+    {
       score++;
     }
-    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+    {
       score += 4;
     }
-    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) {
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+    {
       score += 3;
     }
-    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU) {
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
+    {
       score += 2;
     }
     return score;
@@ -330,47 +374,57 @@ std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice() {
 
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(vulkan_->instance, &deviceCount, nullptr);
-  if (deviceCount == 0) {
-    throw std::runtime_error("failed to find GPUs with Vulkan support!");
+  if (deviceCount == 0)
+  {
+    throw std::runtime_error("Failed to find GPUs with Vulkan support!");
   }
   std::vector<VkPhysicalDevice> devices(deviceCount);
   vkEnumeratePhysicalDevices(vulkan_->instance, &deviceCount, devices.data());
   std::vector<std::pair<VkPhysicalDevice, int>> scores;
-  for (const auto &device : devices) {
+  for (const auto &device : devices)
+  {
     scores.emplace_back(device, getDeviceSuitableScore(device));
   }
   auto betterDevice = std::max_element(
       scores.begin(), scores.end(),
-      [](auto &score1, auto &score2) { return score1.second < score2.second; });
-  if (betterDevice == scores.end() || betterDevice->second == 0) {
+      [](auto &score1, auto &score2)
+      { return score1.second < score2.second; });
+  if (betterDevice == scores.end() || betterDevice->second == 0)
+  {
     return std::nullopt; // No suitable GPU found
   }
   return betterDevice->first;
 }
 
 uint32_t VulkanBuilder::findMemoryType(uint32_t typeFilter,
-                                       VkMemoryPropertyFlags properties) const {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+                                       VkMemoryPropertyFlags properties) const
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(vulkan_->physicalDevice, &memProperties);
 
-  for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+  for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+  {
     if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags &
-                                    properties) == properties) {
+                                    properties) == properties)
+    {
       return i;
     }
   }
 
-  throw VulkanBuilderException("failed to find suitable memory type.");
+  throw VulkanBuilderException("Failed to find suitable memory type.");
 }
 
-VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
+VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties()
+{
 
   // Helper function to check if a memory type has the given property flag
   auto hasMemoryPropertyFlag = [](VkMemoryPropertyFlags propertyFlags,
-                                  VkMemoryPropertyFlagBits flag) {
+                                  VkMemoryPropertyFlagBits flag)
+  {
     return (propertyFlags & flag) == flag;
   };
 
@@ -381,7 +435,8 @@ VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
   std::array<bool, 3> hasMemoryPropertyFlags{
       false, false, false}; // {hasHostCached, hasHostCoherent, hasHostVisible}
 
-  for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
+  for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+  {
     const VkMemoryPropertyFlags propertyFlags =
         memoryProperties.memoryTypes[i].propertyFlags;
     hasMemoryPropertyFlags[0] |= hasMemoryPropertyFlag(
@@ -393,41 +448,50 @@ VkMemoryPropertyFlags VulkanBuilder::getMemoryProperties() {
   }
 
   if (!hasMemoryPropertyFlags[0] && !hasMemoryPropertyFlags[1] &&
-      !hasMemoryPropertyFlags[2]) {
+      !hasMemoryPropertyFlags[2])
+  {
     throw VulkanBuilderException("Not supported memory type.");
   }
 
   VkMemoryPropertyFlags memoryPropertiesFlags = 0;
-  if (hasMemoryPropertyFlags[0]) {
+  if (hasMemoryPropertyFlags[0])
+  {
     memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
   }
-  if (hasMemoryPropertyFlags[1]) {
+  if (hasMemoryPropertyFlags[1])
+  {
     memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
   }
-  if (hasMemoryPropertyFlags[2]) {
+  if (hasMemoryPropertyFlags[2])
+  {
     memoryPropertiesFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
   }
   return memoryPropertiesFlags;
 }
 
-std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   uint32_t queueFamilyCount = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(vulkan_->physicalDevice,
                                            &queueFamilyCount, nullptr);
-  if (queueFamilyCount == 0) {
+  if (queueFamilyCount == 0)
+  {
     throw VulkanBuilderException(
-        "failed to find GPUs with Vulkan queue support!");
+        "Failed to find GPUs with Vulkan queue support!");
   }
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
   vkGetPhysicalDeviceQueueFamilyProperties(
       vulkan_->physicalDevice, &queueFamilyCount, queueFamilies.data());
   unsigned int i = 0;
-  for (const auto &queueFamily : queueFamilies) {
-    if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+  for (const auto &queueFamily : queueFamilies)
+  {
+    if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+    {
       return i;
     }
     i++;
@@ -435,24 +499,29 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueGraphics() {
   return std::nullopt;
 }
 
-std::optional<unsigned int> VulkanBuilder::_pickQueueCompute() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+std::optional<unsigned int> VulkanBuilder::_pickQueueCompute()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   uint32_t queueFamilyCount = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(vulkan_->physicalDevice,
                                            &queueFamilyCount, nullptr);
-  if (queueFamilyCount == 0) {
+  if (queueFamilyCount == 0)
+  {
     throw VulkanBuilderException(
-        "failed to find GPUs with Vulkan queue support!");
+        "Failed to find GPUs with Vulkan queue support!");
   }
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
   vkGetPhysicalDeviceQueueFamilyProperties(
       vulkan_->physicalDevice, &queueFamilyCount, queueFamilies.data());
   unsigned int i = 0;
-  for (const auto &queueFamily : queueFamilies) {
-    if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
+  for (const auto &queueFamily : queueFamilies)
+  {
+    if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
+    {
       return i;
     }
     i++;
@@ -461,11 +530,14 @@ std::optional<unsigned int> VulkanBuilder::_pickQueueCompute() {
 }
 
 std::unique_ptr<std::vector<uint32_t>>
-VulkanBuilder::loadShader(const std::string &path) {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+VulkanBuilder::loadShader(const std::string &path)
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
-  if (!std::filesystem::exists(path)) {
+  if (!std::filesystem::exists(path))
+  {
     throw VulkanBuilderException("GLSL file does not exist: " + path);
   }
   const auto app_params = Manager::getConstInstance().app_params;
@@ -484,28 +556,33 @@ VulkanBuilder::loadShader(const std::string &path) {
 
   // Load the compiled SPIR-V into a std::vector<uint32_t>
   std::ifstream file("shader.spv", std::ios::binary | std::ios::ate);
-  if (!file.good()) {
+  if (!file.good())
+  {
     throw VulkanBuilderException("Failed to open SPIR-V file");
   }
   std::streamsize size = file.tellg();
   file.seekg(0, std::ios::beg);
   auto compiledShaderCode =
       std::make_unique<std::vector<uint32_t>>(size / sizeof(uint32_t));
-  if (!file.read(reinterpret_cast<char *>(compiledShaderCode->data()), size)) {
+  if (!file.read(reinterpret_cast<char *>(compiledShaderCode->data()), size))
+  {
     throw VulkanBuilderException("Failed to read SPIR-V file");
   }
   return compiledShaderCode;
 }
 
-void VulkanBuilder::_createBuffers() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createBuffers()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   VkMemoryPropertyFlags memoryPropertiesFlags = getMemoryProperties();
 
   const auto &network_param = Manager::getConstInstance().network_params;
-  for (auto [ebuffer, bufferName] : buffer_map) {
+  for (auto [ebuffer, bufferName] : buffer_map)
+  {
     uint output_neuron_weights = 0;
     uint hidden1_neuron_weights = 0;
     size_t neuronSize = 0;
@@ -518,7 +595,8 @@ void VulkanBuilder::_createBuffers() {
 
     // Get the buffer max bytes size
     VkDeviceSize size = 0;
-    switch (ebuffer) {
+    switch (ebuffer)
+    {
     case EBuffer::Parameters:
       size = sizeof(GLSLParameters);
       break;
@@ -575,7 +653,8 @@ void VulkanBuilder::_createBuffers() {
     buffer.info.size = size;
 
     if (vkCreateBuffer(vulkan_->logicalDevice, &buffer.info, nullptr,
-                       &buffer.buffer) != VK_SUCCESS) {
+                       &buffer.buffer) != VK_SUCCESS)
+    {
       throw VulkanBuilderException("Failed to create buffer!");
     }
     // Allocate memory for the buffer
@@ -589,20 +668,24 @@ void VulkanBuilder::_createBuffers() {
     allocInfo.memoryTypeIndex =
         findMemoryType(memRequirements.memoryTypeBits, memoryPropertiesFlags);
     if (vkAllocateMemory(vulkan_->logicalDevice, &allocInfo, nullptr,
-                         &buffer.memory) != VK_SUCCESS) {
+                         &buffer.memory) != VK_SUCCESS)
+    {
       throw VulkanBuilderException("Failed to allocate buffer memory!");
     }
     if (vkBindBufferMemory(vulkan_->logicalDevice, buffer.buffer, buffer.memory,
-                           0) != VK_SUCCESS) {
+                           0) != VK_SUCCESS)
+    {
       throw VulkanBuilderException("Failed to bind buffer memory!");
     }
     vulkan_->buffers.push_back(buffer);
   }; // end for
 }
 
-void VulkanBuilder::_createDescriptorPool() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createDescriptorPool()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   std::array<VkDescriptorPoolSize, 2> poolSizes = {};
@@ -620,19 +703,24 @@ void VulkanBuilder::_createDescriptorPool() {
 
   VkResult result = vkCreateDescriptorPool(vulkan_->logicalDevice, &poolInfo,
                                            nullptr, &vulkan_->descriptorPool);
-  if (result != VK_SUCCESS) {
+  if (result != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create descriptor pool!");
   }
 }
 
-void VulkanBuilder::_createDescriptorSetLayout() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createDescriptorSetLayout()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   // Buffer layout binding
   std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
-  for (size_t i = 0; i < vulkan_->buffers.size(); i++) {
-    if (vulkan_->buffers.at(i).name == EBuffer::Vertex) {
+  for (size_t i = 0; i < vulkan_->buffers.size(); i++)
+  {
+    if (vulkan_->buffers.at(i).name == EBuffer::Vertex)
+    {
       continue; // no descriptor for vertex buffers
     }
     VkDescriptorSetLayoutBinding layoutBinding;
@@ -649,14 +737,17 @@ void VulkanBuilder::_createDescriptorSetLayout() {
   auto result =
       vkCreateDescriptorSetLayout(vulkan_->logicalDevice, &layoutInfo, nullptr,
                                   &vulkan_->descriptorSetLayout);
-  if (result != VK_SUCCESS) {
+  if (result != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create descriptor set layout!");
   }
 }
 
-void VulkanBuilder::_allocateDescriptorSets() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_allocateDescriptorSets()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkDescriptorSetAllocateInfo allocInfo = {};
   allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -665,18 +756,23 @@ void VulkanBuilder::_allocateDescriptorSets() {
   allocInfo.pSetLayouts = &vulkan_->descriptorSetLayout;
   auto result = vkAllocateDescriptorSets(vulkan_->logicalDevice, &allocInfo,
                                          &vulkan_->descriptorSet);
-  if (result != VK_SUCCESS) {
+  if (result != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to allocate descriptor set!");
   }
 }
 
-void VulkanBuilder::_updateDescriptorSets() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_updateDescriptorSets()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   std::vector<VkDescriptorBufferInfo> descriptorBufferInfos;
-  for (auto &buffer : vulkan_->buffers) {
-    if (buffer.name == EBuffer::Vertex) {
+  for (auto &buffer : vulkan_->buffers)
+  {
+    if (buffer.name == EBuffer::Vertex)
+    {
       continue; // no descriptor for vertex buffers
     }
     VkDescriptorBufferInfo descriptor{
@@ -685,8 +781,10 @@ void VulkanBuilder::_updateDescriptorSets() {
   }
   size_t pos = 0;
   std::vector<VkWriteDescriptorSet> writeDescriptorSets;
-  for (auto &buffer : vulkan_->buffers) {
-    if (buffer.name == EBuffer::Vertex) {
+  for (auto &buffer : vulkan_->buffers)
+  {
+    if (buffer.name == EBuffer::Vertex)
+    {
       continue; // no descriptor for vertex buffers
     }
     VkWriteDescriptorSet writeDescriptorSet{
@@ -705,26 +803,32 @@ void VulkanBuilder::_updateDescriptorSets() {
                          writeDescriptorSets.data(), 0, nullptr);
 }
 
-void VulkanBuilder::_createShaderModules() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createShaderModules()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
-  for (auto &shader : vulkan_->shaders) {
+  for (auto &shader : vulkan_->shaders)
+  {
     VkShaderModuleCreateInfo createForwardInfo = {};
     createForwardInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createForwardInfo.codeSize = shader.shader->size() * sizeof(uint32_t);
     createForwardInfo.pCode = shader.shader->data();
     if (vkCreateShaderModule(vulkan_->logicalDevice, &createForwardInfo,
-                             nullptr, &shader.module) != VK_SUCCESS) {
+                             nullptr, &shader.module) != VK_SUCCESS)
+    {
       throw VulkanBuilderException("Failed to create shader module of " +
                                    shader.filename);
     }
   }
 }
 
-void VulkanBuilder::_createPipelineLayout() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createPipelineLayout()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkDescriptorSetLayout setLayouts[] = {vulkan_->descriptorSetLayout};
   VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
@@ -732,22 +836,28 @@ void VulkanBuilder::_createPipelineLayout() {
   pipelineLayoutInfo.setLayoutCount = 1;
   pipelineLayoutInfo.pSetLayouts = setLayouts;
   if (vkCreatePipelineLayout(vulkan_->logicalDevice, &pipelineLayoutInfo,
-                             nullptr, &vulkan_->pipelineLayout) != VK_SUCCESS) {
+                             nullptr, &vulkan_->pipelineLayout) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create pipeline layout!");
   }
 }
 
-void VulkanBuilder::_createShaderPipelines() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createShaderPipelines()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   std::vector<VkPipelineShaderStageCreateInfo> shaderGraphicsStages;
   VkPipelineShaderStageCreateInfo computeShaderTrainingInfo = {};
   VkPipelineShaderStageCreateInfo computeShaderEnhancerInfo = {};
-  for (auto &shader : vulkan_->shaders) {
-    switch (shader.shadername) {
+  for (auto &shader : vulkan_->shaders)
+  {
+    switch (shader.shadername)
+    {
     // vertex shader
-    case (EShader::VertexShader): {
+    case (EShader::VertexShader):
+    {
       VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
       vertShaderStageInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -755,9 +865,11 @@ void VulkanBuilder::_createShaderPipelines() {
       vertShaderStageInfo.module = shader.module;
       vertShaderStageInfo.pName = "main";
       shaderGraphicsStages.push_back(vertShaderStageInfo);
-    } break;
+    }
+    break;
     // fragment shader
-    case (EShader::FragmentShader): {
+    case (EShader::FragmentShader):
+    {
       VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
       fragShaderStageInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -765,22 +877,27 @@ void VulkanBuilder::_createShaderPipelines() {
       fragShaderStageInfo.module = shader.module;
       fragShaderStageInfo.pName = "main";
       shaderGraphicsStages.push_back(fragShaderStageInfo);
-    } break;
+    }
+    break;
     // compute shader
-    case (EShader::EnhancerShader): {
+    case (EShader::EnhancerShader):
+    {
       computeShaderEnhancerInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
       computeShaderEnhancerInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
       computeShaderEnhancerInfo.module = shader.module;
       computeShaderEnhancerInfo.pName = "main";
-    } break;
-    case (EShader::TrainingShader): {
+    }
+    break;
+    case (EShader::TrainingShader):
+    {
       computeShaderTrainingInfo.sType =
           VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
       computeShaderTrainingInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
       computeShaderTrainingInfo.module = shader.module;
       computeShaderTrainingInfo.pName = "main";
-    } break;
+    }
+    break;
     default:
       break;
     }
@@ -876,7 +993,8 @@ void VulkanBuilder::_createShaderPipelines() {
   vulkan_->infoGraphics.subpass = 0;
   if (vkCreateGraphicsPipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
                                 &vulkan_->infoGraphics, nullptr,
-                                &vulkan_->pipelineGraphic) != VK_SUCCESS) {
+                                &vulkan_->pipelineGraphic) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create graphics pipeline");
   }
 
@@ -891,7 +1009,8 @@ void VulkanBuilder::_createShaderPipelines() {
   if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
                                &vulkan_->infoComputeTraining, nullptr,
                                &vulkan_->pipelineComputeTraining) !=
-      VK_SUCCESS) {
+      VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create compute Training pipeline");
   };
   // Enhancer Shader
@@ -904,28 +1023,34 @@ void VulkanBuilder::_createShaderPipelines() {
   if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
                                &vulkan_->infoComputeEnhancer, nullptr,
                                &vulkan_->pipelineComputeEnhancer) !=
-      VK_SUCCESS) {
+      VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create compute Enhancer pipeline");
   };
 }
 
-void VulkanBuilder::_createCommandPool() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createCommandPool()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkCommandPoolCreateInfo poolInfo = {};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.queueFamilyIndex = vulkan_->queueComputeIndex;
   poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
   if (vkCreateCommandPool(vulkan_->logicalDevice, &poolInfo, nullptr,
-                          &vulkan_->commandPool) != VK_SUCCESS) {
+                          &vulkan_->commandPool) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create command pool!");
   }
 }
 
-void VulkanBuilder::_allocateCommandBuffers() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_allocateCommandBuffers()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkCommandBufferAllocateInfo allocInfo = {};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -935,27 +1060,33 @@ void VulkanBuilder::_allocateCommandBuffers() {
   vulkan_->commandBufferPool = std::vector<VkCommandBuffer>(commandPoolSize_);
   if (vkAllocateCommandBuffers(vulkan_->logicalDevice, &allocInfo,
                                vulkan_->commandBufferPool.data()) !=
-      VK_SUCCESS) {
+      VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to allocate command buffers!");
   }
 }
 
-void VulkanBuilder::_createFence() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createFence()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkFenceCreateInfo fenceInfo = {};
   fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
   auto result = vkCreateFence(vulkan_->logicalDevice, &fenceInfo, nullptr,
                               &vulkan_->computeFence);
-  if (result != VK_SUCCESS) {
+  if (result != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create fence!");
   }
 }
 
-void VulkanBuilder::_createSurface() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createSurface()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 #ifdef _WIN32
   HWND hwnd = (HWND)cvGetWindowHandle(cvWindowTitle);
@@ -968,7 +1099,8 @@ void VulkanBuilder::_createSurface() {
   createInfo.hinstance = hInstance;
 
   if (vkCreateWin32SurfaceKHR(vulkan_->instance, &createInfo, nullptr,
-                              &vulkan_->surface) != VK_SUCCESS) {
+                              &vulkan_->surface) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create Win32 surface");
   }
 #else
@@ -982,21 +1114,25 @@ void VulkanBuilder::_createSurface() {
   createInfo.window = win;
 
   if (vkCreateXlibSurfaceKHR(vulkan_->instance, &createInfo, nullptr,
-                             &vulkan_->surface) != VK_SUCCESS) {
+                             &vulkan_->surface) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create Xlib surface");
   }
 #endif
 }
 
-void VulkanBuilder::_createSwapChain() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createSwapChain()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
 
   VkSurfaceCapabilitiesKHR surfaceCapabilities;
   if (vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
           vulkan_->physicalDevice, vulkan_->surface, &surfaceCapabilities) !=
-      VK_SUCCESS) {
+      VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to get surface capabilities");
   }
 
@@ -1016,7 +1152,8 @@ void VulkanBuilder::_createSwapChain() {
   createInfo.oldSwapchain = VK_NULL_HANDLE;
 
   if (vkCreateSwapchainKHR(vulkan_->logicalDevice, &createInfo, nullptr,
-                           &vulkan_->swapChain) != VK_SUCCESS) {
+                           &vulkan_->swapChain) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create swap chain");
   }
 
@@ -1032,13 +1169,16 @@ void VulkanBuilder::_createSwapChain() {
   vulkan_->swapChainExtent = {vulkan_->window_width, vulkan_->window_height};
 }
 
-void VulkanBuilder::_createImageViews() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createImageViews()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   vulkan_->swapChainImageViews.resize(vulkan_->swapChainImages.size());
 
-  for (size_t i = 0; i < vulkan_->swapChainImages.size(); i++) {
+  for (size_t i = 0; i < vulkan_->swapChainImages.size(); i++)
+  {
     VkImageViewCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     createInfo.image = vulkan_->swapChainImages[i];
@@ -1055,15 +1195,18 @@ void VulkanBuilder::_createImageViews() {
     createInfo.subresourceRange.layerCount = 1;
 
     if (vkCreateImageView(vulkan_->logicalDevice, &createInfo, nullptr,
-                          &vulkan_->swapChainImageViews[i]) != VK_SUCCESS) {
+                          &vulkan_->swapChainImageViews[i]) != VK_SUCCESS)
+    {
       throw VulkanBuilderException("Failed to create image views");
     }
   }
 }
 
-void VulkanBuilder::_createRenderPass() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createRenderPass()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = vulkan_->swapChainImageFormat;
@@ -1092,18 +1235,22 @@ void VulkanBuilder::_createRenderPass() {
   renderPassInfo.pSubpasses = &subpass;
 
   if (vkCreateRenderPass(vulkan_->logicalDevice, &renderPassInfo, nullptr,
-                         &vulkan_->renderPass) != VK_SUCCESS) {
+                         &vulkan_->renderPass) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create render pass");
   }
 }
 
-void VulkanBuilder::_createFramebuffers() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createFramebuffers()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   vulkan_->swapChainFramebuffers.resize(vulkan_->swapChainImageViews.size());
 
-  for (size_t i = 0; i < vulkan_->swapChainImageViews.size(); i++) {
+  for (size_t i = 0; i < vulkan_->swapChainImageViews.size(); i++)
+  {
     VkFramebufferCreateInfo framebufferInfo = {};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     framebufferInfo.renderPass = vulkan_->renderPass;
@@ -1114,15 +1261,18 @@ void VulkanBuilder::_createFramebuffers() {
     framebufferInfo.layers = 1;
 
     if (vkCreateFramebuffer(vulkan_->logicalDevice, &framebufferInfo, nullptr,
-                            &vulkan_->swapChainFramebuffers[i]) != VK_SUCCESS) {
+                            &vulkan_->swapChainFramebuffers[i]) != VK_SUCCESS)
+    {
       throw std::runtime_error("Failed to create framebuffer");
     }
   }
 }
 
-void VulkanBuilder::_createSyncObjects() {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::_createSyncObjects()
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
   VkSemaphoreCreateInfo semaphoreInfo = {};
   semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -1136,20 +1286,25 @@ void VulkanBuilder::_createSyncObjects() {
       vkCreateSemaphore(vulkan_->logicalDevice, &semaphoreInfo, nullptr,
                         &vulkan_->renderFinishedSemaphore) != VK_SUCCESS ||
       vkCreateFence(vulkan_->logicalDevice, &fenceInfo, nullptr,
-                    &vulkan_->inFlightFence) != VK_SUCCESS) {
+                    &vulkan_->inFlightFence) != VK_SUCCESS)
+  {
     throw std::runtime_error("Failed to create synchronization objects");
   }
 }
 
-void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
-  if (vulkan_ == nullptr) {
-    throw VulkanBuilderException("null vulkan pointer.");
+void VulkanBuilder::mapBufferMemory(Buffer &buffer)
+{
+  if (vulkan_ == nullptr)
+  {
+    throw VulkanBuilderException("Null Vulkan pointer.");
   }
-  if (buffer.isMemoryMapped) {
+  if (buffer.isMemoryMapped)
+  {
     return;
   }
   if (vkMapMemory(vulkan_->logicalDevice, buffer.memory, 0, buffer.info.size, 0,
-                  &buffer.data) != VK_SUCCESS) {
+                  &buffer.data) != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to create allocate memory for " +
                                  buffer_map.at(buffer.name));
   }
@@ -1162,31 +1317,40 @@ void VulkanBuilder::mapBufferMemory(Buffer &buffer) {
   memoryRange.size = VK_WHOLE_SIZE;   // Size of the memory range
   VkResult result =
       vkInvalidateMappedMemoryRanges(vulkan_->logicalDevice, 1, &memoryRange);
-  if (result != VK_SUCCESS) {
+  if (result != VK_SUCCESS)
+  {
     throw VulkanBuilderException("Failed to validate memory for " +
                                  buffer_map.at(buffer.name));
   }
 }
 
-void VulkanBuilder::unmapBufferMemory(Buffer &buffer) {
-  if (!buffer.isMemoryMapped) {
+void VulkanBuilder::unmapBufferMemory(Buffer &buffer)
+{
+  if (!buffer.isMemoryMapped)
+  {
     return;
   }
   vkUnmapMemory(vulkan_->logicalDevice, buffer.memory);
   buffer.isMemoryMapped = false;
 }
 
-VulkanBuilder &VulkanBuilder::clear() {
-  if (vulkan_ == nullptr) {
+VulkanBuilder &VulkanBuilder::clear()
+{
+  if (vulkan_ == nullptr)
+  {
     return *this;
   }
-  if (Manager::getConstInstance().app_params.vulkan_debug) {
+  if (Manager::getConstInstance().app_params.vulkan_debug)
+  {
     cv::destroyWindow(cvWindowTitle);
   }
 
-  auto freeBuffer = [](std::shared_ptr<Vulkan> vulkan, Buffer buffer) {
-    if (buffer.buffer != VK_NULL_HANDLE) {
-      if (buffer.isMemoryMapped) {
+  auto freeBuffer = [](std::shared_ptr<Vulkan> vulkan, Buffer buffer)
+  {
+    if (buffer.buffer != VK_NULL_HANDLE)
+    {
+      if (buffer.isMemoryMapped)
+      {
         vkUnmapMemory(vulkan->logicalDevice, buffer.memory);
         buffer.isMemoryMapped = false;
       }
@@ -1197,116 +1361,139 @@ VulkanBuilder &VulkanBuilder::clear() {
     }
   };
 
-  for (auto &shader : vulkan_->shaders) {
-    if (shader.module != VK_NULL_HANDLE) {
+  for (auto &shader : vulkan_->shaders)
+  {
+    if (shader.module != VK_NULL_HANDLE)
+    {
       vkDestroyShaderModule(vulkan_->logicalDevice, shader.module, nullptr);
       shader.module = VK_NULL_HANDLE;
     }
   }
   vulkan_->shaders.clear();
 
-  if (vulkan_->pipelineGraphic != VK_NULL_HANDLE) {
+  if (vulkan_->pipelineGraphic != VK_NULL_HANDLE)
+  {
     vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineGraphic,
                       nullptr);
     vulkan_->pipelineGraphic = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->pipelineComputeTraining != VK_NULL_HANDLE) {
+  if (vulkan_->pipelineComputeTraining != VK_NULL_HANDLE)
+  {
     vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineComputeTraining,
                       nullptr);
     vulkan_->pipelineComputeTraining = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->pipelineComputeEnhancer != VK_NULL_HANDLE) {
+  if (vulkan_->pipelineComputeEnhancer != VK_NULL_HANDLE)
+  {
     vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineComputeEnhancer,
                       nullptr);
     vulkan_->pipelineComputeEnhancer = VK_NULL_HANDLE;
   }
 
-  for (auto framebuffer : vulkan_->swapChainFramebuffers) {
+  for (auto framebuffer : vulkan_->swapChainFramebuffers)
+  {
     vkDestroyFramebuffer(vulkan_->logicalDevice, framebuffer, nullptr);
   }
 
-  if (vulkan_->renderPass != VK_NULL_HANDLE) {
+  if (vulkan_->renderPass != VK_NULL_HANDLE)
+  {
     vkDestroyRenderPass(vulkan_->logicalDevice, vulkan_->renderPass, nullptr);
     vulkan_->renderPass = VK_NULL_HANDLE;
   }
 
-  for (auto imageView : vulkan_->swapChainImageViews) {
+  for (auto imageView : vulkan_->swapChainImageViews)
+  {
     vkDestroyImageView(vulkan_->logicalDevice, imageView, nullptr);
   }
 
-  if (vulkan_->swapChain != VK_NULL_HANDLE) {
+  if (vulkan_->swapChain != VK_NULL_HANDLE)
+  {
     vkDestroySwapchainKHR(vulkan_->logicalDevice, vulkan_->swapChain, nullptr);
     vulkan_->swapChain = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->surface != VK_NULL_HANDLE) {
+  if (vulkan_->surface != VK_NULL_HANDLE)
+  {
     vkDestroySurfaceKHR(vulkan_->instance, vulkan_->surface, nullptr);
     vulkan_->surface = VK_NULL_HANDLE;
   }
 
-  for (auto &buffer : vulkan_->buffers) {
+  for (auto &buffer : vulkan_->buffers)
+  {
     freeBuffer(vulkan_, buffer);
   }
   vulkan_->buffers.clear();
 
-  for (auto &commandBuffer : vulkan_->commandBufferPool) {
-    if (commandBuffer != VK_NULL_HANDLE) {
+  for (auto &commandBuffer : vulkan_->commandBufferPool)
+  {
+    if (commandBuffer != VK_NULL_HANDLE)
+    {
       vkFreeCommandBuffers(vulkan_->logicalDevice, vulkan_->commandPool, 1,
                            &commandBuffer);
     }
     commandBuffer = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->imageAvailableSemaphore != VK_NULL_HANDLE) {
+  if (vulkan_->imageAvailableSemaphore != VK_NULL_HANDLE)
+  {
     vkDestroySemaphore(vulkan_->logicalDevice, vulkan_->imageAvailableSemaphore,
                        nullptr);
     vulkan_->imageAvailableSemaphore = VK_NULL_HANDLE;
   }
-  if (vulkan_->renderFinishedSemaphore != VK_NULL_HANDLE) {
+  if (vulkan_->renderFinishedSemaphore != VK_NULL_HANDLE)
+  {
     vkDestroySemaphore(vulkan_->logicalDevice, vulkan_->renderFinishedSemaphore,
                        nullptr);
     vulkan_->renderFinishedSemaphore = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->inFlightFence != VK_NULL_HANDLE) {
+  if (vulkan_->inFlightFence != VK_NULL_HANDLE)
+  {
     vkDestroyFence(vulkan_->logicalDevice, vulkan_->inFlightFence, nullptr);
     vulkan_->inFlightFence = VK_NULL_HANDLE;
   }
-  if (vulkan_->computeFence != VK_NULL_HANDLE) {
+  if (vulkan_->computeFence != VK_NULL_HANDLE)
+  {
     vkDestroyFence(vulkan_->logicalDevice, vulkan_->computeFence, nullptr);
     vulkan_->computeFence = VK_NULL_HANDLE;
   }
-  if (vulkan_->descriptorPool != VK_NULL_HANDLE) {
+  if (vulkan_->descriptorPool != VK_NULL_HANDLE)
+  {
     vkDestroyDescriptorPool(vulkan_->logicalDevice, vulkan_->descriptorPool,
                             nullptr);
     vulkan_->descriptorPool = VK_NULL_HANDLE;
     // descriptor set is destroyed with the descriptor pool
     vulkan_->descriptorSet = VK_NULL_HANDLE;
   }
-  if (vulkan_->pipelineLayout != VK_NULL_HANDLE) {
+  if (vulkan_->pipelineLayout != VK_NULL_HANDLE)
+  {
     vkDestroyPipelineLayout(vulkan_->logicalDevice, vulkan_->pipelineLayout,
                             nullptr);
     vulkan_->pipelineLayout = VK_NULL_HANDLE;
   }
-  if (vulkan_->descriptorSetLayout != VK_NULL_HANDLE) {
+  if (vulkan_->descriptorSetLayout != VK_NULL_HANDLE)
+  {
     vkDestroyDescriptorSetLayout(vulkan_->logicalDevice,
                                  vulkan_->descriptorSetLayout, nullptr);
     vulkan_->descriptorSetLayout = VK_NULL_HANDLE;
   }
-  if (vulkan_->commandPool != VK_NULL_HANDLE) {
+  if (vulkan_->commandPool != VK_NULL_HANDLE)
+  {
     vkDestroyCommandPool(vulkan_->logicalDevice, vulkan_->commandPool, nullptr);
     vulkan_->commandPool = VK_NULL_HANDLE;
   }
-  if (vulkan_->logicalDevice != VK_NULL_HANDLE) {
+  if (vulkan_->logicalDevice != VK_NULL_HANDLE)
+  {
     vkDestroyDevice(vulkan_->logicalDevice, nullptr);
     vulkan_->logicalDevice = VK_NULL_HANDLE;
     // queue is destroyed with the logical device
     vulkan_->queueGraphics = VK_NULL_HANDLE;
     vulkan_->queueCompute = VK_NULL_HANDLE;
   }
-  if (vulkan_->instance != VK_NULL_HANDLE) {
+  if (vulkan_->instance != VK_NULL_HANDLE)
+  {
     vkDestroyInstance(vulkan_->instance, nullptr);
     vulkan_->instance = VK_NULL_HANDLE;
     // physical device is destroyed with the instance

@@ -17,9 +17,11 @@ std::unique_ptr<NeuralNetwork> NeuralNetworkImportExportFacade::importModel(
 }
 
 void NeuralNetworkImportExportFacade::importWeights(
-    std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams) {
+    std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams,
+    std::function<void(int)> progressCallback, int progressInitialValue) {
   try {
-    csvIE.importNeuronsWeights(network, appParams);
+    csvIE.importNeuronsWeights(network, appParams, progressCallback,
+                               progressInitialValue);
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
   }

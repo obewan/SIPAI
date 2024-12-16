@@ -1,0 +1,1713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1094</width>
+    <height>881</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>SIPAI</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/Bkchem48.png</normaloff>:/icons/Bkchem48.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1074</width>
+         <height>779</height>
+        </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tabNeuralNetwork">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <attribute name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/icons/Bkchem48.png</normaloff>:/icons/Bkchem48.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string>Neural Network</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0,0">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetNoConstraint</enum>
+              </property>
+              <item>
+               <layout class="QFormLayout" name="formLayout_4">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelCurrentNetwork">
+                  <property name="text">
+                   <string>Current neural network model:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditCurrentNetwork">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonCurrentNetwork">
+                    <property name="toolTip">
+                     <string>Select a file...</string>
+                    </property>
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1">
+                <item>
+                 <widget class="QGroupBox" name="groupBoxNetworkLayers">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Layers parameters</string>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
+                   <item>
+                    <layout class="QFormLayout" name="formLayout_2">
+                     <property name="sizeConstraint">
+                      <enum>QLayout::SetDefaultConstraint</enum>
+                     </property>
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>6</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelInputLayers">
+                       <property name="text">
+                        <string>Input layers: </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QSpinBox" name="spinBoxInputLayers">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Total of input layers</string>
+                       </property>
+                       <property name="value">
+                        <number>1</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelInputNeuronsX">
+                       <property name="text">
+                        <string>Input X neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSpinBox" name="spinBoxInputNeuronsX">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Input neurons per input layers</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelHiddenLayers">
+                       <property name="text">
+                        <string>Hidden layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QSpinBox" name="spinBoxHiddenLayers">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Total of hidden layers </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelHiddenNeuronsX">
+                       <property name="text">
+                        <string>Hidden X neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QSpinBox" name="spinBoxHiddenNeuronsX">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Hidden neurons per hidden layers</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelOutputLayers">
+                       <property name="text">
+                        <string>Output layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QSpinBox" name="spinBoxOutputLayers">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Total of output layers</string>
+                       </property>
+                       <property name="value">
+                        <number>1</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="labelOutputNeuronsX">
+                       <property name="text">
+                        <string>Output X neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1">
+                      <widget class="QSpinBox" name="spinBoxOutputNeuronsX">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="toolTip">
+                        <string>Output neurons per output layers</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelSpace">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="labelSpace_2">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelSpace_3">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QLabel" name="labelSpace_4">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelInputNeuronsY">
+                       <property name="text">
+                        <string>Input Y neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QSpinBox" name="spinBoxInputNeuronsY"/>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelHiddenNeuronsY">
+                       <property name="text">
+                        <string>Hidden Y neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QSpinBox" name="spinBoxHiddenNeuronsY"/>
+                     </item>
+                     <item row="10" column="0">
+                      <widget class="QLabel" name="labelOutputNeuronsY">
+                       <property name="text">
+                        <string>Output Y neurons per layers:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="1">
+                      <widget class="QSpinBox" name="spinBoxOutputNeuronsY"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBoxNetworkParams">
+                  <property name="title">
+                   <string>Neural network parameters</string>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <layout class="QFormLayout" name="formLayout_3">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>6</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelLearningRate">
+                       <property name="text">
+                        <string>Learning rate:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLR">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelAdaptiveLR">
+                       <property name="text">
+                        <string>Learning rate adjustable:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="checkBoxLRAdaptive">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelAdaptiveLRFactor">
+                       <property name="text">
+                        <string>Learning rate adjustable factor:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLRAdatpiveFactor">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelLRAdaptiveIncrease">
+                       <property name="text">
+                        <string>Learning rate adjustable increase:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QCheckBox" name="checkBoxLRAdaptiveIncrease">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelActivationFunctionHidden">
+                       <property name="text">
+                        <string>Activation function for hidden neurons:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QComboBox" name="comboBoxActivationFunctionHidden"/>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelActivationAlphaHidden">
+                       <property name="text">
+                        <string>Activation alpha for hidden neurons:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionHiddenAlpha">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelActivationFunctionOutput">
+                       <property name="text">
+                        <string>Activation function for output neurons:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QComboBox" name="comboBoxActivationFunctionOutput"/>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelActivationAlphaOutput">
+                       <property name="text">
+                        <string>Activation alpha for output neurons:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxActivationFunctionOutputAlpha">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="0">
+                      <widget class="QLabel" name="labelErrorMin">
+                       <property name="text">
+                        <string>Learning error min:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMin">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1000.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1000.000000000000000</double>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="0">
+                      <widget class="QLabel" name="labelErrorMax">
+                       <property name="text">
+                        <string>Learning error max:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxErrorMax">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1000.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1000.000000000000000</double>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelSpace_5">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="labelSpace_6">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="labelSpace_7">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1">
+                      <widget class="QLabel" name="labelSpace_8">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonNetworkBuild">
+                  <property name="toolTip">
+                   <string>Build the neural network</string>
+                  </property>
+                  <property name="text">
+                   <string>Build</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/Tecno-rueda.svg</normaloff>:/icons/Tecno-rueda.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonNetworkSave">
+                  <property name="toolTip">
+                   <string>Save the neural network</string>
+                  </property>
+                  <property name="text">
+                   <string>Save</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonNetworkSaveAs">
+                  <property name="toolTip">
+                   <string>Save the neural network as...</string>
+                  </property>
+                  <property name="text">
+                   <string>Save as...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabRunSettings">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <attribute name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/icons/Preferences-system.svg</normaloff>:/icons/Preferences-system.svg</iconset>
+           </attribute>
+           <attribute name="title">
+            <string>Run Settings</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
+              <item>
+               <layout class="QFormLayout" name="formLayout_7">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelMode">
+                  <property name="text">
+                   <string>Running mode:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_15" stretch="0,1">
+                  <item>
+                   <widget class="QComboBox" name="comboBoxMode">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelSpace_11">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="labelSpace_12">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QFormLayout" name="formLayout_6">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelInputFile">
+                  <property name="text">
+                   <string>Input file:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditInputFile"/>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonInputFile">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelOutputFile">
+                  <property name="text">
+                   <string>Output file:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditOutputFile"/>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonOutputFile">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="labelTrainingFile">
+                  <property name="text">
+                   <string>Training file:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditTrainingFile"/>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonTrainingFile">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="labelTrainingFolder">
+                  <property name="text">
+                   <string>Training folder:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <item>
+                   <widget class="QLineEdit" name="lineEditTrainingFolder"/>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="toolButtonTrainingFolder">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="icons.qrc">
+                      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="labelSpace_19">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="labelSpace_20">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="1,1">
+                <item>
+                 <widget class="QGroupBox" name="groupBoxRunSettingsMain">
+                  <property name="title">
+                   <string>Main parameters</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_5">
+                   <item>
+                    <layout class="QFormLayout" name="formLayout">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelOutputScale">
+                       <property name="text">
+                        <string>Output scale factor:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxOutputScaleFactor">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.100000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelTrainingSplit">
+                       <property name="text">
+                        <string>Training split ratio:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxTrainingSplit">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="maximum">
+                        <double>1.000000000000000</double>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.100000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelLearningRateMin">
+                       <property name="text">
+                        <string>Learning rate min:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMin">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelLearningRateMax">
+                       <property name="text">
+                        <string>Learning rate max:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxLearningRateMax">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.010000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>0.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelEpochsMax">
+                       <property name="text">
+                        <string>Epochs total max:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QSpinBox" name="spinBoxEpochsMax">
+                       <property name="maximum">
+                        <number>999999999</number>
+                       </property>
+                       <property name="value">
+                        <number>0</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelEpochsWithoutImpMax">
+                       <property name="text">
+                        <string>Epochs without improvement max: </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QSpinBox" name="spinBoxEpochsWithoutImpMax">
+                       <property name="maximum">
+                        <number>999999999</number>
+                       </property>
+                       <property name="value">
+                        <number>0</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelEpochsSaving">
+                       <property name="text">
+                        <string>Epochs model saving frequency:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QSpinBox" name="spinBoxEpochsSaving">
+                       <property name="maximum">
+                        <number>999999999</number>
+                       </property>
+                       <property name="value">
+                        <number>0</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelSpace_9">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="labelSpace_10">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelSpace_13">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLabel" name="labelSpace_14">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBoxRunSettingOptional">
+                  <property name="title">
+                   <string>Optional parameters</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_6">
+                   <item>
+                    <layout class="QFormLayout" name="formLayout_5">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="labelImageSplits">
+                       <property name="text">
+                        <string>Image splits:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QSpinBox" name="spinBoxImageSplits"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="labelImageReducingFactor">
+                       <property name="text">
+                        <string>Image reducing factor:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBoxImageReducingFactor">
+                       <property name="decimals">
+                        <number>5</number>
+                       </property>
+                       <property name="singleStep">
+                        <double>0.100000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="labelImagesRandomLoading">
+                       <property name="text">
+                        <string>Images random loading:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QCheckBox" name="checkBoxImagesRandomLoading">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="labelImagesBulk">
+                       <property name="text">
+                        <string>Images bulk loading:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QCheckBox" name="checkBoxImagesBulk">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="labelImagesPadding">
+                       <property name="text">
+                        <string>Images padding:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QCheckBox" name="checkBoxImagesPadding">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0">
+                      <widget class="QLabel" name="labelEnableCpuParallel">
+                       <property name="text">
+                        <string>Enable CPU parallelism:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QCheckBox" name="checkBoxEnableCpuParallel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="labelEnableGpuParallel">
+                       <property name="text">
+                        <string>Enable GPU parallelism:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1">
+                      <widget class="QCheckBox" name="checkBoxEnableGpuParallel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="labelVerbose">
+                       <property name="text">
+                        <string>Enable verbose logs:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1">
+                      <widget class="QCheckBox" name="checkBoxVerbose">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="0">
+                      <widget class="QLabel" name="labelVerboseDebug">
+                       <property name="text">
+                        <string>Enable verbose Debug logs:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="10" column="1">
+                      <widget class="QCheckBox" name="checkBoxVerboseDebug">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="0">
+                      <widget class="QLabel" name="labelVerboseVulkan">
+                       <property name="text">
+                        <string>Enable verbose Vulkan logs:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="1">
+                      <widget class="QCheckBox" name="checkBoxVerboseVulkan">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="labelSpace_15">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLabel" name="labelSpace_16">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="labelSpace_17">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QLabel" name="labelSpace_18">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabLogs">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <attribute name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/icons/Text-x-generic-info.svg</normaloff>:/icons/Text-x-generic-info.svg</iconset>
+           </attribute>
+           <attribute name="title">
+            <string>Logs</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <item>
+               <widget class="QTableView" name="tableViewLogs">
+                <attribute name="verticalHeaderVisible">
+                 <bool>true</bool>
+                </attribute>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1094</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionLoadSettings"/>
+    <addaction name="actionSaveSettings"/>
+    <addaction name="actionSaveAsSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoadNeuralNetwork"/>
+    <addaction name="actionSaveNeuralNetwork"/>
+    <addaction name="actionSaveAsNeuralNetwork"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionHelp"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionLoadSettings"/>
+   <addaction name="actionSaveSettings"/>
+   <addaction name="actionSaveAsSettings"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun"/>
+   <addaction name="actionStop"/>
+   <addaction name="actionStopExit"/>
+  </widget>
+  <action name="actionLoadNeuralNetwork">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load a neural network...</string>
+   </property>
+   <property name="iconText">
+    <string>Load neural network...</string>
+   </property>
+   <property name="toolTip">
+    <string>Load a Neural Network</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Dialog-error-round.svg</normaloff>:/icons/Dialog-error-round.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Tango-style_info_icon.svg</normaloff>:/icons/Tango-style_info_icon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveNeuralNetwork">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save the neural network</string>
+   </property>
+   <property name="iconText">
+    <string>Save the neural network</string>
+   </property>
+   <property name="toolTip">
+    <string>Save  the  neural network</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Help-content.svg</normaloff>:/icons/Help-content.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="actionLoadSettings">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load settings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Load settings...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveSettings">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Save settings</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveAsSettings">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save settings as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save settings as...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Media-playback-start.svg</normaloff>:/icons/Media-playback-start.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="toolTip">
+    <string>Run</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Media-playback-stop.svg</normaloff>:/icons/Media-playback-stop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop the run and save the neural network</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionStopExit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Dialog-STOP.svg</normaloff>:/icons/Dialog-STOP.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stop and exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop and exit the run without saving</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSaveAsNeuralNetwork">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save the neural network as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the neural network as...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectInputFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select an input file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select an input file...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectOutputFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select an output file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select an output file...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectTrainingFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select a training file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select a training file...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionSelectTrainingFolder">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select a training folder...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select a training folder...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonCurrentNetwork</sender>
+   <signal>pressed()</signal>
+   <receiver>actionLoadNeuralNetwork</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxLRAdaptive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBoxLRAdatpiveFactor</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>913</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>913</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxLRAdaptive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxLRAdaptiveIncrease</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>913</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>913</x>
+     <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonInputFile</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectInputFile</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonOutputFile</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectOutputFile</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonTrainingFile</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectTrainingFile</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>250</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonTrainingFolder</sender>
+   <signal>pressed()</signal>
+   <receiver>actionSelectTrainingFolder</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1048</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

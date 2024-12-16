@@ -15,17 +15,21 @@ using namespace sipai;
 
 std::unique_ptr<Manager> Manager::instance_ = nullptr;
 
-void Manager::createOrImportNetwork() {
-  if (!network) {
-    auto builder = std::make_unique<NeuralNetworkBuilder>();
-    network = builder->createOrImport()
-                  .addLayers()
-                  .bindLayers()
-                  .addNeighbors()
-                  .initializeWeights()
-                  .setActivationFunction()
-                  .build();
+Manager &
+Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
+  if (network) {
+    network.reset();
   }
+  auto builder = std::make_unique<NeuralNetworkBuilder>();
+  network = builder->with(progressCallback)
+                .createOrImport()
+                .addLayers()
+                .bindLayers()
+                .addNeighbors()
+                .initializeWeights()
+                .setActivationFunction()
+                .build();
+  return *this;
 }
 
 void Manager::exportNetwork() {
@@ -38,18 +42,7 @@ void Manager::exportNetwork() {
   }
 }
 
-void Manager::run() {
-  SimpleLogger::LOG_INFO(getVersionHeader());
-
-  // Initialize network
-  try {
-    createOrImportNetwork();
-  } catch (std::exception &ex) {
-    SimpleLogger::LOG_ERROR("Error during network init: ", ex.what());
-    return;
-  }
-
-  // Log parameters
+Manager &Manager::showParameters() {
   SimpleLogger::LOG_INFO(
       "Parameters: ", "\nmode: ", Common::getRunModeStr(app_params.run_mode),
       "\nauto-save every ", app_params.epoch_autosave, " epochs",
@@ -95,6 +88,15 @@ void Manager::run() {
       "\nverbose logs enabled: ", app_params.verbose ? "true" : "false",
       "\ndebug logs enabled: ", app_params.verbose_debug ? "true" : "false",
       "\ndebug vulkan enabled: ", app_params.vulkan_debug ? "true" : "false");
+
+  return *this;
+}
+
+void Manager::run() {
+  // Some checking
+  if (app_params.image_split == NO_IMAGE_SPLIT) {
+    app_params.image_split = 1; // same as no split
+  }
 
   // Enabling GPU Vulkan
   bool wasParallel = app_params.enable_parallel;

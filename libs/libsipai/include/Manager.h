@@ -14,6 +14,7 @@
 #include "NeuralNetworkBuilder.h"
 #include "NeuralNetworkParams.h"
 #include "RunnerVisitorFactory.h"
+#include "SimpleLogger.h"
 #include <cstddef>
 #include <memory>
 #include <mutex>
@@ -50,8 +51,28 @@ public:
 
   /**
    * @brief Network builder.
+   *
+   * @param progressCallback
    */
-  void createOrImportNetwork();
+  Manager &
+  createOrImportNetwork(std::function<void(int)> progressCallback = {});
+
+  /**
+   * @brief show header
+   *
+   * @return Manager&
+   */
+  Manager &showHeader() {
+    SimpleLogger::LOG_INFO(getVersionHeader());
+    return *this;
+  }
+
+  /**
+   * @brief show parameters
+   *
+   * @return Manager&
+   */
+  Manager &showParameters();
 
   /**
    * @brief Export the neural network to its json and csv files.

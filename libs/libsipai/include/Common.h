@@ -10,6 +10,7 @@
 
 #pragma once
 #include "Image.h"
+#include <fstream>
 #include <map>
 #include <memory>
 #include <opencv2/opencv.hpp>
@@ -66,6 +67,31 @@ public:
       }
     }
     return "";
+  }
+
+  /**
+   * @brief get total lines of a file if lines are ended by a newline
+   * warning: lines *must* be ended by a newline
+   * @param filename
+   * @return int
+   */
+
+  static size_t countLines(const std::string &filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+      throw std::runtime_error("Error opening file: " + filename);
+    }
+
+    size_t lineCount = 0;
+    std::string line;
+    while (std::getline(file, line)) {
+      if (!line.empty()) {
+        ++lineCount;
+      }
+    }
+
+    file.close();
+    return lineCount;
   }
 
   /**
