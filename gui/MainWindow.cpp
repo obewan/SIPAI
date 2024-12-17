@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
       futureWatcher(new QFutureWatcher<void>(this)),
       bindingAppParams(new BindingAppParams()),
       bindingNetworkParams(new BindingNetworkParams()),
-      logCallback(new SimpleLoggerCallback(modelLogger)) {
+      logCallback(new SimpleLoggerCallback(modelLogger))
+{
 
   auto &manager = Manager::getInstance();
   auto &app_params = manager.app_params;
@@ -70,9 +71,8 @@ MainWindow::MainWindow(QWidget *parent)
       const_cast<SimpleLogger &>(SimpleLogger::getInstance());
   logger.setLogCallback([this](const std::string &timestamp,
                                const std::string &level,
-                               const std::string &message) {
-    logCallback->log(timestamp, level, message);
-  });
+                               const std::string &message)
+                        { logCallback->log(timestamp, level, message); });
 
   // Other inits
   const std::string &version = manager.app_params.version;
@@ -88,7 +88,8 @@ MainWindow::MainWindow(QWidget *parent)
   manager.showHeader();
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow()
+{
   delete bindingAppParams;
   delete bindingNetworkParams;
   delete modelLogger;
@@ -96,19 +97,22 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
-void MainWindow::onActionLoadNeuralNetwork() {
+void MainWindow::onActionLoadNeuralNetwork()
+{
   auto fileName = QFileDialog::getOpenFileName(
       this, tr("Select a Sipai neural network model Json file..."), "",
       "JSON (*.json)");
 
-  if (fileName.isEmpty()) {
+  if (fileName.isEmpty())
+  {
     return; // No file selected
   }
 
   ui->lineEditCurrentNetwork->setText("");
 
   QFile file(fileName);
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+  {
     QMessageBox::warning(this, tr("Error"), tr("Cannot open file"));
     return;
   }
@@ -125,24 +129,30 @@ void MainWindow::onActionLoadNeuralNetwork() {
   statusBar()->showMessage(tr("Loading neural network..."));
 
   // Start the concurrent loading process
-  QFuture<void> future = QtConcurrent::run([this]() { loadNetwork(); });
+  QFuture<void> future = QtConcurrent::run([this]()
+                                           { loadNetwork(); });
   futureWatcher->setFuture(future);
 
   progressDialog->setValue(0);
   progressDialog->show();
 }
 
-void MainWindow::onProgressUpdated(int value) {
-  if (progressDialog) {
+void MainWindow::onProgressUpdated(int value)
+{
+  if (progressDialog)
+  {
     progressDialog->setValue(value);
   }
 }
 
-void MainWindow::onLoadingCanceled() {
-  if (futureWatcher->isRunning()) {
+void MainWindow::onLoadingCanceled()
+{
+  if (futureWatcher->isRunning())
+  {
     futureWatcher->cancel();
   }
-  if (progressDialog) {
+  if (progressDialog)
+  {
     progressDialog->close();
     progressDialog->deleteLater();
   }
@@ -151,8 +161,10 @@ void MainWindow::onLoadingCanceled() {
                            5000); // Show message for 5 seconds
 }
 
-void MainWindow::onLoadingFinished() {
-  if (progressDialog) {
+void MainWindow::onLoadingFinished()
+{
+  if (progressDialog)
+  {
     progressDialog->setValue(100);
     progressDialog->close();
     progressDialog->deleteLater();
@@ -162,11 +174,14 @@ void MainWindow::onLoadingFinished() {
                            5000); // Show message for 5 seconds
 }
 
-void MainWindow::onErrorOccurred(const QString &message) {
+void MainWindow::onErrorOccurred(const QString &message)
+{
   QMetaObject::invokeMethod(
       this,
-      [this, message]() {
-        if (progressDialog) {
+      [this, message]()
+      {
+        if (progressDialog)
+        {
           progressDialog->close();
           progressDialog->deleteLater();
         }
@@ -178,70 +193,83 @@ void MainWindow::onErrorOccurred(const QString &message) {
       Qt::QueuedConnection);
 }
 
-void MainWindow::onActionSelectInputFile() {
+void MainWindow::onActionSelectInputFile()
+{
   auto fileName = QFileDialog::getOpenFileName(
       this, tr("Select an input file as a valid image..."), "",
       tr("Image Files (*.bmp *.jpg *.jpeg *.png)"));
 
-  if (fileName.isEmpty()) {
+  if (fileName.isEmpty())
+  {
     return; // No file selected
   }
 
   ui->lineEditInputFile->setText(fileName);
 }
 
-void MainWindow::onActionSelectOutputFile() {
+void MainWindow::onActionSelectOutputFile()
+{
   auto fileName = QFileDialog::getSaveFileName(
       this,
       tr("Select or enter an output file name for the generated image..."), "",
       tr("Image Files (*.bmp *.jpg *.jpeg *.png)"));
 
-  if (fileName.isEmpty()) {
+  if (fileName.isEmpty())
+  {
     return; // No file selected
   }
 
   ui->lineEditOutputFile->setText(fileName);
 }
 
-void MainWindow::onActionSelectTrainingFile() {
+void MainWindow::onActionSelectTrainingFile()
+{
   auto fileName = QFileDialog::getOpenFileName(
       this, tr("Select a sipai training csv file..."), "", "CSV (*.csv)");
 
-  if (fileName.isEmpty()) {
+  if (fileName.isEmpty())
+  {
     return; // No file selected
   }
 
   ui->lineEditTrainingFile->setText(fileName);
 }
 
-void MainWindow::onActionSelectTrainingFolder() {
+void MainWindow::onActionSelectTrainingFolder()
+{
   auto folderName = QFileDialog::getExistingDirectory(
       this, tr("Select a sipai training folder..."), "");
 
-  if (folderName.isEmpty()) {
+  if (folderName.isEmpty())
+  {
     return; // No file selected
   }
 
   ui->lineEditTrainingFolder->setText(folderName);
 }
 
-void MainWindow::onActionAbout() {
+void MainWindow::onActionAbout()
+{
   QMessageBox::about(this, tr("About SIPAI"), aboutStr_.c_str());
 }
 
-void MainWindow::loadNetwork() {
+void MainWindow::loadNetwork()
+{
   auto &manager = Manager::getInstance();
 
-  try {
-    manager.createOrImportNetwork([this](int i) {
+  try
+  {
+    manager.createOrImportNetwork([this](int i)
+                                  {
       QMetaObject::invokeMethod(futureWatcher, "progressValueChanged",
                                 Q_ARG(int, i));
       // Check for cancellation
       if (futureWatcher->isCanceled()) {
         throw std::runtime_error("Loading canceled");
-      }
-    });
-  } catch (const std::exception &ex) {
+      } });
+  }
+  catch (const std::exception &ex)
+  {
     QMetaObject::invokeMethod(this, "onErrorOccurred",
                               Q_ARG(QString, ex.what()));
   }
