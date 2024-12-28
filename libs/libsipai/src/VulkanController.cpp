@@ -41,6 +41,13 @@ bool VulkanController::initialize()
     return false;
   }
 
+  vulkan_->maxSizeX =
+      std::max({manager.network_params.input_size_x, manager.network_params.hidden_size_x,
+                manager.network_params.output_size_x});
+  vulkan_->maxSizeY =
+      std::max({manager.network_params.input_size_y, manager.network_params.hidden_size_y,
+                manager.network_params.output_size_y});
+
   if (vulkan_->shaders.empty())
   {
     // templated shaders

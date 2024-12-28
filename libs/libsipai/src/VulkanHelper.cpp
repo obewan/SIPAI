@@ -38,14 +38,6 @@ bool VulkanHelper::replaceTemplateParameters(const std::string &inputFile,
   }
 
   const auto &network_param = Manager::getConstInstance().network_params;
-  vulkan_->maxSizeX =
-      std::max({network_param.input_size_x, network_param.hidden_size_x,
-                network_param.output_size_x});
-  vulkan_->maxSizeY =
-      std::max({network_param.input_size_y, network_param.hidden_size_y,
-                network_param.output_size_y});
-                
-
   std::map<std::string, std::string> values({
       {"%%MAX_SIZE_X%%", std::to_string(vulkan_->maxSizeX)},
       {"%%MAX_SIZE_Y%%", std::to_string(vulkan_->maxSizeY)},

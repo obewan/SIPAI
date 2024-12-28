@@ -300,35 +300,32 @@ bool VulkanBuilder::_checkDeviceProperties()
   VkPhysicalDeviceProperties deviceProperties;
   vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
 
-  // Checking maxComputeWorkGroupInvocations
-  uint32_t maxComputeWorkGroupInvocations =
-      deviceProperties.limits.maxComputeWorkGroupInvocations;
+  // Checking maxComputeWorkGroupInvocations  
   uint32_t maxComputeWorkGroupCount0 = deviceProperties.limits.maxComputeWorkGroupCount[0];
   uint32_t maxComputeWorkGroupCount1 = deviceProperties.limits.maxComputeWorkGroupCount[1];
   uint32_t maxComputeWorkGroupCount2 = deviceProperties.limits.maxComputeWorkGroupCount[2];
 
-  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);
-  SimpleLogger::LOG_INFO("Device maxComputeWorkGroupInvocations: ", maxComputeWorkGroupInvocations);
+  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);  
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on X: ", maxComputeWorkGroupCount0);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Y: ", maxComputeWorkGroupCount1);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Z: ", maxComputeWorkGroupCount2);
-
-  size_t maxSizeX =
-      std::max({network_param.input_size_x, network_param.hidden_size_x,
-                network_param.output_size_x});
-  size_t maxSizeY =
-      std::max({network_param.input_size_y, network_param.hidden_size_y,
-                network_param.output_size_y});
-  if (maxSizeX * maxSizeY > maxComputeWorkGroupInvocations)
+  
+  bool failure = false;
+  if (vulkan_->maxSizeX > maxComputeWorkGroupCount0)
   {
     SimpleLogger::LOG_ERROR(
-        "Device maxComputeWorkGroupInvocations limit (",
-        maxComputeWorkGroupInvocations,
-        ") is lesser than the neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
-        maxSizeX, "*", maxSizeY, "): FAILURE.");
-    return false;
+        "Neural network size X is greater than the device maxComputeWorkGroupCount on X (",
+        vulkan_->maxSizeX , " > ", maxComputeWorkGroupCount0, "): FAILURE.");
+    failure = true;
   }
-  return true;
+  if (vulkan_->maxSizeY > maxComputeWorkGroupCount1)
+  {
+    SimpleLogger::LOG_ERROR(
+        "Neural network size Y is greater than the device maxComputeWorkGroupCount on Y (",
+        vulkan_->maxSizeY , " > ", maxComputeWorkGroupCount1, "): FAILURE.");
+    failure = true;
+  }
+  return !failure;
 }
 
 std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice()
