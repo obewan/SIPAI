@@ -118,8 +118,8 @@ private:
   void _incrementProgress(int increment) {
     if (progressCallback_) {
       progressCallbackValue_ = progressCallbackValue_ + increment > 100
-                                   ? progressCallbackValue_ = 100
-                                   : progressCallbackValue_ += increment;
+                                   ? 100
+                                   : progressCallbackValue_ + increment;
       progressCallback_(progressCallbackValue_);
     }
   }

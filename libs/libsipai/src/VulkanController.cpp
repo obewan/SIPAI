@@ -173,11 +173,13 @@ void VulkanController::_processShaders(const EShader &shader)
   case EShader::TrainingInit:
   {
     // compute each training steps with a barrier between each
-    int index = 0;
-    for (auto &shader : {EShader::TrainingInit, EShader::TrainingForward1, EShader::TrainingForward2,
-                         EShader::TrainingForward3, EShader::TrainingForward4,
-                         EShader::TrainingBackward1, EShader::TrainingBackward2,
-                         EShader::TrainingBackward3, EShader::TrainingBackward4})
+    std::vector<EShader> shaderStages = {
+        EShader::TrainingInit, EShader::TrainingForward1, EShader::TrainingForward2,
+        EShader::TrainingForward3, EShader::TrainingForward4,
+        EShader::TrainingBackward1, EShader::TrainingBackward2,
+        EShader::TrainingBackward3, EShader::TrainingBackward4};
+
+    for (int index = 0; index < shaderStages.size(); index++)
     {
       vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                         vulkan_->computePipelines.at(index));
@@ -202,16 +204,15 @@ void VulkanController::_processShaders(const EShader &shader)
                            nullptr,                              // Buffer memory barriers
                            0,                                    // Image memory barrier count
                            nullptr);                             // Image memory barriers
-
-      index++;
     }
     break;
   }
   case EShader::EnhancerForward1:
   {
     // compute each training steps with a barrier between each
-    int index = 0;
-    for (auto &shader : {EShader::EnhancerForward1, EShader::EnhancerForward2})
+    std::vector<EShader> shaderStages = {EShader::EnhancerForward1, EShader::EnhancerForward2};
+
+    for (int index = 0; index < shaderStages.size(); index++)
     {
       vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                         vulkan_->computePipelines.at(index));
@@ -236,7 +237,6 @@ void VulkanController::_processShaders(const EShader &shader)
                            nullptr,                              // Buffer memory barriers
                            0,                                    // Image memory barrier count
                            nullptr);                             // Image memory barriers
-      index++;
     }
     break;
   }

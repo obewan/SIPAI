@@ -24,8 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
   auto &manager = Manager::getInstance();
-  auto &app_params = manager.app_params;
-
+  
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 

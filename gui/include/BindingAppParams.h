@@ -34,8 +34,6 @@ class BindingAppParams : public QObject {
                  NOTIFY trainingFileChanged)
   Q_PROPERTY(QString trainingFolder READ getTrainingFolder WRITE
                  setTrainingFolder NOTIFY trainingFolderChanged)
-  Q_PROPERTY(QString trainingFolder READ getTrainingFolder WRITE
-                 setTrainingFolder NOTIFY trainingFolderChanged)
   Q_PROPERTY(double outputScale READ getOutputScale WRITE setOutputScale NOTIFY
                  outputScaleChanged)
   Q_PROPERTY(double trainingSplitRatio READ getTrainingSplitRatio WRITE
