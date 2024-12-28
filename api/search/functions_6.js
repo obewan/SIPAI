@@ -16,13 +16,14 @@ var searchData=
   ['getmemoryproperties_13',['getMemoryProperties',['../classsipai_1_1VulkanBuilder.html#a3b67b3a16c28ad3e5bda29c48043a3fe',1,'sipai::VulkanBuilder']]],
   ['getneuron_14',['getNeuron',['../classsipai_1_1Layer.html#a81319609fa6dd0b64168261d56d0d3d6',1,'sipai::Layer']]],
   ['getoutputvalues_15',['getOutputValues',['../classsipai_1_1LayerOutput.html#aa2a71397adda9452be128990376ca8c3',1,'sipai::LayerOutput']]],
-  ['getpos_16',['getPos',['../classsipai_1_1Layer.html#a51d2f02752f225f25b9947684ce7c926',1,'sipai::Layer']]],
-  ['getprecision_17',['getPrecision',['../classsipai_1_1SimpleLogger.html#a4744eca6d7563d6dcdd09d81d4c6783a',1,'sipai::SimpleLogger']]],
-  ['getrunmodestr_18',['getRunModeStr',['../classsipai_1_1Common.html#ae19514b0ec6908107ba57bb950a53dc5',1,'sipai::Common']]],
-  ['getshader_19',['getShader',['../classsipai_1_1VulkanController.html#ad6df7454ed704dd900744df67c7e78fd',1,'sipai::VulkanController']]],
-  ['getsize_20',['getSize',['../classsipai_1_1TrainingDataFactory.html#a543e4224367fc861d553671de6ed46ee',1,'sipai::TrainingDataFactory']]],
-  ['gettrainingphasestr_21',['getTrainingPhaseStr',['../classsipai_1_1Common.html#a21984857a0955ac1017b1d565bf027ad',1,'sipai::Common']]],
-  ['gettrainingvisitor_22',['getTrainingVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a7287b4c91f22ca980406f398218ce37b',1,'sipai::RunnerVisitorFactory']]],
-  ['getversionheader_23',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]],
-  ['getvulkan_24',['getVulkan',['../classsipai_1_1VulkanController.html#a4863122a608e966bef1f696188bbf295',1,'sipai::VulkanController']]]
+  ['getpipelineforshader_16',['getPipelineForShader',['../classsipai_1_1VulkanController.html#a458079647dece87b5c6801566d509d7f',1,'sipai::VulkanController']]],
+  ['getpos_17',['getPos',['../classsipai_1_1Layer.html#a51d2f02752f225f25b9947684ce7c926',1,'sipai::Layer']]],
+  ['getprecision_18',['getPrecision',['../classsipai_1_1SimpleLogger.html#a4744eca6d7563d6dcdd09d81d4c6783a',1,'sipai::SimpleLogger']]],
+  ['getrunmodestr_19',['getRunModeStr',['../classsipai_1_1Common.html#ae19514b0ec6908107ba57bb950a53dc5',1,'sipai::Common']]],
+  ['getshader_20',['getShader',['../classsipai_1_1VulkanController.html#ad6df7454ed704dd900744df67c7e78fd',1,'sipai::VulkanController']]],
+  ['getsize_21',['getSize',['../classsipai_1_1TrainingDataFactory.html#a543e4224367fc861d553671de6ed46ee',1,'sipai::TrainingDataFactory']]],
+  ['gettrainingphasestr_22',['getTrainingPhaseStr',['../classsipai_1_1Common.html#a21984857a0955ac1017b1d565bf027ad',1,'sipai::Common']]],
+  ['gettrainingvisitor_23',['getTrainingVisitor',['../classsipai_1_1RunnerVisitorFactory.html#a7287b4c91f22ca980406f398218ce37b',1,'sipai::RunnerVisitorFactory']]],
+  ['getversionheader_24',['getVersionHeader',['../classsipai_1_1Manager.html#aad386f96ac4bae3e934f35978ab54045',1,'sipai::Manager']]],
+  ['getvulkan_25',['getVulkan',['../classsipai_1_1VulkanController.html#a4863122a608e966bef1f696188bbf295',1,'sipai::VulkanController']]]
 ];
