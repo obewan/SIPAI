@@ -119,7 +119,7 @@ void main() {
   uint index_y = gl_GlobalInvocationID.y;
 
   // Output writing (unique thread)
-  if (gl_GlobalInvocationIndex == 0) {   
+  if (index_x == 0 && index_y == 0) {   
     // Mean Squared Error (next)
     float totalLoss = 0.0f;
     for (int y = 0; y < OUTPUT_SIZE_Y; ++y) {

@@ -33,12 +33,22 @@ enum class EBuffer {
   InputData = 4,
   OutputData = 5,
   OutputLoss = 6,
-  Vertex = 7,
+  SharedOutputValues = 7,
+  SharedOutputLoss = 8,
+  Vertex = 9,
 };
 
 enum class EShader {
-  TrainingShader,
-  EnhancerShader,
+  TrainingInit,
+  TrainingForward1,
+  TrainingForward2,
+  TrainingForward3,
+  TrainingForward4,
+  TrainingBackward1,
+  TrainingBackward2,
+  TrainingBackward3,
+  TrainingBackward4,
+  Enhancer,
   VertexShader,
   FragmentShader
 };
@@ -51,6 +61,8 @@ const std::map<EBuffer, std::string, std::less<>> buffer_map{
     {EBuffer::InputData, "InputData"},
     {EBuffer::OutputData, "OutputData"},
     {EBuffer::OutputLoss, "OutputLoss"},
+    {EBuffer::SharedOutputValues, "SharedOutputValues"},
+    {EBuffer::SharedOutputLoss, "SharedOutputLoss"},
     {EBuffer::Vertex, "Vertex"}};
 
 struct Vertex {
@@ -170,12 +182,10 @@ struct Vulkan {
   VkSwapchainKHR swapChain = VK_NULL_HANDLE;
   VkFormat swapChainImageFormat;
   VkExtent2D swapChainExtent;
-  VkComputePipelineCreateInfo infoComputeTraining = {};
-  VkComputePipelineCreateInfo infoComputeEnhancer = {};
-  VkGraphicsPipelineCreateInfo infoGraphics = {};
-  VkPipeline pipelineGraphic = VK_NULL_HANDLE;
-  VkPipeline pipelineComputeTraining = VK_NULL_HANDLE;
-  VkPipeline pipelineComputeEnhancer = VK_NULL_HANDLE;
+  std::list<VkComputePipelineCreateInfo> computePipelineInfos;
+  VkGraphicsPipelineCreateInfo graphicPipelineInfo = {};
+  VkPipeline graphicPipeline = VK_NULL_HANDLE;
+  std::vector<VkPipeline> computePipelines;
   std::vector<Vertex> vertices;
   std::vector<Buffer> buffers;
   std::vector<Shader> shaders;
@@ -188,6 +198,8 @@ struct Vulkan {
   unsigned int window_width = 800;
   unsigned int window_height = 600;
   bool isInitialized = false;
+  size_t maxSizeX = 0;
+  size_t maxSizeY = 0;
 };
 
 } // namespace sipai
