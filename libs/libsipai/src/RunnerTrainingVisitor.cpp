@@ -30,7 +30,7 @@ bool RunnerTrainingVisitor::shouldContinueTraining(
   bool improvementCondition =
       epochsWithoutImprovement < appParams.max_epochs_without_improvement;
   bool epochCondition =
-      (appParams.max_epochs == NO_MAX_EPOCHS) || (epoch < appParams.max_epochs);
+      (appParams.max_epochs == NO_MAX_EPOCHS) || (epoch < (int)appParams.max_epochs);
 
   return improvementCondition && epochCondition;
 }

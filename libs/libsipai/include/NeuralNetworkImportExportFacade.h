@@ -36,9 +36,13 @@ public:
    *
    * @param network
    * @param appParams
+   * @param progressCallback
+   * @param progressInitialValue
    */
   void importWeights(std::unique_ptr<NeuralNetwork> &network,
-                     const AppParams &appParams);
+                     const AppParams &appParams,
+                     std::function<void(int)> progressCallback = {},
+                     int progressInitialValue = 0);
 
   /**
    * @brief Export a network model files (JSON meta data and CSV neurons data)

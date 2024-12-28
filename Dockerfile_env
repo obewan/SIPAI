@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     g++-12 lcov gawk doxygen git \
     libtbb12 libtbb-dev libtbbmalloc2 \
     libvulkan1 libvulkan-dev vulkan-tools glslang-tools spirv-tools \
-    libopencv-dev libglew-dev \
+    libopencv-dev libglew-dev qt6-base-dev libqt6svg6 qt6-svg-dev\
     cmake \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 

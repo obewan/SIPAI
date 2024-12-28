@@ -28,6 +28,11 @@ TEST_CASE("Testing Common") {
     CHECK(test2[2] < 5);
   }
 
+  SUBCASE("Test countLines") {
+    CHECK_THROWS(Common::countLines("bad filename"));
+    CHECK(Common::countLines("images-test1.csv") == 10);
+  }
+
   SUBCASE("Test clamps") {
     // Test cv::Vec4f clamp
     cv::Vec4f vec4{0.4f, -2.2f, 2.3f, 0.5f};

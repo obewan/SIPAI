@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 
 set(PROJECT_NAME sipai-cmd)
 
@@ -9,7 +9,7 @@ file(GLOB SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 set(LIBS_DIR ../libs)
 set(LIBSIPAI ${LIBS_DIR}/libsipai)
 
-include_directories(${LIBSIPAI}/include)
+include_directories(${LIBSIPAI}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(${PROJECT_NAME} ${SOURCE})
 

@@ -10,6 +10,7 @@
 #pragma once
 #include <chrono>
 #include <ctime>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <mutex>
@@ -24,6 +25,8 @@ enum class LogLevel { INFO, WARN, ERROR, DEBUG };
  */
 class SimpleLogger {
 public:
+  using LogCallback = std::function<void(
+      const std::string &, const std::string &, const std::string &)>;
   /**
    * @brief Get the Instance object
    * @remark This use a thread safe Meyers’ Singleton
@@ -35,6 +38,13 @@ public:
   }
   SimpleLogger(SimpleLogger const &) = delete;
   void operator=(SimpleLogger const &) = delete;
+
+  /**
+   * @brief Set the Log Callback
+   *
+   * @param callback
+   */
+  void setLogCallback(LogCallback callback) { logCallback = callback; }
 
   /**
    * @brief Logs messages with a timestamp and log level.
@@ -51,13 +61,22 @@ public:
   const SimpleLogger &log(LogLevel level, bool endl, Args &&...args) const {
     std::scoped_lock<std::mutex> lock(threadMutex_);
     currentLevel = level;
+
+    std::ostringstream streamArgs;
+    (streamArgs << ... << args);
+
     std::ostream *stream = (level == LogLevel::INFO) ? osout : oserr;
-    *stream << get_timestamp() << "[" << toString(level) << "] ";
+    *stream << "[" << get_timestamp() << "] [" << toString(level) << "] ";
     stream->precision(current_precision);
     *stream << std::fixed;
-    (*stream << ... << args);
+    *stream << streamArgs.str();
     if (endl) {
       *stream << std::endl;
+    }
+
+    // Call the log callback if set
+    if (logCallback) {
+      logCallback(get_timestamp(), toString(level), streamArgs.str());
     }
     return *this;
   }
@@ -281,6 +300,7 @@ private:
   mutable std::ostream *osout;
   mutable std::ostream *oserr;
   mutable LogLevel currentLevel = LogLevel::INFO;
+  LogCallback logCallback = {};
 
   std::string get_timestamp() const {
     auto now = std::chrono::system_clock::now();
@@ -293,7 +313,9 @@ private:
 #else
     localtime_r(&now_c, &now_tm);
 #endif
-    sst << "[" << std::put_time(&now_tm, "%F %T") << "] ";
+
+    sst << std::put_time(&now_tm, "%F %T");
+
     return sst.str();
   }
 

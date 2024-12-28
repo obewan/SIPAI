@@ -1,9 +1,10 @@
 
+#include "SIPAI.h"
 #include "SimpleLogger.h"
-#include "include/SIPAI.h"
 #include <cstdlib>
 #include <exception>
 #include <memory>
+
 
 /**
  * @brief main function
