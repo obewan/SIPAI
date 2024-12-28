@@ -14,6 +14,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <vulkan/vulkan_core.h>
+#include <unordered_map>
 
 #if defined(_MSC_VER)
 using uint = unsigned int;
@@ -186,7 +187,7 @@ struct Vulkan {
   std::list<VkComputePipelineCreateInfo> computePipelineInfos;
   VkGraphicsPipelineCreateInfo graphicPipelineInfo = {};
   VkPipeline graphicPipeline = VK_NULL_HANDLE;
-  std::vector<VkPipeline> computePipelines;
+  std::unordered_map<EShader, VkPipeline> computePipelines;
   std::vector<Vertex> vertices;
   std::vector<Buffer> buffers;
   std::vector<Shader> shaders;

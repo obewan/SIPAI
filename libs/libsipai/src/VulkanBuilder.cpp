@@ -300,29 +300,29 @@ bool VulkanBuilder::_checkDeviceProperties()
   VkPhysicalDeviceProperties deviceProperties;
   vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
 
-  // Checking maxComputeWorkGroupInvocations  
+  // Checking maxComputeWorkGroupInvocations
   uint32_t maxComputeWorkGroupCount0 = deviceProperties.limits.maxComputeWorkGroupCount[0];
   uint32_t maxComputeWorkGroupCount1 = deviceProperties.limits.maxComputeWorkGroupCount[1];
   uint32_t maxComputeWorkGroupCount2 = deviceProperties.limits.maxComputeWorkGroupCount[2];
 
-  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);  
+  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on X: ", maxComputeWorkGroupCount0);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Y: ", maxComputeWorkGroupCount1);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Z: ", maxComputeWorkGroupCount2);
-  
+
   bool failure = false;
   if (vulkan_->maxSizeX > maxComputeWorkGroupCount0)
   {
     SimpleLogger::LOG_ERROR(
         "Neural network size X is greater than the device maxComputeWorkGroupCount on X (",
-        vulkan_->maxSizeX , " > ", maxComputeWorkGroupCount0, "): FAILURE.");
+        vulkan_->maxSizeX, " > ", maxComputeWorkGroupCount0, "): FAILURE.");
     failure = true;
   }
   if (vulkan_->maxSizeY > maxComputeWorkGroupCount1)
   {
     SimpleLogger::LOG_ERROR(
         "Neural network size Y is greater than the device maxComputeWorkGroupCount on Y (",
-        vulkan_->maxSizeY , " > ", maxComputeWorkGroupCount1, "): FAILURE.");
+        vulkan_->maxSizeY, " > ", maxComputeWorkGroupCount1, "): FAILURE.");
     failure = true;
   }
   return !failure;
@@ -880,19 +880,36 @@ void VulkanBuilder::_createShaderPipelines()
       shaderGraphicsStages.push_back(fragShaderStageInfo);
     }
     break;
-    // others are compute shaders
+    // others are compute shaders, setting the compute pipeline...
     default:
     {
-      computeShaderStages.push_back({.sType =
-                                        VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-                                    .stage = VK_SHADER_STAGE_COMPUTE_BIT,
-                                    .module = shader.module,
-                                    .pName = "main"});
+      VkPipelineShaderStageCreateInfo computeShaderStage = {};
+      computeShaderStage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+      computeShaderStage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+      computeShaderStage.module = shader.module;
+      computeShaderStage.pName = "main";
+      computeShaderStages.push_back(computeShaderStage);
+
+      VkComputePipelineCreateInfo computePipelineInfo = {};
+      computePipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+      computePipelineInfo.stage = computeShaderStage;
+      computePipelineInfo.layout = vulkan_->pipelineLayout;
+      computePipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+      computePipelineInfo.basePipelineIndex = 0;
+      VkPipeline pipeline;
+      if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
+                                   &computePipelineInfo, nullptr,
+                                   &pipeline) != VK_SUCCESS)
+      {
+        throw VulkanBuilderException("Failed to create compute pipeline");
+      }
+      vulkan_->computePipelines[shader.shadername] = pipeline;
     }
     break;
     }
   }
 
+  // Setting the graphic pipeline...
   // get vertex infos
   VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
   vertexInputInfo.sType =
@@ -986,25 +1003,6 @@ void VulkanBuilder::_createShaderPipelines()
                                 &vulkan_->graphicPipeline) != VK_SUCCESS)
   {
     throw VulkanBuilderException("Failed to create graphics pipeline");
-  }
-
-  // create compute pipelines
-  for(auto& computeShaderStage : computeShaderStages)
-  {
-    VkComputePipelineCreateInfo computePipelineInfo = {};
-    computePipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    computePipelineInfo.stage = computeShaderStage;
-    computePipelineInfo.layout = vulkan_->pipelineLayout;
-    computePipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-    computePipelineInfo.basePipelineIndex = 0;
-    VkPipeline pipeline;
-    if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
-                                &computePipelineInfo, nullptr,
-                                &pipeline) != VK_SUCCESS)
-    {
-      throw VulkanBuilderException("Failed to create compute pipeline");
-    }
-    vulkan_->computePipelines.push_back(pipeline);
   }
 }
 
@@ -1357,7 +1355,7 @@ VulkanBuilder &VulkanBuilder::clear()
     vulkan_->graphicPipeline = VK_NULL_HANDLE;
   }
 
-  for(auto& pipeline: vulkan_->computePipelines)
+  for (auto &[shader, pipeline] : vulkan_->computePipelines)
   {
     if (pipeline != VK_NULL_HANDLE)
     {
@@ -1365,6 +1363,7 @@ VulkanBuilder &VulkanBuilder::clear()
       pipeline = VK_NULL_HANDLE;
     }
   }
+  vulkan_->computePipelines.clear();
 
   for (auto framebuffer : vulkan_->swapChainFramebuffers)
   {
