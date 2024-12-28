@@ -300,35 +300,32 @@ bool VulkanBuilder::_checkDeviceProperties()
   VkPhysicalDeviceProperties deviceProperties;
   vkGetPhysicalDeviceProperties(vulkan_->physicalDevice, &deviceProperties);
 
-  // Checking maxComputeWorkGroupInvocations
-  uint32_t maxComputeWorkGroupInvocations =
-      deviceProperties.limits.maxComputeWorkGroupInvocations;
+  // Checking maxComputeWorkGroupInvocations  
   uint32_t maxComputeWorkGroupCount0 = deviceProperties.limits.maxComputeWorkGroupCount[0];
   uint32_t maxComputeWorkGroupCount1 = deviceProperties.limits.maxComputeWorkGroupCount[1];
   uint32_t maxComputeWorkGroupCount2 = deviceProperties.limits.maxComputeWorkGroupCount[2];
- 
-  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);
-  SimpleLogger::LOG_INFO("Device maxComputeWorkGroupInvocations: ", maxComputeWorkGroupInvocations);
+
+  SimpleLogger::LOG_INFO("Device selected: ", deviceProperties.deviceName);  
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on X: ", maxComputeWorkGroupCount0);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Y: ", maxComputeWorkGroupCount1);
   SimpleLogger::LOG_INFO("Device maxComputeWorkGroupCount on Z: ", maxComputeWorkGroupCount2);
-
- size_t maxSizeX =
-      std::max({network_param.input_size_x, network_param.hidden_size_x,
-                network_param.output_size_x});
-  size_t maxSizeY =
-      std::max({network_param.input_size_y, network_param.hidden_size_y,
-                network_param.output_size_y});
-  if (maxSizeX * maxSizeY > maxComputeWorkGroupInvocations)
+  
+  bool failure = false;
+  if (vulkan_->maxSizeX > maxComputeWorkGroupCount0)
   {
     SimpleLogger::LOG_ERROR(
-        "Device maxComputeWorkGroupInvocations limit (",
-        maxComputeWorkGroupInvocations,
-        ") is lesser than the neural network invocations requirement: ", maxSizeX * maxSizeY, " (",
-        maxSizeX, "*", maxSizeY, "): FAILURE.");
-    return false;
+        "Neural network size X is greater than the device maxComputeWorkGroupCount on X (",
+        vulkan_->maxSizeX , " > ", maxComputeWorkGroupCount0, "): FAILURE.");
+    failure = true;
   }
-  return true;
+  if (vulkan_->maxSizeY > maxComputeWorkGroupCount1)
+  {
+    SimpleLogger::LOG_ERROR(
+        "Neural network size Y is greater than the device maxComputeWorkGroupCount on Y (",
+        vulkan_->maxSizeY , " > ", maxComputeWorkGroupCount1, "): FAILURE.");
+    failure = true;
+  }
+  return !failure;
 }
 
 std::optional<VkPhysicalDevice> VulkanBuilder::_pickPhysicalDevice()
@@ -608,11 +605,16 @@ void VulkanBuilder::_createBuffers()
       size += sizeof(uint);                // is_validation
       break;
     case EBuffer::OutputData:
+    case EBuffer::SharedOutputValues:
       size = sizeof(cv::Vec4f) * network_param.output_size_x *
-             network_param.output_size_y; // outputValues
+             network_param.output_size_y; // values
       break;
     case EBuffer::OutputLoss:
       size = sizeof(float); // loss
+      break;
+    case EBuffer::SharedOutputLoss:
+      size = sizeof(float) * network_param.output_size_x *
+             network_param.output_size_y; // values
       break;
     case EBuffer::InputLayer:
       size = sizeof(float) + (3 * sizeof(uint)); // attributes
@@ -849,14 +851,13 @@ void VulkanBuilder::_createShaderPipelines()
     throw VulkanBuilderException("Null Vulkan pointer.");
   }
   std::vector<VkPipelineShaderStageCreateInfo> shaderGraphicsStages;
-  VkPipelineShaderStageCreateInfo computeShaderTrainingInfo = {};
-  VkPipelineShaderStageCreateInfo computeShaderEnhancerInfo = {};
+  std::list<VkPipelineShaderStageCreateInfo> computeShaderStages;
   for (auto &shader : vulkan_->shaders)
   {
     switch (shader.shadername)
     {
     // vertex shader
-    case (EShader::VertexShader):
+    case EShader::VertexShader:
     {
       VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
       vertShaderStageInfo.sType =
@@ -868,7 +869,7 @@ void VulkanBuilder::_createShaderPipelines()
     }
     break;
     // fragment shader
-    case (EShader::FragmentShader):
+    case EShader::FragmentShader:
     {
       VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
       fragShaderStageInfo.sType =
@@ -879,27 +880,16 @@ void VulkanBuilder::_createShaderPipelines()
       shaderGraphicsStages.push_back(fragShaderStageInfo);
     }
     break;
-    // compute shader
-    case (EShader::EnhancerShader):
-    {
-      computeShaderEnhancerInfo.sType =
-          VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-      computeShaderEnhancerInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-      computeShaderEnhancerInfo.module = shader.module;
-      computeShaderEnhancerInfo.pName = "main";
-    }
-    break;
-    case (EShader::TrainingShader):
-    {
-      computeShaderTrainingInfo.sType =
-          VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-      computeShaderTrainingInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-      computeShaderTrainingInfo.module = shader.module;
-      computeShaderTrainingInfo.pName = "main";
-    }
-    break;
+    // others are compute shaders
     default:
-      break;
+    {
+      computeShaderStages.push_back({.sType =
+                                        VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                                    .stage = VK_SHADER_STAGE_COMPUTE_BIT,
+                                    .module = shader.module,
+                                    .pName = "main"});
+    }
+    break;
     }
   }
 
@@ -977,56 +967,45 @@ void VulkanBuilder::_createShaderPipelines()
   colorBlending.blendConstants[3] = 0.0f;
 
   // create graphic pipelines
-  vulkan_->infoGraphics.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-  vulkan_->infoGraphics.stageCount = (uint32_t)shaderGraphicsStages.size();
-  vulkan_->infoGraphics.pStages = shaderGraphicsStages.data();
-  vulkan_->infoGraphics.pVertexInputState = &vertexInputInfo;
-  vulkan_->infoGraphics.pInputAssemblyState = &inputAssembly;
-  vulkan_->infoGraphics.pViewportState = &viewportState;
-  vulkan_->infoGraphics.pRasterizationState = &rasterizer;
-  vulkan_->infoGraphics.pMultisampleState = &multisampling;
-  vulkan_->infoGraphics.pColorBlendState = &colorBlending;
-  vulkan_->infoGraphics.layout = vulkan_->pipelineLayout;
-  vulkan_->infoGraphics.basePipelineHandle = VK_NULL_HANDLE;
-  vulkan_->infoGraphics.basePipelineIndex = 0;
-  vulkan_->infoGraphics.renderPass = vulkan_->renderPass;
-  vulkan_->infoGraphics.subpass = 0;
+  vulkan_->graphicPipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+  vulkan_->graphicPipelineInfo.stageCount = (uint32_t)shaderGraphicsStages.size();
+  vulkan_->graphicPipelineInfo.pStages = shaderGraphicsStages.data();
+  vulkan_->graphicPipelineInfo.pVertexInputState = &vertexInputInfo;
+  vulkan_->graphicPipelineInfo.pInputAssemblyState = &inputAssembly;
+  vulkan_->graphicPipelineInfo.pViewportState = &viewportState;
+  vulkan_->graphicPipelineInfo.pRasterizationState = &rasterizer;
+  vulkan_->graphicPipelineInfo.pMultisampleState = &multisampling;
+  vulkan_->graphicPipelineInfo.pColorBlendState = &colorBlending;
+  vulkan_->graphicPipelineInfo.layout = vulkan_->pipelineLayout;
+  vulkan_->graphicPipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+  vulkan_->graphicPipelineInfo.basePipelineIndex = 0;
+  vulkan_->graphicPipelineInfo.renderPass = vulkan_->renderPass;
+  vulkan_->graphicPipelineInfo.subpass = 0;
   if (vkCreateGraphicsPipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
-                                &vulkan_->infoGraphics, nullptr,
-                                &vulkan_->pipelineGraphic) != VK_SUCCESS)
+                                &vulkan_->graphicPipelineInfo, nullptr,
+                                &vulkan_->graphicPipeline) != VK_SUCCESS)
   {
     throw VulkanBuilderException("Failed to create graphics pipeline");
   }
 
   // create compute pipelines
-  // Training Shader
-  vulkan_->infoComputeTraining.sType =
-      VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  vulkan_->infoComputeTraining.stage = computeShaderTrainingInfo;
-  vulkan_->infoComputeTraining.layout = vulkan_->pipelineLayout;
-  vulkan_->infoComputeTraining.basePipelineHandle = VK_NULL_HANDLE;
-  vulkan_->infoComputeTraining.basePipelineIndex = 0;
-  if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
-                               &vulkan_->infoComputeTraining, nullptr,
-                               &vulkan_->pipelineComputeTraining) !=
-      VK_SUCCESS)
+  for(auto& computeShaderStage : computeShaderStages)
   {
-    throw VulkanBuilderException("Failed to create compute Training pipeline");
-  };
-  // Enhancer Shader
-  vulkan_->infoComputeEnhancer.sType =
-      VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  vulkan_->infoComputeEnhancer.stage = computeShaderEnhancerInfo;
-  vulkan_->infoComputeEnhancer.layout = vulkan_->pipelineLayout;
-  vulkan_->infoComputeEnhancer.basePipelineHandle = VK_NULL_HANDLE;
-  vulkan_->infoComputeEnhancer.basePipelineIndex = 0;
-  if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
-                               &vulkan_->infoComputeEnhancer, nullptr,
-                               &vulkan_->pipelineComputeEnhancer) !=
-      VK_SUCCESS)
-  {
-    throw VulkanBuilderException("Failed to create compute Enhancer pipeline");
-  };
+    VkComputePipelineCreateInfo computePipelineInfo = {};
+    computePipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+    computePipelineInfo.stage = computeShaderStage;
+    computePipelineInfo.layout = vulkan_->pipelineLayout;
+    computePipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+    computePipelineInfo.basePipelineIndex = 0;
+    VkPipeline pipeline;
+    if (vkCreateComputePipelines(vulkan_->logicalDevice, VK_NULL_HANDLE, 1,
+                                &computePipelineInfo, nullptr,
+                                &pipeline) != VK_SUCCESS)
+    {
+      throw VulkanBuilderException("Failed to create compute pipeline");
+    }
+    vulkan_->computePipelines.push_back(pipeline);
+  }
 }
 
 void VulkanBuilder::_createCommandPool()
@@ -1371,25 +1350,20 @@ VulkanBuilder &VulkanBuilder::clear()
   }
   vulkan_->shaders.clear();
 
-  if (vulkan_->pipelineGraphic != VK_NULL_HANDLE)
+  if (vulkan_->graphicPipeline != VK_NULL_HANDLE)
   {
-    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineGraphic,
+    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->graphicPipeline,
                       nullptr);
-    vulkan_->pipelineGraphic = VK_NULL_HANDLE;
+    vulkan_->graphicPipeline = VK_NULL_HANDLE;
   }
 
-  if (vulkan_->pipelineComputeTraining != VK_NULL_HANDLE)
+  for(auto& pipeline: vulkan_->computePipelines)
   {
-    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineComputeTraining,
-                      nullptr);
-    vulkan_->pipelineComputeTraining = VK_NULL_HANDLE;
-  }
-
-  if (vulkan_->pipelineComputeEnhancer != VK_NULL_HANDLE)
-  {
-    vkDestroyPipeline(vulkan_->logicalDevice, vulkan_->pipelineComputeEnhancer,
-                      nullptr);
-    vulkan_->pipelineComputeEnhancer = VK_NULL_HANDLE;
+    if (pipeline != VK_NULL_HANDLE)
+    {
+      vkDestroyPipeline(vulkan_->logicalDevice, pipeline, nullptr);
+      pipeline = VK_NULL_HANDLE;
+    }
   }
 
   for (auto framebuffer : vulkan_->swapChainFramebuffers)

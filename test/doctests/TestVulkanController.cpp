@@ -9,31 +9,34 @@
 using namespace sipai;
 
 // Skip this test on Github, no vulkan device there.
-TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
+TEST_CASE("Testing VulkanController" * doctest::skip(true))
+{
 
-  SUBCASE("Test template build") {
+  SUBCASE("Test template build")
+  {
     const auto &manager = Manager::getConstInstance();
     VulkanHelper helper;
     std::string relativePath = "../../";
-    CHECK(std::filesystem::exists(relativePath +
-                                  manager.app_params.shaderTrainingTemplate));
-    if (std::filesystem::exists(relativePath +
-                                manager.app_params.shaderTraining)) {
-      std::filesystem::remove(relativePath + manager.app_params.shaderTraining);
+    std::string templateTest = relativePath +
+                               manager.app_params.shaders.front().templateFilename;
+    std::string fileTest = relativePath + manager.app_params.shaders.front().filename;
+    CHECK(std::filesystem::exists(templateTest));
+    if (std::filesystem::exists(fileTest))
+    {
+      std::filesystem::remove(fileTest);
     }
-    CHECK(helper.replaceTemplateParameters(
-        relativePath + manager.app_params.shaderTrainingTemplate,
-        relativePath + manager.app_params.shaderTraining));
-    CHECK(std::filesystem::exists(relativePath +
-                                  manager.app_params.shaderTraining));
-    std::ifstream inFile(relativePath + manager.app_params.shaderTraining);
+    CHECK(helper.replaceTemplateParameters(templateTest, fileTest));
+    CHECK(std::filesystem::exists(fileTest));
+    std::ifstream inFile(fileTest);
     std::string line;
-    while (std::getline(inFile, line)) {
+    while (std::getline(inFile, line))
+    {
       CHECK(line.find("%%") == std::string::npos);
     }
   }
 
-  SUBCASE("Test getBuffer") {
+  SUBCASE("Test getBuffer")
+  {
     auto &controller = VulkanController::getInstance();
     auto vulkan = controller.getVulkan();
     vulkan->buffers.push_back(Buffer{.name = EBuffer::InputData, .binding = 1});
@@ -57,7 +60,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
                     VulkanControllerException);
   }
 
-  SUBCASE("Test Vulkan basic") {
+  SUBCASE("Test Vulkan basic")
+  {
     auto &manager = Manager::getInstance();
     manager.network.reset();
     auto &ap = manager.app_params;
@@ -130,8 +134,10 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     builder.clear();
   }
 
-  SUBCASE("Test Vulkan basic with shader") {
-    struct OutputLoss {
+  SUBCASE("Test Vulkan basic with shader")
+  {
+    struct OutputLoss
+    {
       float loss;
     };
 
@@ -274,7 +280,7 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
 
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[0].dstSet =
-        vulkan->descriptorSet; // Assume descriptorSet is already created
+        vulkan->descriptorSet;          // Assume descriptorSet is already created
     descriptorWrites[0].dstBinding = 0; // Matches 'binding = 0' in shader
     descriptorWrites[0].dstArrayElement = 0;
     descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -402,8 +408,10 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     builder.clear();
   }
 
-  SUBCASE("Test Vulkan basic with shader 2") {
-    struct OutputLoss {
+  SUBCASE("Test Vulkan basic with shader 2")
+  {
+    struct OutputLoss
+    {
       float loss;
     };
 
@@ -503,7 +511,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
 
     // Create descriptor set layout
     std::vector<VkDescriptorSetLayoutBinding> descriptorLayouts;
-    for (size_t i = 0; i < 2; i++) {
+    for (size_t i = 0; i < 2; i++)
+    {
       VkDescriptorSetLayoutBinding layoutBinding;
       layoutBinding.binding = (i == 0 ? 0 : 6); // buffer binding
       layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -531,7 +540,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
 
     // Update descriptor sets (bind buffers)
     std::vector<VkDescriptorBufferInfo> descriptorBufferInfos;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++)
+    {
       VkDescriptorBufferInfo descriptor{
           .buffer = (i == 0 ? paramsBuffer : outputLossBuffer),
           .offset = 0,
@@ -539,7 +549,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
       descriptorBufferInfos.push_back(descriptor);
     }
     std::vector<VkWriteDescriptorSet> descriptorWrites;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++)
+    {
       VkWriteDescriptorSet writeDescriptorSet{
           .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
           .dstSet = vulkan->descriptorSet,
@@ -663,7 +674,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true)) {
     builder.clear();
   }
 
-  SUBCASE("Test various") {
+  SUBCASE("Test various")
+  {
     CHECK(sizeof(GLSLNeuron) ==
           (2 * sizeof(uint) + MAX_NEIGHBORS * sizeof(GLSLNeighbor) +
            sizeof(std::vector<std::vector<cv::Vec4f>>)));

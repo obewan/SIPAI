@@ -5,13 +5,10 @@
 //#extension GL_EXT_debug_printf : enable
 
 /**
- * *TEMPLATE* GLSL enhancer compute shader for Vulkan, by Dams
+ * *TEMPLATE* GLSL training compute shader for Vulkan, by Dams
  * Damien Balima (c) CC-BY-NC-SA-4.0 2024
  * Do not edit
  */
-
-// One workgroup, neurons local threads per workgroup
-layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
 
 const int OUTPUT_SIZE_X = %%OUTPUT_SIZE_X%%;
 const int OUTPUT_SIZE_Y = %%OUTPUT_SIZE_Y%%;
@@ -105,39 +102,17 @@ layout(std430, binding = 6) buffer writeonly OutputLoss {
 }
 lossBuffer;
 
-// Functions
-vec4 derivativeFunction(vec4 value, uint activation_function,
-                        float activation_alpha) {
-  bvec4 mask;
-  switch (activation_function) {
-  case ELU:
-    mask = greaterThanEqual(value, vec4(0.0));
-    value = mix(vec4(1.0), activation_alpha * exp(value), mask);
-    break;
-  case LReLU:
-    value = clamp(value, 0.01, 1.0);
-    break;
-  case PReLU:
-    mask = greaterThanEqual(value, vec4(0.0));
-    value = mix(vec4(1.0), vec4(activation_alpha), mask);
-    break;
-  case ReLU:
-    mask = greaterThanEqual(value, vec4(0.0));
-    value = mix(vec4(1.0), vec4(0.0), mask);
-    break;
-  case Sigmoid:
-    value *= (1 - value);
-    break;
-  case Tanh: // shifted tanh [-1,1] to [0,1]
-    value = (tanh(value) / 2.0) + 0.5;
-    value = 1 - value * value;
-    break;
-  default:
-    break;
-  }
-  return value;
+layout(std430, binding = 7) buffer SharedOutputValues { 
+  vec4 values[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
 }
+sharedOutputValues;
 
+layout(std430, binding = 8) buffer SharedOutputLoss { 
+  float values[OUTPUT_SIZE_Y][OUTPUT_SIZE_X];
+}
+sharedOutputLoss;
+
+// Functions
 vec4 activateFunction(vec4 value, uint activation_function,
                       float activation_alpha) {
   bvec4 mask;
@@ -170,28 +145,11 @@ vec4 activateFunction(vec4 value, uint activation_function,
   return value;
 }
 
-void forwardHiddenLayer1(uint index_x, uint index_y) {
-  if (index_y >= HIDDEN_SIZE_Y || index_x >= HIDDEN_SIZE_X) {
-    return;
-  }
-  // forward hidden layer using previous input layer 
-  vec4 result = vec4(0.0);
-  for (uint y = 0; y < INPUT_SIZE_Y; y++) {
-    for (uint x = 0; x < INPUT_SIZE_X; x++) {
-      result += inputDataBuffer.inputValues[y][x] *
-                hiddenLayer1Buffer.neurons[index_y][index_x].weights[y][x];
-    }
-  }
-  hiddenLayer1Buffer.values[index_y][index_x] = activateFunction(
-      result, hiddenLayer1Buffer.activation_function, hiddenLayer1Buffer.activation_alpha);
-  //debugPrintfEXT("[DEBUG][FORWARDHIDDENLAYER1] hiddenLayer1Buffer.values[%i][%i] = %v4f", index_y, index_x, hiddenLayer1Buffer.values[index_y][index_x]);
-}
-
 void forwardOutputLayer(uint index_x, uint index_y) {
   if (index_y >= OUTPUT_SIZE_Y || index_x >= OUTPUT_SIZE_X) {
     return;
   }
-  // forward output layer using previous hidden layer
+  // forward output layer using previous hidden layer 
   vec4 result = vec4(0.0);
   for (uint y = 0; y < HIDDEN_SIZE_Y; y++) {
     for (uint x = 0; x < HIDDEN_SIZE_X; x++) {
@@ -199,20 +157,18 @@ void forwardOutputLayer(uint index_x, uint index_y) {
                 outputLayerBuffer.neurons[index_y][index_x].weights[y][x];
     }
   }
-  outputDataBuffer.outputValues[index_y][index_x] = activateFunction(
+  sharedOutputValues.values[index_y][index_x] = activateFunction(
       result, outputLayerBuffer.activation_function, outputLayerBuffer.activation_alpha);
-  //debugPrintfEXT("[DEBUG][FORWARDOUTPUTLAYER] outputDataBuffer.outputValues[%i][%i] = %v4f", index_y, index_x, outputDataBuffer.outputValues[index_y][index_x]);
+  //debugPrintfEXT("[DEBUG][FORWARDOUTPUTLAYER] sharedOutputValues.values[%i][%i] = %v4f", index_y, index_x, sharedOutputValues.values[index_y][index_x]);
 }
 
-
 void main() {
-  // Get the index of the neuron (one local thread per neuron)
-  uint index_x = gl_LocalInvocationID.x;
-  uint index_y = gl_LocalInvocationID.y;
+  // Get the index of the neuron (one global thread per neuron)
+  uint index_x = gl_GlobalInvocationID.x;
+  uint index_y = gl_GlobalInvocationID.y;
 
-  // Forward Propagation
-  forwardHiddenLayer1(index_x, index_y);
-  barrier();
+  // Forward Propagation (part 2)
   forwardOutputLayer(index_x, index_y);
-  barrier();
+
+  // Then global threads synchro before next step
 }
