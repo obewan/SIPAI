@@ -34,7 +34,8 @@ struct AppParams {
   std::string network_to_import = "";
   std::string network_to_export = "";
   std::list<ShaderDefinition> shaders {
-    { EShader::Enhancer, "data/glsl/EnhancerShader.comp", "data/glsl/EnhancerShader.comp.in" },
+    { EShader::EnhancerForward1, "data/glsl/EnhancerShader-forward1.comp", "data/glsl/EnhancerShader-forward1.comp.in" },
+    { EShader::EnhancerForward2, "data/glsl/EnhancerShader-forward2.comp", "data/glsl/EnhancerShader-forward2.comp.in" },
     { EShader::TrainingInit, "data/glsl/TrainingShader-init.comp", "data/glsl/TrainingShader-init.comp.in" },
     { EShader::TrainingForward1, "data/glsl/TrainingShader-forward1.comp", "data/glsl/TrainingShader-forward1.comp.in" },
     { EShader::TrainingForward2, "data/glsl/TrainingShader-forward2.comp", "data/glsl/TrainingShader-forward2.comp.in" },

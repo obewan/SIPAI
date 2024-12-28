@@ -10,9 +10,6 @@
  * Do not edit
  */
 
-// One workgroup, neurons local threads per workgroup
-layout(local_size_x = %%MAX_SIZE_X%%, local_size_y = %%MAX_SIZE_Y%%) in;
-
 const int OUTPUT_SIZE_X = %%OUTPUT_SIZE_X%%;
 const int OUTPUT_SIZE_Y = %%OUTPUT_SIZE_Y%%;
 const int HIDDEN_SIZE_X = %%HIDDEN_SIZE_X%%;
@@ -206,13 +203,12 @@ void forwardOutputLayer(uint index_x, uint index_y) {
 
 
 void main() {
-  // Get the index of the neuron (one local thread per neuron)
-  uint index_x = gl_LocalInvocationID.x;
-  uint index_y = gl_LocalInvocationID.y;
+  // Get the index of the neuron (one global thread per neuron)
+  uint index_x = gl_GlobalInvocationID.x;
+  uint index_y = gl_GlobalInvocationID.y;
 
-  // Forward Propagation
-  forwardHiddenLayer1(index_x, index_y);
-  barrier();
+  // Forward Propagation (next step)
   forwardOutputLayer(index_x, index_y);
-  barrier();
+   
+  // Then global threads synchro before retrieving output
 }

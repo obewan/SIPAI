@@ -127,7 +127,7 @@ void VulkanController::forwardEnhancer(const cv::Mat &inputValues)
     throw VulkanControllerException("Vulkan controller is not initialized.");
   }
 
-  auto &enhancerShader = getShader(EShader::Enhancer);
+  auto &enhancerShader = getShader(EShader::EnhancerForward1);
 
   _writeParameters();
 
@@ -143,7 +143,7 @@ void VulkanController::forwardEnhancer(const cv::Mat &inputValues)
   _writeInputData(inputValues);
 
   // Compute (draw 3D frame if vulkan debug, can be debug in RenderDoc then)
-  _processShaders(EShader::Enhancer);
+  _processShaders(EShader::EnhancerForward1);
 
   // Get the results into the output layer values
   _readOutputData();
@@ -207,14 +207,39 @@ void VulkanController::_processShaders(const EShader &shader)
     }
     break;
   }
-  case EShader::Enhancer:
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                      vulkan_->computePipelines.at(0));
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                            vulkan_->pipelineLayout, 0, 1,
-                            &vulkan_->descriptorSet, 0, nullptr);
-    vkCmdDispatch(commandBuffer, (int)vulkan_->maxSizeX, (int)vulkan_->maxSizeY, 1);
+  case EShader::EnhancerForward1:
+  {
+    // compute each training steps with a barrier between each
+    int index = 0;
+    for (auto &shader : {EShader::EnhancerForward1, EShader::EnhancerForward2})
+    {
+      vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                        vulkan_->computePipelines.at(index));
+      vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                              vulkan_->pipelineLayout, 0, 1,
+                              &vulkan_->descriptorSet, 0, nullptr);
+      vkCmdDispatch(commandBuffer, (int)vulkan_->maxSizeX, (int)vulkan_->maxSizeY, 1);
+
+      // Insert a pipeline barrier to ensure proper synchronization
+      VkMemoryBarrier memoryBarrier = {};
+      memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+      memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+      memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+      vkCmdPipelineBarrier(commandBuffer,
+                           VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, // Source stage
+                           VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, // Destination stage
+                           0,                                    // Dependency flags
+                           1,                                    // Memory barrier count
+                           &memoryBarrier,                       // Memory barriers
+                           0,                                    // Buffer memory barrier count
+                           nullptr,                              // Buffer memory barriers
+                           0,                                    // Image memory barrier count
+                           nullptr);                             // Image memory barriers
+      index++;
+    }
     break;
+  }
   default:
     throw VulkanControllerException("Non implemented compute shader");
   }

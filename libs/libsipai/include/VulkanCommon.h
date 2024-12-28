@@ -48,7 +48,8 @@ enum class EShader {
   TrainingBackward2,
   TrainingBackward3,
   TrainingBackward4,
-  Enhancer,
+  EnhancerForward1,
+  EnhancerForward2,
   VertexShader,
   FragmentShader
 };
