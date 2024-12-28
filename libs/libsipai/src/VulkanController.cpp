@@ -179,7 +179,7 @@ void VulkanController::_processShaders(const EShader &shader)
         EShader::TrainingBackward1, EShader::TrainingBackward2,
         EShader::TrainingBackward3, EShader::TrainingBackward4};
 
-    for (int index = 0; index < shaderStages.size(); index++)
+    for (size_t index = 0; index < shaderStages.size(); index++)
     {
       vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                         vulkan_->computePipelines.at(index));
@@ -212,7 +212,7 @@ void VulkanController::_processShaders(const EShader &shader)
     // compute each training steps with a barrier between each
     std::vector<EShader> shaderStages = {EShader::EnhancerForward1, EShader::EnhancerForward2};
 
-    for (int index = 0; index < shaderStages.size(); index++)
+    for (size_t index = 0; index < shaderStages.size(); index++)
     {
       vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                         vulkan_->computePipelines.at(index));
