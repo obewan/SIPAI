@@ -173,16 +173,16 @@ void VulkanController::_processShaders(const EShader &shader)
   case EShader::TrainingInit:
   {
     // compute each training steps with a barrier between each
-    std::vector<EShader> shaderStages = {
+    std::list<EShader> shaderStages = {
         EShader::TrainingInit, EShader::TrainingForward1, EShader::TrainingForward2,
         EShader::TrainingForward3, EShader::TrainingForward4,
         EShader::TrainingBackward1, EShader::TrainingBackward2,
         EShader::TrainingBackward3, EShader::TrainingBackward4};
 
-    for (size_t index = 0; index < shaderStages.size(); index++)
+    for (const auto &shaderName : shaderStages)
     {
       vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                        vulkan_->computePipelines.at(index));
+                        getPipelineForShader(shaderName));
       vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                               vulkan_->pipelineLayout, 0, 1,
                               &vulkan_->descriptorSet, 0, nullptr);
@@ -210,12 +210,12 @@ void VulkanController::_processShaders(const EShader &shader)
   case EShader::EnhancerForward1:
   {
     // compute each training steps with a barrier between each
-    std::vector<EShader> shaderStages = {EShader::EnhancerForward1, EShader::EnhancerForward2};
+    std::list<EShader> shaderStages = {EShader::EnhancerForward1, EShader::EnhancerForward2};
 
-    for (size_t index = 0; index < shaderStages.size(); index++)
+    for (const auto &shaderName : shaderStages)
     {
       vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                        vulkan_->computePipelines.at(index));
+                        getPipelineForShader(shaderName));
       vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                               vulkan_->pipelineLayout, 0, 1,
                               &vulkan_->descriptorSet, 0, nullptr);
