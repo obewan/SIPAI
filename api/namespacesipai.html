@@ -173,6 +173,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1Shader.html">Shader</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1ShaderDefinition.html">ShaderDefinition</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html">SimpleLogger</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsipai_1_1SimpleLogger.html" title="SimpleLogger class.">SimpleLogger</a> class.  <a href="classsipai_1_1SimpleLogger.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -254,14 +256,31 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aad22005abe164fc8047303060fae8fd7a">InputData</a> = 4
 , <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b">OutputData</a> = 5
 , <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f">OutputLoss</a> = 6
-, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aab22b929ba52471a02d18bb3a4e4472e6">Vertex</a> = 7
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aa646377497629a9af6ccdcffeaf829ed1">SharedOutputValues</a> = 7
+, <br />
+&#160;&#160;<a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aaad8c66042c5b3e0da0931c8931a0c68b">SharedOutputLoss</a> = 8
+, <a class="el" href="namespacesipai.html#ac80e3de3115cc9e1d7f5f3de89351d4aab22b929ba52471a02d18bb3a4e4472e6">Vertex</a> = 9
 <br />
  }</td></tr>
 <tr class="separator:ac80e3de3115cc9e1d7f5f3de89351d4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">EShader</a> { <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbab579d756e7ba4d3429c09a150c58932e">TrainingShader</a>
-, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba99e2ec69e96556fb46e71f041ac8764b">EnhancerShader</a>
+<tr class="memitem:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fb">EShader</a> { <br />
+&#160;&#160;<a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbabd96aae5a9d0478d073fc19b0ccae53f">TrainingInit</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba95ba29959f1de374f066105ebb422d1b">TrainingForward1</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbae372ec66753706fbda884d88a4df7819">TrainingForward2</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba726a723d89d6ab46d6d1e8ba8371a907">TrainingForward3</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba5f0e7068f4e6ea2c91c53eb4c674c3e0">TrainingForward4</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba6c04a0708e04019a4916915bfd1895ce">TrainingBackward1</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaf34993a50dadf31e3518e5829ef41233">TrainingBackward2</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad3713b25b17bbf3f57ee50a453e6551c">TrainingBackward3</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbadd7e8158d80ef8aa9b2812a304041e99">TrainingBackward4</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaa10869d85a4bd6335db01403d7ef7c3a">EnhancerForward1</a>
+, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad3bf2fceb61791ffcf53b70aeec5f103">EnhancerForward2</a>
 , <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33">VertexShader</a>
-, <a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922">FragmentShader</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922">FragmentShader</a>
+<br />
  }</td></tr>
 <tr class="separator:aeb54a7d7536dd01dfd04177d4320c1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -310,8 +329,10 @@ Variables</h2></td></tr>
 <tr class="separator:a59ab2586c52d0cb588fd3f25766c7c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52d20ea3c7b78d0f33fb012b2192e7c7"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a52d20ea3c7b78d0f33fb012b2192e7c7">eluDerivative</a></td></tr>
 <tr class="separator:a52d20ea3c7b78d0f33fb012b2192e7c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9d8d07c41fed4bf4302acbc5ac98c2e"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a> = -1</td></tr>
+<tr class="memitem:ab9d8d07c41fed4bf4302acbc5ac98c2e"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a> = 0</td></tr>
 <tr class="separator:ab9d8d07c41fed4bf4302acbc5ac98c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acffd518ea60a22c8d45b071b3b01d13e"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#acffd518ea60a22c8d45b071b3b01d13e">NO_IMAGE_SPLIT</a> = 0</td></tr>
+<tr class="separator:acffd518ea60a22c8d45b071b3b01d13e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a>, std::less&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38">mode_map</a></td></tr>
 <tr class="separator:a8c1adef9985b74cdf2ec4d38f18b0a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaae5f7ca99feda8d753952bea7a1884f"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesipai.html#aaae5f7ca99feda8d753952bea7a1884f">valid_extensions</a></td></tr>
@@ -414,6 +435,8 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="ac80e3de3115cc9e1d7f5f3de89351d4aad22005abe164fc8047303060fae8fd7a" name="ac80e3de3115cc9e1d7f5f3de89351d4aad22005abe164fc8047303060fae8fd7a"></a>InputData&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b" name="ac80e3de3115cc9e1d7f5f3de89351d4aa0ea4eaceb793fbed14adde6de87e871b"></a>OutputData&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f" name="ac80e3de3115cc9e1d7f5f3de89351d4aac28759ecaf307c29a37a1c61237e1d0f"></a>OutputLoss&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac80e3de3115cc9e1d7f5f3de89351d4aa646377497629a9af6ccdcffeaf829ed1" name="ac80e3de3115cc9e1d7f5f3de89351d4aa646377497629a9af6ccdcffeaf829ed1"></a>SharedOutputValues&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac80e3de3115cc9e1d7f5f3de89351d4aaad8c66042c5b3e0da0931c8931a0c68b" name="ac80e3de3115cc9e1d7f5f3de89351d4aaad8c66042c5b3e0da0931c8931a0c68b"></a>SharedOutputLoss&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ac80e3de3115cc9e1d7f5f3de89351d4aab22b929ba52471a02d18bb3a4e4472e6" name="ac80e3de3115cc9e1d7f5f3de89351d4aab22b929ba52471a02d18bb3a4e4472e6"></a>Vertex&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
@@ -467,8 +490,17 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbab579d756e7ba4d3429c09a150c58932e" name="aeb54a7d7536dd01dfd04177d4320c1fbab579d756e7ba4d3429c09a150c58932e"></a>TrainingShader&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba99e2ec69e96556fb46e71f041ac8764b" name="aeb54a7d7536dd01dfd04177d4320c1fba99e2ec69e96556fb46e71f041ac8764b"></a>EnhancerShader&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbabd96aae5a9d0478d073fc19b0ccae53f" name="aeb54a7d7536dd01dfd04177d4320c1fbabd96aae5a9d0478d073fc19b0ccae53f"></a>TrainingInit&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba95ba29959f1de374f066105ebb422d1b" name="aeb54a7d7536dd01dfd04177d4320c1fba95ba29959f1de374f066105ebb422d1b"></a>TrainingForward1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbae372ec66753706fbda884d88a4df7819" name="aeb54a7d7536dd01dfd04177d4320c1fbae372ec66753706fbda884d88a4df7819"></a>TrainingForward2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba726a723d89d6ab46d6d1e8ba8371a907" name="aeb54a7d7536dd01dfd04177d4320c1fba726a723d89d6ab46d6d1e8ba8371a907"></a>TrainingForward3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba5f0e7068f4e6ea2c91c53eb4c674c3e0" name="aeb54a7d7536dd01dfd04177d4320c1fba5f0e7068f4e6ea2c91c53eb4c674c3e0"></a>TrainingForward4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba6c04a0708e04019a4916915bfd1895ce" name="aeb54a7d7536dd01dfd04177d4320c1fba6c04a0708e04019a4916915bfd1895ce"></a>TrainingBackward1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbaf34993a50dadf31e3518e5829ef41233" name="aeb54a7d7536dd01dfd04177d4320c1fbaf34993a50dadf31e3518e5829ef41233"></a>TrainingBackward2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbad3713b25b17bbf3f57ee50a453e6551c" name="aeb54a7d7536dd01dfd04177d4320c1fbad3713b25b17bbf3f57ee50a453e6551c"></a>TrainingBackward3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbadd7e8158d80ef8aa9b2812a304041e99" name="aeb54a7d7536dd01dfd04177d4320c1fbadd7e8158d80ef8aa9b2812a304041e99"></a>TrainingBackward4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbaa10869d85a4bd6335db01403d7ef7c3a" name="aeb54a7d7536dd01dfd04177d4320c1fbaa10869d85a4bd6335db01403d7ef7c3a"></a>EnhancerForward1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbad3bf2fceb61791ffcf53b70aeec5f103" name="aeb54a7d7536dd01dfd04177d4320c1fbad3bf2fceb61791ffcf53b70aeec5f103"></a>EnhancerForward2&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33" name="aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33"></a>VertexShader&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922" name="aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922"></a>FragmentShader&#160;</td><td class="fielddoc"></td></tr>
 </table>
@@ -678,6 +710,8 @@ Variables</h2></td></tr>
 <div class="line">    {EBuffer::InputData, <span class="stringliteral">&quot;InputData&quot;</span>},</div>
 <div class="line">    {EBuffer::OutputData, <span class="stringliteral">&quot;OutputData&quot;</span>},</div>
 <div class="line">    {EBuffer::OutputLoss, <span class="stringliteral">&quot;OutputLoss&quot;</span>},</div>
+<div class="line">    {EBuffer::SharedOutputValues, <span class="stringliteral">&quot;SharedOutputValues&quot;</span>},</div>
+<div class="line">    {EBuffer::SharedOutputLoss, <span class="stringliteral">&quot;SharedOutputLoss&quot;</span>},</div>
 <div class="line">    {EBuffer::Vertex, <span class="stringliteral">&quot;Vertex&quot;</span>}}</div>
 </div><!-- fragment -->
 </div>
@@ -875,6 +909,28 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
+<a id="acffd518ea60a22c8d45b071b3b01d13e" name="acffd518ea60a22c8d45b071b3b01d13e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acffd518ea60a22c8d45b071b3b01d13e">&#9670;&nbsp;</a></span>NO_IMAGE_SPLIT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr int sipai::NO_IMAGE_SPLIT = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab9d8d07c41fed4bf4302acbc5ac98c2e" name="ab9d8d07c41fed4bf4302acbc5ac98c2e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab9d8d07c41fed4bf4302acbc5ac98c2e">&#9670;&nbsp;</a></span>NO_MAX_EPOCHS</h2>
 
@@ -885,7 +941,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr int sipai::NO_MAX_EPOCHS = -1</td>
+          <td class="memname">constexpr int sipai::NO_MAX_EPOCHS = 0</td>
         </tr>
       </table>
   </td>
@@ -1069,7 +1125,7 @@ Variables</h2></td></tr>
 <div class="line">  cv::Vec4f sigmoidValue = <a class="code hl_variable" href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sigmoid</a>(rgba);</div>
 <div class="line">  <span class="keywordflow">return</span> sigmoidValue.mul(cv::Vec4f::all(1.0f) - sigmoidValue);</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacesipai_html_a5d64288ca760fc3e1b426c80aa0e7534"><div class="ttname"><a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sipai::sigmoid</a></div><div class="ttdeci">auto sigmoid</div><div class="ttdoc">the sigmoid function is commonly used as the activation function during the forward propagation step....</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:60</div></div>
+<div class="ttc" id="anamespacesipai_html_a5d64288ca760fc3e1b426c80aa0e7534"><div class="ttname"><a href="namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534">sipai::sigmoid</a></div><div class="ttdeci">auto sigmoid</div><div class="ttdoc">the sigmoid function is commonly used as the activation function during the forward propagation step....</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:59</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -1096,7 +1152,7 @@ Variables</h2></td></tr>
 <div class="line">  cv::Vec4f tanhValue = <a class="code hl_variable" href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">tanhFunc</a>(rgba);</div>
 <div class="line">  <span class="keywordflow">return</span> cv::Vec4f::all(1.0f) - tanhValue.mul(tanhValue);</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacesipai_html_a703f16daca81e1a86081c4582ef042ba"><div class="ttname"><a href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">sipai::tanhFunc</a></div><div class="ttdeci">auto tanhFunc</div><div class="ttdoc">Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the inp...</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:77</div></div>
+<div class="ttc" id="anamespacesipai_html_a703f16daca81e1a86081c4582ef042ba"><div class="ttname"><a href="namespacesipai.html#a703f16daca81e1a86081c4582ef042ba">sipai::tanhFunc</a></div><div class="ttdeci">auto tanhFunc</div><div class="ttdoc">Tanh Function (Hyperbolic Tangent): This function is similar to the sigmoid function but maps the inp...</div><div class="ttdef"><b>Definition:</b> ActivationFunctions.h:76</div></div>
 </div><!-- fragment -->
 </div>
 </div>

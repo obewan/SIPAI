@@ -67,6 +67,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classsipai_1_1SimpleLogger-members.html">List of all members</a>  </div>
@@ -79,12 +80,20 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="SimpleLogger_8h_source.html">SimpleLogger.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a009064286ad3081466c1953edc4b5753"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html#a009064286ad3081466c1953edc4b5753">LogCallback</a> = std::function&lt; void(const std::string &amp;, const std::string &amp;, const std::string &amp;)&gt;</td></tr>
+<tr class="separator:a009064286ad3081466c1953edc4b5753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af4a398d42feebbbce4286ead2b724e22"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html#af4a398d42feebbbce4286ead2b724e22">SimpleLogger</a> (<a class="el" href="classsipai_1_1SimpleLogger.html">SimpleLogger</a> const &amp;)=delete</td></tr>
 <tr class="separator:af4a398d42feebbbce4286ead2b724e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4314331e528338aa778ba1b53c86feb8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html#a4314331e528338aa778ba1b53c86feb8">operator=</a> (<a class="el" href="classsipai_1_1SimpleLogger.html">SimpleLogger</a> const &amp;)=delete</td></tr>
 <tr class="separator:a4314331e528338aa778ba1b53c86feb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83ecedc2b3bd26e286ff1c60872dc56d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html#a83ecedc2b3bd26e286ff1c60872dc56d">setLogCallback</a> (<a class="el" href="classsipai_1_1SimpleLogger.html#a009064286ad3081466c1953edc4b5753">LogCallback</a> callback)</td></tr>
+<tr class="memdesc:a83ecedc2b3bd26e286ff1c60872dc56d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Log Callback.  <a href="classsipai_1_1SimpleLogger.html#a83ecedc2b3bd26e286ff1c60872dc56d">More...</a><br /></td></tr>
+<tr class="separator:a83ecedc2b3bd26e286ff1c60872dc56d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28dc277b08058594c731949dd4b71eee"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:a28dc277b08058594c731949dd4b71eee"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classsipai_1_1SimpleLogger.html">SimpleLogger</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsipai_1_1SimpleLogger.html#a28dc277b08058594c731949dd4b71eee">log</a> (<a class="el" href="namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0">LogLevel</a> level, bool <a class="el" href="classsipai_1_1SimpleLogger.html#a613928303076478481bfd69a5d6cd118">endl</a>, Args &amp;&amp;...args) const</td></tr>
 <tr class="memdesc:a28dc277b08058594c731949dd4b71eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs messages with a timestamp and log level.  <a href="classsipai_1_1SimpleLogger.html#a28dc277b08058594c731949dd4b71eee">More...</a><br /></td></tr>
@@ -160,7 +169,22 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classsipai_1_1SimpleLogger.html" title="SimpleLogger class.">SimpleLogger</a> class. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a009064286ad3081466c1953edc4b5753" name="a009064286ad3081466c1953edc4b5753"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a009064286ad3081466c1953edc4b5753">&#9670;&nbsp;</a></span>LogCallback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classsipai_1_1SimpleLogger.html#a009064286ad3081466c1953edc4b5753">sipai::SimpleLogger::LogCallback</a> =  std::function&lt;void( const std::string &amp;, const std::string &amp;, const std::string &amp;)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af4a398d42feebbbce4286ead2b724e22" name="af4a398d42feebbbce4286ead2b724e22"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af4a398d42feebbbce4286ead2b724e22">&#9670;&nbsp;</a></span>SimpleLogger()</h2>
 
@@ -815,6 +839,40 @@ template&lt;typename... Args&gt; </div>
 
 <p>Reset the floating precision. </p>
 <dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="classsipai_1_1SimpleLogger.html" title="SimpleLogger class.">SimpleLogger</a>&amp; </dd></dl>
+
+</div>
+</div>
+<a id="a83ecedc2b3bd26e286ff1c60872dc56d" name="a83ecedc2b3bd26e286ff1c60872dc56d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83ecedc2b3bd26e286ff1c60872dc56d">&#9670;&nbsp;</a></span>setLogCallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sipai::SimpleLogger::setLogCallback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsipai_1_1SimpleLogger.html#a009064286ad3081466c1953edc4b5753">LogCallback</a>&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the Log Callback. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-07-15 18:13:23</td>
+            <td class="headerValue">2024-12-28 12:03:54</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -98,26 +98,30 @@
 <a name="36"><span class="lineNum">      36 </span>            :    *</a>
 <a name="37"><span class="lineNum">      37 </span>            :    * @param network</a>
 <a name="38"><span class="lineNum">      38 </span>            :    * @param appParams</a>
-<a name="39"><span class="lineNum">      39 </span>            :    */</a>
-<a name="40"><span class="lineNum">      40 </span>            :   void importWeights(std::unique_ptr&lt;NeuralNetwork&gt; &amp;network,</a>
-<a name="41"><span class="lineNum">      41 </span>            :                      const AppParams &amp;appParams);</a>
-<a name="42"><span class="lineNum">      42 </span>            : </a>
-<a name="43"><span class="lineNum">      43 </span>            :   /**</a>
-<a name="44"><span class="lineNum">      44 </span>            :    * @brief Export a network model files (JSON meta data and CSV neurons data)</a>
-<a name="45"><span class="lineNum">      45 </span>            :    *</a>
-<a name="46"><span class="lineNum">      46 </span>            :    * @param network</a>
-<a name="47"><span class="lineNum">      47 </span>            :    * @param networkParams</a>
-<a name="48"><span class="lineNum">      48 </span>            :    * @param appParams</a>
-<a name="49"><span class="lineNum">      49 </span>            :    */</a>
-<a name="50"><span class="lineNum">      50 </span>            :   virtual void exportModel(const std::unique_ptr&lt;NeuralNetwork&gt; &amp;network,</a>
-<a name="51"><span class="lineNum">      51 </span>            :                            const NeuralNetworkParams &amp;networkParams,</a>
-<a name="52"><span class="lineNum">      52 </span>            :                            const AppParams &amp;appParams) const;</a>
-<a name="53"><span class="lineNum">      53 </span>            : </a>
-<a name="54"><span class="lineNum">      54 </span>            : protected:</a>
-<a name="55"><span class="lineNum">      55 </span>            :   NeuralNetworkImportExportCSV csvIE;</a>
-<a name="56"><span class="lineNum">      56 </span>            :   NeuralNetworkImportExportJSON jsonIE;</a>
-<a name="57"><span class="lineNum">      57 </span>            : };</a>
-<a name="58"><span class="lineNum">      58 </span>            : } // namespace sipai</a>
+<a name="39"><span class="lineNum">      39 </span>            :    * @param progressCallback</a>
+<a name="40"><span class="lineNum">      40 </span>            :    * @param progressInitialValue</a>
+<a name="41"><span class="lineNum">      41 </span>            :    */</a>
+<a name="42"><span class="lineNum">      42 </span>            :   void importWeights(std::unique_ptr&lt;NeuralNetwork&gt; &amp;network,</a>
+<a name="43"><span class="lineNum">      43 </span>            :                      const AppParams &amp;appParams,</a>
+<a name="44"><span class="lineNum">      44 </span>            :                      std::function&lt;void(int)&gt; progressCallback = {},</a>
+<a name="45"><span class="lineNum">      45 </span>            :                      int progressInitialValue = 0);</a>
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<a name="47"><span class="lineNum">      47 </span>            :   /**</a>
+<a name="48"><span class="lineNum">      48 </span>            :    * @brief Export a network model files (JSON meta data and CSV neurons data)</a>
+<a name="49"><span class="lineNum">      49 </span>            :    *</a>
+<a name="50"><span class="lineNum">      50 </span>            :    * @param network</a>
+<a name="51"><span class="lineNum">      51 </span>            :    * @param networkParams</a>
+<a name="52"><span class="lineNum">      52 </span>            :    * @param appParams</a>
+<a name="53"><span class="lineNum">      53 </span>            :    */</a>
+<a name="54"><span class="lineNum">      54 </span>            :   virtual void exportModel(const std::unique_ptr&lt;NeuralNetwork&gt; &amp;network,</a>
+<a name="55"><span class="lineNum">      55 </span>            :                            const NeuralNetworkParams &amp;networkParams,</a>
+<a name="56"><span class="lineNum">      56 </span>            :                            const AppParams &amp;appParams) const;</a>
+<a name="57"><span class="lineNum">      57 </span>            : </a>
+<a name="58"><span class="lineNum">      58 </span>            : protected:</a>
+<a name="59"><span class="lineNum">      59 </span>            :   NeuralNetworkImportExportCSV csvIE;</a>
+<a name="60"><span class="lineNum">      60 </span>            :   NeuralNetworkImportExportJSON jsonIE;</a>
+<a name="61"><span class="lineNum">      61 </span>            : };</a>
+<a name="62"><span class="lineNum">      62 </span>            : } // namespace sipai</a>
 </pre>
       </td>
     </tr>

@@ -93,18 +93,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af4cef02031523a7596087fd1b7adf5ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5330b8b96411fed3ec8031d631832803"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a5330b8b96411fed3ec8031d631832803">network_to_export</a> = &quot;&quot;</td></tr>
 <tr class="separator:a5330b8b96411fed3ec8031d631832803"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd7aa7c60e9bbbddf6f3db88c912ee27"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#afd7aa7c60e9bbbddf6f3db88c912ee27">shaderEnhancer</a> = &quot;data/glsl/EnhancerShader.comp&quot;</td></tr>
-<tr class="separator:afd7aa7c60e9bbbddf6f3db88c912ee27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae81c7ccbcec080b5cf4085bdb38dc64a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#ae81c7ccbcec080b5cf4085bdb38dc64a">shaderEnhancerTemplate</a> = &quot;data/glsl/EnhancerShader.comp.in&quot;</td></tr>
-<tr class="separator:ae81c7ccbcec080b5cf4085bdb38dc64a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a429ea0c388dafaf957be65722ccee1de"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a429ea0c388dafaf957be65722ccee1de">shaderTraining</a> = &quot;data/glsl/TrainingShader.comp&quot;</td></tr>
-<tr class="separator:a429ea0c388dafaf957be65722ccee1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a712fdc84f0890250a979ebcdcc4c911e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a712fdc84f0890250a979ebcdcc4c911e">shaderTrainingTemplate</a> = &quot;data/glsl/TrainingShader.comp.in&quot;</td></tr>
-<tr class="separator:a712fdc84f0890250a979ebcdcc4c911e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69090f50bf27ae1569e1e6203477a12c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a69090f50bf27ae1569e1e6203477a12c">shaderFragment</a> = &quot;data/glsl/FragmentShader.frag&quot;</td></tr>
-<tr class="separator:a69090f50bf27ae1569e1e6203477a12c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b59ea86896353243079ffa864a89305"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a6b59ea86896353243079ffa864a89305">shaderVertex</a> = &quot;data/glsl/VertexShader.vert&quot;</td></tr>
-<tr class="separator:a6b59ea86896353243079ffa864a89305"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0712cb557b8345bc66929815c170deb"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="structsipai_1_1ShaderDefinition.html">ShaderDefinition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#ab0712cb557b8345bc66929815c170deb">shaders</a></td></tr>
+<tr class="separator:ab0712cb557b8345bc66929815c170deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d3fe9abf2b2c464b6c31996f110d19e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032">ERunMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a0d3fe9abf2b2c464b6c31996f110d19e">run_mode</a> = <a class="el" href="namespacesipai.html#a86f53af3a527e290419e10fd371cd032a235ff0497734d85587533ff1ae6aa26b">ERunMode::Enhancer</a></td></tr>
 <tr class="separator:a0d3fe9abf2b2c464b6c31996f110d19e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a600f0e89aa9acc0b0c9d9131dc3115e7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a600f0e89aa9acc0b0c9d9131dc3115e7">output_scale</a> = 1.0f</td></tr>
@@ -115,13 +105,13 @@ Public Attributes</h2></td></tr>
 <tr class="separator:adf151d336acd525e3a3536455517d48e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a406e8eeec2b91b71af4a4cb217fd3a27"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a406e8eeec2b91b71af4a4cb217fd3a27">learning_rate_min</a> = 0.00001f</td></tr>
 <tr class="separator:a406e8eeec2b91b71af4a4cb217fd3a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab443db4d0452ac21c28c2f93940619ac"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac">max_epochs</a> = <a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a></td></tr>
-<tr class="separator:ab443db4d0452ac21c28c2f93940619ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa43a7cd5d450f8cb056111e9f5dbafa1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#aa43a7cd5d450f8cb056111e9f5dbafa1">max_epochs</a> = <a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a></td></tr>
+<tr class="separator:aa43a7cd5d450f8cb056111e9f5dbafa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80f10782d2f8bfbbb8d0acc34f38a4c5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5">max_epochs_without_improvement</a> = 2</td></tr>
 <tr class="separator:a80f10782d2f8bfbbb8d0acc34f38a4c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16dba5a5773057267b97b31ba197b9d5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a16dba5a5773057267b97b31ba197b9d5">epoch_autosave</a> = 100</td></tr>
 <tr class="separator:a16dba5a5773057267b97b31ba197b9d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a082243618b65d67e7e39802f2b73f3bb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a082243618b65d67e7e39802f2b73f3bb">image_split</a> = 1</td></tr>
+<tr class="memitem:a082243618b65d67e7e39802f2b73f3bb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a082243618b65d67e7e39802f2b73f3bb">image_split</a> = <a class="el" href="namespacesipai.html#acffd518ea60a22c8d45b071b3b01d13e">NO_IMAGE_SPLIT</a></td></tr>
 <tr class="separator:a082243618b65d67e7e39802f2b73f3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8af450510f5c9386a09d4347fba877ee"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a8af450510f5c9386a09d4347fba877ee">training_reduce_factor</a> = 4</td></tr>
 <tr class="separator:a8af450510f5c9386a09d4347fba877ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -131,7 +121,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a5b2d855b14a63d73dda3faf9b1b6d000"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a165b61aadf449133930b53b293423f17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a165b61aadf449133930b53b293423f17">enable_vulkan</a> = false</td></tr>
 <tr class="separator:a165b61aadf449133930b53b293423f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251">enable_parallel</a> = false</td></tr>
+<tr class="memitem:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#a1c7dc9d1c2d82e756e9717fdb5bb9251">enable_parallel</a> = true</td></tr>
 <tr class="separator:a1c7dc9d1c2d82e756e9717fdb5bb9251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdccd4ada3363f17e14fbd2a7a027943"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsipai_1_1AppParams.html#abdccd4ada3363f17e14fbd2a7a027943">enable_padding</a> = false</td></tr>
 <tr class="separator:abdccd4ada3363f17e14fbd2a7a027943"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,7 +168,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool sipai::AppParams::enable_parallel = false</td>
+          <td class="memname">bool sipai::AppParams::enable_parallel = true</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -220,7 +210,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t sipai::AppParams::image_split = 1</td>
+          <td class="memname">size_t sipai::AppParams::image_split = <a class="el" href="namespacesipai.html#acffd518ea60a22c8d45b071b3b01d13e">NO_IMAGE_SPLIT</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -269,14 +259,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab443db4d0452ac21c28c2f93940619ac" name="ab443db4d0452ac21c28c2f93940619ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab443db4d0452ac21c28c2f93940619ac">&#9670;&nbsp;</a></span>max_epochs</h2>
+<a id="aa43a7cd5d450f8cb056111e9f5dbafa1" name="aa43a7cd5d450f8cb056111e9f5dbafa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa43a7cd5d450f8cb056111e9f5dbafa1">&#9670;&nbsp;</a></span>max_epochs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int sipai::AppParams::max_epochs = <a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a></td>
+          <td class="memname">size_t sipai::AppParams::max_epochs = <a class="el" href="namespacesipai.html#ab9d8d07c41fed4bf4302acbc5ac98c2e">NO_MAX_EPOCHS</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -381,88 +371,46 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afd7aa7c60e9bbbddf6f3db88c912ee27" name="afd7aa7c60e9bbbddf6f3db88c912ee27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd7aa7c60e9bbbddf6f3db88c912ee27">&#9670;&nbsp;</a></span>shaderEnhancer</h2>
+<a id="ab0712cb557b8345bc66929815c170deb" name="ab0712cb557b8345bc66929815c170deb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0712cb557b8345bc66929815c170deb">&#9670;&nbsp;</a></span>shaders</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string sipai::AppParams::shaderEnhancer = &quot;data/glsl/EnhancerShader.comp&quot;</td>
+          <td class="memname">std::list&lt;<a class="el" href="structsipai_1_1ShaderDefinition.html">ShaderDefinition</a>&gt; sipai::AppParams::shaders</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae81c7ccbcec080b5cf4085bdb38dc64a" name="ae81c7ccbcec080b5cf4085bdb38dc64a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae81c7ccbcec080b5cf4085bdb38dc64a">&#9670;&nbsp;</a></span>shaderEnhancerTemplate</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string sipai::AppParams::shaderEnhancerTemplate = &quot;data/glsl/EnhancerShader.comp.in&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a69090f50bf27ae1569e1e6203477a12c" name="a69090f50bf27ae1569e1e6203477a12c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69090f50bf27ae1569e1e6203477a12c">&#9670;&nbsp;</a></span>shaderFragment</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string sipai::AppParams::shaderFragment = &quot;data/glsl/FragmentShader.frag&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a429ea0c388dafaf957be65722ccee1de" name="a429ea0c388dafaf957be65722ccee1de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a429ea0c388dafaf957be65722ccee1de">&#9670;&nbsp;</a></span>shaderTraining</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string sipai::AppParams::shaderTraining = &quot;data/glsl/TrainingShader.comp&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a712fdc84f0890250a979ebcdcc4c911e" name="a712fdc84f0890250a979ebcdcc4c911e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a712fdc84f0890250a979ebcdcc4c911e">&#9670;&nbsp;</a></span>shaderTrainingTemplate</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string sipai::AppParams::shaderTrainingTemplate = &quot;data/glsl/TrainingShader.comp.in&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6b59ea86896353243079ffa864a89305" name="a6b59ea86896353243079ffa864a89305"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b59ea86896353243079ffa864a89305">&#9670;&nbsp;</a></span>shaderVertex</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string sipai::AppParams::shaderVertex = &quot;data/glsl/VertexShader.vert&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">{</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaa10869d85a4bd6335db01403d7ef7c3a">EShader::EnhancerForward1</a>, <span class="stringliteral">&quot;data/glsl/EnhancerShader-forward1.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/EnhancerShader-forward1.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad3bf2fceb61791ffcf53b70aeec5f103">EShader::EnhancerForward2</a>, <span class="stringliteral">&quot;data/glsl/EnhancerShader-forward2.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/EnhancerShader-forward2.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbabd96aae5a9d0478d073fc19b0ccae53f">EShader::TrainingInit</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-init.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-init.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba95ba29959f1de374f066105ebb422d1b">EShader::TrainingForward1</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward1.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward1.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbae372ec66753706fbda884d88a4df7819">EShader::TrainingForward2</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward2.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward2.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba726a723d89d6ab46d6d1e8ba8371a907">EShader::TrainingForward3</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward3.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward3.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba5f0e7068f4e6ea2c91c53eb4c674c3e0">EShader::TrainingForward4</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward4.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-forward4.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba6c04a0708e04019a4916915bfd1895ce">EShader::TrainingBackward1</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward1.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward1.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaf34993a50dadf31e3518e5829ef41233">EShader::TrainingBackward2</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward2.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward2.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad3713b25b17bbf3f57ee50a453e6551c">EShader::TrainingBackward3</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward3.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward3.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbadd7e8158d80ef8aa9b2812a304041e99">EShader::TrainingBackward4</a>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward4.comp&quot;</span>, <span class="stringliteral">&quot;data/glsl/TrainingShader-backward4.comp.in&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922">EShader::FragmentShader</a>, <span class="stringliteral">&quot;data/glsl/FragmentShader.frag&quot;</span>, <span class="stringliteral">&quot;&quot;</span> },</div>
+<div class="line">    { <a class="code hl_enumvalue" href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33">EShader::VertexShader</a>, <span class="stringliteral">&quot;data/glsl/VertexShader.vert&quot;</span>, <span class="stringliteral">&quot;&quot;</span> }</div>
+<div class="line">  }</div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fba5f0e7068f4e6ea2c91c53eb4c674c3e0"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba5f0e7068f4e6ea2c91c53eb4c674c3e0">sipai::EShader::TrainingForward4</a></div><div class="ttdeci">@ TrainingForward4</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fba6c04a0708e04019a4916915bfd1895ce"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba6c04a0708e04019a4916915bfd1895ce">sipai::EShader::TrainingBackward1</a></div><div class="ttdeci">@ TrainingBackward1</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fba726a723d89d6ab46d6d1e8ba8371a907"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba726a723d89d6ab46d6d1e8ba8371a907">sipai::EShader::TrainingForward3</a></div><div class="ttdeci">@ TrainingForward3</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba90a9bb4e665932b1781da33fc2f32922">sipai::EShader::FragmentShader</a></div><div class="ttdeci">@ FragmentShader</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fba95ba29959f1de374f066105ebb422d1b"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fba95ba29959f1de374f066105ebb422d1b">sipai::EShader::TrainingForward1</a></div><div class="ttdeci">@ TrainingForward1</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbaa10869d85a4bd6335db01403d7ef7c3a"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaa10869d85a4bd6335db01403d7ef7c3a">sipai::EShader::EnhancerForward1</a></div><div class="ttdeci">@ EnhancerForward1</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbabd96aae5a9d0478d073fc19b0ccae53f"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbabd96aae5a9d0478d073fc19b0ccae53f">sipai::EShader::TrainingInit</a></div><div class="ttdeci">@ TrainingInit</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbad3713b25b17bbf3f57ee50a453e6551c"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad3713b25b17bbf3f57ee50a453e6551c">sipai::EShader::TrainingBackward3</a></div><div class="ttdeci">@ TrainingBackward3</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbad3bf2fceb61791ffcf53b70aeec5f103"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbad3bf2fceb61791ffcf53b70aeec5f103">sipai::EShader::EnhancerForward2</a></div><div class="ttdeci">@ EnhancerForward2</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbadd7e8158d80ef8aa9b2812a304041e99"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbadd7e8158d80ef8aa9b2812a304041e99">sipai::EShader::TrainingBackward4</a></div><div class="ttdeci">@ TrainingBackward4</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbae372ec66753706fbda884d88a4df7819"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbae372ec66753706fbda884d88a4df7819">sipai::EShader::TrainingForward2</a></div><div class="ttdeci">@ TrainingForward2</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaeb3ca4dac3e206977e0b7d998eefcc33">sipai::EShader::VertexShader</a></div><div class="ttdeci">@ VertexShader</div></div>
+<div class="ttc" id="anamespacesipai_html_aeb54a7d7536dd01dfd04177d4320c1fbaf34993a50dadf31e3518e5829ef41233"><div class="ttname"><a href="namespacesipai.html#aeb54a7d7536dd01dfd04177d4320c1fbaf34993a50dadf31e3518e5829ef41233">sipai::EShader::TrainingBackward2</a></div><div class="ttdeci">@ TrainingBackward2</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a98d78e26b8c627eabc6288ea970dac01" name="a98d78e26b8c627eabc6288ea970dac01"></a>

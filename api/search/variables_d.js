@@ -1,12 +1,13 @@
 var searchData=
 [
-  ['parametricrelu_0',['parametricRelu',['../namespacesipai.html#a1054f011782057a93919baf09a141879',1,'sipai']]],
-  ['parametricreluderivative_1',['parametricReluDerivative',['../namespacesipai.html#a07bcbe09fe9ab29378d50150b61cd3b8',1,'sipai']]],
-  ['physicaldevice_2',['physicalDevice',['../structsipai_1_1Vulkan.html#ad05c637ac8a98ea33fb589281810c753',1,'sipai::Vulkan']]],
-  ['pipelinecomputeenhancer_3',['pipelineComputeEnhancer',['../structsipai_1_1Vulkan.html#afe93d302e670ad95f8857733da958e65',1,'sipai::Vulkan']]],
-  ['pipelinecomputetraining_4',['pipelineComputeTraining',['../structsipai_1_1Vulkan.html#a10bfeecb052bfeb5dbdc21ae7471ccf2',1,'sipai::Vulkan']]],
-  ['pipelinegraphic_5',['pipelineGraphic',['../structsipai_1_1Vulkan.html#a3f2a78bf245fb643cef49a81ebcadfa2',1,'sipai::Vulkan']]],
-  ['pipelinelayout_6',['pipelineLayout',['../structsipai_1_1Vulkan.html#af4f9fb636e2fb2d6e1d6187cb801936d',1,'sipai::Vulkan']]],
-  ['pos_7',['pos',['../structsipai_1_1Vertex.html#a098bb0a981d35a56e740ae6bb14f3dcd',1,'sipai::Vertex']]],
-  ['previouslayer_8',['previousLayer',['../classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07',1,'sipai::Layer']]]
+  ['orig_5fchannels_0',['orig_channels',['../structsipai_1_1Image.html#aafc6b5e25b78aa0bc54f2d42bdb14192',1,'sipai::Image']]],
+  ['orig_5fheight_1',['orig_height',['../structsipai_1_1Image.html#ad8e0dfbd32ae9d991652b70e0b803263',1,'sipai::Image']]],
+  ['orig_5ftype_2',['orig_type',['../structsipai_1_1Image.html#a1a7d52e3786c3e6b051afd75234261a8',1,'sipai::Image']]],
+  ['orig_5fwidth_3',['orig_width',['../structsipai_1_1Image.html#ad565ac22e64de03412436816aab3324b',1,'sipai::Image']]],
+  ['output_5factivation_5falpha_4',['output_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#af59652ab9640efbe3e1ee1d24bfdf3eb',1,'sipai::NeuralNetworkParams']]],
+  ['output_5factivation_5ffunction_5',['output_activation_function',['../structsipai_1_1NeuralNetworkParams.html#af53014e1ec358e4d4afab1c8c9b03315',1,'sipai::NeuralNetworkParams']]],
+  ['output_5ffile_6',['output_file',['../structsipai_1_1AppParams.html#aca50bfed2557acec4d1d50c38a9736a7',1,'sipai::AppParams']]],
+  ['output_5fscale_7',['output_scale',['../structsipai_1_1AppParams.html#a600f0e89aa9acc0b0c9d9131dc3115e7',1,'sipai::AppParams']]],
+  ['output_5fsize_5fx_8',['output_size_x',['../structsipai_1_1NeuralNetworkParams.html#a5892a752119dd90f07f0e4fac4adcd4d',1,'sipai::NeuralNetworkParams']]],
+  ['output_5fsize_5fy_9',['output_size_y',['../structsipai_1_1NeuralNetworkParams.html#afda67ec067dc6de48a6cbddf0256fbfc',1,'sipai::NeuralNetworkParams']]]
 ];

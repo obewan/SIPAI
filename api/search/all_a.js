@@ -29,8 +29,9 @@ var searchData=
   ['log_5ferror_26',['LOG_ERROR',['../classsipai_1_1SimpleLogger.html#a2bfb97b13345964cb2c98682e9a7c1ba',1,'sipai::SimpleLogger']]],
   ['log_5finfo_27',['LOG_INFO',['../classsipai_1_1SimpleLogger.html#ae9f8b71dbd5f493d38d28d0f21c3d9d4',1,'sipai::SimpleLogger']]],
   ['log_5fwarn_28',['LOG_WARN',['../classsipai_1_1SimpleLogger.html#adafca433b4f8fcab5ebaff62a2d72bf8',1,'sipai::SimpleLogger']]],
-  ['logicaldevice_29',['logicalDevice',['../structsipai_1_1Vulkan.html#ac41c1f4c327a3b908574c0b90812f68e',1,'sipai::Vulkan']]],
-  ['loglevel_30',['LogLevel',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0',1,'sipai']]],
-  ['logtrainingprogress_31',['logTrainingProgress',['../classsipai_1_1RunnerTrainingVisitor.html#aece995848a05e425dcd73a7387437f0d',1,'sipai::RunnerTrainingVisitor']]],
-  ['lrelu_32',['LReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9',1,'sipai']]]
+  ['logcallback_29',['LogCallback',['../classsipai_1_1SimpleLogger.html#a009064286ad3081466c1953edc4b5753',1,'sipai::SimpleLogger']]],
+  ['logicaldevice_30',['logicalDevice',['../structsipai_1_1Vulkan.html#ac41c1f4c327a3b908574c0b90812f68e',1,'sipai::Vulkan']]],
+  ['loglevel_31',['LogLevel',['../namespacesipai.html#a8ef9a32a9573d0356a88a9325b5551a0',1,'sipai']]],
+  ['logtrainingprogress_32',['logTrainingProgress',['../classsipai_1_1RunnerTrainingVisitor.html#aece995848a05e425dcd73a7387437f0d',1,'sipai::RunnerTrainingVisitor']]],
+  ['lrelu_33',['LReLU',['../namespacesipai.html#a181631bc0a7b2f9f16ccea79d30c7194a601049e29a4481e658f6745a54aa3ad9',1,'sipai']]]
 ];

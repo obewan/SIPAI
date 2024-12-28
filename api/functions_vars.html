@@ -89,6 +89,8 @@ $(function() {
 <li>commandBufferPool&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a229ee54b9cbdb43bdca9e6ff16532595">sipai::Vulkan</a></li>
 <li>commandPool&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a3a4c69c887fa3d9e62dcb9b4e938e41c">sipai::Vulkan</a></li>
 <li>computeFence&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a94423a5e410858a8b7c6d5264a8ad1ad">sipai::Vulkan</a></li>
+<li>computePipelineInfos&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#ad59d8f7655552bc737e41edf1b58d850">sipai::Vulkan</a></li>
+<li>computePipelines&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a76ec17f868485ae891d38c4d2bfc84f5">sipai::Vulkan</a></li>
 <li>csvIE&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a904ee2799524421361b967b957505deb">sipai::NeuralNetworkImportExportFacade</a></li>
 </ul>
 
@@ -120,7 +122,13 @@ $(function() {
 <li>file_input&#160;:&#160;<a class="el" href="structsipai_1_1Data.html#a45025ab680927dd2fa099b4f8c610646">sipai::Data</a></li>
 <li>file_output&#160;:&#160;<a class="el" href="structsipai_1_1Data.html#a53485a03e8749bb45f60cb82d3f05340">sipai::Data</a></li>
 <li>file_target&#160;:&#160;<a class="el" href="structsipai_1_1Data.html#afabb2f9d48ca9c5c4e47316d31a017e4">sipai::Data</a></li>
-<li>filename&#160;:&#160;<a class="el" href="structsipai_1_1Shader.html#a2a7e60f470951f1560a8b5b0a4b0c6e4">sipai::Shader</a></li>
+<li>filename&#160;:&#160;<a class="el" href="structsipai_1_1Shader.html#a2a7e60f470951f1560a8b5b0a4b0c6e4">sipai::Shader</a>, <a class="el" href="structsipai_1_1ShaderDefinition.html#a82535ad678183cf87000991eb52302c3">sipai::ShaderDefinition</a></li>
+</ul>
+
+
+<h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
+<li>graphicPipeline&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a8180dc234cf1f63789585514ac0e2d18">sipai::Vulkan</a></li>
+<li>graphicPipelineInfo&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a2477c218160b6a5af7cdc5c6b8569576">sipai::Vulkan</a></li>
 </ul>
 
 
@@ -143,9 +151,6 @@ $(function() {
 <li>index_y&#160;:&#160;<a class="el" href="structsipai_1_1GLSLNeighbor.html#a7869e9057bdf854ffc9f1c6448b71b5c">sipai::GLSLNeighbor</a>, <a class="el" href="structsipai_1_1GLSLNeuron.html#a0bf42f7d4604276ffea8c9e297d2f383">sipai::GLSLNeuron</a>, <a class="el" href="classsipai_1_1Neuron.html#ab8d2917bb69130e5e4c912b633c0b7fd">sipai::Neuron</a></li>
 <li>inFlightFence&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#acbcdff7fd03d562cd274f4aa8eeba213">sipai::Vulkan</a></li>
 <li>info&#160;:&#160;<a class="el" href="structsipai_1_1Buffer.html#afe1f6b44fe4c41f37b59fc165c38ec11">sipai::Buffer</a></li>
-<li>infoComputeEnhancer&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#abeccbaecf225c033e0ac845e4b8d175d">sipai::Vulkan</a></li>
-<li>infoComputeTraining&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a0dd750eee1d4553cf39b49b57095b038">sipai::Vulkan</a></li>
-<li>infoGraphics&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#aaa7a4795f5552fba3881e43753783bbd">sipai::Vulkan</a></li>
 <li>input_file&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a9b62227d9472ba41b924929d402520e1">sipai::AppParams</a></li>
 <li>input_size_x&#160;:&#160;<a class="el" href="structsipai_1_1NeuralNetworkParams.html#a0e8c7e49aae5ffa9c53faec705c55d2f">sipai::NeuralNetworkParams</a></li>
 <li>input_size_y&#160;:&#160;<a class="el" href="structsipai_1_1NeuralNetworkParams.html#ae33caf09674e5dba331172da4570538e">sipai::NeuralNetworkParams</a></li>
@@ -175,16 +180,18 @@ $(function() {
 
 
 <h3><a id="index_m" name="index_m"></a>- m -</h3><ul>
-<li>max_epochs&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac">sipai::AppParams</a></li>
+<li>max_epochs&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#aa43a7cd5d450f8cb056111e9f5dbafa1">sipai::AppParams</a></li>
 <li>max_epochs_without_improvement&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5">sipai::AppParams</a></li>
 <li>max_weights&#160;:&#160;<a class="el" href="classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9">sipai::NeuralNetwork</a></li>
+<li>maxSizeX&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a4c126af2067337c130a7cb37dea6f6cb">sipai::Vulkan</a></li>
+<li>maxSizeY&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a24cc8616074e271d02b2ace81e1cf757">sipai::Vulkan</a></li>
 <li>memory&#160;:&#160;<a class="el" href="structsipai_1_1Buffer.html#acb8160165313ca63e02bdfb89cfdb140">sipai::Buffer</a></li>
 <li>module&#160;:&#160;<a class="el" href="structsipai_1_1Shader.html#a4907a69fd761e7717fd3e28d4137fd76">sipai::Shader</a></li>
 </ul>
 
 
 <h3><a id="index_n" name="index_n"></a>- n -</h3><ul>
-<li>name&#160;:&#160;<a class="el" href="structsipai_1_1Buffer.html#a1f9d89e42f924a2c1e74c343ceee2ec6">sipai::Buffer</a></li>
+<li>name&#160;:&#160;<a class="el" href="structsipai_1_1Buffer.html#a1f9d89e42f924a2c1e74c343ceee2ec6">sipai::Buffer</a>, <a class="el" href="structsipai_1_1ShaderDefinition.html#a8fe99fcd2937f13d9c37068368812042">sipai::ShaderDefinition</a></li>
 <li>neighbors&#160;:&#160;<a class="el" href="structsipai_1_1GLSLNeuron.html#ada306664449c6a19c966f0885980fb33">sipai::GLSLNeuron</a>, <a class="el" href="classsipai_1_1Neuron.html#a2563fc6f15a4ea0fcc7eab9ddf5f0046">sipai::Neuron</a></li>
 <li>neighborsIndex&#160;:&#160;<a class="el" href="classsipai_1_1Neuron.html#a5b5e6f162781f208527321792d4c074f">sipai::Neuron</a></li>
 <li>neighborsSize&#160;:&#160;<a class="el" href="classsipai_1_1Neuron.html#a9b5108226b8a4bb5b362b2f9f46492fe">sipai::Neuron</a></li>
@@ -214,9 +221,6 @@ $(function() {
 
 <h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
 <li>physicalDevice&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#ad05c637ac8a98ea33fb589281810c753">sipai::Vulkan</a></li>
-<li>pipelineComputeEnhancer&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#afe93d302e670ad95f8857733da958e65">sipai::Vulkan</a></li>
-<li>pipelineComputeTraining&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a10bfeecb052bfeb5dbdc21ae7471ccf2">sipai::Vulkan</a></li>
-<li>pipelineGraphic&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a3f2a78bf245fb643cef49a81ebcadfa2">sipai::Vulkan</a></li>
 <li>pipelineLayout&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#af4f9fb636e2fb2d6e1d6187cb801936d">sipai::Vulkan</a></li>
 <li>pos&#160;:&#160;<a class="el" href="structsipai_1_1Vertex.html#a098bb0a981d35a56e740ae6bb14f3dcd">sipai::Vertex</a></li>
 <li>previousLayer&#160;:&#160;<a class="el" href="classsipai_1_1Layer.html#af85fa02ee0c66f262fa89f3ebbdeab07">sipai::Layer</a></li>
@@ -241,14 +245,8 @@ $(function() {
 
 <h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
 <li>shader&#160;:&#160;<a class="el" href="structsipai_1_1Shader.html#a7053db4ea2498c70a65d58c298499674">sipai::Shader</a></li>
-<li>shaderEnhancer&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#afd7aa7c60e9bbbddf6f3db88c912ee27">sipai::AppParams</a></li>
-<li>shaderEnhancerTemplate&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#ae81c7ccbcec080b5cf4085bdb38dc64a">sipai::AppParams</a></li>
-<li>shaderFragment&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a69090f50bf27ae1569e1e6203477a12c">sipai::AppParams</a></li>
 <li>shadername&#160;:&#160;<a class="el" href="structsipai_1_1Shader.html#a26f838364aed3fa64a9aacde54255139">sipai::Shader</a></li>
-<li>shaders&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a628fbd8e588aa5e8c5c7b65054f0698f">sipai::Vulkan</a></li>
-<li>shaderTraining&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a429ea0c388dafaf957be65722ccee1de">sipai::AppParams</a></li>
-<li>shaderTrainingTemplate&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a712fdc84f0890250a979ebcdcc4c911e">sipai::AppParams</a></li>
-<li>shaderVertex&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a6b59ea86896353243079ffa864a89305">sipai::AppParams</a></li>
+<li>shaders&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#ab0712cb557b8345bc66929815c170deb">sipai::AppParams</a>, <a class="el" href="structsipai_1_1Vulkan.html#a628fbd8e588aa5e8c5c7b65054f0698f">sipai::Vulkan</a></li>
 <li>size_x&#160;:&#160;<a class="el" href="structsipai_1_1GLSLHiddenLayer.html#a955112bd72590694f13d80598c312ce6">sipai::GLSLHiddenLayer</a>, <a class="el" href="structsipai_1_1GLSLInputLayer.html#a96371008f15adba225e3460911dd861c">sipai::GLSLInputLayer</a>, <a class="el" href="structsipai_1_1GLSLOutputLayer.html#a97da4d597cda4a1043ef8c7ea06a3452">sipai::GLSLOutputLayer</a>, <a class="el" href="classsipai_1_1Layer.html#aff064c69559cb4c04fef86d1fc60d57c">sipai::Layer</a></li>
 <li>size_y&#160;:&#160;<a class="el" href="structsipai_1_1GLSLHiddenLayer.html#a8c0abc4e318caea149bf6b9bf4a03aac">sipai::GLSLHiddenLayer</a>, <a class="el" href="structsipai_1_1GLSLInputLayer.html#acc47d2d2f2e74ec1d1b73a826ede373d">sipai::GLSLInputLayer</a>, <a class="el" href="structsipai_1_1GLSLOutputLayer.html#abd25f25d957845a948e5cfbbc50ebd6a">sipai::GLSLOutputLayer</a>, <a class="el" href="classsipai_1_1Layer.html#a6e45b06849bef6e4247a335de9169e03">sipai::Layer</a></li>
 <li>surface&#160;:&#160;<a class="el" href="structsipai_1_1Vulkan.html#a7acb44b93dbf9c18bbda0605371ff5eb">sipai::Vulkan</a></li>
@@ -263,6 +261,7 @@ $(function() {
 
 <h3><a id="index_t" name="index_t"></a>- t -</h3><ul>
 <li>targetValues&#160;:&#160;<a class="el" href="structsipai_1_1GLSLInputData.html#a910d47dec3204a7363932f40a100786b">sipai::GLSLInputData</a></li>
+<li>templateFilename&#160;:&#160;<a class="el" href="structsipai_1_1ShaderDefinition.html#ae62161ad5d0cca4cf87c69d1e6555425">sipai::ShaderDefinition</a></li>
 <li>threadMutex_&#160;:&#160;<a class="el" href="classsipai_1_1RunnerTrainingVisitor.html#a774eeef69947406b33a6a5e0b5be0af0">sipai::RunnerTrainingVisitor</a></li>
 <li>title&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a98d78e26b8c627eabc6288ea970dac01">sipai::AppParams</a></li>
 <li>training_data_file&#160;:&#160;<a class="el" href="structsipai_1_1AppParams.html#a78e3d56a4a95e3c550ff0ccaf0174fc1">sipai::AppParams</a></li>

@@ -13,10 +13,13 @@ var searchData=
   ['computeerrors_10',['computeErrors',['../classsipai_1_1LayerOutput.html#ac9588471bf823b6441ceb848da362eb9',1,'sipai::LayerOutput']]],
   ['computefence_11',['computeFence',['../structsipai_1_1Vulkan.html#a94423a5e410858a8b7c6d5264a8ad1ad',1,'sipai::Vulkan']]],
   ['computeloss_12',['computeLoss',['../classsipai_1_1ImageHelper.html#a9b08944a7fc47578656e00b897bd5681',1,'sipai::ImageHelper']]],
-  ['copymattovector_13',['copyMatToVector',['../classsipai_1_1Common.html#a1026dc87f0f13e710366382dcb025cd5',1,'sipai::Common']]],
-  ['copytobuffer_14',['copyToBuffer',['../classsipai_1_1VulkanController.html#a2f47d5e2916464b5a6c812ef3ddee807',1,'sipai::VulkanController']]],
-  ['createorimport_15',['createOrImport',['../classsipai_1_1NeuralNetworkBuilder.html#add0c63f0be168d004619714d75fdde37',1,'sipai::NeuralNetworkBuilder']]],
-  ['createorimportnetwork_16',['createOrImportNetwork',['../classsipai_1_1Manager.html#a6db3c17c6d2a4cd9038cbc5078315b51',1,'sipai::Manager']]],
-  ['csvie_17',['csvIE',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a904ee2799524421361b967b957505deb',1,'sipai::NeuralNetworkImportExportFacade']]],
-  ['cvwindowtitle_18',['cvWindowTitle',['../namespacesipai.html#a8b7dfb5c80da7ec3d3a97344d9075628',1,'sipai']]]
+  ['computepipelineinfos_13',['computePipelineInfos',['../structsipai_1_1Vulkan.html#ad59d8f7655552bc737e41edf1b58d850',1,'sipai::Vulkan']]],
+  ['computepipelines_14',['computePipelines',['../structsipai_1_1Vulkan.html#a76ec17f868485ae891d38c4d2bfc84f5',1,'sipai::Vulkan']]],
+  ['copymattovector_15',['copyMatToVector',['../classsipai_1_1Common.html#a1026dc87f0f13e710366382dcb025cd5',1,'sipai::Common']]],
+  ['copytobuffer_16',['copyToBuffer',['../classsipai_1_1VulkanController.html#a2f47d5e2916464b5a6c812ef3ddee807',1,'sipai::VulkanController']]],
+  ['countlines_17',['countLines',['../classsipai_1_1Common.html#a2b099dda09e36605f774613c486c9337',1,'sipai::Common']]],
+  ['createorimport_18',['createOrImport',['../classsipai_1_1NeuralNetworkBuilder.html#add0c63f0be168d004619714d75fdde37',1,'sipai::NeuralNetworkBuilder']]],
+  ['createorimportnetwork_19',['createOrImportNetwork',['../classsipai_1_1Manager.html#a1108f9fbc3d133f145b6c6c4b3534cc9',1,'sipai::Manager']]],
+  ['csvie_20',['csvIE',['../classsipai_1_1NeuralNetworkImportExportFacade.html#a904ee2799524421361b967b957505deb',1,'sipai::NeuralNetworkImportExportFacade']]],
+  ['cvwindowtitle_21',['cvWindowTitle',['../namespacesipai.html#a8b7dfb5c80da7ec3d3a97344d9075628',1,'sipai']]]
 ];

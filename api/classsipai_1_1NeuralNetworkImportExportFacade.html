@@ -83,9 +83,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa1f073caa1ed937bb59c984209588ade"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#aa1f073caa1ed937bb59c984209588ade">importModel</a> (const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams, <a class="el" href="structsipai_1_1NeuralNetworkParams.html">NeuralNetworkParams</a> &amp;networkParams)</td></tr>
 <tr class="memdesc:aa1f073caa1ed937bb59c984209588ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import a network model from JSON model file (without weights)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#aa1f073caa1ed937bb59c984209588ade">More...</a><br /></td></tr>
 <tr class="separator:aa1f073caa1ed937bb59c984209588ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a569627f1b617b7fb83df0d26193d7547"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a569627f1b617b7fb83df0d26193d7547">importWeights</a> (std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; &amp;network, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams)</td></tr>
-<tr class="memdesc:a569627f1b617b7fb83df0d26193d7547"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import the network weights from a CSV weights file (network model should be imported first)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a569627f1b617b7fb83df0d26193d7547">More...</a><br /></td></tr>
-<tr class="separator:a569627f1b617b7fb83df0d26193d7547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3c98b39f85633c59a57b78d74d9ece9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#aa3c98b39f85633c59a57b78d74d9ece9">importWeights</a> (std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; &amp;network, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams, std::function&lt; void(int)&gt; progressCallback={}, int progressInitialValue=0)</td></tr>
+<tr class="memdesc:aa3c98b39f85633c59a57b78d74d9ece9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Import the network weights from a CSV weights file (network model should be imported first)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#aa3c98b39f85633c59a57b78d74d9ece9">More...</a><br /></td></tr>
+<tr class="separator:aa3c98b39f85633c59a57b78d74d9ece9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43522b7f99e74993e5dc4afcb1bbd726"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726">exportModel</a> (const std::unique_ptr&lt; <a class="el" href="classsipai_1_1NeuralNetwork.html">NeuralNetwork</a> &gt; &amp;network, const <a class="el" href="structsipai_1_1NeuralNetworkParams.html">NeuralNetworkParams</a> &amp;networkParams, const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;appParams) const</td></tr>
 <tr class="memdesc:a43522b7f99e74993e5dc4afcb1bbd726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Export a network model files (JSON meta data and CSV neurons data)  <a href="classsipai_1_1NeuralNetworkImportExportFacade.html#a43522b7f99e74993e5dc4afcb1bbd726">More...</a><br /></td></tr>
 <tr class="separator:a43522b7f99e74993e5dc4afcb1bbd726"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,8 +222,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a569627f1b617b7fb83df0d26193d7547" name="a569627f1b617b7fb83df0d26193d7547"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a569627f1b617b7fb83df0d26193d7547">&#9670;&nbsp;</a></span>importWeights()</h2>
+<a id="aa3c98b39f85633c59a57b78d74d9ece9" name="aa3c98b39f85633c59a57b78d74d9ece9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3c98b39f85633c59a57b78d74d9ece9">&#9670;&nbsp;</a></span>importWeights()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -238,7 +238,19 @@ Protected Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="structsipai_1_1AppParams.html">AppParams</a> &amp;&#160;</td>
-          <td class="paramname"><em>appParams</em>&#160;</td>
+          <td class="paramname"><em>appParams</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(int)&gt;&#160;</td>
+          <td class="paramname"><em>progressCallback</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>progressInitialValue</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -253,6 +265,8 @@ Protected Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">network</td><td></td></tr>
     <tr><td class="paramname">appParams</td><td></td></tr>
+    <tr><td class="paramname">progressCallback</td><td></td></tr>
+    <tr><td class="paramname">progressInitialValue</td><td></td></tr>
   </table>
   </dd>
 </dl>

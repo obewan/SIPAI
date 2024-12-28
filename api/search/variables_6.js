@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['hidden_5factivation_5falpha_0',['hidden_activation_alpha',['../structsipai_1_1NeuralNetworkParams.html#a27a4692728c541cebe92313b04b1c733',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5factivation_5ffunction_1',['hidden_activation_function',['../structsipai_1_1NeuralNetworkParams.html#a8d750f6632e7ecc3a989a50aad4c0037',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5fsize_5fx_2',['hidden_size_x',['../structsipai_1_1NeuralNetworkParams.html#a6594d199b1e6bcc9c11a59da89dc960d',1,'sipai::NeuralNetworkParams']]],
-  ['hidden_5fsize_5fy_3',['hidden_size_y',['../structsipai_1_1NeuralNetworkParams.html#a771a8a4bfdeb6d836c6ab086fad3b7a4',1,'sipai::NeuralNetworkParams']]],
-  ['hiddens_5fcount_4',['hiddens_count',['../structsipai_1_1NeuralNetworkParams.html#a064bfd04d8e567d5f578524f945ce2c2',1,'sipai::NeuralNetworkParams']]]
+  ['graphicpipeline_0',['graphicPipeline',['../structsipai_1_1Vulkan.html#a8180dc234cf1f63789585514ac0e2d18',1,'sipai::Vulkan']]],
+  ['graphicpipelineinfo_1',['graphicPipelineInfo',['../structsipai_1_1Vulkan.html#a2477c218160b6a5af7cdc5c6b8569576',1,'sipai::Vulkan']]]
 ];

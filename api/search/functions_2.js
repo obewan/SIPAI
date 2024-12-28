@@ -9,6 +9,7 @@ var searchData=
   ['computeloss_6',['computeLoss',['../classsipai_1_1ImageHelper.html#a9b08944a7fc47578656e00b897bd5681',1,'sipai::ImageHelper']]],
   ['copymattovector_7',['copyMatToVector',['../classsipai_1_1Common.html#a1026dc87f0f13e710366382dcb025cd5',1,'sipai::Common']]],
   ['copytobuffer_8',['copyToBuffer',['../classsipai_1_1VulkanController.html#a2f47d5e2916464b5a6c812ef3ddee807',1,'sipai::VulkanController']]],
-  ['createorimport_9',['createOrImport',['../classsipai_1_1NeuralNetworkBuilder.html#add0c63f0be168d004619714d75fdde37',1,'sipai::NeuralNetworkBuilder']]],
-  ['createorimportnetwork_10',['createOrImportNetwork',['../classsipai_1_1Manager.html#a6db3c17c6d2a4cd9038cbc5078315b51',1,'sipai::Manager']]]
+  ['countlines_9',['countLines',['../classsipai_1_1Common.html#a2b099dda09e36605f774613c486c9337',1,'sipai::Common']]],
+  ['createorimport_10',['createOrImport',['../classsipai_1_1NeuralNetworkBuilder.html#add0c63f0be168d004619714d75fdde37',1,'sipai::NeuralNetworkBuilder']]],
+  ['createorimportnetwork_11',['createOrImportNetwork',['../classsipai_1_1Manager.html#a1108f9fbc3d133f145b6c6c4b3534cc9',1,'sipai::Manager']]]
 ];

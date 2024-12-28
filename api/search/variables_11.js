@@ -1,12 +1,19 @@
 var searchData=
 [
-  ['tanhderivative_0',['tanhDerivative',['../namespacesipai.html#a83037f4cb7a18c26eaed42312d656812',1,'sipai']]],
-  ['tanhfunc_1',['tanhFunc',['../namespacesipai.html#a703f16daca81e1a86081c4582ef042ba',1,'sipai']]],
-  ['targetvalues_2',['targetValues',['../structsipai_1_1GLSLInputData.html#a910d47dec3204a7363932f40a100786b',1,'sipai::GLSLInputData']]],
-  ['threadmutex_5f_3',['threadMutex_',['../classsipai_1_1RunnerTrainingVisitor.html#a774eeef69947406b33a6a5e0b5be0af0',1,'sipai::RunnerTrainingVisitor']]],
-  ['title_4',['title',['../structsipai_1_1AppParams.html#a98d78e26b8c627eabc6288ea970dac01',1,'sipai::AppParams']]],
-  ['training_5fdata_5ffile_5',['training_data_file',['../structsipai_1_1AppParams.html#a78e3d56a4a95e3c550ff0ccaf0174fc1',1,'sipai::AppParams']]],
-  ['training_5fdata_5ffolder_6',['training_data_folder',['../structsipai_1_1AppParams.html#af52a779d8dc2b083b13a886c4f38b7a9',1,'sipai::AppParams']]],
-  ['training_5freduce_5ffactor_7',['training_reduce_factor',['../structsipai_1_1AppParams.html#a8af450510f5c9386a09d4347fba877ee',1,'sipai::AppParams']]],
-  ['training_5fsplit_5fratio_8',['training_split_ratio',['../structsipai_1_1AppParams.html#abafa0f1aea8f8163cc92cc926ffeacc1',1,'sipai::AppParams']]]
+  ['shader_0',['shader',['../structsipai_1_1Shader.html#a7053db4ea2498c70a65d58c298499674',1,'sipai::Shader']]],
+  ['shadername_1',['shadername',['../structsipai_1_1Shader.html#a26f838364aed3fa64a9aacde54255139',1,'sipai::Shader']]],
+  ['shaders_2',['shaders',['../structsipai_1_1AppParams.html#ab0712cb557b8345bc66929815c170deb',1,'sipai::AppParams::shaders()'],['../structsipai_1_1Vulkan.html#a628fbd8e588aa5e8c5c7b65054f0698f',1,'sipai::Vulkan::shaders()']]],
+  ['sigmoid_3',['sigmoid',['../namespacesipai.html#a5d64288ca760fc3e1b426c80aa0e7534',1,'sipai']]],
+  ['sigmoidderivative_4',['sigmoidDerivative',['../namespacesipai.html#ac5ea4c9552c815ccdfec85f5c297997b',1,'sipai']]],
+  ['size_5fx_5',['size_x',['../structsipai_1_1GLSLInputLayer.html#a96371008f15adba225e3460911dd861c',1,'sipai::GLSLInputLayer::size_x()'],['../structsipai_1_1GLSLOutputLayer.html#a97da4d597cda4a1043ef8c7ea06a3452',1,'sipai::GLSLOutputLayer::size_x()'],['../structsipai_1_1GLSLHiddenLayer.html#a955112bd72590694f13d80598c312ce6',1,'sipai::GLSLHiddenLayer::size_x()'],['../classsipai_1_1Layer.html#aff064c69559cb4c04fef86d1fc60d57c',1,'sipai::Layer::size_x()']]],
+  ['size_5fy_6',['size_y',['../classsipai_1_1Layer.html#a6e45b06849bef6e4247a335de9169e03',1,'sipai::Layer::size_y()'],['../structsipai_1_1GLSLInputLayer.html#acc47d2d2f2e74ec1d1b73a826ede373d',1,'sipai::GLSLInputLayer::size_y()'],['../structsipai_1_1GLSLOutputLayer.html#abd25f25d957845a948e5cfbbc50ebd6a',1,'sipai::GLSLOutputLayer::size_y()'],['../structsipai_1_1GLSLHiddenLayer.html#a8c0abc4e318caea149bf6b9bf4a03aac',1,'sipai::GLSLHiddenLayer::size_y()']]],
+  ['stoptraining_7',['stopTraining',['../RunnerTrainingVisitor_8cpp.html#a3f429bbb7d17f6561a6e02bedba454b4',1,'stopTraining():&#160;RunnerTrainingVisitor.cpp'],['../RunnerTrainingVisitor_8h.html#a3f429bbb7d17f6561a6e02bedba454b4',1,'stopTraining():&#160;RunnerTrainingVisitor.cpp']]],
+  ['stoptrainingnow_8',['stopTrainingNow',['../RunnerTrainingVisitor_8h.html#a9a4258521749960db42997f982470ff7',1,'stopTrainingNow():&#160;RunnerTrainingVisitor.cpp'],['../RunnerTrainingVisitor_8cpp.html#a9a4258521749960db42997f982470ff7',1,'stopTrainingNow():&#160;RunnerTrainingVisitor.cpp']]],
+  ['surface_9',['surface',['../structsipai_1_1Vulkan.html#a7acb44b93dbf9c18bbda0605371ff5eb',1,'sipai::Vulkan']]],
+  ['swapchain_10',['swapChain',['../structsipai_1_1Vulkan.html#a8020e63b5d908fd708554bb35eb52af0',1,'sipai::Vulkan']]],
+  ['swapchainextent_11',['swapChainExtent',['../structsipai_1_1Vulkan.html#a23fb058f4d6384c9e4e302724e1337b1',1,'sipai::Vulkan']]],
+  ['swapchainframebuffers_12',['swapChainFramebuffers',['../structsipai_1_1Vulkan.html#a88b7dac14be890d7b5577128bd3b8cf4',1,'sipai::Vulkan']]],
+  ['swapchainimageformat_13',['swapChainImageFormat',['../structsipai_1_1Vulkan.html#a0adb46b0472810fad531b480d05de3da',1,'sipai::Vulkan']]],
+  ['swapchainimages_14',['swapChainImages',['../structsipai_1_1Vulkan.html#af9c09e61aeaa12cbfbc4c60ecebbf62a',1,'sipai::Vulkan']]],
+  ['swapchainimageviews_15',['swapChainImageViews',['../structsipai_1_1Vulkan.html#aadd4551b0e03b1b69fb604ebca29bd5e',1,'sipai::Vulkan']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['neuronmat_0',['NeuronMat',['../namespacesipai.html#ae5c2917af7527a39f3c87d67fd095613',1,'sipai']]]
+  ['logcallback_0',['LogCallback',['../classsipai_1_1SimpleLogger.html#a009064286ad3081466c1953edc4b5753',1,'sipai::SimpleLogger']]]
 ];

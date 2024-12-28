@@ -7,12 +7,14 @@ var searchData=
   ['managerexception_2eh_4',['ManagerException.h',['../ManagerException_8h.html',1,'']]],
   ['mapbuffermemory_5',['mapBufferMemory',['../classsipai_1_1VulkanBuilder.html#ab851b9820461b56d6a12330f2bd0bf4e',1,'sipai::VulkanBuilder']]],
   ['mat_5fclamp4f_6',['mat_clamp4f',['../classsipai_1_1Common.html#aba8744f52f9f83b229a3df00a99a1b9c',1,'sipai::Common']]],
-  ['max_5fepochs_7',['max_epochs',['../structsipai_1_1AppParams.html#ab443db4d0452ac21c28c2f93940619ac',1,'sipai::AppParams']]],
+  ['max_5fepochs_7',['max_epochs',['../structsipai_1_1AppParams.html#aa43a7cd5d450f8cb056111e9f5dbafa1',1,'sipai::AppParams']]],
   ['max_5fepochs_5fwithout_5fimprovement_8',['max_epochs_without_improvement',['../structsipai_1_1AppParams.html#a80f10782d2f8bfbbb8d0acc34f38a4c5',1,'sipai::AppParams']]],
   ['max_5ferrors_9',['MAX_ERRORS',['../TrainingDataReader_8cpp.html#a4fbc7739949e2cf1fe2916569abb992f',1,'TrainingDataReader.cpp']]],
   ['max_5fneighbors_10',['MAX_NEIGHBORS',['../namespacesipai.html#a07f6325fc388e079c97c742eb4bbbdf0',1,'sipai']]],
   ['max_5fweights_11',['max_weights',['../classsipai_1_1NeuralNetwork.html#a332f6e71aa21b05386cf69fb20e7ffc9',1,'sipai::NeuralNetwork']]],
-  ['memory_12',['memory',['../structsipai_1_1Buffer.html#acb8160165313ca63e02bdfb89cfdb140',1,'sipai::Buffer']]],
-  ['mode_5fmap_13',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]],
-  ['module_14',['module',['../structsipai_1_1Shader.html#a4907a69fd761e7717fd3e28d4137fd76',1,'sipai::Shader']]]
+  ['maxsizex_12',['maxSizeX',['../structsipai_1_1Vulkan.html#a4c126af2067337c130a7cb37dea6f6cb',1,'sipai::Vulkan']]],
+  ['maxsizey_13',['maxSizeY',['../structsipai_1_1Vulkan.html#a24cc8616074e271d02b2ace81e1cf757',1,'sipai::Vulkan']]],
+  ['memory_14',['memory',['../structsipai_1_1Buffer.html#acb8160165313ca63e02bdfb89cfdb140',1,'sipai::Buffer']]],
+  ['mode_5fmap_15',['mode_map',['../namespacesipai.html#a8c1adef9985b74cdf2ec4d38f18b0a38',1,'sipai']]],
+  ['module_16',['module',['../structsipai_1_1Shader.html#a4907a69fd761e7717fd3e28d4137fd76',1,'sipai::Shader']]]
 ];
