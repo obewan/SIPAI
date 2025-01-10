@@ -16,8 +16,10 @@ using namespace sipai;
 std::unique_ptr<Manager> Manager::instance_ = nullptr;
 
 Manager &
-Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
-  if (network) {
+Manager::createOrImportNetwork(std::function<void(int)> progressCallback)
+{
+  if (network)
+  {
     network.reset();
   }
   auto builder = std::make_unique<NeuralNetworkBuilder>();
@@ -32,8 +34,10 @@ Manager::createOrImportNetwork(std::function<void(int)> progressCallback) {
   return *this;
 }
 
-void Manager::exportNetwork() {
-  if (!app_params.network_to_export.empty()) {
+void Manager::exportNetwork()
+{
+  if (!app_params.network_to_export.empty())
+  {
     SimpleLogger::LOG_INFO(
         "Saving the neural network to ", app_params.network_to_export, " and ",
         Common::getFilenameCsv(app_params.network_to_export), "...");
@@ -42,10 +46,11 @@ void Manager::exportNetwork() {
   }
 }
 
-Manager &Manager::showParameters() {
+Manager &Manager::showParameters()
+{
   SimpleLogger::LOG_INFO(
       "Parameters: ", "\nmode: ", Common::getRunModeStr(app_params.run_mode),
-      "\nauto-save every ", app_params.epoch_autosave, " epochs",
+      app_params.no_save ? "\nno save" : "\nsaving every " + std::to_string(app_params.epoch_autosave) + " epochs and at exit",
       "\nauto-exit after ", app_params.max_epochs_without_improvement,
       " epochs without improvement",
       app_params.max_epochs == NO_MAX_EPOCHS
@@ -92,49 +97,65 @@ Manager &Manager::showParameters() {
   return *this;
 }
 
-void Manager::run() {
+void Manager::run()
+{
   // Some checking
-  if (app_params.image_split == NO_IMAGE_SPLIT) {
+  if (app_params.image_split == NO_IMAGE_SPLIT)
+  {
     app_params.image_split = 1; // same as no split
   }
 
   // Enabling GPU Vulkan
   bool wasParallel = app_params.enable_parallel;
-  if (app_params.enable_vulkan) {
+  if (app_params.enable_vulkan)
+  {
     SimpleLogger::LOG_INFO("Enabling Vulkan...");
-    if (wasParallel) {
+    if (wasParallel)
+    {
       app_params.enable_parallel = false;
     }
-    try {
+    try
+    {
       VulkanController::getInstance().initialize();
-    } catch (std::exception &ex) {
+    }
+    catch (std::exception &ex)
+    {
       SimpleLogger::LOG_ERROR("Enabling Vulkan error: ", ex.what());
       app_params.enable_vulkan = false;
       SimpleLogger::LOG_INFO("Vulkan GPU acceleration disabled.");
-      if (wasParallel) {
+      if (wasParallel)
+      {
         app_params.enable_parallel = true;
       }
     }
   }
 
   // Enabling CPU parallelism
-  if (app_params.enable_parallel) {
+  if (app_params.enable_parallel)
+  {
     SimpleLogger::LOG_INFO("Enabling CPU parallelism...");
-    try {
+    try
+    {
       cv::setNumThreads(std::thread::hardware_concurrency());
-    } catch (std::exception &ex) {
+    }
+    catch (std::exception &ex)
+    {
       SimpleLogger::LOG_ERROR("Enabling CPU parallelism error: ", ex.what());
       cv::setNumThreads(0);
       app_params.enable_parallel = false;
       SimpleLogger::LOG_INFO("CPU threads parallelism disabled.");
     }
-  } else {
+  }
+  else
+  {
     cv::setNumThreads(0);
   }
 
   // Run with visitor
-  try {
-    switch (app_params.run_mode) {
+  try
+  {
+    switch (app_params.run_mode)
+    {
     case ERunMode::Training:
       runWithVisitor(runnerVisitorFactory_.getTrainingVisitor());
       break;
@@ -144,7 +165,9 @@ void Manager::run() {
     default:
       break;
     }
-  } catch (std::exception &ex) {
+  }
+  catch (std::exception &ex)
+  {
     SimpleLogger::LOG_ERROR("Error: ", ex.what());
   }
 }

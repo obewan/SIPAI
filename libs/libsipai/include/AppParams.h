@@ -63,6 +63,7 @@ struct AppParams {
   bool enable_vulkan = false;
   bool enable_parallel = true;
   bool enable_padding = false;
+  bool no_save = false;
   bool verbose = false;
   bool verbose_debug = false;
   bool vulkan_debug = false;

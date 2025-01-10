@@ -96,7 +96,7 @@ void RunnerTrainingVulkanVisitor::visit() const {
       hasLastEpochBeenSaved = false;
       epoch++;
 
-      if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
+      if (!appParams.no_save && !stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
         // TODO: an option to save the best validation rate network (if not
         // saved)
         saveNetwork(hasLastEpochBeenSaved);
@@ -104,7 +104,7 @@ void RunnerTrainingVulkanVisitor::visit() const {
     } // end while
 
     SimpleLogger::LOG_INFO("Exiting training...");
-    if (!stopTrainingNow) {
+    if (!appParams.no_save && !stopTrainingNow) {
       saveNetwork(hasLastEpochBeenSaved);
     }
     // Show elapsed time
