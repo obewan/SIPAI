@@ -34,7 +34,7 @@ Manager::createOrImportNetwork(std::function<void(int)> progressCallback)
   return *this;
 }
 
-void Manager::exportNetwork()
+void Manager::exportNetwork(std::function<void(int)> progressCallback)
 {
   if (!app_params.network_to_export.empty())
   {
@@ -42,7 +42,7 @@ void Manager::exportNetwork()
         "Saving the neural network to ", app_params.network_to_export, " and ",
         Common::getFilenameCsv(app_params.network_to_export), "...");
     auto exportator = std::make_unique<NeuralNetworkImportExportFacade>();
-    exportator->exportModel(network, network_params, app_params);
+    exportator->exportModel(network, network_params, app_params, progressCallback);
   }
 }
 

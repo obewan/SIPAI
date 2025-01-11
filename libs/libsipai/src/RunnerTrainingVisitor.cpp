@@ -90,11 +90,11 @@ void RunnerTrainingVisitor::logTrainingProgress(
       "%, Validation Loss: ", validationLoss * 100.0f, "%", delta.str());
 }
 
-void RunnerTrainingVisitor::saveNetwork(bool &hasLastEpochBeenSaved) const {
+void RunnerTrainingVisitor::saveNetwork(bool &hasLastEpochBeenSaved, std::function<void(int)> progressCallback) const {
   std::scoped_lock<std::mutex> lock(threadMutex_);
   try {
     if (!hasLastEpochBeenSaved) {
-      Manager::getInstance().exportNetwork();
+      Manager::getInstance().exportNetwork(progressCallback);
       hasLastEpochBeenSaved = true;
     }
   } catch (std::exception &ex) {

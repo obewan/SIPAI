@@ -17,23 +17,44 @@ using namespace sipai;
 
 void NeuralNetworkImportExportCSV::exportNeuronsWeights(
     const std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams,
-    std::function<void(int)> progressCallback, int progressInitialValue) const {
+    std::function<void(int)> progressCallback, int progressInitialValue) const
+{
   // get the csv filename
   std::string filename = Common::getFilenameCsv(appParams.network_to_export);
   std::ofstream file(filename);
 
+  // Calculate the total number of neurons to export
+  size_t totalNeurons = 0;
+  for (const auto &layer : network->layers)
+  {
+    if (layer->layerType != LayerType::LayerInput)
+    {
+      for (const auto &row : layer->neurons)
+      {
+        totalNeurons += row.size();
+      }
+    }
+  }
+
   // Write the data
   size_t max_weights = network->max_weights;
+  size_t currentNeuron = 0;
+  int oldProgressValue = -1;
+  
   for (size_t layer_index = 0; layer_index < network->layers.size();
-       layer_index++) {
+       layer_index++)
+  {
     const auto &layer = network->layers.at(layer_index);
-    if (layer->layerType == LayerType::LayerInput) {
+    if (layer->layerType == LayerType::LayerInput)
+    {
       // no weights for Input Layer, as it will be input data weights
       continue;
     }
 
-    for (size_t row = 0; row < layer->neurons.size(); row++) {
-      for (size_t col = 0; col < layer->neurons.at(row).size(); col++) {
+    for (size_t row = 0; row < layer->neurons.size(); row++)
+    {
+      for (size_t col = 0; col < layer->neurons.at(row).size(); col++)
+      {
         Neuron &neuron = layer->neurons[row][col];
         // Write the neuron weights, empty 3rd neighbors column then
         file << layer_index << "," << neuron.weights.rows << ","
@@ -44,6 +65,19 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
              << neuron.weights.cols << "," << row << "," << col << ","
              << neuron.neighbors.size() << ","
              << neuron.toNeighborsStringCsv(max_weights) << "\n";
+
+        // Update progress
+        currentNeuron++;
+        if (progressCallback)
+        {
+          int progressValue = progressInitialValue +
+                              static_cast<int>((100 * currentNeuron) / totalNeurons);
+          if (progressValue != oldProgressValue)
+          {
+            progressCallback(progressValue);
+            oldProgressValue = progressValue;
+          }
+        }
       }
     }
   }
@@ -51,13 +85,16 @@ void NeuralNetworkImportExportCSV::exportNeuronsWeights(
 
 void NeuralNetworkImportExportCSV::importNeuronsWeights(
     std::unique_ptr<NeuralNetwork> &network, const AppParams &appParams,
-    std::function<void(int)> progressCallback, int progressInitialValue) const {
+    std::function<void(int)> progressCallback, int progressInitialValue) const
+{
 
-  auto split = [](const std::string &s, char delimiter) {
+  auto split = [](const std::string &s, char delimiter)
+  {
     std::vector<std::optional<float>> tokens;
     std::string token;
     std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, delimiter)) {
+    while (std::getline(tokenStream, token, delimiter))
+    {
       tokens.push_back(token.empty() ? std::nullopt
                                      : std::make_optional(std::stof(token)));
     }
@@ -69,12 +106,14 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
 
   // get the total of lines to use for progress calculus
   size_t totalLines = 0;
-  if (progressCallback) {
+  if (progressCallback)
+  {
     totalLines = Common::countLines(filename);
   }
 
   std::ifstream file(filename);
-  if (!file.is_open()) {
+  if (!file.is_open())
+  {
     throw ImportExportException("Failed to open file: " + filename);
   }
 
@@ -82,10 +121,12 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
   std::string line;
   int oldProgressValue = progressInitialValue;
   for (int current_line_number = 1; std::getline(file, line);
-       ++current_line_number) {
+       ++current_line_number)
+  {
     const auto &fields = split(line, ',');
 
-    if (fields.size() < 6) {
+    if (fields.size() < 6)
+    {
       throw ImportExportException("CSV parsing error at line (" +
                                   std::to_string(current_line_number) +
                                   "): invalid column numbers");
@@ -98,24 +139,28 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
     auto neuron_col = static_cast<size_t>(fields[4].value());
     auto neighboors_count = fields[5];
 
-    if (!neighboors_count) {
+    if (!neighboors_count)
+    {
       // add the neuron weights
       cv::Mat weights = cv::Mat((int)weights_rows, (int)weights_cols, CV_32FC4);
       size_t i_cols = 0;
       size_t i_rows = 0;
       for (size_t pos = 6; pos + 4 < fields.size();
-           pos += 4) { // pos start at fields[6], then increment of
-                       // the length of cv::Vec4f (4)
+           pos += 4)
+      { // pos start at fields[6], then increment of
+        // the length of cv::Vec4f (4)
         auto r = fields[pos];
         auto g = fields[pos + 1];
         auto b = fields[pos + 2];
         auto a = fields[pos + 3];
-        if (r && g && b && a) {
+        if (r && g && b && a)
+        {
           weights.at<cv::Vec4f>((int)i_rows, (int)i_cols) =
               cv::Vec4f(*r, *g, *b, *a);
         }
         i_cols++;
-        if (i_cols >= weights_cols) {
+        if (i_cols >= weights_cols)
+        {
           i_cols = 0;
           i_rows++;
         }
@@ -124,38 +169,46 @@ void NeuralNetworkImportExportCSV::importNeuronsWeights(
           ->neurons.at(neuron_row)
           .at(neuron_col)
           .weights = weights;
-    } else {
+    }
+    else
+    {
       // add the neighboors and their weights
       // add the neuron weights
       std::vector<cv::Vec4f> weights;
       for (size_t pos = 6; pos + 4 < fields.size();
-           pos += 4) { // pos start at fields[6], then increment of
-                       // the length of cv::Vec4f (4)
+           pos += 4)
+      { // pos start at fields[6], then increment of
+        // the length of cv::Vec4f (4)
         auto r = fields[pos];
         auto g = fields[pos + 1];
         auto b = fields[pos + 2];
         auto a = fields[pos + 3];
-        if (r && g && b && a) {
+        if (r && g && b && a)
+        {
           weights.push_back(cv::Vec4f(*r, *g, *b, *a));
         }
       }
       auto &connections = network->layers.at(layer_index)
                               ->neurons[neuron_row][neuron_col]
                               .neighbors;
-      if (connections.size() != weights.size()) {
+      if (connections.size() != weights.size())
+      {
         throw ImportExportException("CSV parsing error at line (" +
                                     std::to_string(current_line_number) +
                                     "): invalid column numbers");
       }
-      for (size_t i = 0; i < connections.size(); i++) {
+      for (size_t i = 0; i < connections.size(); i++)
+      {
         connections.at(i).weight = weights.at(i);
       }
     }
 
-    if (progressCallback) {
+    if (progressCallback)
+    {
       int value = progressInitialValue +
                   ((100 * current_line_number) / (int)totalLines);
-      if (value != oldProgressValue) {
+      if (value != oldProgressValue)
+      {
         progressCallback(value);
         oldProgressValue = value;
       }
