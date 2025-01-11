@@ -10,7 +10,6 @@
 #pragma once
 
 #include "Common.h"
-#include "VulkanCommon.h"
 #include <cstddef>
 #include <string>
 
@@ -18,11 +17,6 @@ namespace sipai {
 constexpr int NO_MAX_EPOCHS = 0;
 constexpr int NO_IMAGE_SPLIT = 0;
 
-struct ShaderDefinition {
-  sipai::EShader name;
-  std::string filename;
-  std::string templateFilename;
-};
 
 struct AppParams {
   std::string title = "SIPAI - Simple Image Processing Artificial Intelligence";
@@ -33,21 +27,7 @@ struct AppParams {
   std::string training_data_folder = "";
   std::string network_to_import = "";
   std::string network_to_export = "";
-  std::list<ShaderDefinition> shaders {
-    { EShader::EnhancerForward1, "data/glsl/EnhancerShader-forward1.comp", "data/glsl/EnhancerShader-forward1.comp.in" },
-    { EShader::EnhancerForward2, "data/glsl/EnhancerShader-forward2.comp", "data/glsl/EnhancerShader-forward2.comp.in" },
-    { EShader::TrainingInit, "data/glsl/TrainingShader-init.comp", "data/glsl/TrainingShader-init.comp.in" },
-    { EShader::TrainingForward1, "data/glsl/TrainingShader-forward1.comp", "data/glsl/TrainingShader-forward1.comp.in" },
-    { EShader::TrainingForward2, "data/glsl/TrainingShader-forward2.comp", "data/glsl/TrainingShader-forward2.comp.in" },
-    { EShader::TrainingForward3, "data/glsl/TrainingShader-forward3.comp", "data/glsl/TrainingShader-forward3.comp.in" },
-    { EShader::TrainingForward4, "data/glsl/TrainingShader-forward4.comp", "data/glsl/TrainingShader-forward4.comp.in" },
-    { EShader::TrainingBackward1, "data/glsl/TrainingShader-backward1.comp", "data/glsl/TrainingShader-backward1.comp.in" },
-    { EShader::TrainingBackward2, "data/glsl/TrainingShader-backward2.comp", "data/glsl/TrainingShader-backward2.comp.in" },
-    { EShader::TrainingBackward3, "data/glsl/TrainingShader-backward3.comp", "data/glsl/TrainingShader-backward3.comp.in" },
-    { EShader::TrainingBackward4, "data/glsl/TrainingShader-backward4.comp", "data/glsl/TrainingShader-backward4.comp.in" },
-    { EShader::FragmentShader, "data/glsl/FragmentShader.frag", "" },
-    { EShader::VertexShader, "data/glsl/VertexShader.vert", "" }
-  };
+
   ERunMode run_mode = ERunMode::Enhancer;
   float output_scale = 1.0f;
   float training_split_ratio = 0.7f;
