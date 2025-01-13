@@ -436,7 +436,9 @@ void SIPAI::run()
 {
     Manager::getInstance()
         .showHeader()
-        .createOrImportNetwork()
+        .createOrImportNetwork([](int i){
+            SimpleLogger::LOG_INFO("Loading progress... ", i, "%");
+        })
         .showParameters()
         .run();
 }
