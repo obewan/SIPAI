@@ -33,6 +33,15 @@
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QScrollArea" name="scrollArea">
+      <property name="frameShape">
+       <enum>QFrame::Shape::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
@@ -41,8 +50,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1074</width>
-         <height>779</height>
+         <width>1076</width>
+         <height>781</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -52,6 +61,21 @@
         </sizepolicy>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="sizePolicy">
@@ -59,6 +83,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="tabPosition">
+           <enum>QTabWidget::TabPosition::West</enum>
           </property>
           <property name="currentIndex">
            <number>0</number>
@@ -81,7 +108,7 @@
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0,0">
               <property name="sizeConstraint">
-               <enum>QLayout::SetNoConstraint</enum>
+               <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
               </property>
               <item>
                <layout class="QFormLayout" name="formLayout_4">
@@ -137,15 +164,15 @@
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <property name="sizeConstraint">
-                    <enum>QLayout::SetDefaultConstraint</enum>
+                    <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                    </property>
                    <item>
                     <layout class="QFormLayout" name="formLayout_2">
                      <property name="sizeConstraint">
-                      <enum>QLayout::SetDefaultConstraint</enum>
+                      <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                      </property>
                      <property name="fieldGrowthPolicy">
-                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                      <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
                      </property>
                      <property name="horizontalSpacing">
                       <number>6</number>
@@ -372,7 +399,7 @@
                    <item>
                     <layout class="QFormLayout" name="formLayout_3">
                      <property name="fieldGrowthPolicy">
-                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                      <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
                      </property>
                      <property name="horizontalSpacing">
                       <number>6</number>
@@ -607,7 +634,7 @@
               <item>
                <spacer name="verticalSpacer">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Orientation::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -622,7 +649,7 @@
                 <item>
                  <spacer name="horizontalSpacer">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -631,6 +658,17 @@
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonNew">
+                  <property name="text">
+                   <string>New</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/Document-new.svg</normaloff>:/icons/Document-new.svg</iconset>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="pushButtonNetworkBuild">
@@ -721,7 +759,7 @@
                   <item>
                    <spacer name="horizontalSpacer_4">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -1328,7 +1366,6 @@
    <addaction name="separator"/>
    <addaction name="actionRun"/>
    <addaction name="actionStop"/>
-   <addaction name="actionStopExit"/>
   </widget>
   <action name="actionLoadNeuralNetwork">
    <property name="enabled">
@@ -1357,7 +1394,7 @@
     <string>Quit</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
+    <enum>QAction::MenuRole::QuitRole</enum>
    </property>
   </action>
   <action name="actionAbout">
@@ -1369,7 +1406,7 @@
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
+    <enum>QAction::MenuRole::AboutRole</enum>
    </property>
   </action>
   <action name="actionSaveNeuralNetwork">
@@ -1411,7 +1448,7 @@
     <string>Load settings...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSaveSettings">
@@ -1432,7 +1469,7 @@
     <string>Save settings</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSaveAsSettings">
@@ -1450,7 +1487,7 @@
     <string>Save settings as...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionRun">
@@ -1465,10 +1502,13 @@
     <string>Run</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionStop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/Media-playback-stop.svg</normaloff>:/icons/Media-playback-stop.svg</iconset>
@@ -1480,22 +1520,7 @@
     <string>Stop the run and save the neural network</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
-   </property>
-  </action>
-  <action name="actionStopExit">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/Dialog-STOP.svg</normaloff>:/icons/Dialog-STOP.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Stop and exit</string>
-   </property>
-   <property name="toolTip">
-    <string>Stop and exit the run without saving</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSaveAsNeuralNetwork">
@@ -1513,7 +1538,7 @@
     <string>Save the neural network as...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSelectInputFile">
@@ -1528,7 +1553,7 @@
     <string>Select an input file...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSelectOutputFile">
@@ -1543,7 +1568,7 @@
     <string>Select an output file...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSelectTrainingFile">
@@ -1558,7 +1583,7 @@
     <string>Select a training file...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
   <action name="actionSelectTrainingFolder">
@@ -1573,7 +1598,7 @@
     <string>Select a training folder...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
  </widget>
