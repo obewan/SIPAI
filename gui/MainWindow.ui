@@ -660,17 +660,6 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButtonNew">
-                  <property name="text">
-                   <string>New</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="icons.qrc">
-                    <normaloff>:/icons/Document-new.svg</normaloff>:/icons/Document-new.svg</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="pushButtonNetworkBuild">
                   <property name="toolTip">
                    <string>Build the neural network</string>
@@ -709,6 +698,19 @@
                   <property name="icon">
                    <iconset resource="icons.qrc">
                     <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonClear">
+                  <property name="toolTip">
+                   <string>Remove the current model and reset the parameters.</string>
+                  </property>
+                  <property name="text">
+                   <string>Clear</string>
+                  </property>
+                  <property name="icon">
+                   <iconset theme="QIcon::ThemeIcon::EditDelete"/>
                   </property>
                  </widget>
                 </item>
