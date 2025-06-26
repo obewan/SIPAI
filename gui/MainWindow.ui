@@ -388,6 +388,9 @@
                      </item>
                      <item row="6" column="1">
                       <widget class="QSpinBox" name="spinBoxEpochsMax">
+                       <property name="toolTip">
+                        <string>Max number of epochs before stopping</string>
+                       </property>
                        <property name="maximum">
                         <number>999999999</number>
                        </property>
@@ -405,6 +408,9 @@
                      </item>
                      <item row="7" column="1">
                       <widget class="QSpinBox" name="spinBoxEpochsWithoutImpMax">
+                       <property name="toolTip">
+                        <string>Max epochs without improvement before stopping the run</string>
+                       </property>
                        <property name="maximum">
                         <number>999999999</number>
                        </property>
@@ -422,6 +428,9 @@
                      </item>
                      <item row="8" column="1">
                       <widget class="QSpinBox" name="spinBoxEpochsSaving">
+                       <property name="toolTip">
+                        <string>Epoch frequency at which the model will be automatically saved</string>
+                       </property>
                        <property name="maximum">
                         <number>999999999</number>
                        </property>
@@ -707,7 +716,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tabNeuralNetwork">
+          <widget class="QWidget" name="tabModel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -719,7 +728,7 @@
              <normaloff>:/icons/Bkchem48.png</normaloff>:/icons/Bkchem48.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Neural Network</string>
+            <string>Model</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
@@ -971,7 +980,7 @@
                 <item>
                  <widget class="QGroupBox" name="groupBoxNetworkParams">
                   <property name="title">
-                   <string>Neural network parameters</string>
+                   <string>Learning parameters</string>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_6">
                    <item>
@@ -1363,19 +1372,19 @@
     <addaction name="actionAbout"/>
     <addaction name="actionHelp"/>
    </widget>
-   <widget class="QMenu" name="menuNeural_Network">
+   <widget class="QMenu" name="menuModel">
     <property name="title">
-     <string>Neural Network</string>
+     <string>Model</string>
     </property>
-    <addaction name="actionNetworkLoad"/>
-    <addaction name="actionNetworkSave"/>
-    <addaction name="actionNetworkSave_as"/>
+    <addaction name="actionModelLoad"/>
+    <addaction name="actionModelSave"/>
+    <addaction name="actionModelSave_as"/>
     <addaction name="separator"/>
-    <addaction name="actionNetworkBuild"/>
-    <addaction name="actionNetworkClear"/>
+    <addaction name="actionModelBuild"/>
+    <addaction name="actionModelClear"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuNeural_Network"/>
+   <addaction name="menuModel"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -1524,7 +1533,7 @@
     <string>Run</string>
    </property>
    <property name="toolTip">
-    <string>Run</string>
+    <string>Run selected action on the current model</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::TextHeuristicRole</enum>
@@ -1542,7 +1551,7 @@
     <string>Stop</string>
    </property>
    <property name="toolTip">
-    <string>Stop the run and save the neural network</string>
+    <string>End current run</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::TextHeuristicRole</enum>
@@ -1626,7 +1635,7 @@
     <enum>QAction::MenuRole::TextHeuristicRole</enum>
    </property>
   </action>
-  <action name="actionNetworkLoad">
+  <action name="actionModelLoad">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/Document-open.svg</normaloff>:/icons/Document-open.svg</iconset>
@@ -1635,7 +1644,7 @@
     <string>Load...</string>
    </property>
   </action>
-  <action name="actionNetworkSave">
+  <action name="actionModelSave">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/Document-save.svg</normaloff>:/icons/Document-save.svg</iconset>
@@ -1644,7 +1653,7 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionNetworkSave_as">
+  <action name="actionModelSave_as">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/Document-save-as.svg</normaloff>:/icons/Document-save-as.svg</iconset>
@@ -1653,7 +1662,7 @@
     <string>Save as...</string>
    </property>
   </action>
-  <action name="actionNetworkBuild">
+  <action name="actionModelBuild">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/Tecno-rueda.svg</normaloff>:/icons/Tecno-rueda.svg</iconset>
@@ -1662,7 +1671,7 @@
     <string>Build</string>
    </property>
   </action>
-  <action name="actionNetworkClear">
+  <action name="actionModelClear">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/Edit-clear.svg</normaloff>:/icons/Edit-clear.svg</iconset>
