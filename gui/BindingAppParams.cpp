@@ -52,12 +52,12 @@ void BindingAppParams::connectUi(Ui::MainWindow *ui) {
     }
   });
 
-  connect(ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
-          &BindingAppParams::setNetworkToImport);
-  connect(this, &BindingAppParams::networkToImportChanged,
-          [ui](const QString &value) {
-            ui->lineEditCurrentNetwork->setText(value);
-          });
+//   connect(ui->lineEditCurrentNetwork, &QLineEdit::textChanged, this,
+//           &BindingAppParams::setNetworkToImport);
+//   connect(this, &BindingAppParams::networkToImportChanged,
+//           [ui](const QString &value) {
+//             ui->lineEditCurrentNetwork->setText(value);
+//           });
 
   connect(ui->lineEditInputFile, &QLineEdit::textChanged, this,
           &BindingAppParams::setInputFile);

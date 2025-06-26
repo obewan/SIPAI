@@ -107,7 +107,7 @@ void MainWindow::onActionLoadNeuralNetwork()
     return; // No file selected
   }
 
-  ui->lineEditCurrentNetwork->setText("");
+  //ui->lineEditCurrentNetwork->setText("");
 
   QFile file(fileName);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -116,7 +116,7 @@ void MainWindow::onActionLoadNeuralNetwork()
     return;
   }
 
-  ui->lineEditCurrentNetwork->setText(fileName);
+  //ui->lineEditCurrentNetwork->setText(fileName);
   progressDialog =
       new QProgressDialog("Loading neural network...", "Abort", 0, 100, this);
   progressDialog->setWindowModality(Qt::WindowModal);
