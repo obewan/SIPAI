@@ -4,6 +4,7 @@
 
 #include "./ui_MainWindow.h"
 #include "MainWindow.h"
+#include "RunnerTrainingVisitor.h"
 #include "SimpleLogger.h"
 #include <sstream>
 
@@ -18,13 +19,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       modelLogger(new QStandardItemModel(0, 3)), progressDialog(nullptr),
       futureWatcher(new QFutureWatcher<void>(this)),
+      runWatcher(new QFutureWatcher<void>(this)),
       bindingAppParams(new BindingAppParams()),
       bindingNetworkParams(new BindingNetworkParams()),
       logCallback(new SimpleLoggerCallback(modelLogger))
 {
 
   auto &manager = Manager::getInstance();
-  
+
   // Setup the UI with the MainWindow.ui
   ui->setupUi(this);
 
@@ -55,6 +57,42 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::onLoadingFinished);
   connect(futureWatcher, &QFutureWatcher<void>::progressValueChanged, this,
           &MainWindow::onProgressUpdated);
+
+  // Run/Stop toolbar buttons
+  connect(ui->actionRun, &QAction::triggered, this, &MainWindow::onActionRun);
+  connect(ui->actionStop, &QAction::triggered, this, &MainWindow::onActionStop);
+  connect(runWatcher, &QFutureWatcher<void>::finished, this,
+          &MainWindow::onRunFinished);
+
+  // Settings tab buttons
+  connect(ui->pushButtonSettingsApply, &QPushButton::clicked, this,
+          &MainWindow::onSettingsApply);
+  connect(ui->pushButtonSettingsCancel, &QPushButton::clicked, this,
+          &MainWindow::onSettingsCancel);
+
+  // Model tab buttons
+  connect(ui->pushButton_NetworkLoad, &QPushButton::clicked, this,
+          &MainWindow::onModelLoad);
+  connect(ui->pushButton_NetworkSave, &QPushButton::clicked, this,
+          &MainWindow::onModelSave);
+  connect(ui->pushButton_NetworkSaveAs, &QPushButton::clicked, this,
+          &MainWindow::onModelSaveAs);
+  connect(ui->pushButton_Build, &QPushButton::clicked, this,
+          &MainWindow::onModelBuild);
+  connect(ui->pushButton_NetworkClear, &QPushButton::clicked, this,
+          &MainWindow::onModelClear);
+
+  // Model menu actions -> same as tab buttons
+  connect(ui->actionModelLoad, &QAction::triggered, this,
+          &MainWindow::onModelLoad);
+  connect(ui->actionModelSave, &QAction::triggered, this,
+          &MainWindow::onModelSave);
+  connect(ui->actionModelSave_as, &QAction::triggered, this,
+          &MainWindow::onModelSaveAs);
+  connect(ui->actionModelBuild, &QAction::triggered, this,
+          &MainWindow::onModelBuild);
+  connect(ui->actionModelClear, &QAction::triggered, this,
+          &MainWindow::onModelClear);
 
   // Add logs
   modelLogger->setHorizontalHeaderLabels({"Timestamp", "Log Level", "Message"});
@@ -96,6 +134,184 @@ MainWindow::~MainWindow()
   delete ui;
 }
 
+// --- Run / Stop ---
+
+void MainWindow::onActionRun()
+{
+  auto &manager = Manager::getInstance();
+  if (!manager.network) {
+    QMessageBox::warning(this, tr("Error"),
+                         tr("No neural network loaded. Please build or load a "
+                            "model first."));
+    return;
+  }
+
+  setRunningState(true);
+  statusBar()->showMessage(tr("Running..."));
+
+  QFuture<void> future = QtConcurrent::run([this]() {
+    try {
+      Manager::getInstance().run();
+    } catch (const std::exception &ex) {
+      QMetaObject::invokeMethod(this, "onErrorOccurred",
+                                Q_ARG(QString, QString::fromStdString(ex.what())));
+    }
+  });
+  runWatcher->setFuture(future);
+}
+
+void MainWindow::onActionStop()
+{
+  // Use the same signal mechanism as the CLI (SIGINT simulation)
+  if (!stopTraining) {
+    stopTraining = true;
+    SimpleLogger::LOG_INFO("Stop requested. Finishing current epoch...");
+    statusBar()->showMessage(tr("Stopping after current epoch..."));
+  } else {
+    stopTrainingNow = true;
+    SimpleLogger::LOG_INFO("Force stop requested.");
+    statusBar()->showMessage(tr("Force stopping..."));
+  }
+}
+
+void MainWindow::onRunFinished()
+{
+  setRunningState(false);
+  SimpleLogger::LOG_INFO("Run finished.");
+  statusBar()->showMessage(tr("Run finished"), 5000);
+}
+
+void MainWindow::setRunningState(bool running)
+{
+  isRunning_ = running;
+  ui->actionRun->setEnabled(!running);
+  ui->actionStop->setEnabled(running);
+}
+
+// --- Settings tab ---
+
+void MainWindow::onSettingsApply()
+{
+  // Values are already written to app_params/network_params via bindings
+  SimpleLogger::LOG_INFO("Settings applied.");
+  statusBar()->showMessage(tr("Settings applied"), 3000);
+}
+
+void MainWindow::onSettingsCancel()
+{
+  // Reload UI from current params (discards unsaved widget changes)
+  bindingAppParams->reload();
+  bindingNetworkParams->reload();
+  SimpleLogger::LOG_INFO("Settings reverted.");
+  statusBar()->showMessage(tr("Settings reverted"), 3000);
+}
+
+// --- Model tab ---
+
+void MainWindow::onModelLoad()
+{
+  onActionLoadNeuralNetwork();
+}
+
+void MainWindow::onModelSave()
+{
+  auto &manager = Manager::getInstance();
+  if (!manager.network) {
+    QMessageBox::warning(this, tr("Error"), tr("No neural network to save."));
+    return;
+  }
+  if (manager.app_params.network_to_export.empty()) {
+    // Fall through to Save As if no export path set
+    onModelSaveAs();
+    return;
+  }
+
+  statusBar()->showMessage(tr("Saving neural network..."));
+  QFuture<void> future = QtConcurrent::run([this]() {
+    try {
+      Manager::getInstance().exportNetwork([this](int i) {
+        QMetaObject::invokeMethod(this, [this, i]() {
+          statusBar()->showMessage(tr("Saving... %1%").arg(i));
+        }, Qt::QueuedConnection);
+      });
+    } catch (const std::exception &ex) {
+      QMetaObject::invokeMethod(this, "onErrorOccurred",
+                                Q_ARG(QString, QString::fromStdString(ex.what())));
+      return;
+    }
+    QMetaObject::invokeMethod(this, [this]() {
+      SimpleLogger::LOG_INFO("Neural network saved.");
+      statusBar()->showMessage(tr("Neural network saved"), 5000);
+    }, Qt::QueuedConnection);
+  });
+}
+
+void MainWindow::onModelSaveAs()
+{
+  auto &manager = Manager::getInstance();
+  if (!manager.network) {
+    QMessageBox::warning(this, tr("Error"), tr("No neural network to save."));
+    return;
+  }
+
+  auto fileName = QFileDialog::getSaveFileName(
+      this, tr("Save neural network as..."), "", "JSON (*.json)");
+  if (fileName.isEmpty()) {
+    return;
+  }
+
+  manager.app_params.network_to_export = fileName.toStdString();
+  onModelSave();
+}
+
+void MainWindow::onModelBuild()
+{
+  progressDialog =
+      new QProgressDialog("Building neural network...", "Abort", 0, 100, this);
+  progressDialog->setWindowModality(Qt::WindowModal);
+  connect(progressDialog, &QProgressDialog::canceled, this,
+          &MainWindow::onLoadingCanceled);
+
+  statusBar()->showMessage(tr("Building neural network..."));
+
+  QFuture<void> future = QtConcurrent::run([this]() {
+    try {
+      Manager::getInstance().createOrImportNetwork([this](int i) {
+        QMetaObject::invokeMethod(futureWatcher, "progressValueChanged",
+                                  Q_ARG(int, i));
+        if (futureWatcher->isCanceled()) {
+          throw std::runtime_error("Building canceled");
+        }
+      });
+    } catch (const std::exception &ex) {
+      QMetaObject::invokeMethod(this, "onErrorOccurred",
+                                Q_ARG(QString, QString::fromStdString(ex.what())));
+    }
+  });
+  futureWatcher->setFuture(future);
+  progressDialog->setValue(0);
+  progressDialog->show();
+}
+
+void MainWindow::onModelClear()
+{
+  auto &manager = Manager::getInstance();
+  if (manager.network) {
+    auto reply = QMessageBox::question(
+        this, tr("Clear Neural Network"),
+        tr("Are you sure you want to clear the current neural network?"),
+        QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::No) {
+      return;
+    }
+    manager.network.reset();
+    SimpleLogger::LOG_INFO("Neural network cleared.");
+    statusBar()->showMessage(tr("Neural network cleared"), 5000);
+  }
+}
+
+// --- File dialogs ---
+
 void MainWindow::onActionLoadNeuralNetwork()
 {
   auto fileName = QFileDialog::getOpenFileName(
@@ -107,8 +323,6 @@ void MainWindow::onActionLoadNeuralNetwork()
     return; // No file selected
   }
 
-  //ui->lineEditCurrentNetwork->setText("");
-
   QFile file(fileName);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
@@ -116,7 +330,8 @@ void MainWindow::onActionLoadNeuralNetwork()
     return;
   }
 
-  //ui->lineEditCurrentNetwork->setText(fileName);
+  Manager::getInstance().app_params.network_to_import = fileName.toStdString();
+
   progressDialog =
       new QProgressDialog("Loading neural network...", "Abort", 0, 100, this);
   progressDialog->setWindowModality(Qt::WindowModal);
@@ -184,6 +399,7 @@ void MainWindow::onErrorOccurred(const QString &message)
           progressDialog->close();
           progressDialog->deleteLater();
         }
+        setRunningState(false);
         SimpleLogger::LOG_ERROR(message.toStdString());
         statusBar()->showMessage(tr("Error: %1").arg(message),
                                  5000); // Show message for 5 seconds

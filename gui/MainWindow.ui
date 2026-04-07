@@ -1735,7 +1735,7 @@
   </connection>
   <connection>
    <sender>toolButtonInputFile</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>actionSelectInputFile</receiver>
    <slot>trigger()</slot>
    <hints>
@@ -1751,7 +1751,7 @@
   </connection>
   <connection>
    <sender>toolButtonOutputFile</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>actionSelectOutputFile</receiver>
    <slot>trigger()</slot>
    <hints>
@@ -1767,7 +1767,7 @@
   </connection>
   <connection>
    <sender>toolButtonTrainingFile</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>actionSelectTrainingFile</receiver>
    <slot>trigger()</slot>
    <hints>
@@ -1783,7 +1783,7 @@
   </connection>
   <connection>
    <sender>toolButtonTrainingFolder</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>actionSelectTrainingFolder</receiver>
    <slot>trigger()</slot>
    <hints>
