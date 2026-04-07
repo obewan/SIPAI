@@ -58,8 +58,10 @@ public:
   void initWeights(size_t size_x, size_t size_y) {
     weights = cv::Mat((int)size_y, (int)size_x, CV_32FC4);
 
-    // Random initialization
-    cv::randn(weights, cv::Vec4f::all(0), cv::Vec4f::all(1));
+    // He initialization: std = sqrt(2 / fan_in)
+    float fan_in = static_cast<float>(size_x * size_y);
+    float std_dev = std::sqrt(2.0f / fan_in);
+    cv::randn(weights, cv::Vec4f::all(0), cv::Vec4f::all(std_dev));
   }
 
   std::string toStringCsv(size_t max_weights) const {

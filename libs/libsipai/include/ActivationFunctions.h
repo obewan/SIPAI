@@ -64,8 +64,8 @@ inline auto sigmoid = [](const cv::Vec4f &rgba) {
 };
 
 inline auto sigmoidDerivative = [](const cv::Vec4f &rgba) {
-  cv::Vec4f sigmoidValue = sigmoid(rgba);
-  return sigmoidValue.mul(cv::Vec4f::all(1.0f) - sigmoidValue);
+  // rgba is already sigmoid(x) from forward pass, so derivative is s*(1-s)
+  return rgba.mul(cv::Vec4f::all(1.0f) - rgba);
 };
 
 /**
@@ -81,8 +81,16 @@ inline auto tanhFunc = [](const cv::Vec4f &rgba) {
 };
 
 inline auto tanhDerivative = [](const cv::Vec4f &rgba) {
-  cv::Vec4f tanhValue = tanhFunc(rgba);
-  return cv::Vec4f::all(1.0f) - tanhValue.mul(tanhValue);
+  // rgba is already tanhFunc(x) from forward pass (mapped to [0,1]),
+  // so we need to account for the /2+0.5 scaling: derivative is (1-t^2)/2
+  // where t = 2*(rgba - 0.5) is the raw tanh value
+  cv::Vec4f t;
+  std::transform(rgba.val, rgba.val + 4, t.val,
+                 [](float v) { return 2.0f * (v - 0.5f); });
+  cv::Vec4f result;
+  std::transform(t.val, t.val + 4, result.val,
+                 [](float v) { return (1.0f - v * v) / 2.0f; });
+  return result;
 };
 
 /**
@@ -110,11 +118,18 @@ inline auto reluDerivative = [](const cv::Vec4f &rgba) {
  * Combine LReLU with clamping to [0, 1] range
  */
 inline auto leakyRelu = [](const cv::Vec4f &rgba) {
-  return Common::clamp4f(rgba * 0.01f);
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val, [](float v) {
+    return std::clamp(v > 0.0f ? v : 0.01f * v, 0.0f, 1.0f);
+  });
+  return result;
 };
 
 inline auto leakyReluDerivative = [](const cv::Vec4f &rgba) {
-  return Common::clamp4f(rgba, cv::Vec4f::all(0.01f), cv::Vec4f::all(1.0f));
+  cv::Vec4f result;
+  std::transform(rgba.val, rgba.val + 4, result.val,
+                 [](float v) { return v > 0.0f ? 1.0f : 0.01f; });
+  return result;
 };
 
 /**
