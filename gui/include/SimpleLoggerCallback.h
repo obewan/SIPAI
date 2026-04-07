@@ -9,21 +9,35 @@
  */
 #pragma once
 #include <QList>
+#include <QMetaObject>
 #include <QStandardItemModel>
 
-class SimpleLoggerCallback {
+class SimpleLoggerCallback : public QObject {
+  Q_OBJECT
 public:
-  SimpleLoggerCallback(QStandardItemModel *model) : modelLogger(model) {}
+  SimpleLoggerCallback(QStandardItemModel *model, QObject *parent = nullptr)
+      : QObject(parent), modelLogger(model) {}
 
   void log(const std::string &timestamp, const std::string &level,
            const std::string &message) {
-    QList<QStandardItem *> items;
-    items.append(new QStandardItem(QString::fromStdString(timestamp)));
-    items.append(new QStandardItem(QString::fromStdString(level)));
-    items.append(new QStandardItem(QString::fromStdString(message)));
-    modelLogger->appendRow(items);
+    QString ts = QString::fromStdString(timestamp);
+    QString lv = QString::fromStdString(level);
+    QString msg = QString::fromStdString(message);
+    // Marshal to the UI thread for thread-safe model access
+    QMetaObject::invokeMethod(
+        this, [this, ts, lv, msg]() { appendRow(ts, lv, msg); },
+        Qt::QueuedConnection);
   }
 
 private:
+  void appendRow(const QString &timestamp, const QString &level,
+                 const QString &message) {
+    QList<QStandardItem *> items;
+    items.append(new QStandardItem(timestamp));
+    items.append(new QStandardItem(level));
+    items.append(new QStandardItem(message));
+    modelLogger->appendRow(items);
+  }
+
   QStandardItemModel *modelLogger;
 };

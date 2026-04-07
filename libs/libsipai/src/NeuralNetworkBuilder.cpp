@@ -133,8 +133,10 @@ NeuralNetworkBuilder &NeuralNetworkBuilder::addNeighbors() {
               ny < static_cast<int>(layer->size_y)) {
             Neuron &neighbor = layer->neurons[ny][nx];
 
+            // Scale neighbor weights: max 4 neighbors, use sqrt(2/4)
             cv::Vec4f weight =
-                isImported ? cv::Vec4f::all(0.0) : cv::Vec4f::randn(0.0, 1.0);
+                isImported ? cv::Vec4f::all(0.0)
+                           : cv::Vec4f::randn(0.0f, std::sqrt(2.0f / 4.0f));
 
             neuron.neighbors.push_back(NeuronConnection(&neighbor, weight));
           }

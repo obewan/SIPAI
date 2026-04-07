@@ -40,21 +40,41 @@ public slots:
   void onActionSelectTrainingFile();
   void onActionSelectTrainingFolder();
 
+  // Run/Stop
+  void onActionRun();
+  void onActionStop();
+
+  // Settings tab
+  void onSettingsApply();
+  void onSettingsCancel();
+
+  // Model tab
+  void onModelLoad();
+  void onModelSave();
+  void onModelSaveAs();
+  void onModelBuild();
+  void onModelClear();
+
 private slots:
   void onProgressUpdated(int value);
   void onLoadingCanceled();
   void onLoadingFinished();
   void onErrorOccurred(const QString &message);
+  void onRunFinished();
 
 private:
   Ui::MainWindow *ui;
   QStandardItemModel *modelLogger;
   QProgressDialog *progressDialog;
   QFutureWatcher<void> *futureWatcher;
+  QFutureWatcher<void> *runWatcher;
   BindingAppParams *bindingAppParams;
   BindingNetworkParams *bindingNetworkParams;
   SimpleLoggerCallback *logCallback;
 
   std::string aboutStr_;
+  bool isRunning_ = false;
+
   void loadNetwork();
+  void setRunningState(bool running);
 };

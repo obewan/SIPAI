@@ -101,16 +101,20 @@ void RunnerTrainingOpenCVVisitor::visit() const {
       hasLastEpochBeenSaved = false;
       epoch++;
 
-      if (!stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
+      if (!appParams.no_save && !stopTrainingNow && (epoch % appParams.epoch_autosave == 0)) {
         // TODO: an option to save the best validation rate network (if not
         // saved)
-        saveNetwork(hasLastEpochBeenSaved);
+        saveNetwork(hasLastEpochBeenSaved, [](int i){
+          SimpleLogger::LOG_INFO("Saving progress... ", i, "%");
+        });
       }
     }
 
     SimpleLogger::LOG_INFO("Exiting training...");
-    if (!stopTrainingNow) {
-      saveNetwork(hasLastEpochBeenSaved);
+    if (!appParams.no_save && !stopTrainingNow) {
+      saveNetwork(hasLastEpochBeenSaved, [](int i){
+          SimpleLogger::LOG_INFO("Saving progress... ", i, "%");
+        });
     }
     // Show elapsed time
     const auto end{std::chrono::steady_clock::now()};

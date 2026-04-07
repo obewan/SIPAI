@@ -77,8 +77,9 @@ public:
   /**
    * @brief Export the neural network to its json and csv files.
    *
+   * @param progressCallback
    */
-  void exportNetwork();
+  void exportNetwork(std::function<void(int)> progressCallback = {});
 
   /**
    * @brief Run the ai (main entrance).

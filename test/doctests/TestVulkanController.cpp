@@ -18,8 +18,8 @@ TEST_CASE("Testing VulkanController" * doctest::skip(true))
     VulkanHelper helper;
     std::string relativePath = "../../";
     std::string templateTest = relativePath +
-                               manager.app_params.shaders.front().templateFilename;
-    std::string fileTest = relativePath + manager.app_params.shaders.front().filename;
+                               shader_files.front().templateFilename;
+    std::string fileTest = relativePath + shader_files.front().filename;
     CHECK(std::filesystem::exists(templateTest));
     if (std::filesystem::exists(fileTest))
     {

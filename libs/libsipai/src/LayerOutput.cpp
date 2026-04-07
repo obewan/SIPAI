@@ -12,7 +12,7 @@ void LayerOutput::computeErrors(const cv::Mat &expectedValues) {
 
   const float error_min = Manager::getConstInstance().network_params.error_min;
   const float error_max = Manager::getConstInstance().network_params.error_max;
-  const float weightFactor = 0.5f; // Experiment with weight between 0 and 1
+  const float weightFactor = 0.9f; // Prioritize prediction error over neighbor signal
 
   // Create the errors matrix if not already allocated
   if (errors.empty()) {

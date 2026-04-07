@@ -79,8 +79,9 @@ public:
    * @brief Save and export the neural network
    *
    * @param hasLastEpochBeenSaved
+   * @param progressCallback
    */
-  virtual void saveNetwork(bool &hasLastEpochBeenSaved) const;
+  virtual void saveNetwork(bool &hasLastEpochBeenSaved, std::function<void(int)> progressCallback = {}) const;
 
 protected:
   mutable std::mutex threadMutex_;

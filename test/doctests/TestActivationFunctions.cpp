@@ -45,14 +45,13 @@ TEST_CASE("Testing the Activation Functions") {
   };
 
   auto testLReLU = [&eps](const Layer &lay) {
-    cv::Vec4f input{1.0f, 1.0f, 1.0f, 1.0f};
-    cv::Vec4f expected{0.01f, 0.01f, 0.01f, 0.01f};
-    const auto output = lay.activationFunction(input);
-    for (int i = 0; i < 4; ++i) {
-      CHECK(output[i] == doctest::Approx(expected[i]).epsilon(eps));
-    }
+    // Positive values pass through (clamped to [0,1])
+    CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f}) ==
+          cv::Vec4f{1.0f, 1.0f, 1.0f, 1.0f});
+    // Negative values are scaled by 0.01, then clamped to [0,1] -> 0
     CHECK(lay.activationFunction({-0.5f, -0.5f, -0.5f, -0.5f})[0] ==
           doctest::Approx(0.f).epsilon(eps));
+    // Derivative: 1.0 for positive, 0.01 for negative
     CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f}) ==
           cv::Vec4f{1.0, 1.0, 1.0, 1.0});
     CHECK(lay.activationFunctionDerivative({-0.5f, -0.5f, -0.5f, -0.5f})[0] ==
@@ -86,9 +85,12 @@ TEST_CASE("Testing the Activation Functions") {
           doctest::Approx(0.5f).epsilon(eps));
     CHECK(lay.activationFunction({1.0f, 1.0f, 1.0f, 1.0f})[1] ==
           doctest::Approx(0.731059f).epsilon(eps));
-    CHECK(lay.activationFunctionDerivative({0.0f, 0.0f, 0.0f, 0.0f})[2] ==
+    // Derivative expects already-activated values: s*(1-s)
+    // sigmoidDerivative(0.5) = 0.5 * 0.5 = 0.25
+    CHECK(lay.activationFunctionDerivative({0.5f, 0.5f, 0.5f, 0.5f})[2] ==
           doctest::Approx(0.25f).epsilon(eps));
-    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})[3] ==
+    // sigmoidDerivative(0.731059) = 0.731059 * 0.268941 = 0.196612
+    CHECK(lay.activationFunctionDerivative({0.731059f, 0.731059f, 0.731059f, 0.731059f})[3] ==
           doctest::Approx(0.196612f).epsilon(eps));
   };
 
@@ -99,16 +101,20 @@ TEST_CASE("Testing the Activation Functions") {
           doctest::Approx(0.880797).epsilon(eps));
     CHECK(lay.activationFunction({-1.0f, -1.0f, -1.0f, -1.0f})[2] ==
           doctest::Approx(0.119203).epsilon(eps));
-    cv::Vec4f input{0.0f, 0.0f, 0.0f, 0.0f};
-    cv::Vec4f expected{0.75f, 0.75f, 0.75f, 0.75f};
+    // Derivative expects already-activated values (in [0,1] range)
+    // tanhDerivative(0.5) -> t=0, (1-0)/2 = 0.5
+    cv::Vec4f input{0.5f, 0.5f, 0.5f, 0.5f};
+    cv::Vec4f expected{0.5f, 0.5f, 0.5f, 0.5f};
     const auto output = lay.activationFunctionDerivative(input);
     for (int i = 0; i < 4; ++i) {
       CHECK(output[i] == doctest::Approx(expected[i]).epsilon(eps));
     }
-    CHECK(lay.activationFunctionDerivative({1.0f, 1.0f, 1.0f, 1.0f})[3] ==
-          doctest::Approx(0.224196).epsilon(eps));
-    CHECK(lay.activationFunctionDerivative({-1.0f, -1.0f, -1.0f, -1.0f})[0] ==
-          doctest::Approx(0.985791).epsilon(eps));
+    // tanhDerivative(0.880797) -> t=0.761594, (1-0.580026)/2 = 0.209987
+    CHECK(lay.activationFunctionDerivative({0.880797f, 0.880797f, 0.880797f, 0.880797f})[3] ==
+          doctest::Approx(0.209987f).epsilon(1e-4f));
+    // tanhDerivative(0.119203) -> t=-0.761594, same result = 0.209987
+    CHECK(lay.activationFunctionDerivative({0.119203f, 0.119203f, 0.119203f, 0.119203f})[0] ==
+          doctest::Approx(0.209987f).epsilon(1e-4f));
   };
 
   auto testActivationFunction =

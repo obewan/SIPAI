@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/Bkchem48.png</file>
+        <file>icons/Dialog-accept.svg</file>
         <file>icons/Dialog-error-round.svg</file>
         <file>icons/Document-new.svg</file>
         <file>icons/Document-open.svg</file>

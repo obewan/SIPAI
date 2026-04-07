@@ -109,25 +109,27 @@ vec4 derivativeFunction(vec4 value, uint activation_function,
   switch (activation_function) {
   case ELU:
     mask = greaterThanEqual(value, vec4(0.0));
-    value = mix(vec4(1.0), activation_alpha * exp(value), mask);
+    value = mix(activation_alpha * exp(value), vec4(1.0), mask);
     break;
   case LReLU:
-    value = clamp(value, 0.01, 1.0);
+    mask = greaterThan(value, vec4(0.0));
+    value = mix(vec4(0.01), vec4(1.0), mask);
     break;
   case PReLU:
-    mask = greaterThanEqual(value, vec4(0.0));
-    value = mix(vec4(1.0), vec4(activation_alpha), mask);
+    mask = greaterThan(value, vec4(0.0));
+    value = mix(vec4(activation_alpha), vec4(1.0), mask);
     break;
   case ReLU:
-    mask = greaterThanEqual(value, vec4(0.0));
-    value = mix(vec4(1.0), vec4(0.0), mask);
+    mask = greaterThan(value, vec4(0.0));
+    value = mix(vec4(0.0), vec4(1.0), mask);
     break;
   case Sigmoid:
+    // value is already sigmoid(x) from forward pass: s*(1-s)
     value *= (1 - value);
     break;
-  case Tanh: // shifted tanh [-1,1] to [0,1]
-    value = (tanh(value) / 2.0) + 0.5;
-    value = 1 - value * value;
+  case Tanh: // value is already tanhFunc(x) mapped to [0,1]
+    vec4 t = 2.0 * (value - 0.5);
+    value = (1 - t * t) / 2.0;
     break;
   default:
     break;
@@ -145,7 +147,8 @@ vec4 activateFunction(vec4 value, uint activation_function,
     value = clamp(value, 0.0, 1.0);
     break;
   case LReLU:
-    value = clamp(0.01 * value, 0.0, 1.0);
+    mask = greaterThan(value, vec4(0.0));
+    value = clamp(mix(0.01 * value, value, mask), 0.0, 1.0);
     break;
   case PReLU:
     value = max(activation_alpha * value, value);

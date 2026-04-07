@@ -30,10 +30,12 @@ void NeuralNetworkImportExportFacade::importWeights(
 void NeuralNetworkImportExportFacade::exportModel(
     const std::unique_ptr<NeuralNetwork> &network,
     const NeuralNetworkParams &networkParams,
-    const AppParams &appParams) const {
+    const AppParams &appParams,
+    std::function<void(int)> progressCallback, int progressInitialValue) {
   try {
     jsonIE.exportModel(network, networkParams, appParams);
-    csvIE.exportNeuronsWeights(network, appParams);
+    csvIE.exportNeuronsWeights(network, appParams, progressCallback,
+                               progressInitialValue);
   } catch (std::exception &ex) {
     throw ImportExportException(ex.what());
   }

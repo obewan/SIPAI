@@ -51,7 +51,7 @@ bool VulkanController::initialize()
   if (vulkan_->shaders.empty())
   {
     // templated shaders
-    for (auto &shader : manager.app_params.shaders)
+    for (auto &shader : shader_files)
     {
       if (!shader.templateFilename.empty() && !helper_.replaceTemplateParameters(
                                                   shader.templateFilename, shader.filename))

@@ -14,7 +14,7 @@ namespace sipai {
 class RunnerTrainingVulkanVisitor : public RunnerTrainingVisitor {
 public:
   void visit() const override;
-  void saveNetwork(bool &hasLastEpochBeenSaved) const override;
+  void saveNetwork(bool &hasLastEpochBeenSaved, std::function<void(int)> progressCallback = {}) const override;
 
   float training(size_t epoch, TrainingPhase phase) const override;
 };
